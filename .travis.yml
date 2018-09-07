@@ -11,3 +11,9 @@ addons:
   apt:
     packages:
       - libgit2-dev
+
+r_github_packages:
+  - r-lib/covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
