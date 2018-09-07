@@ -17,7 +17,7 @@ test_data <- data.frame(
     origin = "1970-01-01"
   ),
   test_Date = as.Date(
-    sample(.Machine$integer.max, size = test_n, replace = TRUE),
+    sample(1e5, size = test_n, replace = TRUE),
     origin = "1970-01-01"
   ),
   stringsAsFactors = FALSE

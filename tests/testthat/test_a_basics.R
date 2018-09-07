@@ -11,6 +11,9 @@ expect_is(
 expect_identical(length(output), 2L)
 expect_identical(names(output), c("test.tsv", "test.yml"))
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
+sorted_test_data <- test_data[do.call(order, test_data), ]
+rownames(sorted_test_data) <- NULL
+expect_equal(read_vc(file = "test.xls", root = root), sorted_test_data)
 expect_identical(
   write_vc(x = test_data, file = "test.xls", root = root),
   output
@@ -31,6 +34,7 @@ expect_is(
   "character"
 )
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
+expect_equal(read_vc(file = "a/verbose", root = root), sorted_test_data)
 expect_error(
   write_vc(x = test_data, file = "a/verbose", root = root),
   "old data was stored verbose"
@@ -69,7 +73,7 @@ expect_warning(
   "sorting results in ties"
 )
 expect_is(output, "character")
-expect_false(any(file.exists(git2rdata:::clean_data_path(root, "sorting"))))
+expect_true(all(file.exists(git2rdata:::clean_data_path(root, "sorting"))))
 test_changed <- test_data
 test_changed$junk <- test_changed$test_character
 expect_error(
@@ -91,7 +95,13 @@ expect_error(
   write_vc(
     test_changed, file = "sorting", root = root, sorting = "test_factor"
   ),
-  "old data has different variables"
+  "old data has different variable types or sorting"
+)
+expect_error(
+  write_vc(
+    test_data, file = "sorting", root = root, sorting = "test_logical"
+  ),
+  "old data has different variable types or sorting"
 )
 
 yml <- file.path(root, "sorting.yml")
@@ -100,4 +110,8 @@ writeLines(text = meta, con = yml)
 expect_error(
   write_vc(test_data, file = "sorting", root = root, sorting = "test_factor"),
   "error in existing metadata"
+)
+expect_error(
+  read_vc(file = "sorting", root = root),
+  "error in metadata"
 )
