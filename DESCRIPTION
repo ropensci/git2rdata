@@ -13,7 +13,7 @@ Description: Make versioning of data.frame easy and efficient using git reposito
 Depends: R (>= 3.4.0)
 Imports:
   assertthat,
-  git2r,
+  git2r (>= 0.23.0),
   methods
 Suggests:
   testthat

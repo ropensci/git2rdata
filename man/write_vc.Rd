@@ -5,6 +5,7 @@
 \alias{write_vc}
 \alias{write_vc,ANY,ANY,ANY-method}
 \alias{write_vc,ANY,ANY,character-method}
+\alias{write_vc,ANY,ANY,git_repository-method}
 \title{Write a \code{data.frame} to a git repository
 This will create two files. The \code{".tsv"} file contains the raw data.
 The \code{".yml"} contains the meta data on the columns in YAML format.}
@@ -16,6 +17,9 @@ write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE, ...)
 
 \S4method{write_vc}{ANY,ANY,character}(x, file, root, sorting,
   override = FALSE, optimize = TRUE, ...)
+
+\S4method{write_vc}{ANY,ANY,git_repository}(x, file, root, sorting,
+  override = FALSE, optimize = TRUE, ..., stage = FALSE, force = FALSE)
 }
 \arguments{
 \item{x}{the \code{data.frame}}
@@ -36,6 +40,10 @@ potentially lead to large diffs. Defaults to FALSE.}
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
 
 \item{...}{additional parameters used in some methods}
+
+\item{stage}{stage the changes after writing the data. Defaults to FALSE}
+
+\item{force}{Add ignored files. Default is FALSE.}
 }
 \value{
 a named vector with the hashes of the files. The names contains the

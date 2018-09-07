@@ -1,4 +1,4 @@
-context("basic usage of write_vc() and reavc()")
+context("basic usage of write_vc() and read_vc()")
 expect_error(write_vc(), "'root' is missing")
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
 root <- tempfile(pattern = "git2rdata-")

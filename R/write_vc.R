@@ -162,6 +162,36 @@ setMethod(
   }
 )
 
+#' @importFrom methods setOldClass
+setOldClass("git_repository")
+
+#' @rdname write_vc
+#' @param stage stage the changes after writing the data. Defaults to FALSE
+#' @inheritParams git2r::add
+#' @importFrom methods setMethod
+#' @importFrom git2r workdir add
+#' @importFrom assertthat assert_that is.flag
+setMethod(
+  f = "write_vc",
+  signature = signature(root = "git_repository"),
+  definition = function(
+    x, file, root, sorting, override = FALSE, optimize = TRUE, ...,
+    stage = FALSE, force = FALSE
+  ){
+    hashes <- write_vc(
+      x = x, file = file, root = workdir(root),
+      override = override, optimize = optimize, ...
+    )
+    assert_that(is.flag(stage))
+    if (!stage) {
+      return(hashes)
+    }
+    assert_that(is.flag(force))
+    add(root, path = names(hashes), force = force)
+    return(hashes)
+  }
+)
+
 compare_meta <- function(metadata, old_metadata) {
   if (length(old_metadata) != length(metadata)) {
     stop(
