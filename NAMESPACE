@@ -2,6 +2,7 @@
 
 exportMethods(meta)
 exportMethods(read_vc)
+exportMethods(rm_data)
 exportMethods(write_vc)
 importFrom(assertthat,assert_that)
 importFrom(assertthat,is.flag)
