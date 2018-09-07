@@ -11,6 +11,8 @@ Authors@R: c(
     role = c("cph", "fnd"), email = "info@inbo.be"))
 Description: Make versioning of data.frame easy and efficient using git repositories.
 Depends: R (>= 3.5.0)
+Imports:
+  methods
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
