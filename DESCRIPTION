@@ -10,7 +10,7 @@ Authors@R: c(
     family = "Research Institute for Nature and Forest",
     role = c("cph", "fnd"), email = "info@inbo.be"))
 Description: Make versioning of data.frame easy and efficient using git repositories.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.4.0)
 Imports:
   assertthat,
   git2r,
