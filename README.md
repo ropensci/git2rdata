@@ -1,5 +1,7 @@
 # The `git2rdata` package
 
+[![Travis-CI Build Status](https://travis-ci.org/inbo/git2rdata.svg?branch=master)](https://travis-ci.org/inbo/git2rdata)
+
 ## Rationale
 
 The `git2rdata` package writes and reads `data.frame`s as plain text files. Important information is stored in a metadata file. This allows the following features:
