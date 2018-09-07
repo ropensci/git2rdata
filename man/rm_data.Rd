@@ -4,6 +4,7 @@
 \name{rm_data}
 \alias{rm_data}
 \alias{rm_data,character-method}
+\alias{rm_data,git_repository-method}
 \title{Remove data files
 Remove all tsv and/or yml files within the path}
 \usage{
@@ -12,6 +13,9 @@ rm_data(root, path = NULL, type = c("tsv", "yml", "both"),
 
 \S4method{rm_data}{character}(root, path = NULL, type = c("tsv", "yml",
   "both"), recursive = TRUE, ...)
+
+\S4method{rm_data}{git_repository}(root, path = NULL, type = c("tsv", "yml",
+  "both"), recursive = TRUE, ..., stage = FALSE)
 }
 \arguments{
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
@@ -23,6 +27,8 @@ rm_data(root, path = NULL, type = c("tsv", "yml", "both"),
 \item{recursive}{remove files in subdirectories too}
 
 \item{...}{additional parameters used in some methods}
+
+\item{stage}{stage the changes after writing the data. Defaults to FALSE}
 }
 \description{
 Remove data files

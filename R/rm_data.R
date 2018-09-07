@@ -65,7 +65,31 @@ setMethod(
       to_do <- to_do[!to_do %in% keep]
     }
     file.remove(to_do)
+    to_do <- gsub(paste0("^", root, "/"), "", to_do)
 
-    return(invisible(TRUE))
+    return(invisible(to_do))
+  }
+)
+
+#' @rdname rm_data
+#' @importFrom methods setMethod
+#' @importFrom assertthat assert_that is.flag
+#' @importFrom git2r add
+#' @include write_vc.R
+setMethod(
+  f = "rm_data",
+  signature = signature(root = "git_repository"),
+  definition = function(
+    root, path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...,
+    stage = FALSE
+  ){
+    assert_that(is.flag(stage))
+    removed <- rm_data(
+      root = workdir(root), path = path, type = type, recursive = recursive, ...
+    )
+    if (stage) {
+      add(repo = root, path = removed)
+    }
+    return(invisible(removed))
   }
 )

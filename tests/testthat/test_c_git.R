@@ -68,3 +68,42 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(read_vc("staged", root), sorted_test_subset)
+git2r::commit(root, "update data")
+
+current <- list.files(workdir(root), recursive = TRUE)
+expect_identical(
+  rm_data(root = root, path = ".", type = "tsv"),
+  c("ignore.tsv", "staged.tsv", "untracked.tsv")
+)
+expect_identical(
+  list.files(workdir(root), recursive = TRUE),
+  current[grep(".*\\.yml", current)]
+)
+expect_equal(
+  git2r::status(root),
+  list(
+    staged = list(),
+    unstaged = c("ignore.tsv", "staged.tsv"),
+    untracked = "untracked.yml"
+  ),
+  check.attributes = FALSE
+)
+
+current <- list.files(workdir(root), recursive = TRUE)
+expect_identical(
+  rm_data(root = root, path = ".", type = "yml", stage = TRUE),
+  c("ignore.yml", "staged.yml", "untracked.yml")
+)
+expect_identical(
+  list.files(workdir(root), recursive = TRUE),
+  character(0)
+)
+expect_equal(
+  git2r::status(root),
+  list(
+    staged = c("ignore.yml", "staged.yml"),
+    unstaged = c("ignore.tsv", "staged.tsv"),
+    untracked = list()
+  ),
+  check.attributes = FALSE
+)

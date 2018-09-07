@@ -8,22 +8,28 @@ write_vc(test_data, file = "test", root = root)
 write_vc(test_data, file = "a/verbose", root = root, optimize = FALSE)
 
 current <- list.files(root, recursive = TRUE)
-expect_true(rm_data(root = root, path = "a"))
+expect_identical(rm_data(root = root, path = "a"), "a/verbose.tsv")
 expect_identical(
   list.files(root, recursive = TRUE),
-  current[-grep("^a/.*\\.tsv", current)]
+  current[-grep("^.*/.*\\.tsv", current)]
 )
 
 current <- list.files(root, recursive = TRUE)
-expect_true(rm_data(root = root, path = ".", type = "both", recursive = FALSE))
+expect_identical(
+  rm_data(root = root, path = ".", type = "both", recursive = FALSE),
+  c("test.tsv", "test.yml")
+)
 expect_identical(
   list.files(root, recursive = TRUE),
-  current <- current[grep("^.*/.*", current)]
+  current[grep("^.*/.*", current)]
 )
+
 write_vc(test_data, file = "test", root = root)
-
 current <- list.files(root, recursive = TRUE)
-expect_true(rm_data(root = root, path = ".", type = "yml"))
+expect_identical(
+  rm_data(root = root, path = ".", type = "yml"),
+  "a/verbose.yml"
+)
 expect_identical(
   list.files(root, recursive = TRUE),
   current[-grep("^.*/.*", current)]
