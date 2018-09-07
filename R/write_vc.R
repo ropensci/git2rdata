@@ -30,6 +30,21 @@ setGeneric(
 
 #' @rdname write_vc
 #' @importFrom methods setMethod
+setMethod(
+  f = "write_vc",
+  signature = signature(root = "ANY"),
+  definition = function(
+    x, file, root, sorting, override = FALSE, optimize = TRUE, ...
+  ){
+    if (missing(root)) {
+      stop("'root' is missing")
+    }
+    stop("a 'root' of class ", class(root), " is not supported")
+  }
+)
+
+#' @rdname write_vc
+#' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.string is.flag
 #' @importFrom utils tail write.table
 #' @importFrom git2r hashfile
@@ -44,8 +59,9 @@ setMethod(
     assert_that(is.string(root))
     root <- normalizePath(root, winslash = "/", mustWork = TRUE)
     if (!missing(sorting)) {
+      assert_that(is.character(sorting))
       assert_that(
-        length(sorting) > 1,
+        length(sorting) >= 1,
         msg = "at least one variable is required for sorting"
       )
       assert_that(

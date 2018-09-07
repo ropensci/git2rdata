@@ -3,12 +3,16 @@
 \docType{methods}
 \name{write_vc}
 \alias{write_vc}
+\alias{write_vc,ANY,ANY,ANY-method}
 \alias{write_vc,ANY,ANY,character-method}
 \title{Write a \code{data.frame} to a git repository
 This will create two files. The \code{".tsv"} file contains the raw data.
 The \code{".yml"} contains the meta data on the columns in YAML format.}
 \usage{
 write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE, ...)
+
+\S4method{write_vc}{ANY,ANY,ANY}(x, file, root, sorting, override = FALSE,
+  optimize = TRUE, ...)
 
 \S4method{write_vc}{ANY,ANY,character}(x, file, root, sorting,
   override = FALSE, optimize = TRUE, ...)
