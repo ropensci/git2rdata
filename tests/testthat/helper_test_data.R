@@ -22,3 +22,11 @@ test_data <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
+
+sorted_test_data <- test_data[do.call(order, test_data), ]
+rownames(sorted_test_data) <- NULL
+
+test_subset <- head(test_data, ceiling(test_n / 2))
+
+sorted_test_subset <- test_subset[do.call(order, test_subset), ]
+rownames(sorted_test_subset) <- NULL

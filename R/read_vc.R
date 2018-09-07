@@ -98,3 +98,15 @@ setMethod(
     return(raw_data)
   }
 )
+
+#' @rdname read_vc
+#' @importFrom methods setMethod
+#' @importFrom git2r workdir
+#' @include write_vc.R
+setMethod(
+  f = "read_vc",
+  signature = signature(root = "git_repository"),
+  definition = function(file, root){
+    read_vc(file, root = workdir(root))
+  }
+)

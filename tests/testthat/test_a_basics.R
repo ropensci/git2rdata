@@ -1,4 +1,4 @@
-context("basic usage of write_vc() and read_vc()")
+context("write_vc() and read_vc() on a file system")
 expect_error(write_vc(), "'root' is missing")
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
 root <- tempfile(pattern = "git2rdata-")
@@ -11,8 +11,6 @@ expect_is(
 expect_identical(length(output), 2L)
 expect_identical(names(output), c("test.tsv", "test.yml"))
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
-sorted_test_data <- test_data[do.call(order, test_data), ]
-rownames(sorted_test_data) <- NULL
 expect_equal(read_vc(file = "test.xls", root = root), sorted_test_data)
 expect_identical(
   write_vc(x = test_data, file = "test.xls", root = root),

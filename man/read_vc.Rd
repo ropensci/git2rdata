@@ -4,11 +4,14 @@
 \name{read_vc}
 \alias{read_vc}
 \alias{read_vc,ANY,character-method}
+\alias{read_vc,ANY,git_repository-method}
 \title{Read a \code{data.frame} from a repository}
 \usage{
 read_vc(file, root)
 
 \S4method{read_vc}{ANY,character}(file, root)
+
+\S4method{read_vc}{ANY,git_repository}(file, root)
 }
 \arguments{
 \item{file}{the name of the file without file extension. Can include a relative
