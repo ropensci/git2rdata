@@ -30,8 +30,8 @@ path. It is relative to the \code{root}.}
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 
 \item{sorting}{a vector of column names defining which columns to use for
-sorting \code{x} and in what order to use them. Defaults to
-\code{colnames(x)}}
+sorting \code{x} and in what order to use them. Only required when writing
+new metadata.}
 
 \item{override}{Ignore existing meta data. This is required when new
 variables are added or variables are deleted. Setting this to TRUE can

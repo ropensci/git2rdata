@@ -4,14 +4,23 @@ expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
 root <- tempfile(pattern = "git2rdata-")
 dir.create(root)
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
+expect_error(
+  write_vc(x = test_data, file = "test.txt", root = root),
+  "new metadata requires 'sorting'"
+)
 expect_is(
-  output <- write_vc(x = test_data, file = "test.txt", root = root),
+  output <- write_vc(
+    x = test_data, file = "test.txt", root = root, sorting = "test_Date"
+  ),
   "character"
 )
 expect_identical(length(output), 2L)
 expect_identical(names(output), c("test.tsv", "test.yml"))
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
-expect_equal(read_vc(file = "test.xls", root = root), sorted_test_data)
+expect_equal(
+  read_vc(file = "test.xls", root = root),
+  sorted_test_data
+)
 expect_identical(
   write_vc(x = test_data, file = "test.xls", root = root),
   output
@@ -21,14 +30,20 @@ expect_error(
   "old data was stored optimized"
 )
 expect_error(
-  write_vc(x = test_data[, -1], file = "test", root = root),
+  write_vc(
+    x = test_data[, colnames(test_data) != "test_Date"],
+    file = "test", root = root
+  ),
   "new data lacks old sorting variable"
 )
 
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
 expect_is(
   output <-
-    write_vc(x = test_data, file = "a/verbose", root = root, optimize = FALSE),
+    write_vc(
+      x = test_data, file = "a/verbose", root = root, sorting = "test_Date",
+      optimize = FALSE
+    ),
   "character"
 )
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
@@ -49,7 +64,10 @@ expect_error(
 )
 test_na[["test_character"]] <- NULL
 expect_is(
-  output <- write_vc(test_na, file = "na", root = root),
+  output <- write_vc(
+    test_na, file = "na", root = root,
+    sorting = c("test_Date", "test_integer", "test_numeric")
+  ),
   "character"
 )
 expect_error(

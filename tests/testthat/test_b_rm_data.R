@@ -4,8 +4,11 @@ root <- tempfile(pattern = "git2rdata-")
 expect_error(rm_data(root), root)
 dir.create(root)
 expect_error(rm_data(root, path = "junk"), file.path(root, "junk"))
-write_vc(test_data, file = "test", root = root)
-write_vc(test_data, file = "a/verbose", root = root, optimize = FALSE)
+write_vc(test_data, file = "test", root = root, sorting = "test_Date")
+write_vc(
+  test_data, file = "a/verbose", root = root, sorting = "test_Date",
+  optimize = FALSE
+)
 
 current <- list.files(root, recursive = TRUE)
 expect_identical(rm_data(root = root, path = "a"), "a/verbose.tsv")
@@ -24,7 +27,7 @@ expect_identical(
   current[grep("^.*/.*", current)]
 )
 
-write_vc(test_data, file = "test", root = root)
+write_vc(test_data, file = "test", root = root, sorting = "test_Date")
 current <- list.files(root, recursive = TRUE)
 expect_identical(
   rm_data(root = root, path = ".", type = "yml"),

@@ -6,7 +6,9 @@ git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
 writeLines("ignore.*", file.path(workdir(root), ".gitignore"))
 git2r::add(root, ".gitignore")
 git2r::commit(root, "initial commit")
-untracked <- write_vc(test_data, file = "untracked", root = root)
+untracked <- write_vc(
+  test_data, file = "untracked", root = root, sorting = "test_Date"
+)
 expect_equal(
   git2r::status(root),
   list(staged = list(), unstaged = list(), untracked = names(untracked)),
@@ -14,7 +16,9 @@ expect_equal(
 )
 expect_equal(read_vc("untracked", root), sorted_test_data)
 
-staged <- write_vc(test_data, file = "staged", root = root, stage = TRUE)
+staged <- write_vc(
+  test_data, file = "staged", root = root, sorting = "test_Date", stage = TRUE
+)
 expect_equal(
   git2r::status(root),
   list(staged = names(staged), unstaged = list(), untracked = names(untracked)),
@@ -22,7 +26,9 @@ expect_equal(
 )
 expect_equal(read_vc("staged", root), sorted_test_data)
 
-ignored <- write_vc(test_data, file = "ignore", root = root, stage = TRUE)
+ignored <- write_vc(
+  test_data, file = "ignore", root = root, sorting = "test_Date", stage = TRUE
+)
 expect_equal(
   git2r::status(root),
   list(staged = names(staged), unstaged = list(), untracked = names(untracked)),

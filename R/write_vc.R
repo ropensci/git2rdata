@@ -6,8 +6,8 @@
 #' path. It is relative to the \code{root}.
 #' @param root The root of a project. Can be a file path or a \code{git-repository}
 #' @param sorting a vector of column names defining which columns to use for
-#' sorting \code{x} and in what order to use them. Defaults to
-#' \code{colnames(x)}
+#' sorting \code{x} and in what order to use them. Only required when writing
+#' new metadata.
 #' @param override Ignore existing meta data. This is required when new
 #' variables are added or variables are deleted. Setting this to TRUE can
 #' potentially lead to large diffs. Defaults to FALSE.
@@ -91,7 +91,7 @@ setMethod(
     if (override || !file.exists(file["meta_file"])) {
       #write new metadata
       if (missing(sorting)) {
-        sorting <- colnames(x)
+        stop("new metadata requires 'sorting'")
       }
       to_sort <- colnames(x) %in% sorting
       metadata <- metadata[c(sorting, colnames(x)[!to_sort])]
@@ -179,7 +179,7 @@ setMethod(
     stage = FALSE, force = FALSE
   ){
     hashes <- write_vc(
-      x = x, file = file, root = workdir(root),
+      x = x, file = file, root = workdir(root), sorting = sorting,
       override = override, optimize = optimize, ...
     )
     assert_that(is.flag(stage))
