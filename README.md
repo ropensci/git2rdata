@@ -1,7 +1,7 @@
 # The `git2rdata` package
 
 [![Travis-CI Build Status](https://travis-ci.org/inbo/git2rdata.svg?branch=master)](https://travis-ci.org/inbo/git2rdata)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/inbo/git2rdata?branch=master&svg=true)](https://ci.appveyor.com/project/inbo/git2rdata) 
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/a3idhi9f6ls9xu8r/branch/master?svg=true)](https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master)
 [![codecov](https://codecov.io/gh/inbo/git2rdata/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/git2rdata)
 
 ## Rationale
