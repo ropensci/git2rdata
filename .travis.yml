@@ -12,8 +12,11 @@ addons:
     packages:
       - libgit2-dev
 
-r_github_packages:
-  - r-lib/covr
-
+r_packages:
+  - covr
+  - lintr
+after_script:
+  - R CMD INSTALL $PKG_TARBALL
+  - Rscript -e 'lintr::lint_package()'
 after_success:
   - Rscript -e 'covr::codecov()'
