@@ -28,4 +28,5 @@ Collate:
     'meta.R'
     'write_vc.R'
     'read_vc.R'
+    'recent_commit.R'
     'rm_data.R'
