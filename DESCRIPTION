@@ -25,9 +25,10 @@ RoxygenNote: 6.0.1
 URL: https://github.com/inbo/git2rdata
 BugReports: https://github.com/inbo/git2rdata/issues
 Collate: 
+    'write_vc.R'
+    'auto_commit.R'
     'clean_data_path.R'
     'meta.R'
-    'write_vc.R'
     'read_vc.R'
     'recent_commit.R'
     'reexport.R'
