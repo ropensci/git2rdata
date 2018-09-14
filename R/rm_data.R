@@ -90,7 +90,7 @@ setMethod(
     removed <- rm_data(
       root = workdir(root), path = path, type = type, recursive = recursive, ...
     )
-    if (stage) {
+    if (stage && !is.null(removed)) {
       add(repo = root, path = removed)
     }
     return(invisible(removed))
