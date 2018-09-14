@@ -30,7 +30,10 @@ setMethod(
     root <- normalizePath(root, winslash = "/", mustWork = TRUE)
     assert_that(is.string(path))
     path <- file.path(root, path)
-    path <- normalizePath(path, winslash = "/", mustWork = TRUE)
+    path <- normalizePath(path, winslash = "/", mustWork = FALSE)
+    if (!dir.exists(path)) {
+      return(invisible(NULL))
+    }
     type <- match.arg(type)
     assert_that(is.flag(recursive))
 

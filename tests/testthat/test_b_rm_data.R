@@ -3,7 +3,7 @@ context("rm_data")
 root <- tempfile(pattern = "git2rdata-")
 expect_error(rm_data(root), root)
 dir.create(root)
-expect_error(rm_data(root, path = "junk"), file.path(root, "junk"))
+expect_null(rm_data(root, path = "junk"))
 write_vc(test_data, file = "test", root = root, sorting = "test_Date")
 write_vc(
   test_data, file = "a/verbose", root = root, sorting = "test_Date",
