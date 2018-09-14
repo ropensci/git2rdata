@@ -47,6 +47,8 @@ file.remove(
   list.files(connection, recursive = TRUE, full.names = TRUE, all.files = TRUE)
 )
 expect_error(
-  auto_commit(package = "git2rdata", repo = repo),
+  suppressWarnings(
+    auto_commit(package = "git2rdata", repo = repo)
+  ),
   "Invalid repository"
 )
