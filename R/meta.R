@@ -20,13 +20,21 @@ setMethod(
   signature = signature(x = "character"),
   definition = function(x, optimize = TRUE){
     attr(x, "meta") <- "    class: character"
-    if (any(is.na(x))) {
-        stop(
-            call. = FALSE,
+    if (length(grep("^NA$", x))) {
+      stop(
+        call. = FALSE,
 "The string 'NA' cannot be stored because it would be indistinguishable from the
 missing value NA. Please replace or remove any 'NA' strings. Consider using a
 factor."
-        )
+      )
+    }
+    if (length(grep("\t", x))) {
+      stop(
+        call. = FALSE,
+"Character variable cannot contain tab characters (\\t) because it is used a the
+delimiter. Please replace or remove any '\\t' in the strings or consider using a
+factor."
+      )
     }
     return(x)
   }
