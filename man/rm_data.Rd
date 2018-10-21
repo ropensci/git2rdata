@@ -14,8 +14,8 @@ rm_data(root, path = NULL, type = c("tsv", "yml", "both"),
 \S4method{rm_data}{character}(root, path = NULL, type = c("tsv", "yml",
   "both"), recursive = TRUE, ...)
 
-\S4method{rm_data}{git_repository}(root, path = NULL, type = c("tsv", "yml",
-  "both"), recursive = TRUE, ..., stage = FALSE)
+\S4method{rm_data}{git_repository}(root, path = NULL, type = c("tsv",
+  "yml", "both"), recursive = TRUE, ..., stage = FALSE)
 }
 \arguments{
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}

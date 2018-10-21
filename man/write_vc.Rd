@@ -10,16 +10,18 @@
 This will create two files. The \code{".tsv"} file contains the raw data.
 The \code{".yml"} contains the meta data on the columns in YAML format.}
 \usage{
-write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE, ...)
+write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
+  ...)
 
-\S4method{write_vc}{ANY,ANY,ANY}(x, file, root, sorting, override = FALSE,
-  optimize = TRUE, ...)
+\S4method{write_vc}{ANY,ANY,ANY}(x, file, root, sorting,
+  override = FALSE, optimize = TRUE, ...)
 
 \S4method{write_vc}{ANY,ANY,character}(x, file, root, sorting,
   override = FALSE, optimize = TRUE, ...)
 
 \S4method{write_vc}{ANY,ANY,git_repository}(x, file, root, sorting,
-  override = FALSE, optimize = TRUE, ..., stage = FALSE, force = FALSE)
+  override = FALSE, optimize = TRUE, ..., stage = FALSE,
+  force = FALSE)
 }
 \arguments{
 \item{x}{the \code{data.frame}}
