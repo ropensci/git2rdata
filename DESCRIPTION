@@ -16,6 +16,8 @@ Imports:
   git2r (>= 0.23.0),
   methods
 Suggests:
+  knitr,
+  rmarkdown,
   testthat
 License: GPL-3
 Encoding: UTF-8
@@ -24,7 +26,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.0
 URL: https://github.com/inbo/git2rdata
 BugReports: https://github.com/inbo/git2rdata/issues
-Collate: 
+Collate:
     'write_vc.R'
     'auto_commit.R'
     'clean_data_path.R'
@@ -33,3 +35,4 @@ Collate:
     'recent_commit.R'
     'reexport.R'
     'rm_data.R'
+VignetteBuilder: knitr
