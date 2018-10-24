@@ -131,3 +131,16 @@ expect_error(
   read_vc(file = "sorting", root = root),
   "error in metadata"
 )
+
+expect_error(
+  meta("NA"),
+  "The string 'NA' cannot be stored"
+)
+expect_error(
+  meta(c("NA ", " NA", "\t")),
+  "Character variable cannot contain tab"
+)
+expect_error(
+  meta(c(" \n ")),
+  "Character variable cannot contain tab"
+)

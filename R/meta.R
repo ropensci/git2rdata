@@ -28,12 +28,12 @@ missing value NA. Please replace or remove any 'NA' strings. Consider using a
 factor."
       )
     }
-    if (length(grep("\t", x))) {
+    if (length(grep("(\t|\n|\r)", x))) {
       stop(
         call. = FALSE,
-"Character variable cannot contain tab characters (\\t) because it is used a the
-delimiter. Please replace or remove any '\\t' in the strings or consider using a
-factor."
+"Character variable cannot contain tab (\\t), newline (\\n) or carriage return
+(\\r) characters. Please remove any '\\t', '\\n' or '\\r' in the strings or
+consider using a factor."
       )
     }
     return(x)
