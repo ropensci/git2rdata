@@ -23,7 +23,7 @@ opts_chunk$set(
 
 R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()`. The `readr` package has `write_delim()`, `write_csv()` and `write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. The `read` function determine the factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
 
-The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe.
+The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe. The `vc` suffix stands for **v**ersion **c**ontrol as these functions use their full capacity in combination with a version control system.
 
 ### Maintaining the order of columns and rows
 
@@ -31,7 +31,7 @@ While `write.table()` and the like write the dataframe as is, `write_vc()` will 
 
 #### Swapping variables
 
-Suppose we have a very simple dataframe as below. Swapping `A` and `B` might not seem a big deal. The information content is the same (assuming there is not information in the order of the variables). The file sizes will be identical. The diff, however, is maximal: each row has a change.
+Suppose we have a very simple dataframe as below. Swapping `A` and `B` might not seem a big deal. The information content is the same (assuming there is no information in the order of the variables). The file sizes will be identical. The diff, however, is maximal: each row has a change.
 
 Original version
 ```
@@ -61,7 +61,7 @@ Diff between original and altered version
 +12,3
 ```
 
-`write_vc` solves this problem by storing the order of the variables in the meta data. In case a file is updated, the variables in the new version are ordered as indicated in the meta data from the previous version.
+`write_vc` solves this problem by storing the order of the variables in the meta data (see [Basic usage without version control](#basic-usage)). In case a file is updated, the variables in the new version are ordered as indicated in the meta data from the previous version.
 
 #### Moving a row
 
@@ -89,7 +89,7 @@ A,B
 
 ### Optimizing file storage
 
-Plain text files require more disk space that binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to space optimize the data prior to writing. Since we store the class of each variable and use a tab delimited file format, we can omit quotes around character variables. This saves 2 byte pers row for each character variable. 
+Plain text files require more disk space than binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to space optimize the data prior to writing. Since we store the class of each variable and use a tab delimited file format, we can omit quotes around character variables. This saves 2 byte per row for each character variable. 
 
 - `logical` is written as 0 (FALSE), 1 (TRUE) or NA to the data. The class is stored in the meta data.
 - `integer` is written as is to the data. The class is stored in the meta data.
@@ -131,7 +131,7 @@ x <- data.frame(
 str(x)
 ```
 
-### Basic usage without version control
+### Basic usage without version control {#basic-usage}
 
 Use `write_vc()` to store the dataframe. `root` refers to the base directory where the data is stored. `file` is used as the base name of the files. The data file gets a `.tsv` extension, the meta data file a `.yml` extension. `file` can include a relative path starting from `root`.
 
@@ -167,7 +167,7 @@ write_vc(
 )
 ```
 
-The dataframe can be retrieved with `read_vc()`. It has same `file` and `root` argument as `write.vc()`. The content of the stored file is indentical to the original but the ordering of the rows and columns can be different.
+The dataframe can be retrieved with `read_vc()`. It has same `file` and `root` argument as `write_vc()`. The content of the stored file is indentical to the original but the ordering of the rows and columns can be different.
 
 ```{r}
 y <- read_vc(file = "first_test", root = path)
@@ -202,7 +202,7 @@ rownames(sorted.x) <- NULL
 all.equal(sorted.x, y)
 ```
 
-`write_vc()` gains two additional arguments when working with a `git2r::repository`: `stage` and `force`. Setting `stage = TRUE` will automatically stage both files after writing. Setting `stage = TRUE` and `force = TRUE` will stage the changes even if is this prohibited by the setting in `.gitignore`.
+`write_vc()` gains two additional arguments when working with a `git2r::repository`: `stage` and `force`. Setting `stage = TRUE` will automatically stage both files after writing. Setting `stage = TRUE` and `force = TRUE` will stage the changes even if this is prohibited by the setting in `.gitignore`.
 
 ```{r}
 write_vc(x = x, file = "git/test2", root = repo, sorting = "x", stage = TRUE)
@@ -214,9 +214,9 @@ commit(repo, "initial commit")
 
 ### Additional functions useful for scripting
 
-Consider the following use case. We want to import data from some external database and store it a plain text file under version control. The external database contains information for several groups. We will create a dataframe for each group and store each of those dataframes into the version control system. Over time, the information on groups gets updated, new groups are created and some groups are removed. Hence some data files need to updated, new files have to be create and some removed. And this is an automated fashion.
+Consider the following use case. We want to import data from some external database and store in a plain text file under version control. The external database contains information for several groups. We will create a dataframe for each group and store each of those dataframes into the version control system. Over time, the information on groups gets updated, new groups are created and some groups are removed. Hence some data files need to be updated, new files have to be create and some removed. And this is an automated fashion.
 
-Let's illustrate this with a simple example. We start by writing three dataframes to a subdirectory of the repository and commit this changes.
+Let's illustrate this with a simple example. We start by writing three dataframes to a subdirectory of the repository and commit these changes.
 
 ```{r}
 groups <- c("A", "B", "C")
@@ -294,10 +294,9 @@ export2git <- function(groups) {
 }
 ```
 
-`recent_commit()` is a useful function when you need to find the most recent commit in which a file or dataframe was updated. Note that is does not take into account the fact that a file might be missing a the current HEAD or workspace.
+`recent_commit()` is a useful function when you need to find the most recent commit in which a file or dataframe was updated. Note that it does not take into account the fact that a file might be missing at the current HEAD or workspace.
 
 ```{r}
 recent_commit("first_test.tsv", root = repo)
 recent_commit("automation/A", root = repo, data = TRUE)
 ```
-
