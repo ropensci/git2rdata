@@ -23,8 +23,10 @@ object. Default is '.'}
 
 \item{push}{Logical indicating whether to push the commit. Defaults to FALSE.}
 
-\item{...}{arguments passed to \code{\link[git2r]{commit}} and \code{\link[git2r]{push}}}
+\item{...}{arguments passed to \code{\link[git2r]{commit}} and
+\code{\link[git2r]{push}}}
 }
 \description{
-The mesagge is based on the information returned by \code{\link[utils]{sessionInfo}}
+The mesagge is based on the information returned by
+\code{\link[utils]{sessionInfo}}
 }

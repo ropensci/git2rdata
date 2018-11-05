@@ -24,10 +24,10 @@ write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
   force = FALSE)
 }
 \arguments{
-\item{x}{the \code{data.frame}}
+\item{x}{the `data.frame}
 
-\item{file}{the name of the file without file extension. Can include a relative
-path. It is relative to the \code{root}.}
+\item{file}{the name of the file without file extension. Can include a
+relative path. It is relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 

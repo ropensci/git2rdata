@@ -12,12 +12,13 @@ recent_commit(file, root, data = FALSE)
 \S4method{recent_commit}{ANY,git_repository}(file, root, data = FALSE)
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a relative
-path. It is relative to the \code{root}.}
+\item{file}{the name of the file without file extension. Can include a
+relative path. It is relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 
-\item{data}{refers file to a file (FALSE) or a data object (TRUE). Defaults to FALSE}
+\item{data}{refers file to a file (FALSE) or a data object (TRUE). Defaults
+to FALSE}
 }
 \description{
 Most recent file change

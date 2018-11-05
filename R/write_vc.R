@@ -1,10 +1,10 @@
 #' Write a \code{data.frame} to a git repository
-#' This will create two files. The \code{".tsv"} file contains the raw data.
-#' The \code{".yml"} contains the meta data on the columns in YAML format.
-#' @param x the \code{data.frame}
-#' @param file the name of the file without file extension. Can include a relative
-#' path. It is relative to the \code{root}.
-#' @param root The root of a project. Can be a file path or a \code{git-repository}
+#' This will create two files. The `".tsv"` file contains the raw data.
+#' The `".yml"` contains the meta data on the columns in YAML format.
+#' @param x the `data.frame
+#' @param file the name of the file without file extension. Can include a
+#' relative path. It is relative to the `root`.
+#' @param root The root of a project. Can be a file path or a `git-repository`
 #' @param sorting a vector of column names defining which columns to use for
 #' sorting \code{x} and in what order to use them. Only required when writing
 #' new metadata.

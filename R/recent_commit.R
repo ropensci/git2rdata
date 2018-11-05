@@ -1,7 +1,8 @@
 #' Most recent file change
 #' Retrieve the most recent commit in which a file or data object existed.
 #' @inheritParams write_vc
-#' @param data refers file to a file (FALSE) or a data object (TRUE). Defaults to FALSE
+#' @param data refers file to a file (FALSE) or a data object (TRUE). Defaults
+#' to FALSE
 #' @rdname recent_commit
 #' @exportMethod recent_commit
 #' @docType methods
