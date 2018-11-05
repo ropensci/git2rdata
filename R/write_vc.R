@@ -93,8 +93,6 @@ setMethod(
       if (missing(sorting)) {
         stop("new metadata requires 'sorting'")
       }
-      to_sort <- colnames(x) %in% sorting
-      metadata <- metadata[c(sorting, colnames(x)[!to_sort])]
       metadata[sorting] <- paste0(metadata[sorting], "\n    sort")
       if (optimize) {
         store_metadata <- c(metadata, "optimized")
@@ -134,8 +132,6 @@ setMethod(
           stop("new data lacks old sorting variable, use override = TRUE")
         }
       }
-      to_sort <- colnames(x) %in% sorting
-      metadata <- metadata[c(sorting, colnames(x)[!to_sort])]
       metadata[sorting] <- paste0(metadata[sorting], "\n    sort")
       metadata <- compare_meta(metadata, old_metadata)
     }

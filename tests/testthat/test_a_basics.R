@@ -58,11 +58,6 @@ test_na <- test_data
 for (i in seq_along(test_na)) {
   test_na[sample(test_n, size = ceiling(0.1 * test_n)), i] <- NA
 }
-expect_error(
-  write_vc(test_na, file = "na", root = root),
-  "The string 'NA' cannot be stored"
-)
-test_na[["test_character"]] <- NULL
 expect_is(
   output <- write_vc(
     test_na, file = "na", root = root,
