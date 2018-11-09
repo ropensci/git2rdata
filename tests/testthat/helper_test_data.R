@@ -7,10 +7,6 @@ test_data <- data.frame(
   ),
   test_integer = sample(.Machine$integer.max, size = test_n, replace = TRUE),
   test_numeric = rnorm(test_n, mean = 0, sd = 1),
-  test_complex = complex(
-    real = rnorm(test_n, mean = 0, sd = 1),
-    imaginary = rnorm(test_n, mean = 0, sd = 1)
-  ),
   test_logical = sample(c(TRUE, FALSE), size = test_n, replace = TRUE),
   test_POSIXct = as.POSIXct(
     sample(.Machine$integer.max, size = test_n, replace = TRUE),

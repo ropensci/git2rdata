@@ -15,7 +15,7 @@ setGeneric(
 #' @rdname read_vc
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.string
-#' @importFrom utils read.table
+#' @importFrom readr read_tsv
 setMethod(
   f = "read_vc",
   signature = signature(root = "character"),
@@ -40,9 +40,9 @@ setMethod(
     } else {
       stop("error in metadata")
     }
-    raw_data <- read.table(
-      file = file["raw_file"], header = !optimize, sep = "\t", dec = ".",
-      quote = ifelse(optimize, "", "\"'"), as.is = TRUE, col.names = col_names
+    raw_data <- read_tsv(
+      file = file["raw_file"], col_names = TRUE, na = "NA", quoted_na = FALSE,
+      trim_ws = FALSE, progress = FALSE
     )
 
     col_classes <- gsub(" {4}class: (.*)", "\\1", meta_data[meta_cols + 1])

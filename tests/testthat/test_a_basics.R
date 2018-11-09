@@ -19,7 +19,8 @@ expect_identical(names(output), c("test.tsv", "test.yml"))
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
 expect_equal(
   read_vc(file = "test.xls", root = root),
-  sorted_test_data
+  sorted_test_data,
+  check.attributes = FALSE
 )
 expect_identical(
   write_vc(x = test_data, file = "test.xls", root = root),
@@ -47,7 +48,11 @@ expect_is(
   "character"
 )
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
-expect_equal(read_vc(file = "a/verbose", root = root), sorted_test_data)
+expect_equal(
+  read_vc(file = "a/verbose", root = root),
+  sorted_test_data,
+  check.attributes = FALSE
+)
 expect_error(
   write_vc(x = test_data, file = "a/verbose", root = root),
   "old data was stored verbose"

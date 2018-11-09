@@ -94,7 +94,6 @@ Plain text files require more disk space than binary files. This is the price we
 - `logical` is written as 0 (FALSE), 1 (TRUE) or NA to the data. The class is stored in the metadata.
 - `integer` is written as is to the data. The class is stored in the metadata.
 - `numeric` is written as is to the data. The class is stored in the metadata.
-- `complex` is written as is to the data. The class is stored in the metadata.
 - `character` is written as is and unquoted to the data. The class is stored in the metadata.
 - `factor` is stored as its indices in the data. The labels of levels and their order are stored in the metadata.
 - `POSIXct` is written as an integer to the data. The class and the origin are stored in the metadata.
@@ -119,7 +118,6 @@ x <- data.frame(
   ),
   z = c(NA, 1:25),
   abc = c(rnorm(25), NA),
-  xyz = complex(real = rnorm(26), imaginary = rnorm(26)),
   def = sample(c(TRUE, FALSE, NA), 26, replace = TRUE),
   timestamp = seq(
     as.POSIXct("2018-01-01"),
@@ -171,10 +169,10 @@ The dataframe can be retrieved with `read_vc()`. It has the same `file` and `roo
 
 ```{r}
 y <- read_vc(file = "first_test", root = path)
-all.equal(x, y)
+all.equal(x, y, check.attributes = FALSE)
 sorted.x <- x[order(x$def, x$x), colnames(y)]
 rownames(sorted.x) <- NULL
-all.equal(sorted.x, y)
+all.equal(sorted.x, y, check.attributes = FALSE)
 ```
 
 ### Usage with Git as version control system
@@ -199,7 +197,7 @@ status(repo)
 y <- read_vc(file = "git/test", root = repo)
 sorted.x <- x[order(x$x), colnames(y)]
 rownames(sorted.x) <- NULL
-all.equal(sorted.x, y)
+all.equal(sorted.x, y, check.attributes = FALSE)
 ```
 
 `write_vc()` gains two additional arguments when working with a `git2r::repository`: `stage` and `force`. Setting `stage = TRUE` will automatically stage both files after writing. Setting `stage = TRUE` and `force = TRUE` will stage the changes even if this is prohibited by the setting in `.gitignore`.

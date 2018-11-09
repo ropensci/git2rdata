@@ -14,7 +14,11 @@ expect_equal(
   list(staged = list(), unstaged = list(), untracked = names(untracked)),
   check.attributes = FALSE
 )
-expect_equal(read_vc("untracked", root), sorted_test_data)
+expect_equal(
+  read_vc("untracked", root),
+  sorted_test_data,
+  check.attributes = FALSE
+)
 
 staged <- write_vc(
   test_data, file = "staged", root = root, sorting = "test_Date", stage = TRUE
@@ -24,7 +28,11 @@ expect_equal(
   list(staged = names(staged), unstaged = list(), untracked = names(untracked)),
   check.attributes = FALSE
 )
-expect_equal(read_vc("staged", root), sorted_test_data)
+expect_equal(
+  read_vc("staged", root),
+  sorted_test_data,
+  check.attributes = FALSE
+)
 
 ignored <- write_vc(
   test_data, file = "ignore", root = root, sorting = "test_Date", stage = TRUE
@@ -38,7 +46,11 @@ expect_identical(
   list.files(workdir(root)),
   c(names(ignored), names(staged), names(untracked))
 )
-expect_equal(read_vc("ignore", root), sorted_test_data)
+expect_equal(
+  read_vc("ignore", root),
+  sorted_test_data,
+  check.attributes = FALSE
+)
 
 ignored <-
   write_vc(test_data, file = "ignore", root = root, stage = TRUE, force = TRUE)
@@ -51,7 +63,11 @@ expect_equal(
   ),
   check.attributes = FALSE
 )
-expect_equal(read_vc("ignore", root), sorted_test_data)
+expect_equal(
+  read_vc("ignore", root),
+  sorted_test_data,
+  check.attributes = FALSE
+)
 commit(root, "add data")
 
 staged <- write_vc(
@@ -63,7 +79,11 @@ expect_equal(
   list(staged = list(), unstaged = "staged.tsv", untracked = names(untracked)),
   check.attributes = FALSE
 )
-expect_equal(read_vc("staged", root), sorted_test_subset)
+expect_equal(
+  read_vc("staged", root),
+  sorted_test_subset,
+  check.attributes = FALSE
+)
 
 staged <- write_vc(
   test_subset,
@@ -74,7 +94,11 @@ expect_equal(
   list(staged = "staged.tsv", unstaged = list(), untracked = names(untracked)),
   check.attributes = FALSE
 )
-expect_equal(read_vc("staged", root), sorted_test_subset)
+expect_equal(
+  read_vc("staged", root),
+  sorted_test_subset,
+  check.attributes = FALSE
+)
 commit(root, "update data")
 
 current <- list.files(workdir(root), recursive = TRUE)
