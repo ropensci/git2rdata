@@ -35,17 +35,25 @@ setMethod(
     col_names <- gsub(":", "", meta_data[meta_cols])
     if (tail(meta_data, 1) == "optimized") {
       optimize <- TRUE
+      col_type <- c(
+        character = "c", factor = "i", integer = "i", numeric = "d",
+        logical = "i", Date = "i", POSIXct = "d"
+      )
     } else if (tail(meta_data, 1) == "verbose") {
       optimize <- FALSE
+      col_type <- c(
+        character = "c", factor = "c", integer = "i", numeric = "d",
+        logical = "l", Date = "D", POSIXct = "T"
+      )
     } else {
       stop("error in metadata")
     }
+    col_classes <- gsub(" {4}class: (.*)", "\\1", meta_data[meta_cols + 1])
     raw_data <- read_tsv(
       file = file["raw_file"], col_names = TRUE, na = "NA", quoted_na = FALSE,
+      col_types = paste(col_type[col_classes], collapse = ""),
       trim_ws = FALSE, progress = FALSE
     )
-
-    col_classes <- gsub(" {4}class: (.*)", "\\1", meta_data[meta_cols + 1])
 
     # reinstate factors
     col_factor <- which(col_classes == "factor")
@@ -77,22 +85,24 @@ setMethod(
       }
     }
 
-    # reinstate logical
-    col_logical <- which(col_classes == "logical")
-    for (id in col_logical) {
-      raw_data[[id]] <- as.logical(raw_data[[id]])
-    }
+    if (optimize) {
+      # reinstate logical
+      col_logical <- which(col_classes == "logical")
+      for (id in col_logical) {
+        raw_data[[id]] <- as.logical(raw_data[[id]])
+      }
 
-    # reinstate POSIXct
-    col_posix <- which(col_classes == "POSIXct")
-    for (id in col_posix) {
-      raw_data[[id]] <- as.POSIXct(raw_data[[id]], origin = "1970-01-01")
-    }
+      # reinstate POSIXct
+      col_posix <- which(col_classes == "POSIXct")
+      for (id in col_posix) {
+        raw_data[[id]] <- as.POSIXct(raw_data[[id]], origin = "1970-01-01")
+      }
 
-    # reinstage Date
-    col_date <- which(col_classes == "Date")
-    for (id in col_date) {
-      raw_data[[id]] <- as.Date(raw_data[[id]], origin = "1970-01-01")
+      # reinstage Date
+      col_date <- which(col_classes == "Date")
+      for (id in col_date) {
+        raw_data[[id]] <- as.Date(raw_data[[id]], origin = "1970-01-01")
+      }
     }
 
     return(raw_data)
