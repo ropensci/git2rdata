@@ -1,7 +1,7 @@
 context("write_vc() and read_vc() on a file system")
 expect_error(write_vc(), "'root' is missing")
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
-root <- tempfile(pattern = "git2rdata-")
+root <- tempfile(pattern = "git2rdata-basic")
 dir.create(root)
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
 expect_error(
@@ -131,16 +131,4 @@ expect_error(
   read_vc(file = "sorting", root = root),
   "error in metadata"
 )
-
-expect_error(
-  meta("NA"),
-  "The string 'NA' cannot be stored"
-)
-expect_error(
-  meta(c("NA ", " NA", "\t")),
-  "Character variable cannot contain tab"
-)
-expect_error(
-  meta(c(" \n ")),
-  "Character variable cannot contain tab"
-)
+file.remove(list.files(root, recursive = TRUE, full.names = TRUE))

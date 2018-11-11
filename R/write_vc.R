@@ -145,7 +145,7 @@ setMethod(
 "sorting results in ties. Add extra sorting variables to ensure small diffs."
       )
     }
-    raw_data <- raw_data[do.call(order, raw_data[sorting]), ]
+    raw_data <- raw_data[do.call(order, raw_data[sorting]), , drop = FALSE]
     write_tsv(
       x = raw_data, path = file["raw_file"], append = FALSE, na = "NA",
       col_names = TRUE

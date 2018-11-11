@@ -16,6 +16,7 @@ setGeneric(
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.string
 #' @importFrom readr read_tsv
+#' @importFrom utils head
 setMethod(
   f = "read_vc",
   signature = signature(root = "character"),
@@ -31,6 +32,24 @@ setMethod(
     )
 
     meta_data <- readLines(file["meta_file"])
+    start_quote <- grep("^        - \"", meta_data)
+    if (length(start_quote) > 0) {
+      end_quote <- grep("^( {8}- \".*|(?! {8}- ).*)\"$", meta_data, perl = TRUE)
+      assert_that(
+        length(start_quote) == length(end_quote),
+        all(start_quote <= end_quote),
+        all(head(end_quote, -1) < tail(start_quote, -1)),
+        msg = "Mismatching quotes in metadata"
+      )
+      for (i in rev(seq_along(start_quote))) {
+        meta_data <- c(
+          meta_data[seq_len(start_quote[i] - 1)],
+          paste(meta_data[start_quote[i]:end_quote[i]], collapse = "\n"),
+          meta_data[(end_quote[i] + 1):length(meta_data)]
+        )
+      }
+      meta_data
+    }
     meta_cols <- grep("^\\S*:$", meta_data)
     col_names <- gsub(":", "", meta_data[meta_cols])
     if (tail(meta_data, 1) == "optimized") {
@@ -58,7 +77,7 @@ setMethod(
     # reinstate factors
     col_factor <- which(col_classes == "factor")
     level_rows <- grep("^ {8}- .*$", meta_data)
-    level_value <- gsub("^ {8}- (.*)$", "\\1", meta_data[level_rows])
+    level_value <- gsub("^ {8}- \"?(.*?)\"?$", "\\1", meta_data[level_rows])
     level_id <- cumsum(c(TRUE, diff(level_rows) > 1))
     col_factor_level <- vapply(
       seq_along(col_factor),

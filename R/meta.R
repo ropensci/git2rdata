@@ -20,22 +20,6 @@ setMethod(
   signature = signature(x = "character"),
   definition = function(x, optimize = TRUE){
     attr(x, "meta") <- "    class: character"
-    if (length(grep("^NA$", x))) {
-      stop(
-        call. = FALSE,
-"The string 'NA' cannot be stored because it would be indistinguishable from the
-missing value NA. Please replace or remove any 'NA' strings. Consider using a
-factor."
-      )
-    }
-    if (length(grep("(\t|\n|\r)", x))) {
-      stop(
-        call. = FALSE,
-"Character variable cannot contain tab (\\t), newline (\\n) or carriage return
-(\\r) characters. Please remove any '\\t', '\\n' or '\\r' in the strings or
-consider using a factor."
-      )
-    }
     return(x)
   }
 )
@@ -75,7 +59,7 @@ setMethod(
     }
     attr(z, "meta") <- paste(
         "    class: factor\n    levels:",
-        paste("        -", levels(x), collapse = "\n"),
+        paste0("        - \"", levels(x), "\"", collapse = "\n"),
         sep = "\n"
     )
     return(z)
