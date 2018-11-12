@@ -4,7 +4,7 @@
 \name{git2rdata-package}
 \alias{git2rdata}
 \alias{git2rdata-package}
-\title{git2rdata: Store and retrieve data.frames in a git repository}
+\title{git2rdata: Store and Retrieve Data.frames in a Git Repository}
 \description{
 Make versioning of data.frame easy and efficient using git repositories.
 }

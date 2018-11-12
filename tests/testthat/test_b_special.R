@@ -18,7 +18,7 @@ expect_is(
 )
 expect_equal(
   junk <- read_vc("character", root),
-  ds[order(ds$a), , drop = FALSE],
+  ds[order(ds$a), , drop = FALSE], # nolint
   check.attributes = FALSE
 )
 ds$a <- factor(ds$a)
@@ -28,7 +28,7 @@ expect_is(
 )
 expect_equal(
   read_vc("factor", root),
-  ds[order(ds$a), , drop = FALSE],
+  ds[order(ds$a), , drop = FALSE], # nolint
   check.attributes = FALSE
 )
 file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
