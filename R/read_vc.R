@@ -76,31 +76,41 @@ setMethod(
 
     # reinstate factors
     col_factor <- which(col_classes == "factor")
-    level_rows <- grep("^ {8}- .*$", meta_data)
-    level_value <- gsub("^ {8}- \"?(.*?)\"?$", "\\1", meta_data[level_rows])
-    level_id <- cumsum(c(TRUE, diff(level_rows) > 1))
-    col_factor_level <- vapply(
-      seq_along(col_factor),
-      function(id) {
-        list(level_value[level_id == id])
-      },
-      list(character(0))
-    )
-    names(col_factor_level) <- col_names[col_factor]
-    if (optimize) {
-      for (id in names(col_factor_level)) {
-        raw_data[[id]] <- factor(
-          raw_data[[id]],
-          levels = seq_along(col_factor_level[[id]]),
-          labels = col_factor_level[[id]]
-        )
-      }
-    } else {
-      for (id in names(col_factor_level)) {
-        raw_data[[id]] <- factor(
-          raw_data[[id]],
-          levels = col_factor_level[[id]]
-        )
+    if (length(col_factor)) {
+      level_rows <- grep("^ {8}- .*$", meta_data)
+      level_value <- gsub("^ {8}- \"?(.*?)\"?$", "\\1", meta_data[level_rows])
+      level_id <- cumsum(c(TRUE, diff(level_rows) > 1))
+      col_factor_level <- vapply(
+        seq_along(col_factor),
+        function(id) {
+          list(level_value[level_id == id])
+        },
+        list(character(0))
+      )
+      names(col_factor_level) <- col_names[col_factor]
+      which_ordered <- sapply(
+        grep("^    ordered$", meta_data),
+        function(i) {
+          col_names[max(which(meta_cols < i))]
+        }
+      )
+      if (optimize) {
+        for (id in names(col_factor_level)) {
+          raw_data[[id]] <- factor(
+            raw_data[[id]],
+            levels = seq_along(col_factor_level[[id]]),
+            labels = col_factor_level[[id]],
+            ordered = id %in% which_ordered
+          )
+        }
+      } else {
+        for (id in names(col_factor_level)) {
+          raw_data[[id]] <- factor(
+            raw_data[[id]],
+            levels = col_factor_level[[id]],
+            ordered = id %in% which_ordered
+          )
+        }
       }
     }
 

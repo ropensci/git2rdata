@@ -18,10 +18,13 @@ expect_identical(length(output), 2L)
 expect_identical(names(output), c("test.tsv", "test.yml"))
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
 expect_equal(
-  read_vc(file = "test.xls", root = root),
+  stored <- read_vc(file = "test.xls", root = root),
   sorted_test_data,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(stored[[i]], sorted_test_data[[i]])
+}
 expect_identical(
   write_vc(x = test_data, file = "test.xls", root = root),
   output
@@ -49,20 +52,18 @@ expect_is(
 )
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
 expect_equal(
-  read_vc(file = "a/verbose", root = root),
+  stored <- read_vc(file = "a/verbose", root = root),
   sorted_test_data,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(stored[[i]], sorted_test_data[[i]])
+}
 expect_error(
   write_vc(x = test_data, file = "a/verbose", root = root),
   "old data was stored verbose"
 )
 
-
-test_na <- test_data
-for (i in seq_along(test_na)) {
-  test_na[sample(test_n, size = ceiling(0.1 * test_n)), i] <- NA
-}
 expect_is(
   output <- write_vc(
     test_na, file = "na", root = root,
@@ -70,6 +71,15 @@ expect_is(
   ),
   "character"
 )
+expect_equal(
+  stored <- read_vc(file = "na", root = root),
+  sorted_test_na,
+  check.attributes = FALSE
+)
+for (i in colnames(stored)) {
+  expect_equal(stored[[i]], sorted_test_na[[i]])
+}
+
 expect_error(
   write_vc(test_data, file = "error", root = root, sorting = 1),
   "sorting is not a character vector"

@@ -57,11 +57,11 @@ setMethod(
     } else {
         z <- x
     }
-    attr(z, "meta") <- paste(
-        "    class: factor\n    levels:",
-        paste0("        - \"", levels(x), "\"", collapse = "\n"),
-        sep = "\n"
-    )
+    sprintf(
+      "    class: factor\n    levels:\n%s%s",
+      paste0("        - \"", levels(x), "\"", collapse = "\n"),
+      ifelse(is.ordered(x), "\n    ordered", "")
+    ) -> attr(z, "meta")
     return(z)
   }
 )
