@@ -31,6 +31,7 @@ Collate:
     'write_vc.R'
     'auto_commit.R'
     'clean_data_path.R'
+    'git2rdata-package.R'
     'meta.R'
     'read_vc.R'
     'recent_commit.R'
