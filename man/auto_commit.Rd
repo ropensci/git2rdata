@@ -34,6 +34,9 @@ The mesagge is based on the information returned by
 \code{\link[utils]{sessionInfo}}
 }
 \seealso{
-Other version_control: \code{\link{recent_commit}}
+Other version_control: \code{\link{commit}},
+  \code{\link{pull}}, \code{\link{push}},
+  \code{\link{recent_commit}}, \code{\link{repository}},
+  \code{\link{status}}
 }
 \concept{version_control}

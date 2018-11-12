@@ -29,6 +29,9 @@ Most recent file change
 Retrieve the most recent commit in which a file or data object existed.
 }
 \seealso{
-Other version_control: \code{\link{auto_commit}}
+Other version_control: \code{\link{auto_commit}},
+  \code{\link{commit}}, \code{\link{pull}},
+  \code{\link{push}}, \code{\link{repository}},
+  \code{\link{status}}
 }
 \concept{version_control}
