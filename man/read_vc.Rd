@@ -14,8 +14,8 @@ read_vc(file, root)
 \S4method{read_vc}{ANY,git_repository}(file, root)
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a relative
-path. It is relative to the \code{root}.}
+\item{file}{the name of the file without file extension. Can include a
+relative path. It is relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 }
@@ -25,3 +25,8 @@ The \code{data.frame}
 \description{
 Read a \code{data.frame} from a repository
 }
+\seealso{
+Other storage: \code{\link{rm_data}},
+  \code{\link{write_vc}}
+}
+\concept{storage}

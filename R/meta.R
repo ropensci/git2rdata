@@ -1,11 +1,16 @@
 #' Optimize a vector for storage as plain text and add meta data
+#'
+#' \code{\link{write_vc}} applies this function automatically on your
+#' data.frame.
 #' @param x the vector
 #' @param optimize recode the data to get smaller text files. Defaults to TRUE
+#' @return the optimized vector `x` with `meta` attribute
 #' @name meta
 #' @rdname meta
 #' @exportMethod meta
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family internal
 setGeneric(
   name = "meta",
   def = function(x, optimize = TRUE){
@@ -20,22 +25,6 @@ setMethod(
   signature = signature(x = "character"),
   definition = function(x, optimize = TRUE){
     attr(x, "meta") <- "    class: character"
-    if (length(grep("^NA$", x))) {
-      stop(
-        call. = FALSE,
-"The string 'NA' cannot be stored because it would be indistinguishable from the
-missing value NA. Please replace or remove any 'NA' strings. Consider using a
-factor."
-      )
-    }
-    if (length(grep("(\t|\n|\r)", x))) {
-      stop(
-        call. = FALSE,
-"Character variable cannot contain tab (\\t), newline (\\n) or carriage return
-(\\r) characters. Please remove any '\\t', '\\n' or '\\r' in the strings or
-consider using a factor."
-      )
-    }
     return(x)
   }
 )
@@ -73,11 +62,11 @@ setMethod(
     } else {
         z <- x
     }
-    attr(z, "meta") <- paste(
-        "    class: factor\n    levels:",
-        paste("        -", levels(x), collapse = "\n"),
-        sep = "\n"
-    )
+    sprintf(
+      "    class: factor\n    levels:\n%s%s",
+      paste0("        - \"", levels(x), "\"", collapse = "\n"),
+      ifelse(is.ordered(x), "\n    ordered", "")
+    ) -> attr(z, "meta")
     return(z)
   }
 )

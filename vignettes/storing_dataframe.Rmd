@@ -21,9 +21,9 @@ opts_chunk$set(
 
 ### Maintaining variable classes
 
-R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()`. The `readr` package has `write_delim()`, `write_csv()` and `write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. The `read` function determine the factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
+R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()`. The `readr` package has `write_delim()`, `write_csv()` and `write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. The `read` function determines the factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
 
-The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe.
+The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe. The `vc` suffix stands for **v**ersion **c**ontrol as these functions use their full capacity in combination with a version control system.
 
 ### Maintaining the order of columns and rows
 
@@ -31,7 +31,7 @@ While `write.table()` and the like write the dataframe as is, `write_vc()` will 
 
 #### Swapping variables
 
-Suppose we have a very simple dataframe as below. Swapping `A` and `B` might not seem a big deal. The information content is the same (assuming there is not information in the order of the variables). The file sizes will be identical. The diff, however, is maximal: each row has a change.
+Suppose we have a very simple dataframe as below. Swapping `A` and `B` might not seem a big deal. The information content is the same (assuming there is no information in the order of the variables). The file sizes will be identical. The diff, however, is maximal: each row has a change.
 
 Original version
 ```
@@ -61,7 +61,7 @@ Diff between original and altered version
 +12,3
 ```
 
-`write_vc` solves this problem by storing the order of the variables in the meta data. In case a file is updated, the variables in the new version are ordered as indicated in the meta data from the previous version.
+`write_vc()` solves this problem by storing the order of the variables in the metadata (see [Basic usage without version control](#basic-usage)). In case a file is updated, the variables in the new version are ordered as indicated in the metadata from the previous version.
 
 #### Moving a row
 
@@ -85,20 +85,19 @@ A,B
 -3,12
 ```
 
-`write.vc()` avoids this by sorting the observations (rows) before writing them to the file. The names of the variables on which to sort and in which order are stored in the meta data. This information will be used each time `write.vc()` writes to the file.
+`write_vc()` avoids this by sorting the observations (rows) before writing them to the file. The names of the variables on which to sort and the sorting order are stored in the metadata. This information will be used each time `write_vc()` writes to the file.
 
 ### Optimizing file storage
 
-Plain text files require more disk space that binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to space optimize the data prior to writing. Since we store the class of each variable and use a tab delimited file format, we can omit quotes around character variables. This saves 2 byte pers row for each character variable. 
+Plain text files require more disk space than binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to space optimize the data prior to writing. Since we store the class of each variable and use a tab delimited file format, we can omit quotes around character variables. This saves 2 byte per row for each character variable. 
 
-- `logical` is written as 0 (FALSE), 1 (TRUE) or NA to the data. The class is stored in the meta data.
-- `integer` is written as is to the data. The class is stored in the meta data.
-- `numeric` is written as is to the data. The class is stored in the meta data.
-- `complex` is written as is to the data. The class is stored in the meta data.
-- `character` is written as is and unquoted to the data. The class is stored in the meta data.
-- `factor` is stored as its indices in the data. The labels of levels and their order are stored in the meta data.
-- `POSIXct` is written as an integer to the data. The class and the origin are stored in the meta data.
-- `Date` is written as an integer to the data. The class and the origin are stored in the meta data.
+- `logical` is written as 0 (FALSE), 1 (TRUE) or NA to the data. The class is stored in the metadata.
+- `integer` is written as is to the data. The class is stored in the metadata.
+- `numeric` is written as is to the data. The class is stored in the metadata.
+- `character` is written as is and unquoted to the data. The class is stored in the metadata.
+- `factor` is stored as its indices in the data. The labels of levels and their order are stored in the metadata.
+- `POSIXct` is written as an integer to the data. The class and the origin are stored in the metadata.
+- `Date` is written as an integer to the data. The class and the origin are stored in the metadata.
 
 Storing the factors, POSIXct and Date as their index, makes them less user readable. The user can turn off this optimization when user readability is more important than file size.
 
@@ -119,7 +118,6 @@ x <- data.frame(
   ),
   z = c(NA, 1:25),
   abc = c(rnorm(25), NA),
-  xyz = complex(real = rnorm(26), imaginary = rnorm(26)),
   def = sample(c(TRUE, FALSE, NA), 26, replace = TRUE),
   timestamp = seq(
     as.POSIXct("2018-01-01"),
@@ -131,28 +129,28 @@ x <- data.frame(
 str(x)
 ```
 
-### Basic usage without version control
+### Basic usage without version control {#basic-usage}
 
-Use `write_vc()` to store the dataframe. `root` refers to the base directory where the data is stored. `file` is used as the base name of the files. The data file gets a `.tsv` extension, the meta data file a `.yml` extension. `file` can include a relative path starting from `root`.
+Use `write_vc()` to store the dataframe. The `root` argument refers to the base directory where the data is stored. The `file` argument is used as the base name of the files. The data file gets a `.tsv` extension, the metadata file a `.yml` extension. `file` can include a relative path starting from `root`.
 
 ```{r error = TRUE}
 library(git2rdata)
 write_vc(x = x, file = "first_test", root = path)
 ```
 
-When a file is written for the first time, you also need to specify a vector of variable names on which to sort the rows. `write_vc()` returns a named vector with the file hash of the data and meta data. The names containt the relative path to the files.
+When a file is written for the first time, you also need to specify a vector of variable names on which to sort the rows. `write_vc()` returns a named vector with the file hash of the data and metadata. The names contain the relative path to the files.
 
 ```{r}
 write_vc(x = x, file = "first_test", root = path, sorting = c("y", "x"))
 ```
 
-The `sorting` is no longer required when updating an existing file.
+The `sorting` argument is no longer required when updating an existing file.
 
 ```{r}
 write_vc(x = head(x, 2), file = "first_test", root = path)
 ```
 
-The new version of the dataframe is compared with the old meta data. Any mismatch in meta data leads to an error. The user can manually override this check, resulting in the creating of new meta data. Use this with care since this can result in large diffs.
+The new version of the dataframe is compared with the old metadata. Any mismatch in metadata leads to an error. The user can manually override this check, resulting in the creation of new metadata. Use this with care since this can result in large diffs.
 
 ```{r error = TRUE}
 write_vc(x = x[, -1], file = "first_test", root = path)
@@ -167,19 +165,19 @@ write_vc(
 )
 ```
 
-The dataframe can be retrieved with `read_vc()`. It has same `file` and `root` argument as `write.vc()`. The content of the stored file is indentical to the original but the ordering of the rows and columns can be different.
+The dataframe can be retrieved with `read_vc()`. It has the same `file` and `root` arguments as `write_vc()`. The content of the stored file is identical to the original but the ordering of the rows and columns can be different.
 
 ```{r}
 y <- read_vc(file = "first_test", root = path)
-all.equal(x, y)
+all.equal(x, y, check.attributes = FALSE)
 sorted.x <- x[order(x$def, x$x), colnames(y)]
 rownames(sorted.x) <- NULL
-all.equal(sorted.x, y)
+all.equal(sorted.x, y, check.attributes = FALSE)
 ```
 
 ### Usage with Git as version control system
 
-`git2rdata` builds upon the `git2r` package. A minimal set of it's functions are re-exported by `git2rdata`. These function are
+`git2rdata` builds upon the `git2r` package. A minimal set of its functions are re-exported by `git2rdata`. These functions are
 
 - `repository()`: create a `repository` object from a path. A new git repository is initialised when the path is not part of an existing git repository. 
 - `status()`: inspect the status of the git repository.
@@ -199,10 +197,10 @@ status(repo)
 y <- read_vc(file = "git/test", root = repo)
 sorted.x <- x[order(x$x), colnames(y)]
 rownames(sorted.x) <- NULL
-all.equal(sorted.x, y)
+all.equal(sorted.x, y, check.attributes = FALSE)
 ```
 
-`write_vc()` gains two additional arguments when working with a `git2r::repository`: `stage` and `force`. Setting `stage = TRUE` will automatically stage both files after writing. Setting `stage = TRUE` and `force = TRUE` will stage the changes even if is this prohibited by the setting in `.gitignore`.
+`write_vc()` gains two additional arguments when working with a `git2r::repository`: `stage` and `force`. Setting `stage = TRUE` will automatically stage both files after writing. Setting `stage = TRUE` and `force = TRUE` will stage the changes even if this is prohibited by the setting in `.gitignore`.
 
 ```{r}
 write_vc(x = x, file = "git/test2", root = repo, sorting = "x", stage = TRUE)
@@ -214,9 +212,9 @@ commit(repo, "initial commit")
 
 ### Additional functions useful for scripting
 
-Consider the following use case. We want to import data from some external database and store it a plain text file under version control. The external database contains information for several groups. We will create a dataframe for each group and store each of those dataframes into the version control system. Over time, the information on groups gets updated, new groups are created and some groups are removed. Hence some data files need to updated, new files have to be create and some removed. And this is an automated fashion.
+Consider the following use case. We want to import data from some external database and store in a plain text file under version control. The external database contains information for several groups. We will create a dataframe for each group and store each of those dataframes into the version control system. Over time, the information on groups gets updated, new groups are created and some groups are removed. Hence some data files need to be updated, new files have to be created and some removed. And this is an automated fashion.
 
-Let's illustrate this with a simple example. We start by writing three dataframes to a subdirectory of the repository and commit this changes.
+Let's illustrate this with a simple example. We start by writing three dataframes to a subdirectory of the repository and commit these changes.
 
 ```{r}
 groups <- c("A", "B", "C")
@@ -237,9 +235,9 @@ commit(repo = repo, "first export")
 
 The data in the second run has changes. Group A was removed, groups B and C were updated and a new group D was created. Updating the data in the git repository is a 4 step process:
 
-1. use `rm_data()` to remove and stage all existing data files (`.tsv`). Note that the meta data is unchanged.
-1. use `write_vc()` to write and stage the current dataframes. Note that the data file for group A remains deleted, the data files for groups B and C are updated and group D gets a new data file and a meta data file.
-1. use `rm_data()` but now with `type = "yml"` to remove any unused meta data files.
+1. use `rm_data()` to remove and stage all existing data files (`.tsv`). Note that the metadata is unchanged.
+1. use `write_vc()` to write and stage the current dataframes. Note that the data file for group A remains deleted, the data files for groups B and C are updated and group D gets a new data file and a metadata file.
+1. use `rm_data()` but now with `type = "yml"` to remove any unused metadata files.
 1. commit the changes. Use either `commit()` or `auto_commit()`. The latter generates a commit with a standard message which also add version information on the R version and packages loaded at the time of the commit.
 
 ```{r}
@@ -294,10 +292,9 @@ export2git <- function(groups) {
 }
 ```
 
-`recent_commit()` is a useful function when you need to find the most recent commit in which a file or dataframe was updated. Note that is does not take into account the fact that a file might be missing a the current HEAD or workspace.
+`recent_commit()` is a useful function when you need to find the most recent commit in which a file or dataframe was updated. Note that it does not take into account the fact that a file might be missing at the current HEAD or workspace.
 
 ```{r}
 recent_commit("first_test.tsv", root = repo)
 recent_commit("automation/A", root = repo, data = TRUE)
 ```
-

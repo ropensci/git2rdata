@@ -12,14 +12,26 @@ recent_commit(file, root, data = FALSE)
 \S4method{recent_commit}{ANY,git_repository}(file, root, data = FALSE)
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a relative
-path. It is relative to the \code{root}.}
+\item{file}{the name of the file without file extension. Can include a
+relative path. It is relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 
-\item{data}{refers file to a file (FALSE) or a data object (TRUE). Defaults to FALSE}
+\item{data}{refers file to a file (FALSE) or a data object (TRUE). Defaults
+to FALSE}
+}
+\value{
+a \code{data.frame} with \code{commit}, \code{author} and \code{when} for the most recent
+commit in which the file was altered
 }
 \description{
 Most recent file change
 Retrieve the most recent commit in which a file or data object existed.
 }
+\seealso{
+Other version_control: \code{\link{auto_commit}},
+  \code{\link{commit}}, \code{\link{pull}},
+  \code{\link{push}}, \code{\link{repository}},
+  \code{\link{status}}
+}
+\concept{version_control}

@@ -3,10 +3,13 @@
 #' @param path the directory in which to clean all the data files
 #' @param type which file type should be removed
 #' @param recursive remove files in subdirectories too
+#' @return returns invisibily a vector of removed files names. The paths are
+#' relative to `root`.
 #' @inheritParams write_vc
 #' @rdname rm_data
 #' @exportMethod rm_data
 #' @docType methods
+#' @family storage
 #' @importFrom methods setGeneric
 setGeneric(
   name = "rm_data",

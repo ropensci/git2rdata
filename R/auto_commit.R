@@ -1,15 +1,19 @@
 #' Commit staged changes in a git repository with automated message
 #'
-#' The mesagge is based on the information returned by \code{\link[utils]{sessionInfo}}
+#' The mesagge is based on the information returned by
+#' \code{\link[utils]{sessionInfo}}
 #' @param package The name of the package from which we auto commit
 #' @param push Logical indicating whether to push the commit. Defaults to FALSE.
-#' @param ... arguments passed to \code{\link[git2r]{commit}} and \code{\link[git2r]{push}}
+#' @param ... arguments passed to \code{\link[git2r]{commit}} and
+#' \code{\link[git2r]{push}}
 #' @inheritParams git2r::commit
+#' @return The `git_repository` object that contains the commit
 #' @name auto_commit
 #' @rdname auto_commit
 #' @exportMethod auto_commit
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family version_control
 setGeneric(
   name = "auto_commit",
   def = function(package, repo = ".", push = FALSE, ...){
@@ -44,7 +48,7 @@ setMethod(
 
     #format commit message based on sessionInfo()
     info <- sessionInfo()
-    format.other <- function(x){
+    format_other <- function(x){
       paste0(x$Package, " ", x$Version, " built ", x$Built, "\n")
     }
     message <- paste0(
@@ -54,9 +58,9 @@ setMethod(
       "\nBase packages: ",
         paste0(info$basePkgs, collapse = ", "), "\n", #nolint
       "\nOther package(s):\n",
-        paste(sapply(info$otherPkgs, format.other), collapse = ""), #nolint
+        paste(sapply(info$otherPkgs, format_other), collapse = ""), #nolint
       "\nLoaded via a namespace:\n",
-        paste(sapply(info$loadedOnly, format.other), collapse = "") #nolint
+        paste(sapply(info$loadedOnly, format_other), collapse = "") #nolint
     )
 
     committed <- tryCatch(

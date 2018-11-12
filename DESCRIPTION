@@ -1,20 +1,22 @@
 Package: git2rdata
-Title: Store and retrieve data.frames in a git repository
-Version: 0.0.0.9000
+Title: Store and Retrieve Data.frames in a Git Repository
+Version: 0.0.1.9000
+Date: 2018-11-12
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
     email = "thierry.onkelinx@inbo.be", 
     comment = c(ORCID = "0000-0001-8804-4216")),
   person(
-    family = "Research Institute for Nature and Forest",
+    "Research Institute for Nature and Forest",
     role = c("cph", "fnd"), email = "info@inbo.be"))
 Description: Make versioning of data.frame easy and efficient using git repositories.
 Depends: R (>= 3.4.0)
 Imports:
   assertthat,
   git2r (>= 0.23.0),
-  methods
+  methods,
+  readr
 Suggests:
   knitr,
   rmarkdown,
@@ -23,13 +25,14 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 URL: https://github.com/inbo/git2rdata
 BugReports: https://github.com/inbo/git2rdata/issues
 Collate:
     'write_vc.R'
     'auto_commit.R'
     'clean_data_path.R'
+    'git2rdata-package.R'
     'meta.R'
     'read_vc.R'
     'recent_commit.R'

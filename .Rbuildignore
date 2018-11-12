@@ -1,4 +1,10 @@
+^tic\.R$
+^\.github$
+^CODE_OF_CONDUCT\.md$
+^codemeta\.json$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^_pkgdown.yml$
+^docs$

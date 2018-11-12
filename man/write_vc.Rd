@@ -6,9 +6,7 @@
 \alias{write_vc,ANY,ANY,ANY-method}
 \alias{write_vc,ANY,ANY,character-method}
 \alias{write_vc,ANY,ANY,git_repository-method}
-\title{Write a \code{data.frame} to a git repository
-This will create two files. The \code{".tsv"} file contains the raw data.
-The \code{".yml"} contains the meta data on the columns in YAML format.}
+\title{Write a \code{data.frame} to a git repository}
 \usage{
 write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
   ...)
@@ -24,10 +22,10 @@ write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
   force = FALSE)
 }
 \arguments{
-\item{x}{the \code{data.frame}}
+\item{x}{the `data.frame}
 
-\item{file}{the name of the file without file extension. Can include a relative
-path. It is relative to the \code{root}.}
+\item{file}{the name of the file without file extension. Can include a
+relative path. It is relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 
@@ -49,10 +47,13 @@ potentially lead to large diffs. Defaults to FALSE.}
 }
 \value{
 a named vector with the hashes of the files. The names contains the
-files with their paths relative to the root of the git_repository.
+files with their paths relative to \code{root}.
 }
 \description{
-Write a \code{data.frame} to a git repository
 This will create two files. The \code{".tsv"} file contains the raw data.
 The \code{".yml"} contains the meta data on the columns in YAML format.
 }
+\seealso{
+Other storage: \code{\link{read_vc}}, \code{\link{rm_data}}
+}
+\concept{storage}

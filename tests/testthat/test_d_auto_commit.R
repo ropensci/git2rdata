@@ -1,11 +1,11 @@
 context("autocommit changes")
 # create test repository
-origin.path <- tempfile(pattern = "git2r-")
+origin_path <- tempfile(pattern = "git2r-")
 connection <- tempfile(pattern = "git2rclone-")
-dir.create(origin.path)
+dir.create(origin_path)
 dir.create(connection)
-repo_bare <- git2r::init(origin.path, bare = TRUE)
-repo <- git2r::clone(origin.path, connection, progress = FALSE)
+repo_bare <- git2r::init(origin_path, bare = TRUE)
+repo <- git2r::clone(origin_path, connection, progress = FALSE)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 
 write_vc(
@@ -34,7 +34,7 @@ expect_message(
 )
 expect_identical(cm, git2r::last_commit(repo))
 
-file.remove(list.files(origin.path, recursive = TRUE, full.names = TRUE))
+file.remove(list.files(origin_path, recursive = TRUE, full.names = TRUE))
 write_vc(test_subset, file = "test1", root = repo, stage = TRUE)
 expect_warning(
   cm <- auto_commit(package = "git2rdata", repo = connection, push = TRUE),

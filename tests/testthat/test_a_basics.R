@@ -1,7 +1,7 @@
 context("write_vc() and read_vc() on a file system")
 expect_error(write_vc(), "'root' is missing")
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
-root <- tempfile(pattern = "git2rdata-")
+root <- tempfile(pattern = "git2rdata-basic")
 dir.create(root)
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
 expect_error(
@@ -18,9 +18,18 @@ expect_identical(length(output), 2L)
 expect_identical(names(output), c("test.tsv", "test.yml"))
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
 expect_equal(
-  read_vc(file = "test.xls", root = root),
-  sorted_test_data
+  stored <- read_vc(file = "test.xls", root = root),
+  sorted_test_data,
+  check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
 expect_identical(
   write_vc(x = test_data, file = "test.xls", root = root),
   output
@@ -47,22 +56,24 @@ expect_is(
   "character"
 )
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
-expect_equal(read_vc(file = "a/verbose", root = root), sorted_test_data)
+expect_equal(
+  stored <- read_vc(file = "a/verbose", root = root),
+  sorted_test_data,
+  check.attributes = FALSE
+)
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
 expect_error(
   write_vc(x = test_data, file = "a/verbose", root = root),
   "old data was stored verbose"
 )
 
-
-test_na <- test_data
-for (i in seq_along(test_na)) {
-  test_na[sample(test_n, size = ceiling(0.1 * test_n)), i] <- NA
-}
-expect_error(
-  write_vc(test_na, file = "na", root = root),
-  "The string 'NA' cannot be stored"
-)
-test_na[["test_character"]] <- NULL
 expect_is(
   output <- write_vc(
     test_na, file = "na", root = root,
@@ -70,6 +81,20 @@ expect_is(
   ),
   "character"
 )
+expect_equal(
+  stored <- read_vc(file = "na", root = root),
+  sorted_test_na,
+  check.attributes = FALSE
+)
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_na[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_na$", i)
+  )
+}
+
 expect_error(
   write_vc(test_data, file = "error", root = root, sorting = 1),
   "sorting is not a character vector"
@@ -132,15 +157,41 @@ expect_error(
   "error in metadata"
 )
 
-expect_error(
-  meta("NA"),
-  "The string 'NA' cannot be stored"
+test_no <- test_data
+test_no$test_ordered <- NULL
+expect_is(
+  output <- write_vc(
+    x = test_no, file = "no_ordered", root = root, sorting = "test_Date"
+  ),
+  "character"
 )
-expect_error(
-  meta(c("NA ", " NA", "\t")),
-  "Character variable cannot contain tab"
+sorted_test_no <- sorted_test_data
+sorted_test_no$test_ordered <- NULL
+expect_equal(
+  stored <- read_vc(file = "no_ordered", root = root),
+  sorted_test_no,
+  check.attributes = FALSE
 )
-expect_error(
-  meta(c(" \n ")),
-  "Character variable cannot contain tab"
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_no[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
+
+file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
+
+test_that(
+  "meta() works on complex", {
+    z <- complex(real = runif(10), imaginary = runif(10))
+    expect_equal(
+      mz <- meta(z),
+      z,
+      check.attributes = FALSE
+    )
+    expect_true(assertthat::has_attr(mz, "meta"))
+    expect_match(attr(mz, "meta"), "class: complex")
+  }
 )

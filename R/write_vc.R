@@ -1,10 +1,11 @@
 #' Write a \code{data.frame} to a git repository
-#' This will create two files. The \code{".tsv"} file contains the raw data.
-#' The \code{".yml"} contains the meta data on the columns in YAML format.
-#' @param x the \code{data.frame}
-#' @param file the name of the file without file extension. Can include a relative
-#' path. It is relative to the \code{root}.
-#' @param root The root of a project. Can be a file path or a \code{git-repository}
+#'
+#' This will create two files. The `".tsv"` file contains the raw data.
+#' The `".yml"` contains the meta data on the columns in YAML format.
+#' @param x the `data.frame
+#' @param file the name of the file without file extension. Can include a
+#' relative path. It is relative to the `root`.
+#' @param root The root of a project. Can be a file path or a `git-repository`
 #' @param sorting a vector of column names defining which columns to use for
 #' sorting \code{x} and in what order to use them. Only required when writing
 #' new metadata.
@@ -13,12 +14,13 @@
 #' potentially lead to large diffs. Defaults to FALSE.
 #' @param ... additional parameters used in some methods
 #' @inheritParams meta
-##' @return a named vector with the hashes of the files. The names contains the
-##' files with their paths relative to the root of the git_repository.
+#' @return a named vector with the hashes of the files. The names contains the
+#' files with their paths relative to `root`.
 #' @rdname write_vc
 #' @exportMethod write_vc
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family storage
 setGeneric(
   name = "write_vc",
   def = function(
@@ -46,7 +48,8 @@ setMethod(
 #' @rdname write_vc
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.string is.flag
-#' @importFrom utils tail write.table
+#' @importFrom readr write_tsv
+#' @importFrom utils tail
 #' @importFrom git2r hashfile
 setMethod(
   f = "write_vc",
@@ -93,8 +96,6 @@ setMethod(
       if (missing(sorting)) {
         stop("new metadata requires 'sorting'")
       }
-      to_sort <- colnames(x) %in% sorting
-      metadata <- metadata[c(sorting, colnames(x)[!to_sort])]
       metadata[sorting] <- paste0(metadata[sorting], "\n    sort")
       if (optimize) {
         store_metadata <- c(metadata, "optimized")
@@ -134,8 +135,6 @@ setMethod(
           stop("new data lacks old sorting variable, use override = TRUE")
         }
       }
-      to_sort <- colnames(x) %in% sorting
-      metadata <- metadata[c(sorting, colnames(x)[!to_sort])]
       metadata[sorting] <- paste0(metadata[sorting], "\n    sort")
       metadata <- compare_meta(metadata, old_metadata)
     }
@@ -148,11 +147,10 @@ setMethod(
 "sorting results in ties. Add extra sorting variables to ensure small diffs."
       )
     }
-    raw_data <- raw_data[do.call(order, raw_data[sorting]), ]
-    write.table(
-      x = raw_data, file = file["raw_file"], append = FALSE,
-      quote = !optimize, sep = "\t", eol = "\n", dec = ".",
-      row.names = FALSE, col.names = !optimize, fileEncoding = "UTF-8"
+    raw_data <- raw_data[do.call(order, raw_data[sorting]), , drop = FALSE] # nolint
+    write_tsv(
+      x = raw_data, path = file["raw_file"], append = FALSE, na = "NA",
+      col_names = TRUE
     )
 
     hashes <- hashfile(file)

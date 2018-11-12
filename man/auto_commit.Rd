@@ -23,8 +23,20 @@ object. Default is '.'}
 
 \item{push}{Logical indicating whether to push the commit. Defaults to FALSE.}
 
-\item{...}{arguments passed to \code{\link[git2r]{commit}} and \code{\link[git2r]{push}}}
+\item{...}{arguments passed to \code{\link[git2r]{commit}} and
+\code{\link[git2r]{push}}}
+}
+\value{
+The \code{git_repository} object that contains the commit
 }
 \description{
-The mesagge is based on the information returned by \code{\link[utils]{sessionInfo}}
+The mesagge is based on the information returned by
+\code{\link[utils]{sessionInfo}}
 }
+\seealso{
+Other version_control: \code{\link{commit}},
+  \code{\link{pull}}, \code{\link{push}},
+  \code{\link{recent_commit}}, \code{\link{repository}},
+  \code{\link{status}}
+}
+\concept{version_control}

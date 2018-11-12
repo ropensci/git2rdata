@@ -1,11 +1,15 @@
 #' Most recent file change
 #' Retrieve the most recent commit in which a file or data object existed.
 #' @inheritParams write_vc
-#' @param data refers file to a file (FALSE) or a data object (TRUE). Defaults to FALSE
+#' @param data refers file to a file (FALSE) or a data object (TRUE). Defaults
+#' to FALSE
+#' @return a `data.frame` with `commit`, `author` and `when` for the most recent
+#' commit in which the file was altered
 #' @rdname recent_commit
 #' @exportMethod recent_commit
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family version_control
 setGeneric(
   name = "recent_commit",
   def = function(file, root, data = FALSE){
