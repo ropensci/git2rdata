@@ -10,7 +10,7 @@
   "codeRepository": "https://github.com/inbo/git2rdata",
   "issueTracker": "https://github.com/inbo/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.0.0.9000",
+  "version": "0.0.1.9000",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -139,11 +139,13 @@
     }
   ],
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "17.416KB",
+  "fileSize": "33.273KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
     "https://codecov.io/gh/inbo/git2rdata"
   ],
-  "developmentStatus": "https://www.repostatus.org/#wip"
+  "developmentStatus": "https://www.repostatus.org/#wip",
+  "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
+  "keywords": ["r", "rstats", "r-package", "version-control", "reproducible-research"]
 }
