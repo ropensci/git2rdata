@@ -9,6 +9,7 @@
 #' @exportMethod recent_commit
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family version_control
 setGeneric(
   name = "recent_commit",
   def = function(file, root, data = FALSE){

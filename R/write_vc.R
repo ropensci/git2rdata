@@ -19,6 +19,7 @@
 #' @exportMethod write_vc
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family storage
 setGeneric(
   name = "write_vc",
   def = function(

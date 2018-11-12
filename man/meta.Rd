@@ -42,3 +42,8 @@ the optimized vector \code{x} with \code{meta} attribute
 \description{
 Optimize a vector for storage as plain text and add meta data
 }
+\seealso{
+Other storage: \code{\link{read_vc}},
+  \code{\link{rm_data}}, \code{\link{write_vc}}
+}
+\concept{storage}

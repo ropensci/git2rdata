@@ -28,3 +28,7 @@ commit in which the file was altered
 Most recent file change
 Retrieve the most recent commit in which a file or data object existed.
 }
+\seealso{
+Other version_control: \code{\link{auto_commit}}
+}
+\concept{version_control}

@@ -13,6 +13,7 @@
 #' @exportMethod auto_commit
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family version_control
 setGeneric(
   name = "auto_commit",
   def = function(package, repo = ".", push = FALSE, ...){

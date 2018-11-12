@@ -4,6 +4,7 @@
 #' @rdname read_vc
 #' @exportMethod read_vc
 #' @docType methods
+#' @family storage
 #' @importFrom methods setGeneric
 setGeneric(
   name = "read_vc",

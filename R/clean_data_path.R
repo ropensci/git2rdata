@@ -6,6 +6,7 @@
 #' @return a named vector with "raw_file" and "meta_file", refering to the
 #' `".tsv"` and `".yml"` files
 #' @noRd
+#' @family internal
 clean_data_path <- function(root, file, normalize = TRUE) {
   dir_name <- dirname(file)
   file <- gsub("\\..*$", "", basename(file))

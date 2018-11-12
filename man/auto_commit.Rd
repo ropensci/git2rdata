@@ -33,3 +33,7 @@ The \code{git_repository} object that contains the commit
 The mesagge is based on the information returned by
 \code{\link[utils]{sessionInfo}}
 }
+\seealso{
+Other version_control: \code{\link{recent_commit}}
+}
+\concept{version_control}

@@ -7,6 +7,7 @@
 #' @exportMethod meta
 #' @docType methods
 #' @importFrom methods setGeneric
+#' @family storage
 setGeneric(
   name = "meta",
   def = function(x, optimize = TRUE){

@@ -9,6 +9,7 @@
 #' @rdname rm_data
 #' @exportMethod rm_data
 #' @docType methods
+#' @family storage
 #' @importFrom methods setGeneric
 setGeneric(
   name = "rm_data",

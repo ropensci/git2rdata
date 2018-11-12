@@ -38,3 +38,8 @@ relative to \code{root}.
 Remove data files
 Remove all tsv and/or yml files within the path
 }
+\seealso{
+Other storage: \code{\link{meta}}, \code{\link{read_vc}},
+  \code{\link{write_vc}}
+}
+\concept{storage}
