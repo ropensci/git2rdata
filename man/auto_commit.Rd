@@ -26,6 +26,9 @@ object. Default is '.'}
 \item{...}{arguments passed to \code{\link[git2r]{commit}} and
 \code{\link[git2r]{push}}}
 }
+\value{
+The \code{git_repository} object that contains the commit
+}
 \description{
 The mesagge is based on the information returned by
 \code{\link[utils]{sessionInfo}}

@@ -3,6 +3,8 @@
 #' @inheritParams write_vc
 #' @param data refers file to a file (FALSE) or a data object (TRUE). Defaults
 #' to FALSE
+#' @return a `data.frame` with `commit`, `author` and `when` for the most recent
+#' commit in which the file was altered
 #' @rdname recent_commit
 #' @exportMethod recent_commit
 #' @docType methods

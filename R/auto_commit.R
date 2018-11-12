@@ -7,6 +7,7 @@
 #' @param ... arguments passed to \code{\link[git2r]{commit}} and
 #' \code{\link[git2r]{push}}
 #' @inheritParams git2r::commit
+#' @return The `git_repository` object that contains the commit
 #' @name auto_commit
 #' @rdname auto_commit
 #' @exportMethod auto_commit

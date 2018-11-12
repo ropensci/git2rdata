@@ -36,6 +36,9 @@ meta(x, optimize = TRUE)
 
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
 }
+\value{
+the optimized vector \code{x} with \code{meta} attribute
+}
 \description{
 Optimize a vector for storage as plain text and add meta data
 }

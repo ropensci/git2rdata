@@ -49,7 +49,7 @@ potentially lead to large diffs. Defaults to FALSE.}
 }
 \value{
 a named vector with the hashes of the files. The names contains the
-files with their paths relative to the root of the git_repository.
+files with their paths relative to \code{root}.
 }
 \description{
 Write a \code{data.frame} to a git repository

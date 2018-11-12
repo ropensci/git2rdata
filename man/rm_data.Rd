@@ -30,6 +30,10 @@ rm_data(root, path = NULL, type = c("tsv", "yml", "both"),
 
 \item{stage}{stage the changes after writing the data. Defaults to FALSE}
 }
+\value{
+returns invisibily a vector of removed files names. The paths are
+relative to \code{root}.
+}
 \description{
 Remove data files
 Remove all tsv and/or yml files within the path

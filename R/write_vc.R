@@ -13,8 +13,8 @@
 #' potentially lead to large diffs. Defaults to FALSE.
 #' @param ... additional parameters used in some methods
 #' @inheritParams meta
-##' @return a named vector with the hashes of the files. The names contains the
-##' files with their paths relative to the root of the git_repository.
+#' @return a named vector with the hashes of the files. The names contains the
+#' files with their paths relative to `root`.
 #' @rdname write_vc
 #' @exportMethod write_vc
 #' @docType methods

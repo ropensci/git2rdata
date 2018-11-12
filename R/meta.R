@@ -1,6 +1,7 @@
 #' Optimize a vector for storage as plain text and add meta data
 #' @param x the vector
 #' @param optimize recode the data to get smaller text files. Defaults to TRUE
+#' @return the optimized vector `x` with `meta` attribute
 #' @name meta
 #' @rdname meta
 #' @exportMethod meta
