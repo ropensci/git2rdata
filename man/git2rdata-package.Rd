@@ -21,7 +21,7 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item  Research Institute for Nature and Forest \email{info@inbo.be} [copyright holder, funder]
+  \item Research Institute for Nature and Forest \email{info@inbo.be} [copyright holder, funder]
 }
 
 }

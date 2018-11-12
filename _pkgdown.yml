@@ -1,0 +1,17 @@
+reference:
+- title: Storage
+  contents:
+  - has_concept("storage")
+- title: Version control
+  contents:
+  - has_concept("version_control")
+- title: Auxiliary functions
+  contents:
+  - has_concept("internal")
+
+authors:
+  Thierry Onkelinx:
+    href: "https://www.muscardinus.be"
+  Research Institute for Nature and Forest:
+    href: "https://www.inbo.be/en"
+    html: "<img src='logo_en.png' height=24>"

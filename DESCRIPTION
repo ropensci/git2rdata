@@ -7,7 +7,7 @@ Authors@R: c(
     email = "thierry.onkelinx@inbo.be", 
     comment = c(ORCID = "0000-0001-8804-4216")),
   person(
-    family = "Research Institute for Nature and Forest",
+    "Research Institute for Nature and Forest",
     role = c("cph", "fnd"), email = "info@inbo.be"))
 Description: Make versioning of data.frame easy and efficient using git repositories.
 Depends: R (>= 3.4.0)
