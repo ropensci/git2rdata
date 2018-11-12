@@ -94,7 +94,7 @@ setMethod(
         function(i) {
           col_names[max(which(meta_cols < i))]
         },
-        character(0)
+        character(1)
       )
       if (optimize) {
         for (id in names(col_factor_level)) {

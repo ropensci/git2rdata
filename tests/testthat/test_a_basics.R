@@ -156,11 +156,35 @@ expect_error(
   read_vc(file = "sorting", root = root),
   "error in metadata"
 )
+
+test_no <- test_data
+test_no$test_ordered <- NULL
+expect_is(
+  output <- write_vc(
+    x = test_no, file = "no_ordered", root = root, sorting = "test_Date"
+  ),
+  "character"
+)
+sorted_test_no <- sorted_test_data
+sorted_test_no$test_ordered <- NULL
+expect_equal(
+  stored <- read_vc(file = "no_ordered", root = root),
+  sorted_test_no,
+  check.attributes = FALSE
+)
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_no[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
+
 file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 
 test_that(
-  "meta() works on complex",
-  {
+  "meta() works on complex", {
     z <- complex(real = runif(10), imaginary = runif(10))
     expect_equal(
       mz <- meta(z),
