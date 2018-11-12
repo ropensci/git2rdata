@@ -48,8 +48,8 @@ Please use the output of `citation("git2rdata")`
 
 ## Folder structure
 
-- `R`: The source scripts of the [R](https://cloud.r-project.org/) functions with documentation in [Roxygen](https://github.com/klutometis/roxygen) format
-- `man`: The helpfile in [Rd](https://cloud.r-project.org/doc/manuals/r-release/R-exts.html#Rd-format) format
+- `R`: The source scripts of the [R](https://cran.r-project.org/) functions with documentation in [Roxygen](https://github.com/klutometis/roxygen) format
+- `man`: The helpfile in [Rd](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Rd-format) format
 - `testthat`: R scripts with unit tests using the [testthat](http://testthat.r-lib.org/) framework
 
 ```

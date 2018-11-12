@@ -1,5 +1,5 @@
 Package: git2rdata
-Title: Store and retrieve data.frames in a git repository
+Title: Store and Retrieve Data.frames in a Git Repository
 Version: 0.0.0.9000
 Authors@R: c(
   person(
