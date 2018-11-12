@@ -157,3 +157,17 @@ expect_error(
   "error in metadata"
 )
 file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
+
+test_that(
+  "meta() works on complex",
+  {
+    z <- complex(real = runif(10), imaginary = runif(10))
+    expect_equal(
+      mz <- meta(z),
+      z,
+      check.attributes = FALSE
+    )
+    expect_true(assertthat::has_attr(mz, "meta"))
+    expect_match(attr(mz, "meta"), "class: complex")
+  }
+)
