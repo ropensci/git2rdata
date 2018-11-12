@@ -25,11 +25,13 @@ test_data <- data.frame(
 
 sorted_test_data <- test_data[order(test_data$test_Date), ]
 rownames(sorted_test_data) <- NULL
+attr(sorted_test_data$test_POSIXct, "tzone") <- "UTC"
 
 test_subset <- head(test_data, ceiling(test_n / 2))
 
 sorted_test_subset <- test_subset[order(test_subset$test_Date), ]
 rownames(sorted_test_subset) <- NULL
+attr(sorted_test_subset$test_POSIXct, "tzone") <- "UTC"
 
 test_na <- test_data
 for (i in seq_along(test_na)) {
@@ -39,3 +41,4 @@ sorted_test_na <- test_na[
   order(test_na$test_Date, test_na$test_integer, test_na$test_numeric),
 ]
 rownames(sorted_test_na) <- NULL
+attr(sorted_test_na$test_POSIXct, "tzone") <- "UTC"

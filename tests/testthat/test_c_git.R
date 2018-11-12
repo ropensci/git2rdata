@@ -15,10 +15,18 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(
-  read_vc("untracked", root),
+  stored <- read_vc(file = "untracked", root = root),
   sorted_test_data,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
 
 staged <- write_vc(
   test_data, file = "staged", root = root, sorting = "test_Date", stage = TRUE
@@ -29,10 +37,18 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(
-  read_vc("staged", root),
+  stored <- read_vc(file = "staged", root = root),
   sorted_test_data,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
 
 ignored <- write_vc(
   test_data, file = "ignore", root = root, sorting = "test_Date", stage = TRUE
@@ -47,10 +63,18 @@ expect_identical(
   c(names(ignored), names(staged), names(untracked))
 )
 expect_equal(
-  read_vc("ignore", root),
+  stored <- read_vc(file = "ignore", root = root),
   sorted_test_data,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
 
 ignored <-
   write_vc(test_data, file = "ignore", root = root, stage = TRUE, force = TRUE)
@@ -64,10 +88,18 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(
-  read_vc("ignore", root),
+  stored <- read_vc(file = "ignore", root = root),
   sorted_test_data,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
+}
 commit(root, "add data")
 
 staged <- write_vc(
@@ -80,10 +112,18 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(
-  read_vc("staged", root),
+  stored <- read_vc(file = "staged", root = root),
   sorted_test_subset,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_subset[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_subset$", i)
+  )
+}
 
 staged <- write_vc(
   test_subset,
@@ -95,10 +135,18 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(
-  read_vc("staged", root),
+  stored <- read_vc(file = "staged", root = root),
   sorted_test_subset,
   check.attributes = FALSE
 )
+for (i in colnames(stored)) {
+  expect_equal(
+    stored[[i]],
+    sorted_test_subset[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_subset$", i)
+  )
+}
 commit(root, "update data")
 
 current <- list.files(workdir(root), recursive = TRUE)

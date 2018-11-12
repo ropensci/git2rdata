@@ -23,7 +23,12 @@ expect_equal(
   check.attributes = FALSE
 )
 for (i in colnames(stored)) {
-  expect_equal(stored[[i]], sorted_test_data[[i]])
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
 }
 expect_identical(
   write_vc(x = test_data, file = "test.xls", root = root),
@@ -57,7 +62,12 @@ expect_equal(
   check.attributes = FALSE
 )
 for (i in colnames(stored)) {
-  expect_equal(stored[[i]], sorted_test_data[[i]])
+  expect_equal(
+    stored[[i]],
+    sorted_test_data[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_data$", i)
+  )
 }
 expect_error(
   write_vc(x = test_data, file = "a/verbose", root = root),
@@ -77,7 +87,12 @@ expect_equal(
   check.attributes = FALSE
 )
 for (i in colnames(stored)) {
-  expect_equal(stored[[i]], sorted_test_na[[i]])
+  expect_equal(
+    stored[[i]],
+    sorted_test_na[[i]],
+    label = paste0("stored$", i),
+    expected.label = paste0("sorted_test_na$", i)
+  )
 }
 
 expect_error(

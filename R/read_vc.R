@@ -124,7 +124,9 @@ setMethod(
       # reinstate POSIXct
       col_posix <- which(col_classes == "POSIXct")
       for (id in col_posix) {
-        raw_data[[id]] <- as.POSIXct(raw_data[[id]], origin = "1970-01-01")
+        raw_data[[id]] <- as.POSIXct(
+          raw_data[[id]], origin = "1970-01-01", tz = "UTC"
+        )
       }
 
       # reinstage Date
