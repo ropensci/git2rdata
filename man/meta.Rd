@@ -40,10 +40,7 @@ meta(x, optimize = TRUE)
 the optimized vector \code{x} with \code{meta} attribute
 }
 \description{
-Optimize a vector for storage as plain text and add meta data
+\code{\link{write_vc()}} applies this function automatically on your
+data.frame.
 }
-\seealso{
-Other storage: \code{\link{read_vc}},
-  \code{\link{rm_data}}, \code{\link{write_vc}}
-}
-\concept{storage}
+\concept{internal}

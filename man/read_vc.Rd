@@ -26,7 +26,7 @@ The \code{data.frame}
 Read a \code{data.frame} from a repository
 }
 \seealso{
-Other storage: \code{\link{meta}}, \code{\link{rm_data}},
+Other storage: \code{\link{rm_data}},
   \code{\link{write_vc}}
 }
 \concept{storage}
