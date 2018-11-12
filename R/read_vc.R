@@ -89,11 +89,12 @@ setMethod(
         list(character(0))
       )
       names(col_factor_level) <- col_names[col_factor]
-      which_ordered <- sapply(
+      which_ordered <- vapply(
         grep("^    ordered$", meta_data),
         function(i) {
           col_names[max(which(meta_cols < i))]
-        }
+        },
+        character(0)
       )
       if (optimize) {
         for (id in names(col_factor_level)) {
