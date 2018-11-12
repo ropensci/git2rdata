@@ -1,6 +1,6 @@
 #' Optimize a vector for storage as plain text and add meta data
 #'
-#' \code{\link{write_vc()}} applies this function automatically on your
+#' \code{\link{write_vc}} applies this function automatically on your
 #' data.frame.
 #' @param x the vector
 #' @param optimize recode the data to get smaller text files. Defaults to TRUE

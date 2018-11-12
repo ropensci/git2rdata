@@ -1,4 +1,5 @@
 #' Write a \code{data.frame} to a git repository
+#'
 #' This will create two files. The `".tsv"` file contains the raw data.
 #' The `".yml"` contains the meta data on the columns in YAML format.
 #' @param x the `data.frame

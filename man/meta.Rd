@@ -40,7 +40,7 @@ meta(x, optimize = TRUE)
 the optimized vector \code{x} with \code{meta} attribute
 }
 \description{
-\code{\link{write_vc()}} applies this function automatically on your
+\code{\link{write_vc}} applies this function automatically on your
 data.frame.
 }
 \concept{internal}
