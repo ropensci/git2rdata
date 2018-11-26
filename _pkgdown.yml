@@ -1,3 +1,22 @@
+navbar:
+  title: ~
+  type: default
+  left:
+  - text: Tutorials
+    href: articles/index.html
+    menu:
+    - text: Introduction
+      href: articles/storing_dataframe.html
+  - text: Functions
+    href: reference/index.html
+  - text: Contributing
+    href: CONTRIBUTING.html
+  right:
+  - icon: fa-twitter fa-lg
+    href: https://twitter.com/INBOVlaanderen
+  - icon: fa-github fa-lg
+    href: https://github.com/inbo/git2rdata
+
 reference:
 - title: Storage
   contents:
@@ -14,4 +33,4 @@ authors:
     href: "https://www.muscardinus.be"
   Research Institute for Nature and Forest:
     href: "https://www.inbo.be/en"
-    html: "<img src='man/figures/logo_en.png' height=24>"
+    html: "<img src='https://inbo.github.io/git2rdata/reference/figures/logo_en.png' height=24>"
