@@ -5,8 +5,7 @@
 \alias{rm_data}
 \alias{rm_data,character-method}
 \alias{rm_data,git_repository-method}
-\title{Remove data files
-Remove all tsv and/or yml files within the path}
+\title{Remove data files}
 \usage{
 rm_data(root, path = NULL, type = c("tsv", "yml", "both"),
   recursive = TRUE, ...)
@@ -35,7 +34,6 @@ returns invisibily a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
-Remove data files
 Remove all tsv and/or yml files within the path
 }
 \seealso{

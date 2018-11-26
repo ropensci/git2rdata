@@ -1,4 +1,5 @@
 #' Remove data files
+#'
 #' Remove all tsv and/or yml files within the path
 #' @param path the directory in which to clean all the data files
 #' @param type which file type should be removed
