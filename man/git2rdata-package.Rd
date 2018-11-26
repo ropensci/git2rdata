@@ -12,6 +12,7 @@ Make versioning of data.frame easy and efficient using git repositories.
 Useful links:
 \itemize{
   \item \url{https://github.com/inbo/git2rdata}
+  \item \url{https://doi.org/10.5281/zenodo.1485309}
   \item Report bugs at \url{https://github.com/inbo/git2rdata/issues}
 }
 
