@@ -119,7 +119,7 @@ setMethod(
   signature = signature(x = "Date"),
   definition = function(x, optimize = TRUE){
     if (isTRUE(optimize)) {
-        z <- unclass(x)
+        z <- as.integer(x)
     } else {
         z <- x
     }

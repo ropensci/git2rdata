@@ -17,7 +17,7 @@ test_data <- data.frame(
     origin = "1970-01-01"
   ),
   test_Date = as.Date(
-    sample(1e5, size = test_n, replace = TRUE),
+    c(sample(1e5, size = test_n - 1, replace = TRUE), 16000),
     origin = "1970-01-01"
   ),
   stringsAsFactors = FALSE
