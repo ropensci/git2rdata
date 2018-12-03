@@ -15,6 +15,19 @@ setGeneric(
 
 #' @rdname read_vc
 #' @importFrom methods setMethod
+setMethod(
+  f = "read_vc",
+  signature = signature(root = "ANY"),
+  definition = function(file, root){
+    if (missing(root)) {
+      stop("'root' is missing")
+    }
+    stop("a 'root' of class ", class(root), " is not supported")
+  }
+)
+
+#' @rdname read_vc
+#' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.string
 #' @importFrom readr read_tsv
 #' @importFrom utils head
