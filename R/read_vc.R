@@ -20,7 +20,7 @@ setMethod(
   signature = signature(root = "ANY"),
   definition = function(file, root){
     if (missing(root)) {
-      stop("'root' is missing")
+      read_vc(file = file, root = ".")
     }
     stop("a 'root' of class ", class(root), " is not supported")
   }
