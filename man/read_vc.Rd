@@ -20,7 +20,8 @@ read_vc(file, root = ".")
 \item{file}{the name of the file without file extension. Can include a
 relative path. It is relative to the \code{root}.}
 
-\item{root}{The root of a project. Can be a file path or a \code{git-repository}}
+\item{root}{The root of a project. Can be a file path or a \code{git-repository}.
+Defaults to the current working directory (".").}
 }
 \value{
 The \code{data.frame}

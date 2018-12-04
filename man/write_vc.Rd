@@ -27,7 +27,8 @@ write_vc(x, file, root = ".", sorting, override = FALSE,
 \item{file}{the name of the file without file extension. Can include a
 relative path. It is relative to the \code{root}.}
 
-\item{root}{The root of a project. Can be a file path or a \code{git-repository}}
+\item{root}{The root of a project. Can be a file path or a \code{git-repository}.
+Defaults to the current working directory (".").}
 
 \item{sorting}{a vector of column names defining which columns to use for
 sorting \code{x} and in what order to use them. Only required when writing
