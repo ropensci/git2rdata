@@ -24,7 +24,7 @@
 setGeneric(
   name = "write_vc",
   def = function(
-    x, file, root, sorting, override = FALSE, optimize = TRUE, ...
+    x, file, root = ".", sorting, override = FALSE, optimize = TRUE, ...
   ){
     standardGeneric("write_vc") # nocov
   }
@@ -39,7 +39,13 @@ setMethod(
     x, file, root, sorting, override = FALSE, optimize = TRUE, ...
   ){
     if (missing(root)) {
-      stop("'root' is missing")
+      return(write_vc(x = x,
+                      file = file,
+                      root = ".",
+                      sorting = sorting,
+                      override = FALSE,
+                      optimize = TRUE,
+                      ...))
     }
     stop("a 'root' of class ", class(root), " is not supported")
   }

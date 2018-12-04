@@ -8,13 +8,13 @@
 \alias{write_vc,ANY,ANY,git_repository-method}
 \title{Write a \code{data.frame} to a git repository}
 \usage{
-write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
-  ...)
+write_vc(x, file, root = ".", sorting, override = FALSE,
+  optimize = TRUE, ...)
 
-\S4method{write_vc}{ANY,ANY,ANY}(x, file, root, sorting,
+\S4method{write_vc}{ANY,ANY,ANY}(x, file, root = ".", sorting,
   override = FALSE, optimize = TRUE, ...)
 
-\S4method{write_vc}{ANY,ANY,character}(x, file, root, sorting,
+\S4method{write_vc}{ANY,ANY,character}(x, file, root = ".", sorting,
   override = FALSE, optimize = TRUE, ...)
 
 \S4method{write_vc}{ANY,ANY,git_repository}(x, file, root, sorting,
