@@ -5,7 +5,8 @@
 #' @param x the `data.frame
 #' @param file the name of the file without file extension. Can include a
 #' relative path. It is relative to the `root`.
-#' @param root The root of a project. Can be a file path or a `git-repository`
+#' @param root The root of a project. Can be a file path or a `git-repository`.
+#' Defaults to the current working directory (".").
 #' @param sorting a vector of column names defining which columns to use for
 #' sorting \code{x} and in what order to use them. Only required when writing
 #' new metadata.

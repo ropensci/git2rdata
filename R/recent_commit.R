@@ -1,6 +1,7 @@
 #' Most recent file change
 #' Retrieve the most recent commit in which a file or data object existed.
 #' @inheritParams write_vc
+#' @param root The root of a project. Can be a file path or a `git-repository`
 #' @param data refers file to a file (FALSE) or a data object (TRUE). Defaults
 #' to FALSE
 #' @return a `data.frame` with `commit`, `author` and `when` for the most recent
