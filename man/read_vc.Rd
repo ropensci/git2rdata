@@ -3,11 +3,14 @@
 \docType{methods}
 \name{read_vc}
 \alias{read_vc}
+\alias{read_vc,ANY,ANY-method}
 \alias{read_vc,ANY,character-method}
 \alias{read_vc,ANY,git_repository-method}
 \title{Read a \code{data.frame} from a repository}
 \usage{
 read_vc(file, root)
+
+\S4method{read_vc}{ANY,ANY}(file, root)
 
 \S4method{read_vc}{ANY,character}(file, root)
 
