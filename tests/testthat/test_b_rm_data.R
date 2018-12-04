@@ -1,5 +1,7 @@
 context("rm_data")
 
+expect_error(rm_data(root = 1), "a 'root' of class numeric is not supported")
+
 root <- tempfile(pattern = "git2rdata-")
 expect_error(rm_data(root), root)
 dir.create(root)

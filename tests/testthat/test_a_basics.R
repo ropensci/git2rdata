@@ -1,5 +1,6 @@
 context("write_vc() and read_vc() on a file system")
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
+expect_error(read_vc(root = 1), "a 'root' of class numeric is not supported")
 output <- write_vc(x = test_data,
                    file = "test.txt",
                    sorting = "test_Date")
