@@ -8,7 +8,7 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "read_vc",
-  def = function(file, root){
+  def = function(file, root = "."){
     standardGeneric("read_vc") # nocov
   }
 )
