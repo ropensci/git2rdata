@@ -3,21 +3,26 @@
 \docType{methods}
 \name{rm_data}
 \alias{rm_data}
+\alias{rm_data,ANY-method}
 \alias{rm_data,character-method}
 \alias{rm_data,git_repository-method}
 \title{Remove data files}
 \usage{
-rm_data(root, path = NULL, type = c("tsv", "yml", "both"),
+rm_data(root = ".", path = NULL, type = c("tsv", "yml", "both"),
   recursive = TRUE, ...)
 
-\S4method{rm_data}{character}(root, path = NULL, type = c("tsv", "yml",
-  "both"), recursive = TRUE, ...)
+\S4method{rm_data}{ANY}(root = ".", path = NULL, type = c("tsv",
+  "yml", "both"), recursive = TRUE, ...)
+
+\S4method{rm_data}{character}(root = ".", path = NULL,
+  type = c("tsv", "yml", "both"), recursive = TRUE, ...)
 
 \S4method{rm_data}{git_repository}(root, path = NULL, type = c("tsv",
   "yml", "both"), recursive = TRUE, ..., stage = FALSE)
 }
 \arguments{
-\item{root}{The root of a project. Can be a file path or a \code{git-repository}}
+\item{root}{The root of a project. Can be a file path or a \code{git-repository}.
+Defaults to the current working directory (".").}
 
 \item{path}{the directory in which to clean all the data files}
 

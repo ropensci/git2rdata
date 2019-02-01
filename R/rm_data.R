@@ -15,9 +15,29 @@
 setGeneric(
   name = "rm_data",
   def = function(
-    root, path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
+    root = ".", path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE,
+    ...
   ){
     standardGeneric("rm_data") # nocov
+  }
+)
+
+#' @rdname rm_data
+#' @importFrom methods setMethod
+setMethod(
+  f = "rm_data",
+  signature = signature(root = "ANY"),
+  definition = function(
+    root, path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
+  ){
+    if (missing(root)) {
+      return(
+        rm_data(
+          root = ".", path = path, type = type, recursive = recursive, ...
+        )
+      )
+    }
+    stop("a 'root' of class ", class(root), " is not supported")
   }
 )
 

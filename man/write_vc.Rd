@@ -8,13 +8,13 @@
 \alias{write_vc,ANY,ANY,git_repository-method}
 \title{Write a \code{data.frame} to a git repository}
 \usage{
-write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
-  ...)
+write_vc(x, file, root = ".", sorting, override = FALSE,
+  optimize = TRUE, ...)
 
-\S4method{write_vc}{ANY,ANY,ANY}(x, file, root, sorting,
+\S4method{write_vc}{ANY,ANY,ANY}(x, file, root = ".", sorting,
   override = FALSE, optimize = TRUE, ...)
 
-\S4method{write_vc}{ANY,ANY,character}(x, file, root, sorting,
+\S4method{write_vc}{ANY,ANY,character}(x, file, root = ".", sorting,
   override = FALSE, optimize = TRUE, ...)
 
 \S4method{write_vc}{ANY,ANY,git_repository}(x, file, root, sorting,
@@ -27,7 +27,8 @@ write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
 \item{file}{the name of the file without file extension. Can include a
 relative path. It is relative to the \code{root}.}
 
-\item{root}{The root of a project. Can be a file path or a \code{git-repository}}
+\item{root}{The root of a project. Can be a file path or a \code{git-repository}.
+Defaults to the current working directory (".").}
 
 \item{sorting}{a vector of column names defining which columns to use for
 sorting \code{x} and in what order to use them. Only required when writing

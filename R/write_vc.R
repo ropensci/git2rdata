@@ -5,7 +5,8 @@
 #' @param x the `data.frame
 #' @param file the name of the file without file extension. Can include a
 #' relative path. It is relative to the `root`.
-#' @param root The root of a project. Can be a file path or a `git-repository`
+#' @param root The root of a project. Can be a file path or a `git-repository`.
+#' Defaults to the current working directory (".").
 #' @param sorting a vector of column names defining which columns to use for
 #' sorting \code{x} and in what order to use them. Only required when writing
 #' new metadata.
@@ -24,7 +25,7 @@
 setGeneric(
   name = "write_vc",
   def = function(
-    x, file, root, sorting, override = FALSE, optimize = TRUE, ...
+    x, file, root = ".", sorting, override = FALSE, optimize = TRUE, ...
   ){
     standardGeneric("write_vc") # nocov
   }
@@ -39,7 +40,12 @@ setMethod(
     x, file, root, sorting, override = FALSE, optimize = TRUE, ...
   ){
     if (missing(root)) {
-      stop("'root' is missing")
+      return(
+        write_vc(
+          x = x, file = file, root = ".", sorting = sorting,
+          override = override, optimize = optimize, ...
+        )
+      )
     }
     stop("a 'root' of class ", class(root), " is not supported")
   }

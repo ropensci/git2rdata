@@ -1,5 +1,7 @@
 context("rm_data")
 
+expect_error(rm_data(root = 1), "a 'root' of class numeric is not supported")
+
 root <- tempfile(pattern = "git2rdata-")
 expect_error(rm_data(root), root)
 dir.create(root)
@@ -36,4 +38,15 @@ expect_identical(
 expect_identical(
   list.files(root, recursive = TRUE),
   current[-grep("^.*/.*", current)]
+)
+
+write_vc(test_data, file = "test", sorting = "test_Date")
+current <- list.files(".", recursive = TRUE)
+expect_identical(
+  rm_data(type = "both", recursive = FALSE),
+  c("test.tsv", "test.yml")
+)
+expect_identical(
+  list.files(".", recursive = TRUE),
+  current[grep("^.*/.*", current)]
 )

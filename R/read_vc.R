@@ -8,8 +8,21 @@
 #' @importFrom methods setGeneric
 setGeneric(
   name = "read_vc",
-  def = function(file, root){
+  def = function(file, root = "."){
     standardGeneric("read_vc") # nocov
+  }
+)
+
+#' @rdname read_vc
+#' @importFrom methods setMethod
+setMethod(
+  f = "read_vc",
+  signature = signature(root = "ANY"),
+  definition = function(file, root){
+    if (missing(root)) {
+      return(read_vc(file = file, root = "."))
+    }
+    stop("a 'root' of class ", class(root), " is not supported")
   }
 )
 
