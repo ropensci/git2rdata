@@ -34,6 +34,7 @@ meta.numeric <- function(x, optimize = TRUE) {
   attr(x, "meta") <- "    class: numeric"
   return(x)
 }
+
 #' @export
 meta.factor <- function(x, optimize = TRUE) {
   if (isTRUE(optimize)) {
@@ -67,21 +68,27 @@ meta.complex <- function(x, optimize = TRUE) {
 #' @export
 meta.POSIXct <- function(x, optimize = TRUE) {
   if (isTRUE(optimize)) {
-      z <- unclass(x)
+    z <- unclass(x)
+    attr(z, "meta") <-
+      "    class: POSIXct\n    origin: 1970-01-01 00:00:00\n    timezone: UTC\n"
   } else {
-      z <- x
+    z <- format(x, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+    attr(z, "meta") <-
+      "    class: POSIXct\n    format: %Y-%m-%dT%H:%M:%SZ\n    timezone: UTC\n"
   }
-  attr(z, "meta") <- "    class: POSIXct\n    origin: 1970-01-01\n"
   return(z)
 }
 
 #' @export
 meta.Date <- function(x, optimize = TRUE){
   if (isTRUE(optimize)) {
-      z <- as.integer(x)
+    z <- as.integer(x)
+    attr(z, "meta") <-
+      "    class: Date\n    origin: 1970-01-01\n"
   } else {
-      z <- x
+    z <- format(x, format = "%Y-%m-%d", tz = "UTC")
+    attr(z, "meta") <-
+      "    class: Date\n    format: %Y-%m-%d\n"
   }
-  attr(z, "meta") <- "    class: Date\n    origin: 1970-01-01\n"
   return(z)
 }
