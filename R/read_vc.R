@@ -2,169 +2,149 @@
 #' @inheritParams write_vc
 #' @return The \code{data.frame}
 #' @rdname read_vc
-#' @exportMethod read_vc
-#' @docType methods
+#' @export
 #' @family storage
-#' @importFrom methods setGeneric
-setGeneric(
-  name = "read_vc",
-  def = function(file, root = "."){
-    standardGeneric("read_vc") # nocov
-  }
-)
+read_vc <- function(file, root) {
+  UseMethod("read_vc", root)
+}
 
-#' @rdname read_vc
-#' @importFrom methods setMethod
-setMethod(
-  f = "read_vc",
-  signature = signature(root = "ANY"),
-  definition = function(file, root){
-    if (missing(root)) {
-      return(read_vc(file = file, root = "."))
-    }
-    stop("a 'root' of class ", class(root), " is not supported")
+#' @export
+read_vc.default <- function(file, root) {
+  if (missing(root)) {
+    return(read_vc(file = file, root = "."))
   }
-)
+  stop("a 'root' of class ", class(root), " is not supported")
+}
 
-#' @rdname read_vc
-#' @importFrom methods setMethod
+#' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom utils head read.table
-setMethod(
-  f = "read_vc",
-  signature = signature(root = "character"),
-  definition = function(file, root){
-    assert_that(is.string(file))
-    assert_that(is.string(root))
-    root <- normalizePath(root, winslash = "/", mustWork = TRUE)
+read_vc.character <- function(file, root) {
+  assert_that(is.string(file))
+  assert_that(is.string(root))
+  root <- normalizePath(root, winslash = "/", mustWork = TRUE)
 
-    file <- clean_data_path(root = root, file = file)
+  file <- clean_data_path(root = root, file = file)
+  assert_that(
+    all(file.exists(file)),
+    msg = "raw file and/or meta file missing"
+  )
+
+  meta_data <- readLines(file["meta_file"])
+  start_quote <- grep("^        - \"", meta_data)
+  if (length(start_quote) > 0) {
+    end_quote <- grep("^( {8}- \".*|(?! {8}- ).*)\"$", meta_data, perl = TRUE)
     assert_that(
-      all(file.exists(file)),
-      msg = "raw file and/or meta file missing"
+      length(start_quote) == length(end_quote),
+      all(start_quote <= end_quote),
+      all(head(end_quote, -1) < tail(start_quote, -1)),
+      msg = "Mismatching quotes in metadata"
     )
-
-    meta_data <- readLines(file["meta_file"])
-    start_quote <- grep("^        - \"", meta_data)
-    if (length(start_quote) > 0) {
-      end_quote <- grep("^( {8}- \".*|(?! {8}- ).*)\"$", meta_data, perl = TRUE)
-      assert_that(
-        length(start_quote) == length(end_quote),
-        all(start_quote <= end_quote),
-        all(head(end_quote, -1) < tail(start_quote, -1)),
-        msg = "Mismatching quotes in metadata"
+    for (i in rev(seq_along(start_quote))) {
+      meta_data <- c(
+        meta_data[seq_len(start_quote[i] - 1)],
+        paste(meta_data[start_quote[i]:end_quote[i]], collapse = "\n"),
+        meta_data[(end_quote[i] + 1):length(meta_data)]
       )
-      for (i in rev(seq_along(start_quote))) {
-        meta_data <- c(
-          meta_data[seq_len(start_quote[i] - 1)],
-          paste(meta_data[start_quote[i]:end_quote[i]], collapse = "\n"),
-          meta_data[(end_quote[i] + 1):length(meta_data)]
-        )
-      }
-      meta_data
     }
-    meta_cols <- grep("^\\S*:$", meta_data)
-    col_names <- gsub(":", "", meta_data[meta_cols])
-    if (tail(meta_data, 1) == "optimized") {
-      optimize <- TRUE
-      col_type <- c(
-        character = "character", factor = "integer", integer = "integer",
-        numeric = "numeric", logical = "integer", Date = "integer",
-        POSIXct = "numeric", complex = "complex"
-      )
-    } else if (tail(meta_data, 1) == "verbose") {
-      optimize <- FALSE
-      col_type <- c(
-        character = "character", factor = "character", integer = "integer",
-        numeric = "numeric", logical = "logical", Date = "Date",
-        POSIXct = "POSIXct", complex = "complex"
-      )
-    } else {
-      stop("error in metadata")
-    }
-    col_classes <- gsub(" {4}class: (.*)", "\\1", meta_data[meta_cols + 1])
-    raw_data <- read.table(
-      file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
-      dec = ".", numerals = "warn.loss", na.strings = "NA",
-      colClasses = col_type[col_classes],
-      stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
-    )
-
-    # reinstate factors
-    col_factor <- which(col_classes == "factor")
-    if (length(col_factor)) {
-      level_rows <- grep("^ {8}- .*$", meta_data)
-      level_value <- gsub("^ {8}- \"?(.*?)\"?$", "\\1", meta_data[level_rows])
-      level_id <- cumsum(c(TRUE, diff(level_rows) > 1))
-      col_factor_level <- vapply(
-        seq_along(col_factor),
-        function(id) {
-          list(level_value[level_id == id])
-        },
-        list(character(0))
-      )
-      names(col_factor_level) <- col_names[col_factor]
-      which_ordered <- vapply(
-        grep("^    ordered$", meta_data),
-        function(i) {
-          col_names[max(which(meta_cols < i))]
-        },
-        character(1)
-      )
-      if (optimize) {
-        for (id in names(col_factor_level)) {
-          raw_data[[id]] <- factor(
-            raw_data[[id]],
-            levels = seq_along(col_factor_level[[id]]),
-            labels = col_factor_level[[id]],
-            ordered = id %in% which_ordered
-          )
-        }
-      } else {
-        for (id in names(col_factor_level)) {
-          raw_data[[id]] <- factor(
-            raw_data[[id]],
-            levels = col_factor_level[[id]],
-            ordered = id %in% which_ordered
-          )
-        }
-      }
-    }
-
-    if (optimize) {
-      # reinstate logical
-      col_logical <- which(col_classes == "logical")
-      for (id in col_logical) {
-        raw_data[[id]] <- as.logical(raw_data[[id]])
-      }
-
-      # reinstate POSIXct
-      col_posix <- which(col_classes == "POSIXct")
-      for (id in col_posix) {
-        raw_data[[id]] <- as.POSIXct(
-          raw_data[[id]], origin = "1970-01-01", tz = "UTC"
-        )
-      }
-
-      # reinstage Date
-      col_date <- which(col_classes == "Date")
-      for (id in col_date) {
-        raw_data[[id]] <- as.Date(raw_data[[id]], origin = "1970-01-01")
-      }
-    }
-
-    return(raw_data)
+    meta_data
   }
-)
+  meta_cols <- grep("^\\S*:$", meta_data)
+  col_names <- gsub(":", "", meta_data[meta_cols])
+  if (tail(meta_data, 1) == "optimized") {
+    optimize <- TRUE
+    col_type <- c(
+      character = "character", factor = "integer", integer = "integer",
+      numeric = "numeric", logical = "integer", Date = "integer",
+      POSIXct = "numeric", complex = "complex"
+    )
+  } else if (tail(meta_data, 1) == "verbose") {
+    optimize <- FALSE
+    col_type <- c(
+      character = "character", factor = "character", integer = "integer",
+      numeric = "numeric", logical = "logical", Date = "Date",
+      POSIXct = "POSIXct", complex = "complex"
+    )
+  } else {
+    stop("error in metadata")
+  }
+  col_classes <- gsub(" {4}class: (.*)", "\\1", meta_data[meta_cols + 1])
+  raw_data <- read.table(
+    file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
+    dec = ".", numerals = "warn.loss", na.strings = "NA",
+    colClasses = col_type[col_classes],
+    stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
+  )
 
-#' @rdname read_vc
-#' @importFrom methods setMethod
+  # reinstate factors
+  col_factor <- which(col_classes == "factor")
+  if (length(col_factor)) {
+    level_rows <- grep("^ {8}- .*$", meta_data)
+    level_value <- gsub("^ {8}- \"?(.*?)\"?$", "\\1", meta_data[level_rows])
+    level_id <- cumsum(c(TRUE, diff(level_rows) > 1))
+    col_factor_level <- vapply(
+      seq_along(col_factor),
+      function(id) {
+        list(level_value[level_id == id])
+      },
+      list(character(0))
+    )
+    names(col_factor_level) <- col_names[col_factor]
+    which_ordered <- vapply(
+      grep("^    ordered$", meta_data),
+      function(i) {
+        col_names[max(which(meta_cols < i))]
+      },
+      character(1)
+    )
+    if (optimize) {
+      for (id in names(col_factor_level)) {
+        raw_data[[id]] <- factor(
+          raw_data[[id]],
+          levels = seq_along(col_factor_level[[id]]),
+          labels = col_factor_level[[id]],
+          ordered = id %in% which_ordered
+        )
+      }
+    } else {
+      for (id in names(col_factor_level)) {
+        raw_data[[id]] <- factor(
+          raw_data[[id]],
+          levels = col_factor_level[[id]],
+          ordered = id %in% which_ordered
+        )
+      }
+    }
+  }
+
+  if (optimize) {
+    # reinstate logical
+    col_logical <- which(col_classes == "logical")
+    for (id in col_logical) {
+      raw_data[[id]] <- as.logical(raw_data[[id]])
+    }
+
+    # reinstate POSIXct
+    col_posix <- which(col_classes == "POSIXct")
+    for (id in col_posix) {
+      raw_data[[id]] <- as.POSIXct(
+        raw_data[[id]], origin = "1970-01-01", tz = "UTC"
+      )
+    }
+
+    # reinstage Date
+    col_date <- which(col_classes == "Date")
+    for (id in col_date) {
+      raw_data[[id]] <- as.Date(raw_data[[id]], origin = "1970-01-01")
+    }
+  }
+
+  return(raw_data)
+}
+
+#' @export
 #' @importFrom git2r workdir
 #' @include write_vc.R
-setMethod(
-  f = "read_vc",
-  signature = signature(root = "git_repository"),
-  definition = function(file, root){
-    read_vc(file, root = workdir(root))
-  }
-)
+read_vc.git_repository <- function(file, root) {
+  read_vc(file, root = workdir(root))
+}
