@@ -8,6 +8,24 @@
 #' @export
 #' @docType methods
 #' @family internal
+#' @examples
+#' meta(c(NA, "NA", "'NA'", '"NA"', "abc\tdef", "abc\ndef"))
+#' meta(1:3)
+#' meta(seq(1, 3, length = 4))
+#' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")))
+#' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")), optimize = FALSE)
+#' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE))
+#' meta(
+#'   factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE),
+#'   optimize = FALSE
+#' )
+#' meta(c(FALSE, NA, TRUE))
+#' meta(c(FALSE, NA, TRUE), optimize = FALSE)
+#' meta(complex(real = c(1, NA, 2), imaginary = c(3, NA, -1)))
+#' meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"))
+#' meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"), optimize = FALSE)
+#' meta(as.Date("2019-02-01"))
+#' meta(as.Date("2019-02-01"), optimize = FALSE)
 meta <- function(x, optimize = TRUE) {
   UseMethod("meta", x)
 }
