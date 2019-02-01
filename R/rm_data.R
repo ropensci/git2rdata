@@ -15,7 +15,8 @@
 setGeneric(
   name = "rm_data",
   def = function(
-    root = ".", path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
+    root = ".", path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE,
+    ...
   ){
     standardGeneric("rm_data") # nocov
   }
@@ -30,11 +31,11 @@ setMethod(
     root, path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
   ){
     if (missing(root)) {
-      return(rm_data(root = ".",
-                     path = NULL,
-                     type = c("tsv", "yml", "both"),
-                     recursive = TRUE,
-                     ...))
+      return(
+        rm_data(
+          root = ".", path = path, type = type, recursive = recursive, ...
+        )
+      )
     }
     stop("a 'root' of class ", class(root), " is not supported")
   }
