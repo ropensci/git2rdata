@@ -3,17 +3,9 @@
 \docType{methods}
 \name{auto_commit}
 \alias{auto_commit}
-\alias{auto_commit,ANY,ANY-method}
-\alias{auto_commit,ANY,git_repository-method}
-\alias{auto_commit,git_repository-methods}
 \title{Commit staged changes in a git repository with automated message}
 \usage{
 auto_commit(package, repo = ".", push = FALSE, ...)
-
-\S4method{auto_commit}{ANY,ANY}(package, repo = ".", push = FALSE, ...)
-
-\S4method{auto_commit}{ANY,git_repository}(package, repo = ".",
-  push = FALSE, ...)
 }
 \arguments{
 \item{package}{The name of the package from which we auto commit}
