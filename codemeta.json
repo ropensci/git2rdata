@@ -14,10 +14,10 @@
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.1",
+    "version": "3.5.2",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.1 (2018-07-02)",
+  "runtimePlatform": "R version 3.5.2 (2018-12-20)",
   "author": [
     {
       "@type": "Person",
@@ -139,7 +139,7 @@
     }
   ],
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "36.79KB",
+  "fileSize": "69.924KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
@@ -154,5 +154,14 @@
     "version-control",
     "reproducible-research"
   ],
-  "relatedLink": "https://doi.org/10.5281/zenodo.1485309"
+  "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Floris",
+      "familyName": "Vanderhaeghe",
+      "email": "floris.vanderhaeghe@inbo.be",
+      "@id": "https://orcid.org/0000-0002-6378-6229"
+    }
+  ]
 }
