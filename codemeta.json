@@ -124,22 +124,10 @@
       "@type": "SoftwareApplication",
       "identifier": "methods",
       "name": "methods"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "readr",
-      "name": "readr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=readr"
     }
   ],
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "69.924KB",
+  "fileSize": "81.455KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",

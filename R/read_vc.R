@@ -29,8 +29,7 @@ setMethod(
 #' @rdname read_vc
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.string
-#' @importFrom readr read_tsv
-#' @importFrom utils head
+#' @importFrom utils head read.table
 setMethod(
   f = "read_vc",
   signature = signature(root = "character"),
@@ -69,23 +68,26 @@ setMethod(
     if (tail(meta_data, 1) == "optimized") {
       optimize <- TRUE
       col_type <- c(
-        character = "c", factor = "i", integer = "i", numeric = "d",
-        logical = "i", Date = "i", POSIXct = "d"
+        character = "character", factor = "integer", integer = "integer",
+        numeric = "numeric", logical = "integer", Date = "integer",
+        POSIXct = "numeric", complex = "complex"
       )
     } else if (tail(meta_data, 1) == "verbose") {
       optimize <- FALSE
       col_type <- c(
-        character = "c", factor = "c", integer = "i", numeric = "d",
-        logical = "l", Date = "D", POSIXct = "T"
+        character = "character", factor = "character", integer = "integer",
+        numeric = "numeric", logical = "logical", Date = "Date",
+        POSIXct = "POSIXct", complex = "complex"
       )
     } else {
       stop("error in metadata")
     }
     col_classes <- gsub(" {4}class: (.*)", "\\1", meta_data[meta_cols + 1])
-    raw_data <- read_tsv(
-      file = file["raw_file"], col_names = TRUE, na = "NA", quoted_na = FALSE,
-      col_types = paste(col_type[col_classes], collapse = ""),
-      trim_ws = FALSE, progress = FALSE
+    raw_data <- read.table(
+      file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
+      dec = ".", numerals = "warn.loss", na.strings = "NA",
+      colClasses = col_type[col_classes],
+      stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
     )
 
     # reinstate factors
