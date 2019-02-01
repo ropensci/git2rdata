@@ -5,125 +5,78 @@
 #' @param x the vector
 #' @param optimize recode the data to get smaller text files. Defaults to TRUE
 #' @return the optimized vector `x` with `meta` attribute
-#' @name meta
-#' @rdname meta
-#' @exportMethod meta
+#' @export
 #' @docType methods
-#' @importFrom methods setGeneric
 #' @family internal
-setGeneric(
-  name = "meta",
-  def = function(x, optimize = TRUE){
-    standardGeneric("meta") # nocov
-  }
-)
+meta <- function(x, optimize = TRUE) {
+  UseMethod("meta", x)
+}
 
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "character"),
-  definition = function(x, optimize = TRUE){
-    attr(x, "meta") <- "    class: character"
-    return(x)
-  }
-)
+#' @export
+meta.character <- function(x, optimize = TRUE) {
+  attr(x, "meta") <- "    class: character"
+  return(x)
+}
 
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "integer"),
-  definition = function(x, optimize = TRUE){
-    attr(x, "meta") <- "    class: integer"
-    return(x)
-  }
-)
+#' @export
+meta.integer <- function(x, optimize = TRUE) {
+  attr(x, "meta") <- "    class: integer"
+  return(x)
+}
 
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "numeric"),
-  definition = function(x, optimize = TRUE){
-    attr(x, "meta") <- "    class: numeric"
-    return(x)
+#' @export
+meta.numeric <- function(x, optimize = TRUE) {
+  attr(x, "meta") <- "    class: numeric"
+  return(x)
+}
+#' @export
+meta.factor <- function(x, optimize = TRUE) {
+  if (isTRUE(optimize)) {
+      z <- as.integer(x)
+  } else {
+      z <- x
   }
-)
+  sprintf(
+    "    class: factor\n    levels:\n%s%s",
+    paste0("        - \"", levels(x), "\"", collapse = "\n"),
+    ifelse(is.ordered(x), "\n    ordered", "")
+  ) -> attr(z, "meta")
+  return(z)
+}
 
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "factor"),
-  definition = function(x, optimize = TRUE){
-    if (isTRUE(optimize)) {
-        z <- as.integer(x)
-    } else {
-        z <- x
-    }
-    sprintf(
-      "    class: factor\n    levels:\n%s%s",
-      paste0("        - \"", levels(x), "\"", collapse = "\n"),
-      ifelse(is.ordered(x), "\n    ordered", "")
-    ) -> attr(z, "meta")
-    return(z)
+#' @export
+meta.logical <- function(x, optimize = TRUE){
+  if (isTRUE(optimize)) {
+      x <- as.integer(x)
   }
-)
+  attr(x, "meta") <- "    class: logical"
+  return(x)
+}
 
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "logical"),
-  definition = function(x, optimize = TRUE){
-    if (isTRUE(optimize)) {
-        x <- as.integer(x)
-    }
-    attr(x, "meta") <- "    class: logical"
-    return(x)
-  }
-)
+#' @export
+meta.complex <- function(x, optimize = TRUE) {
+  attr(x, "meta") <- "    class: complex"
+  return(x)
+}
 
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "complex"),
-  definition = function(x, optimize = TRUE){
-    attr(x, "meta") <- "    class: complex"
-    return(x)
+#' @export
+meta.POSIXct <- function(x, optimize = TRUE) {
+  if (isTRUE(optimize)) {
+      z <- unclass(x)
+  } else {
+      z <- x
   }
-)
+  attr(z, "meta") <- "    class: POSIXct\n    origin: 1970-01-01\n"
+  return(z)
+}
 
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "POSIXct"),
-  definition = function(x, optimize = TRUE){
-    if (isTRUE(optimize)) {
-        z <- unclass(x)
-    } else {
-        z <- x
-    }
-    attr(z, "meta") <- "    class: POSIXct\n    origin: 1970-01-01\n"
-    return(z)
+#' @export
+meta.Date <- function(x, optimize = TRUE){
+  if (isTRUE(optimize)) {
+      z <- as.integer(x)
+  } else {
+      z <- x
   }
-)
-
-#' @rdname meta
-#' @importFrom methods setMethod
-setMethod(
-  f = "meta",
-  signature = signature(x = "Date"),
-  definition = function(x, optimize = TRUE){
-    if (isTRUE(optimize)) {
-        z <- as.integer(x)
-    } else {
-        z <- x
-    }
-    attr(z, "meta") <- "    class: Date\n    origin: 1970-01-01\n"
-    return(z)
-  }
-)
+  attr(z, "meta") <- "    class: Date\n    origin: 1970-01-01\n"
+  return(z)
+}
