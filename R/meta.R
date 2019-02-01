@@ -15,6 +15,11 @@ meta <- function(x, optimize = TRUE) {
 #' @export
 meta.character <- function(x, optimize = TRUE) {
   attr(x, "meta") <- "    class: character"
+  x <- gsub("\\\"", "\\\"\\\"", x)
+  to_escape <- grepl("(\"|\t|\n)", x)
+  x[to_escape] <- paste0("\"", x[to_escape], "\"")
+  x[x == "NA"] <- "\"NA\""
+  x[is.na(x)] <- "NA"
   return(x)
 }
 
