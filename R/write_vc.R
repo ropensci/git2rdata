@@ -54,8 +54,7 @@ setMethod(
 #' @rdname write_vc
 #' @importFrom methods setMethod
 #' @importFrom assertthat assert_that is.string is.flag
-#' @importFrom readr write_tsv
-#' @importFrom utils tail
+#' @importFrom utils tail write.table
 #' @importFrom git2r hashfile
 setMethod(
   f = "write_vc",
@@ -154,9 +153,10 @@ setMethod(
       )
     }
     raw_data <- raw_data[do.call(order, raw_data[sorting]), , drop = FALSE] # nolint
-    write_tsv(
-      x = raw_data, path = file["raw_file"], append = FALSE, na = "NA",
-      col_names = TRUE
+    write.table(
+      x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
+      sep = "\t", eol = "\n", na = "NA", dec = ".", row.names = FALSE,
+      col.names = TRUE, fileEncoding = "UTF-8"
     )
 
     hashes <- hashfile(file)
