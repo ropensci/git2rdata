@@ -1,17 +1,6 @@
 context("write_vc() and read_vc() on a file system")
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
 expect_error(read_vc(root = 1), "a 'root' of class numeric is not supported")
-output <- write_vc(x = test_data,
-                   file = "test.txt",
-                   sorting = "test_Date")
-expect_true(all(file.exists(git2rdata:::clean_data_path(".", "test"))))
-expect_equal(
-  stored <- read_vc(file = "test.xls"),
-  sorted_test_data,
-  check.attributes = FALSE
-)
-if (file.exists("test.tsv")) file.remove("test.tsv")
-if (file.exists("test.yml")) file.remove("test.yml")
 root <- tempfile(pattern = "git2rdata-basic")
 dir.create(root)
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
@@ -206,3 +195,16 @@ test_that(
     expect_match(attr(mz, "meta"), "class: complex")
   }
 )
+
+old_wd <- getwd()
+setwd(tempdir(check = TRUE))
+output <- write_vc(x = test_data, file = "test.txt", sorting = "test_Date")
+expect_true(all(file.exists(git2rdata:::clean_data_path(".", "test"))))
+expect_equal(
+  stored <- read_vc(file = "test.xls"),
+  sorted_test_data,
+  check.attributes = FALSE
+)
+expect_true(file.remove("test.tsv"))
+expect_true(file.remove("test.yml"))
+setwd(old_wd)

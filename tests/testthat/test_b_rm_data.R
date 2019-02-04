@@ -40,13 +40,16 @@ expect_identical(
   current[-grep("^.*/.*", current)]
 )
 
+old_wd <- getwd()
+setwd(tempdir(check = TRUE))
 write_vc(test_data, file = "test", sorting = "test_Date")
-current <- list.files(".", recursive = TRUE)
+current <- list.files(".", recursive = TRUE, pattern = c("\\.(tsv|yml)$"))
 expect_identical(
-  rm_data(type = "both", recursive = FALSE),
+  rm_data(path = ".", type = "both", recursive = FALSE),
   c("test.tsv", "test.yml")
 )
 expect_identical(
   list.files(".", recursive = TRUE),
   current[grep("^.*/.*", current)]
 )
+setwd(old_wd)
