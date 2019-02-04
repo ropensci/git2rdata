@@ -4,7 +4,7 @@
 \alias{read_vc}
 \title{Read a \code{data.frame} from a repository}
 \usage{
-read_vc(file, root)
+read_vc(file, root = ".")
 }
 \arguments{
 \item{file}{the name of the file without file extension. Can include a

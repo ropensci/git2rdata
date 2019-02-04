@@ -10,7 +10,7 @@
 #' @export
 #' @family storage
 rm_data <- function(
-  root, path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
+  root = ".", path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
 ){
   UseMethod("rm_data", root)
 }
@@ -19,20 +19,13 @@ rm_data <- function(
 rm_data.default <- function(
   root, path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
 ){
-  if (missing(root)) {
-    return(
-      rm_data(
-        root = ".", path = path, type = type, recursive = recursive, ...
-      )
-    )
-  }
   stop("a 'root' of class ", class(root), " is not supported")
 }
 
 #' @export
 #' @importFrom assertthat assert_that is.flag
 rm_data.character <- function(
-  root, path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
+  root = ".", path = NULL, type = c("tsv", "yml", "both"), recursive = TRUE, ...
 ){
   assert_that(is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)

@@ -5,7 +5,7 @@
 \alias{rm_data.git_repository}
 \title{Remove data files}
 \usage{
-rm_data(root, path = NULL, type = c("tsv", "yml", "both"),
+rm_data(root = ".", path = NULL, type = c("tsv", "yml", "both"),
   recursive = TRUE, ...)
 
 \method{rm_data}{git_repository}(root, path = NULL, type = c("tsv",

@@ -4,22 +4,19 @@
 #' @rdname read_vc
 #' @export
 #' @family storage
-read_vc <- function(file, root) {
+read_vc <- function(file, root = ".") {
   UseMethod("read_vc", root)
 }
 
 #' @export
 read_vc.default <- function(file, root) {
-  if (missing(root)) {
-    return(read_vc(file = file, root = "."))
-  }
   stop("a 'root' of class ", class(root), " is not supported")
 }
 
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom utils head read.table
-read_vc.character <- function(file, root) {
+read_vc.character <- function(file, root = ".") {
   assert_that(is.string(file))
   assert_that(is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)

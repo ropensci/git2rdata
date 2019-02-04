@@ -20,7 +20,7 @@
 #' @export
 #' @family storage
 write_vc <- function(
-  x, file, root, sorting, override = FALSE, optimize = TRUE, ...
+  x, file, root = ".", sorting, override = FALSE, optimize = TRUE, ...
 ) {
   UseMethod("write_vc", root)
 }
@@ -29,14 +29,6 @@ write_vc <- function(
 write_vc.default <- function(
   x, file, root, sorting, override = FALSE, optimize = TRUE, ...
 ) {
-  if (missing(root)) {
-    return(
-      write_vc(
-        x = x, file = file, root = ".", sorting = sorting, override = override,
-        optimize = optimize, ...
-      )
-    )
-  }
   stop("a 'root' of class ", class(root), " is not supported")
 }
 
@@ -45,7 +37,7 @@ write_vc.default <- function(
 #' @importFrom utils tail write.table
 #' @importFrom git2r hashfile
 write_vc.character <- function(
-  x, file, root, sorting, override = FALSE, optimize = TRUE, ...
+  x, file, root = ".", sorting, override = FALSE, optimize = TRUE, ...
 ){
   assert_that(inherits(x, "data.frame"))
   assert_that(is.string(file))

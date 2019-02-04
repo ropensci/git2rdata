@@ -5,8 +5,8 @@
 \alias{write_vc.git_repository}
 \title{Write a \code{data.frame} to a git repository}
 \usage{
-write_vc(x, file, root, sorting, override = FALSE, optimize = TRUE,
-  ...)
+write_vc(x, file, root = ".", sorting, override = FALSE,
+  optimize = TRUE, ...)
 
 \method{write_vc}{git_repository}(x, file, root, sorting,
   override = FALSE, optimize = TRUE, ..., stage = FALSE,
