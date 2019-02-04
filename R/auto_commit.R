@@ -12,6 +12,14 @@
 #' @docType methods
 #' @importFrom methods setGeneric
 #' @family version_control
+#' @examples
+#' path <- tempfile("git2rdata")
+#' dir.create(path)
+#' root <- git2r::init(path)
+#' git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
+#' write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length", stage = TRUE)
+#' last_commit <- auto_commit(package = "my_package", repo = root)
+#' cat(last_commit$message)
 auto_commit <- function(package, repo = ".", push = FALSE, ...){
   UseMethod("auto_commit", repo)
 }

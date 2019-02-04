@@ -25,6 +25,15 @@ The \code{git_repository} object that contains the commit
 The mesagge is based on the information returned by
 \code{\link[utils]{sessionInfo}}
 }
+\examples{
+path <- tempfile("git2rdata")
+dir.create(path)
+root <- git2r::init(path)
+git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
+write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length", stage = TRUE)
+last_commit <- auto_commit(package = "my_package", repo = root)
+cat(last_commit$message)
+}
 \seealso{
 Other version_control: \code{\link{commit}},
   \code{\link{pull}}, \code{\link{push}},
