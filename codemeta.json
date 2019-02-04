@@ -10,7 +10,7 @@
   "codeRepository": "https://github.com/inbo/git2rdata",
   "issueTracker": "https://github.com/inbo/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.0.1.9000",
+  "version": "0.0.1.9001",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -127,7 +127,7 @@
     }
   ],
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "46.351KB",
+  "fileSize": "55.578KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",

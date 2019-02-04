@@ -1,7 +1,6 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.0.1.9000
-Date: 2018-11-12
+Version: 0.0.1.9001
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
