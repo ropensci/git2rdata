@@ -151,7 +151,7 @@ commit(root, "update data")
 
 current <- list.files(workdir(root), recursive = TRUE)
 expect_identical(
-  rm_data(root = root, path = ".", type = "tsv"),
+  prune_tsv(root = root, path = "."),
   c("ignore.tsv", "staged.tsv", "untracked.tsv")
 )
 expect_identical(
@@ -170,7 +170,7 @@ expect_equal(
 
 current <- list.files(workdir(root), recursive = TRUE)
 expect_identical(
-  rm_data(root = root, path = ".", type = "yml", stage = TRUE),
+  prune_yml(root = root, path = ".", stage = TRUE),
   c("ignore.yml", "staged.yml", "untracked.yml")
 )
 expect_identical(

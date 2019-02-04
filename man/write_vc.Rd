@@ -46,6 +46,7 @@ This will create two files. The \code{".tsv"} file contains the raw data.
 The \code{".yml"} contains the meta data on the columns in YAML format.
 }
 \seealso{
-Other storage: \code{\link{read_vc}}, \code{\link{rm_data}}
+Other storage: \code{\link{prune_tsv}},
+  \code{\link{prune_yml}}, \code{\link{read_vc}}
 }
 \concept{storage}

@@ -20,7 +20,7 @@ The \code{data.frame}
 Read a \code{data.frame} from a repository
 }
 \seealso{
-Other storage: \code{\link{rm_data}},
-  \code{\link{write_vc}}
+Other storage: \code{\link{prune_tsv}},
+  \code{\link{prune_yml}}, \code{\link{write_vc}}
 }
 \concept{storage}
