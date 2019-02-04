@@ -26,6 +26,7 @@ Retrieve the most recent commit in which a file or data object existed.
 repo_path <- tempfile("git2rdata-repo")
 dir.create(repo_path)
 repo <- git2r::init(repo_path)
+git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
 auto_commit("important analysis", repo)
 Sys.sleep(1.1) # required because git doesn't handle subsecond timings
