@@ -195,16 +195,3 @@ test_that(
     expect_match(attr(mz, "meta"), "class: complex")
   }
 )
-
-old_wd <- getwd()
-setwd(tempdir())
-output <- write_vc(x = test_data, file = "test.txt", sorting = "test_Date")
-expect_true(all(file.exists(git2rdata:::clean_data_path(".", "test"))))
-expect_equal(
-  stored <- read_vc(file = "test.xls"),
-  sorted_test_data,
-  check.attributes = FALSE
-)
-expect_true(file.remove("test.tsv"))
-expect_true(file.remove("test.yml"))
-setwd(old_wd)

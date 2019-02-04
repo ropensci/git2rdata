@@ -35,15 +35,3 @@ current <- list.files(root, recursive = TRUE)
 expect_identical(rm_data(root, path = "."), character(0))
 expect_identical(list.files(root, recursive = TRUE), current)
 file.remove(file.path(root, "test.tsv"))
-
-old_wd <- getwd()
-setwd(tempdir())
-write_vc(test_data, file = "test", sorting = "test_Date")
-current <- list.files(".", recursive = TRUE, pattern = c("\\.(tsv|yml)$"))
-expect_identical(rm_data(path = ".", recursive = FALSE), "test.tsv")
-expect_identical(prune_meta(path = ".", recursive = FALSE), "test.yml")
-expect_identical(
-  list.files(".", recursive = TRUE),
-  character(0)
-)
-setwd(old_wd)
