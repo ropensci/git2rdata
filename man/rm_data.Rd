@@ -32,6 +32,30 @@ relative to \code{root}.
 \description{
 Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying metadata (\code{.yml} file). The metadata remains untouched.
 }
+\examples{
+# on file system
+root <- tempfile("git2rdata-")
+dir.create(root)
+write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+list.files(root, recursive = TRUE)
+rm_data(root, path = ".")
+list.files(root, recursive = TRUE)
+prune_meta(root, path = ".")
+list.files(root, recursive = TRUE)
+
+# on git repo
+repo_path <- tempfile("git2rdata-repo-")
+dir.create(repo_path)
+repo <- git2r::init(repo_path)
+write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
+status(repo)
+auto_commit(package = "my_package", repo)
+status(repo)
+rm_data(repo, path = ".")
+status(repo)
+prune_meta(repo, path = ".")
+status(repo)
+}
 \seealso{
 Other storage: \code{\link{prune_meta}},
   \code{\link{read_vc}}, \code{\link{write_vc}}
