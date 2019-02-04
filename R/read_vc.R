@@ -16,6 +16,7 @@ read_vc.default <- function(file, root) {
 #' @export
 #' @importFrom assertthat assert_that is.string
 #' @importFrom utils head read.table
+#' @importFrom stats setNames
 read_vc.character <- function(file, root = ".") {
   assert_that(is.string(file))
   assert_that(is.string(root))
@@ -60,7 +61,7 @@ read_vc.character <- function(file, root = ".") {
     col_type <- c(
       character = "character", factor = "character", integer = "integer",
       numeric = "numeric", logical = "logical", Date = "Date",
-      POSIXct = "POSIXct", complex = "complex"
+      POSIXct = "character", complex = "complex"
     )
   } else {
     stop("error in metadata")
@@ -69,7 +70,7 @@ read_vc.character <- function(file, root = ".") {
   raw_data <- read.table(
     file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
     dec = ".", numerals = "warn.loss", na.strings = "NA",
-    colClasses = col_type[col_classes],
+    colClasses = setNames(col_type[col_classes], col_names),
     stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
   )
 
@@ -114,6 +115,32 @@ read_vc.character <- function(file, root = ".") {
     }
   }
 
+  # reinstate POSIXct
+  col_posix <- which(col_classes == "POSIXct")
+  tz_rows <- grep("^ {4}timezone: .*$", meta_data)
+  tz_value <- gsub("^ {4}timezone: (.*)$", "\\1", meta_data[tz_rows])
+  if (length(col_posix)) {
+    if (optimize) {
+      origin_rows <- grep("^ {4}origin: .*$", meta_data)
+      origin_rows <- origin_rows[origin_rows %in% (meta_cols[col_posix] + 2)]
+      origin_value <- gsub("^ {4}origin: (.*)$", "\\1", meta_data[origin_rows])
+      for (i in seq_along(col_posix)) {
+        raw_data[[col_posix[i]]] <- as.POSIXct(
+          raw_data[[col_posix[i]]], origin = origin_value[i], tz = tz_value[i]
+        )
+      }
+    } else {
+      format_rows <- grep("^ {4}format: .*$", meta_data)
+      format_rows <- format_rows[format_rows %in% (meta_cols[col_posix] + 2)]
+      format_value <- gsub("^ {4}format: (.*)$", "\\1", meta_data[format_rows])
+      for (i in seq_along(col_posix)) {
+        raw_data[[col_posix[i]]] <- as.POSIXct(
+          raw_data[[col_posix[i]]], format = format_value[i], tz = tz_value[i]
+        )
+      }
+    }
+  }
+
   if (optimize) {
     # reinstate logical
     col_logical <- which(col_classes == "logical")
@@ -121,18 +148,16 @@ read_vc.character <- function(file, root = ".") {
       raw_data[[id]] <- as.logical(raw_data[[id]])
     }
 
-    # reinstate POSIXct
-    col_posix <- which(col_classes == "POSIXct")
-    for (id in col_posix) {
-      raw_data[[id]] <- as.POSIXct(
-        raw_data[[id]], origin = "1970-01-01", tz = "UTC"
-      )
-    }
-
     # reinstage Date
     col_date <- which(col_classes == "Date")
-    for (id in col_date) {
-      raw_data[[id]] <- as.Date(raw_data[[id]], origin = "1970-01-01")
+    if (length(col_date)) {
+      origin_rows <- grep("^ {4}origin: .*$", meta_data)
+      origin_rows <- origin_rows[origin_rows %in% (meta_cols[col_date] + 2)]
+      origin_value <- gsub("^ {4}origin: (.*)$", "\\1", meta_data[origin_rows])
+      for (i in seq_along(col_date)) {
+        raw_data[[col_date[i]]] <-
+          as.Date(raw_data[[col_date[i]]], origin = origin_value[i])
+      }
     }
   }
 
