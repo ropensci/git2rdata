@@ -19,6 +19,7 @@
 #' files with their paths relative to `root`.
 #' @export
 #' @family storage
+#' @template example-io
 write_vc <- function(
   x, file, root = ".", sorting, override = FALSE, optimize = TRUE, ...
 ) {
