@@ -163,6 +163,9 @@ for (i in colnames(stored)) {
 }
 commit(root, "update data")
 
+expect_null(rm_data(root, path = "junk"))
+expect_null(prune_meta(root, path = "junk"))
+
 staged <- write_vc(
   test_data,
   file = "staged", root = root, stage = TRUE
@@ -184,6 +187,7 @@ expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
   "forced/force.tsv"
 )
+expect_null(rm_data(root, path = "."))
 expect_identical(
   prune_meta(root = root, path = ".", stage = FALSE),
   "forced/force.yml"
@@ -192,6 +196,7 @@ expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
   c("forced/force.tsv", "forced/force.yml")
 )
+expect_null(prune_meta(root, path = "."))
 git2r::reset(git2r::last_commit(root), reset_type = "hard", path = ".")
 
 staged <- write_vc(
