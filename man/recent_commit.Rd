@@ -2,8 +2,7 @@
 % Please edit documentation in R/recent_commit.R
 \name{recent_commit}
 \alias{recent_commit}
-\title{Most recent file change
-Retrieve the most recent commit in which a file or data object existed.}
+\title{Most recent file change}
 \usage{
 recent_commit(file, root, data = FALSE)
 }
@@ -13,16 +12,42 @@ relative path. It is relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 
-\item{data}{refers file to a file (FALSE) or a data object (TRUE). Defaults
-to FALSE}
+\item{data}{does \code{file} refers to a data object (TRUE) or to a file (FALSE).
+Defaults to FALSE.}
 }
 \value{
 a \code{data.frame} with \code{commit}, \code{author} and \code{when} for the most recent
 commit in which the file was altered
 }
 \description{
-Most recent file change
 Retrieve the most recent commit in which a file or data object existed.
+}
+\examples{
+repo_path <- tempfile("git2rdata-repo")
+dir.create(repo_path)
+repo <- git2r::init(repo_path)
+write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
+auto_commit("important analysis", repo)
+Sys.sleep(1.1) # required because git doesn't handle subsecond timings
+write_vc(iris[7:12, ], "iris2", repo, sorting = "Sepal.Length", stage = TRUE)
+auto_commit("important analysis", repo)
+Sys.sleep(1.1) # required because git doesn't handle subsecond timings
+write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
+auto_commit("important analysis", repo)
+# "iris.tsv" was last updated in the third commit
+recent_commit("iris.tsv", repo)
+# "iris.yml" was last updated in the first commit
+recent_commit("iris.yml", repo)
+# "iris2.yml" was last updated in the second commit
+recent_commit("iris2.yml", repo)
+# the data object "iris" was last updated in the third commit
+recent_commit("iris", repo, data = TRUE)
+file.remove(file.path(repo_path, "iris.tsv"))
+prune_meta(repo, ".")
+commit(repo, message = "remove iris", all = TRUE)
+# still points to the third commit as it is the latest commit in which the
+# data was present
+recent_commit("iris", repo, data = TRUE)
 }
 \seealso{
 Other version_control: \code{\link{auto_commit}},
