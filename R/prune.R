@@ -29,7 +29,7 @@ rm_data.character <- function(
   assert_that(is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   assert_that(is.string(path))
-  path <- file.path(root, path)
+  path <- file.path(root, path, fsep = "/")
   path <- normalizePath(path, winslash = "/", mustWork = FALSE)
   if (!dir.exists(path)) {
     return(invisible(NULL))
@@ -70,7 +70,8 @@ rm_data.git_repository <- function(
   assert_that(is.string(path))
   assert_that(is.flag(stage))
   type <- match.arg(type)
-  path <- file.path(workdir(root), path)
+  root_wd <- workdir(root)
+  path <- file.path(root_wd, path, fsep = "/")
   path <- normalizePath(path, winslash = "/", mustWork = FALSE)
   if (!dir.exists(path)) {
     return(invisible(NULL))
@@ -97,12 +98,12 @@ rm_data.git_repository <- function(
     ),
     all = list()
   ))
-  to_do <- to_do[!to_do %in% file.path(workdir(root), keep)]
+  to_do <- to_do[!to_do %in% file.path(root_wd, keep, fsep = "/")]
   if (length(to_do) == 0) {
     return(invisible(NULL))
   }
   file.remove(to_do)
-  to_do <- gsub(sprintf("^%s/(.*)$", workdir(root)), "\\1", to_do)
+  to_do <- gsub(sprintf("^%s/(.*)$", root_wd), "\\1", to_do)
   if (stage) {
     add(repo = root, path = to_do)
   }
@@ -139,7 +140,7 @@ prune_meta.character <- function(
   assert_that(is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   assert_that(is.string(path))
-  path <- file.path(root, path)
+  path <- file.path(root, path, fsep = "/")
   path <- normalizePath(path, winslash = "/", mustWork = FALSE)
   if (!dir.exists(path)) {
     return(invisible(NULL))
@@ -175,8 +176,9 @@ prune_meta.character <- function(
 prune_meta.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE
 ){
+  root_wd <- normalizePath(workdir(root), winslash = "/")
   assert_that(is.string(path))
-  path <- file.path(workdir(root), path)
+  path <- file.path(root_wd, path)
   path <- normalizePath(path, winslash = "/", mustWork = FALSE)
   if (!dir.exists(path)) {
     return(invisible(NULL))
@@ -206,7 +208,7 @@ prune_meta.git_repository <- function(
     changed <- unlist(status(
       root, staged = FALSE, unstaged = TRUE, untracked = FALSE, ignored = FALSE
     ))
-    changed <- gsub("\\.tsv$", ".yml", file.path(workdir(root), changed))
+    changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
     if (any(to_do %in% changed)) {
       stop("cannot remove and stage metadata when data is removed but unstaged")
     }
@@ -214,13 +216,13 @@ prune_meta.git_repository <- function(
     changed <- unlist(status(
       root, staged = TRUE, unstaged = FALSE, untracked = FALSE, ignored = FALSE
     ))
-    changed <- gsub("\\.tsv$", ".yml", file.path(workdir(root), changed))
+    changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
     if (any(to_do %in% changed)) {
       warning("data removed and staged, metadata removed but unstaged")
     }
   }
   file.remove(to_do)
-  to_do <- gsub(sprintf("^%s/(.*)$", workdir(root)), "\\1", to_do)
+  to_do <- gsub(sprintf("^%s/(.*)$", root_wd), "\\1", to_do)
 
   if (stage) {
     add(repo = root, path = to_do)

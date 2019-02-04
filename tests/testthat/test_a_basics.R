@@ -197,7 +197,7 @@ test_that(
 )
 
 old_wd <- getwd()
-setwd(tempdir(check = TRUE))
+setwd(tempdir())
 output <- write_vc(x = test_data, file = "test.txt", sorting = "test_Date")
 expect_true(all(file.exists(git2rdata:::clean_data_path(".", "test"))))
 expect_equal(
