@@ -129,7 +129,7 @@ write_vc.character <- function(
 "sorting results in ties. Add extra sorting variables to ensure small diffs."
     )
   }
-  raw_data <- raw_data[do.call(order, raw_data[sorting]), , drop = FALSE] # nolint
+  raw_data <- raw_data[do.call(order, x[sorting]), , drop = FALSE] # nolint
   write.table(
     x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
     sep = "\t", eol = "\n", na = "NA", dec = ".", row.names = FALSE,
