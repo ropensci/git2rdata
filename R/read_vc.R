@@ -1,6 +1,6 @@
 #' Read a \code{data.frame} from a repository
 #' @inheritParams write_vc
-#' @return The \code{data.frame}
+#' @return The \code{data.frame} with the file names and hashes as attributes
 #' @rdname read_vc
 #' @export
 #' @family storage
@@ -18,6 +18,7 @@ read_vc.default <- function(file, root) {
 #' @importFrom assertthat assert_that is.string
 #' @importFrom utils head read.table
 #' @importFrom stats setNames
+#' @importFrom git2r hashfile
 read_vc.character <- function(file, root = ".") {
   assert_that(is.string(file))
   assert_that(is.string(root))
@@ -162,6 +163,8 @@ read_vc.character <- function(file, root = ".") {
     }
   }
 
+  names(file) <- hashfile(file)
+  attr(raw_data, "source") <- file
   return(raw_data)
 }
 

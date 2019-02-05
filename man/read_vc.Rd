@@ -14,7 +14,7 @@ relative path. It is relative to the \code{root}.}
 Defaults to the current working directory (".").}
 }
 \value{
-The \code{data.frame}
+The \code{data.frame} with the file names and hashes as attributes
 }
 \description{
 Read a \code{data.frame} from a repository
