@@ -12,7 +12,7 @@ untracked <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = list(), unstaged = list(), untracked = names(untracked),
+    staged = list(), unstaged = list(), untracked = unname(untracked),
     ignored = list()
   ),
   check.attributes = FALSE
@@ -37,7 +37,7 @@ staged <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = names(staged), unstaged = list(), untracked = names(untracked),
+    staged = unname(staged), unstaged = list(), untracked = unname(untracked),
     ignored = list()
   ),
   check.attributes = FALSE
@@ -62,8 +62,8 @@ ignored <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = names(staged), unstaged = list(), untracked = names(untracked),
-    ignored = names(ignored)
+    staged = unname(staged), unstaged = list(), untracked = unname(untracked),
+    ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )
@@ -88,10 +88,10 @@ forced <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = c(names(forced), names(staged)),
+    staged = c(unname(forced), unname(staged)),
     unstaged = list(),
-    untracked = names(untracked),
-    ignored = names(ignored)
+    untracked = unname(untracked),
+    ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )
@@ -117,8 +117,8 @@ staged <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = list(), unstaged = "staged.tsv", untracked = names(untracked),
-    ignored = names(ignored)
+    staged = list(), unstaged = "staged.tsv", untracked = unname(untracked),
+    ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )
@@ -143,8 +143,8 @@ staged <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = "staged.tsv", unstaged = list(), untracked = names(untracked),
-    ignored = names(ignored)
+    staged = "staged.tsv", unstaged = list(), untracked = unname(untracked),
+    ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )

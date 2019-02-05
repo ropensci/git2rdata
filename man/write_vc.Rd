@@ -38,8 +38,8 @@ potentially lead to large diffs. Defaults to FALSE.}
 \item{force}{Add ignored files. Default is FALSE.}
 }
 \value{
-a named vector with the hashes of the files. The names contains the
-files with their paths relative to \code{root}.
+a named vector with the file paths relative to \code{root}. The names
+contain the hashes of the files.
 }
 \description{
 This will create two files. The \code{".tsv"} file contains the raw data.

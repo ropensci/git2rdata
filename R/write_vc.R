@@ -15,8 +15,8 @@
 #' potentially lead to large diffs. Defaults to FALSE.
 #' @param ... additional parameters used in some methods
 #' @inheritParams meta
-#' @return a named vector with the hashes of the files. The names contains the
-#' files with their paths relative to `root`.
+#' @return a named vector with the file paths relative to `root`. The names
+#' contain the hashes of the files.
 #' @export
 #' @family storage
 #' @template example-io
@@ -137,8 +137,8 @@ write_vc.character <- function(
     col.names = TRUE, fileEncoding = "UTF-8"
   )
 
-  hashes <- hashfile(file)
-  names(hashes) <- gsub(paste0("^", root, "/"), "", file)
+  hashes <- gsub(paste0("^", root, "/"), "", file)
+  names(hashes) <- hashfile(file)
 
   return(hashes)
 }
@@ -165,7 +165,7 @@ write_vc.git_repository <- function(
     return(hashes)
   }
   assert_that(is.flag(force))
-  add(root, path = names(hashes), force = force)
+  add(root, path = hashes, force = force)
   return(hashes)
 }
 

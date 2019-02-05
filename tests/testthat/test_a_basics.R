@@ -15,7 +15,7 @@ expect_is(
   "character"
 )
 expect_identical(length(output), 2L)
-expect_identical(names(output), c("test.tsv", "test.yml"))
+expect_identical(unname(output), c("test.tsv", "test.yml"))
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
 expect_equal(
   stored <- read_vc(file = "test.xls", root = root),
