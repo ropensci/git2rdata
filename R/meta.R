@@ -9,10 +9,10 @@
 #' @docType methods
 #' @family internal
 #' @examples
-#' meta(c(NA, "NA", "'NA'", '"NA"', "abc\tdef", "abc\ndef"))
+#' meta(c(NA, "'NA'", '"NA"', "abc\tdef", "abc\ndef"))
 #' meta(1:3)
 #' meta(seq(1, 3, length = 4))
-#' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")))
+#' meta(factor(c("b", NA, "NA"), levels = c("NA", "b", "c")))
 #' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")), optimize = FALSE)
 #' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE))
 #' meta(
@@ -32,11 +32,15 @@ meta <- function(x, optimize = TRUE) {
 
 #' @export
 meta.character <- function(x, optimize = TRUE) {
+  if (any(x %in% "NA")) {
+    stop(
+"NA is not allowed as character value to avoid ambiguity with missing values"
+    )
+  }
   attr(x, "meta") <- "    class: character"
   x <- gsub("\\\"", "\\\"\\\"", x)
   to_escape <- grepl("(\"|\t|\n)", x)
   x[to_escape] <- paste0("\"", x[to_escape], "\"")
-  x[x == "NA"] <- "\"NA\""
   x[is.na(x)] <- "NA"
   return(x)
 }
@@ -58,8 +62,14 @@ meta.factor <- function(x, optimize = TRUE) {
   if (isTRUE(optimize)) {
       z <- as.integer(x)
   } else {
-      z <- x
+      if (any(levels(x) %in% "NA")) {
+        stop(
+"NA is not allowed as factor level in combination with optimize = FALSE"
+        )
+      }
+      z <- meta(as.character(x), optimize = optimize)
   }
+  levels(x) <- gsub("\\\"", "\\\"\\\"", levels(x))
   sprintf(
     "    class: factor\n    levels:\n%s%s",
     paste0("        - \"", levels(x), "\"", collapse = "\n"),

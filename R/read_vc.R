@@ -81,6 +81,7 @@ read_vc.character <- function(file, root = ".") {
   if (length(col_factor)) {
     level_rows <- grep("^ {8}- .*$", meta_data)
     level_value <- gsub("^ {8}- \"?(.*?)\"?$", "\\1", meta_data[level_rows])
+    level_value <- gsub("\\\"\\\"", "\\\"", level_value)
     level_id <- cumsum(c(TRUE, diff(level_rows) > 1))
     col_factor_level <- vapply(
       seq_along(col_factor),

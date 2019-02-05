@@ -20,10 +20,10 @@ the optimized vector \code{x} with \code{meta} attribute
 data.frame.
 }
 \examples{
-meta(c(NA, "NA", "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))
+meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))
 meta(1:3)
 meta(seq(1, 3, length = 4))
-meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")))
+meta(factor(c("b", NA, "NA"), levels = c("NA", "b", "c")))
 meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")), optimize = FALSE)
 meta(factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE))
 meta(

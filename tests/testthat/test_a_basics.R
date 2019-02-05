@@ -1,4 +1,9 @@
 context("write_vc() and read_vc() on a file system")
+expect_error(meta("NA"), "NA is not allowed as character value")
+expect_error(
+  meta(factor("NA"), optimize = FALSE),
+  "NA is not allowed as factor level"
+)
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
 expect_error(read_vc(root = 1), "a 'root' of class numeric is not supported")
 root <- tempfile(pattern = "git2rdata-basic")
