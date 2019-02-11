@@ -26,8 +26,18 @@ These features are inspired by storing data in a [version control system](https:
 Install the development version
 
 ```r
-# install.package("devtools")
-devtools::install_github("inbo/git2rdata")
+# installation requires the "remotes" packages
+# install.package("remotes")
+
+# install with vignettes (recommended)
+remotes::install_github(
+  "inbo/git2rdata", 
+  build = TRUE, 
+  dependencies = TRUE, 
+  build_opts = c("--no-resave-data", "--no-manual")
+)
+# install without vignettes
+remotes::install_github("inbo/git2rdata"))
 ```
 
 ## Main usage
