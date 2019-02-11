@@ -61,6 +61,6 @@ git2rdata
 └── vignettes
 ```
 
-## Contributor Code of Conduct
+## Contributions
 
-Please note that the 'git2rdata' project is released with a [Contributor Code of Conduct](.github/CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
+Contribution to `git2rdata` are welcome. Please read our [Contributing guidelines](.github/CONTRIBUTING.md) first. The 'git2rdata' project is released with a [Contributor Code of Conduct](.github/CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
