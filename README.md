@@ -51,11 +51,20 @@ Please use the output of `citation("git2rdata")`
 - `R`: The source scripts of the [R](https://cran.r-project.org/) functions with documentation in [Roxygen](https://github.com/klutometis/roxygen) format
 - `man`: The helpfile in [Rd](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Rd-format) format
 - `testthat`: R scripts with unit tests using the [testthat](http://testthat.r-lib.org/) framework
+- `vignettes`: source code for the vignettes describing the package
+- `man-roxygen`: templates for documentation in Roxygen format
+- `pkgdown`: additional source files for the `git2rdata` [website](https://inbo.github.io/git2rdata/)
+- `.github`: guidelines and templates for contributors
+- `sticker`: sourcecode for the `git2rdata` hex sticker
 
 ```
 git2rdata
+├── .github 
 ├── man 
+├── man-roxygen 
+├── pkgdown
 ├── R
+├── sticker
 ├─┬ tests
 │ └── testthat
 └── vignettes
