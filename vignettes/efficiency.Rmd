@@ -1,0 +1,142 @@
+---
+title: "Efficiency in terms of storage and time"
+author: "Thierry Onkelinx"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Efficiency in terms of storage and time}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+par(cex = 0.5)
+```
+
+## Introduction
+
+This vignette compares storage and retrieval of data by `git2rdata` with other standard R functionality. We consider `write.table()` and `read.table()` for data stored in a plain text format. `saveRDS()` and `readRDS()` use a compressed binary format.
+
+In order to get some meaningful results, we will use the `nassCDS` dataset from the [DAAG](https://www.rdocumentation.org/packages/DAAG/versions/1.22/topics/nassCDS) package. We'll avoid the dependency on the package by directly downloading the data.
+
+```{r}
+airbag <- read.csv(
+  "https://vincentarelbundock.github.io/Rdatasets/csv/DAAG/nassCDS.csv"
+)
+airbag$dead <- airbag$dead == "dead"
+airbag$airbag <- airbag$airbag == "airbag"
+airbag$seatbelt <- airbag$seatbelt == "belted"
+airbag$dvcat <- as.ordered(airbag$dvcat)
+str(airbag)
+```
+
+```{r}
+library(git2rdata)
+root <- tempfile("git2rdata-efficient")
+dir.create(root)
+```
+
+## Data storage when writing to a file system
+
+We start by writing the dataset as is with `write.table()`, `saveRDS()`, `write_vc()` and `write_vc()` without storage optimisation. Note that `write_vc()` uses optimisation by default. Since `write_vc()` creates two files for each data set, we take their combinated file size into account.
+
+```{r}
+write.table(airbag, file.path(root, "base_R.tsv"), sep = "\t")
+base_size <- file.size(file.path(root, "base_R.tsv"))
+
+saveRDS(airbag, file.path(root, "base_R.rds"))
+rds_size <- file.size(file.path(root, "base_R.rds"))
+
+fn <- write_vc(airbag, "airbag_optimize", root, sorting = "X")
+optim_size <- sum(file.size(file.path(root, fn)))
+
+fn <- write_vc(airbag, "airbag_verbose", root, sorting = "X", optimize = FALSE)
+verbose_size <- sum(file.size(file.path(root, fn)))
+```
+
+Since the data is highly compressable, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimized version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short levels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
+
+```{r echo = FALSE}
+kable(
+  data.frame(
+    method = c("saveRDS()", "write_vc(), optimized", "write_vc(), verbose", 
+               "write.table()"),
+    file_size = c(rds_size, optim_size, verbose_size, base_size) / 2 ^ 10,
+    relative = c(rds_size, optim_size, verbose_size, base_size) / base_size
+  ),
+  caption = "Resulting file sizes (in kB) and file sizes relative to the size of write.table().",
+  digits = 2
+)
+```
+
+The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounces when the factor has a large number of levels. The optimisation fails only in the extreme cases with very short factor labels and a high number of labels.
+
+```{r echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimized, assuming 1000 observations. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
+ratio <- function(label_length = 1:20, n_levels = 9, n_obs = 1000) {
+  meta_length <- 30 + (12 + label_length) * n_levels
+  optimized <- n_obs * mean(ceiling(log10(seq_len(n_levels) + 1)))
+  verbose <- n_obs * label_length
+  (optimized + meta_length) / (verbose + meta_length)
+}
+plot(
+  2:20, ratio(2:20, 1000, 1000), type = "l", 
+  xlab = "Label length", ylab = "optimized bytes / verbose bytes", 
+  xlim = c(1, 20), ylim = c(0, 1.5))
+lines(1:20, ratio(1:20, 10, 1000), col = "blue")
+lines(1:20, ratio(1:20, 3, 1000), col = "red")
+abline(h = 1, lty = 2)
+```
+
+The effect of the number of observations is mainly due to the overhead of storing the metadata. The importance of this overhead increases when the number of observations is small.
+
+```{r echo = FALSE, fig.cap = "Effect of the number of observations on the efficiency of storing factor optimized assuming labels with 10 characters. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
+n_obs <- c(1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000)
+plot(log10(n_obs), ratio(10, 1000, n_obs), type = "l", xlim = c(0, 4), 
+  ylim = c(0, 1), xlab = "Log10 number of observations", 
+  ylab = "optimized bytes / verbose bytes")
+lines(log10(n_obs), ratio(10, 10, n_obs), col = "blue")
+lines(log10(n_obs), ratio(10, 3, n_obs), col = "red")
+abline(h = 1, lty = 2)
+```
+
+## Timings
+
+### Writing dataframes to a file
+
+The code below runs a microbenchmark on the four methods. A microbenchmark runs the code a hunderd times and yields a distribution of timings for each expression.
+
+```{r eval = file.exists("file_timings.rds")}
+library(microbenchmark)
+mb <- microbenchmark(
+  write.table = write.table(airbag, file.path(root, "base_R.tsv"), sep = "\t"),
+  saveRDS = saveRDS(airbag, file.path(root, "base_R.rds")),
+  write_vc.optim = write_vc(airbag, "airbag_optimize", root, sorting = "X"),
+  write_vc.verbose = write_vc(airbag, "airbag_verbose", root, sorting = "X", 
+                              optimize = FALSE)
+)
+mb$time <- mb$time / 1e6
+q10 <- aggregate(time ~ expr, data = mb, quantile, prob = 0.1)
+q50 <- aggregate(time ~ expr, data = mb, quantile, prob = 0.5)
+q90 <- aggregate(time ~ expr, data = mb, quantile, prob = 0.9)
+timings <- data.frame(
+  method = q50$expr,
+  q10 = q10$time,
+  median = q50$time,
+  q90 = q90$time
+)
+saveRDS(timings[order(timings$median), ], "file_timings.rds")
+```
+
+`write_vc()` takes 75% to 100% more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. When overwriting existing data, the new data is checked against the existing metadata.
+
+```{r echo = FALSE}
+timings <- readRDS("file_timings.rds")
+kable(timings, row.names = FALSE, digits = 0,
+      caption = "median, 10% and 90% quantiles of time (in milliseconds) needed to write the dataframe using the different methods.")
+```
+
