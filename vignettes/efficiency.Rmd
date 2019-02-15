@@ -222,6 +222,8 @@ abline(h = 1, col = "red", lty = 2)
 
 The code below runs a microbenchmark on the four methods. A microbenchmark runs the code a hunderd times and yields a distribution of timings for each expression.
 
+### Writing data
+
 ```{r get_file_timings, eval = system.file("efficiency", "file_timings.rds", package = "git2rdata") == ""}
 library(microbenchmark)
 mb <- microbenchmark(
@@ -246,11 +248,45 @@ if (system.file("efficiency", "file_timings.rds", package = "git2rdata") == "") 
 
 `write_vc()` takes 75% to 100% more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. When overwriting existing data, the new data is checked against the existing metadata.
 
-```{r plot_file_timings, echo = FALSE, fig.cap = "Density of the timings for the different methods. black: saveRDS(), red: write.table(), green: write_vc(), optimised, blue: write_vc(), verbose."}
+```{r plot_file_timings, echo = FALSE, fig.cap = "Density of the write timings for the different methods. black: saveRDS(), red: write.table(), green: write_vc(), optimised, blue: write_vc(), verbose."}
 plot(density(mb$time[mb$expr == "saveRDS"]), xlim = c(90, 420), 
      xlab = "Time (in milliseconds)", ylab = "Density", 
      main = "Density of timings")
 lines(density(mb$time[mb$expr == "write.table"]), col = "red")
 lines(density(mb$time[mb$expr == "write_vc.optim"]), col = "green")
 lines(density(mb$time[mb$expr == "write_vc.verbose"]), col = "blue")
+```
+
+### Reading data
+
+```{r get_read_timings, eval = system.file("efficiency", "read_timings.rds", package = "git2rdata") == ""}
+mb <- microbenchmark(
+  read.table = read.table(file.path(root, "base_R.tsv"), header = TRUE, 
+                          sep = "\t"),
+  readRDS = readRDS(file.path(root, "base_R.rds")),
+  read_vc.optim = read_vc("airbag_optimise", root),
+  read_vc.verbose = read_vc("airbag_verbose", root)
+)
+mb$time <- mb$time / 1e6
+```
+
+```{r store_read_timings, echo = FALSE}
+if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") {
+  saveRDS(mb, file.path("..", "inst", "efficiency", "read_timings.rds"))
+} else {
+  mb <- readRDS(
+    system.file("efficiency", "read_timings.rds", package = "git2rdata")
+  )
+}
+```
+
+The timings on reading the data is is more extreme story. Reading the binary format takes about 8% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 70% of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
+
+```{r plot_read_timings, echo = FALSE, fig.cap = "Density of the read timings for the different methods. black: readRDS(), red: read.table(), green: read_vc(), optimised, blue: read_vc(), verbose."}
+plot(density(mb$time[mb$expr == "readRDS"]), xlim = c(0, 250), 
+     xlab = "Time (in milliseconds)", ylab = "Density", 
+     main = "Density of timings")
+lines(density(mb$time[mb$expr == "read.table"]), col = "red")
+lines(density(mb$time[mb$expr == "read_vc.optim"]), col = "green")
+lines(density(mb$time[mb$expr == "read_vc.verbose"]), col = "blue")
 ```
