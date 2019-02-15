@@ -40,14 +40,14 @@ read_vc.character <- function(file, root = ".") {
       all(head(end_quote, -1) < tail(start_quote, -1)),
       msg = "Mismatching quotes in metadata"
     )
-    for (i in rev(seq_along(start_quote))) {
+    relevant <- start_quote != end_quote
+    for (i in rev(which(relevant))) {
       meta_data <- c(
         meta_data[seq_len(start_quote[i] - 1)],
         paste(meta_data[start_quote[i]:end_quote[i]], collapse = "\n"),
         meta_data[(end_quote[i] + 1):length(meta_data)]
       )
     }
-    meta_data
   }
   meta_cols <- grep("^\\S*:$", meta_data)
   col_names <- gsub(":", "", meta_data[meta_cols])
