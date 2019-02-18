@@ -3,7 +3,7 @@
 #' \code{\link{write_vc}} applies this function automatically on your
 #' data.frame.
 #' @param x the vector
-#' @param optimize recode the data to get smaller text files. Defaults to TRUE
+#' @param ... further arguments to the methods
 #' @return the optimized vector `x` with `meta` attribute
 #' @export
 #' @docType methods
@@ -26,12 +26,12 @@
 #' meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"), optimize = FALSE)
 #' meta(as.Date("2019-02-01"))
 #' meta(as.Date("2019-02-01"), optimize = FALSE)
-meta <- function(x, optimize = TRUE) {
+meta <- function(x, ...) {
   UseMethod("meta", x)
 }
 
 #' @export
-meta.character <- function(x, optimize = TRUE) {
+meta.character <- function(x, ...) {
   if (any(x %in% "NA")) {
     stop(
 "NA is not allowed as character value to avoid ambiguity with missing values"
@@ -46,19 +46,21 @@ meta.character <- function(x, optimize = TRUE) {
 }
 
 #' @export
-meta.integer <- function(x, optimize = TRUE) {
+meta.integer <- function(x, ...) {
   attr(x, "meta") <- "    class: integer"
   return(x)
 }
 
 #' @export
-meta.numeric <- function(x, optimize = TRUE) {
+meta.numeric <- function(x, ...) {
   attr(x, "meta") <- "    class: numeric"
   return(x)
 }
 
 #' @export
-meta.factor <- function(x, optimize = TRUE) {
+#' @rdname meta
+#' @param optimize recode the data to get smaller text files. Defaults to TRUE
+meta.factor <- function(x, optimize = TRUE, ...) {
   if (isTRUE(optimize)) {
       z <- as.integer(x)
   } else {
@@ -79,7 +81,8 @@ meta.factor <- function(x, optimize = TRUE) {
 }
 
 #' @export
-meta.logical <- function(x, optimize = TRUE){
+#' @rdname meta
+meta.logical <- function(x, optimize = TRUE, ...){
   if (isTRUE(optimize)) {
       x <- as.integer(x)
   }
@@ -88,13 +91,14 @@ meta.logical <- function(x, optimize = TRUE){
 }
 
 #' @export
-meta.complex <- function(x, optimize = TRUE) {
+meta.complex <- function(x, ...) {
   attr(x, "meta") <- "    class: complex"
   return(x)
 }
 
 #' @export
-meta.POSIXct <- function(x, optimize = TRUE) {
+#' @rdname meta
+meta.POSIXct <- function(x, optimize = TRUE, ...) {
   if (isTRUE(optimize)) {
     z <- unclass(x)
     attr(z, "meta") <-
@@ -108,7 +112,8 @@ meta.POSIXct <- function(x, optimize = TRUE) {
 }
 
 #' @export
-meta.Date <- function(x, optimize = TRUE){
+#' @rdname meta
+meta.Date <- function(x, optimize = TRUE, ...){
   if (isTRUE(optimize)) {
     z <- as.integer(x)
     attr(z, "meta") <-

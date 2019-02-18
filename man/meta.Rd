@@ -3,12 +3,26 @@
 \docType{methods}
 \name{meta}
 \alias{meta}
+\alias{meta.factor}
+\alias{meta.logical}
+\alias{meta.POSIXct}
+\alias{meta.Date}
 \title{Optimize a vector for storage as plain text and add meta data}
 \usage{
-meta(x, optimize = TRUE)
+meta(x, ...)
+
+\method{meta}{factor}(x, optimize = TRUE, ...)
+
+\method{meta}{logical}(x, optimize = TRUE, ...)
+
+\method{meta}{POSIXct}(x, optimize = TRUE, ...)
+
+\method{meta}{Date}(x, optimize = TRUE, ...)
 }
 \arguments{
 \item{x}{the vector}
+
+\item{...}{further arguments to the methods}
 
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
 }
