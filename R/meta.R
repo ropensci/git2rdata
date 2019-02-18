@@ -31,17 +31,20 @@ meta <- function(x, ...) {
 }
 
 #' @export
-meta.character <- function(x, ...) {
-  if (any(x %in% "NA")) {
-    stop(
-"NA is not allowed as character value to avoid ambiguity with missing values"
-    )
+#' @rdname meta
+#' @importFrom assertthat assert_that is.string noNA
+meta.character <- function(x, na = "NA", ...) {
+  assert_that(is.string(na), noNA(na), no_whitespace(na))
+  if (na %in% x) {
+    stop("one of the strings matches the NA string ('", na, "')
+Please use a different NA string or consider using a factor.")
   }
   attr(x, "meta") <- "    class: character"
+  attr(x, "na_string") <- na
   x <- gsub("\\\"", "\\\"\\\"", x)
   to_escape <- grepl("(\"|\t|\n)", x)
   x[to_escape] <- paste0("\"", x[to_escape], "\"")
-  x[is.na(x)] <- "NA"
+  x[is.na(x)] <- na
   return(x)
 }
 
@@ -60,16 +63,18 @@ meta.numeric <- function(x, ...) {
 #' @export
 #' @rdname meta
 #' @param optimize recode the data to get smaller text files. Defaults to TRUE
-meta.factor <- function(x, optimize = TRUE, ...) {
+#' @inheritParams utils::write.table
+meta.factor <- function(x, optimize = TRUE, na = "NA", ...) {
   if (isTRUE(optimize)) {
-      z <- as.integer(x)
+    z <- as.integer(x)
+    na <- "NA"
   } else {
-      if (any(levels(x) %in% "NA")) {
-        stop(
-"NA is not allowed as factor level in combination with optimize = FALSE"
-        )
-      }
-      z <- meta(as.character(x), optimize = optimize)
+    assert_that(is.string(na), noNA(na), no_whitespace(na))
+    if (na %in% levels(x)) {
+      stop("one of the levels matches the NA string ('", na, "').
+Please use a different NA string or use optimize = TRUE")
+    }
+    z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
   levels(x) <- gsub("\\\"", "\\\"\\\"", levels(x))
   sprintf(
@@ -77,6 +82,7 @@ meta.factor <- function(x, optimize = TRUE, ...) {
     paste0("        - \"", levels(x), "\"", collapse = "\n"),
     ifelse(is.ordered(x), "\n    ordered", "")
   ) -> attr(z, "meta")
+  attr(z, "na_string") <- na
   return(z)
 }
 
@@ -84,7 +90,7 @@ meta.factor <- function(x, optimize = TRUE, ...) {
 #' @rdname meta
 meta.logical <- function(x, optimize = TRUE, ...){
   if (isTRUE(optimize)) {
-      x <- as.integer(x)
+    x <- as.integer(x)
   }
   attr(x, "meta") <- "    class: logical"
   return(x)
@@ -102,11 +108,11 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
   if (isTRUE(optimize)) {
     z <- unclass(x)
     attr(z, "meta") <-
-      "    class: POSIXct\n    origin: 1970-01-01 00:00:00\n    timezone: UTC\n"
+      "    class: POSIXct\n    origin: 1970-01-01 00:00:00\n    timezone: UTC"
   } else {
     z <- format(x, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
     attr(z, "meta") <-
-      "    class: POSIXct\n    format: %Y-%m-%dT%H:%M:%SZ\n    timezone: UTC\n"
+      "    class: POSIXct\n    format: %Y-%m-%dT%H:%M:%SZ\n    timezone: UTC"
   }
   return(z)
 }
@@ -124,4 +130,13 @@ meta.Date <- function(x, optimize = TRUE, ...){
       "    class: Date\n    format: %Y-%m-%d\n"
   }
   return(z)
+}
+
+no_whitespace <- function(na) {
+  !grepl("\\s", na)
+}
+
+#' @importFrom assertthat on_failure<-
+on_failure(no_whitespace) <- function(call, env) {
+  paste0(deparse(call$na), " contains whitespace characters")
 }

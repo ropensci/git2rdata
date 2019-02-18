@@ -3,6 +3,7 @@
 \docType{methods}
 \name{meta}
 \alias{meta}
+\alias{meta.character}
 \alias{meta.factor}
 \alias{meta.logical}
 \alias{meta.POSIXct}
@@ -11,7 +12,9 @@
 \usage{
 meta(x, ...)
 
-\method{meta}{factor}(x, optimize = TRUE, ...)
+\method{meta}{character}(x, na = "NA", ...)
+
+\method{meta}{factor}(x, optimize = TRUE, na = "NA", ...)
 
 \method{meta}{logical}(x, optimize = TRUE, ...)
 
@@ -23,6 +26,8 @@ meta(x, ...)
 \item{x}{the vector}
 
 \item{...}{further arguments to the methods}
+
+\item{na}{the string to use for missing values in the data.}
 
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
 }
