@@ -7,6 +7,8 @@ navbar:
     menu:
     - text: Introduction
       href: articles/storing_dataframe.html
+    - text: Efficiency
+      href: articles/efficiency.html
   - text: Functions
     href: reference/index.html
   - text: Contributing
