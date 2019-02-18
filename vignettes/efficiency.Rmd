@@ -55,7 +55,7 @@ str(airbag)
 
 ### On a file system
 
-We start by writing the dataset as is with `write.table()`, `saveRDS()`, `write_vc()` and `write_vc()` without storage optimisation. Note that `write_vc()` uses optimisation by default. Since `write_vc()` creates two files for each data set, we take their combinated file size into account.
+We start by writing the dataset as is with `write.table()`, `saveRDS()`, `write_vc()` and `write_vc()` without storage optimization. Note that `write_vc()` uses optimization by default. Since `write_vc()` creates two files for each data set, we take their combinated file size into account.
 
 ```{r set_tmp_dir}
 library(git2rdata)
@@ -70,19 +70,19 @@ base_size <- file.size(file.path(root, "base_R.tsv"))
 saveRDS(airbag, file.path(root, "base_R.rds"))
 rds_size <- file.size(file.path(root, "base_R.rds"))
 
-fn <- write_vc(airbag, "airbag_optimise", root, sorting = "X")
+fn <- write_vc(airbag, "airbag_optimize", root, sorting = "X")
 optim_size <- sum(file.size(file.path(root, fn)))
 
-fn <- write_vc(airbag, "airbag_verbose", root, sorting = "X", optimise = FALSE)
+fn <- write_vc(airbag, "airbag_verbose", root, sorting = "X", optimize = FALSE)
 verbose_size <- sum(file.size(file.path(root, fn)))
 ```
 
-Since the data is highly compressable, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimised and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimised version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short levels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
+Since the data is highly compressable, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimized version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short levels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
 
 ```{r table_file_size, echo = FALSE}
 kable(
   data.frame(
-    method = c("saveRDS()", "write_vc(), optimised", "write_vc(), verbose", 
+    method = c("saveRDS()", "write_vc(), optimized", "write_vc(), verbose", 
                "write.table()"),
     file_size = c(rds_size, optim_size, verbose_size, base_size) / 2 ^ 10,
     relative = c(rds_size, optim_size, verbose_size, base_size) / base_size
@@ -92,18 +92,18 @@ kable(
 )
 ```
 
-The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounces when the factor has a large number of levels. The optimisation fails only in the extreme cases with very short factor labels and a high number of labels.
+The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounces when the factor has a large number of levels. The optimization fails only in the extreme cases with very short factor labels and a high number of labels.
 
-```{r factor_label_length, echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimised, assuming 1000 observations. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
+```{r factor_label_length, echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimized, assuming 1000 observations. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
 ratio <- function(label_length = 1:20, n_levels = 9, n_obs = 1000) {
   meta_length <- 30 + (12 + label_length) * n_levels
-  optimised <- n_obs * mean(ceiling(log10(seq_len(n_levels) + 1)))
+  optimized <- n_obs * mean(ceiling(log10(seq_len(n_levels) + 1)))
   verbose <- n_obs * label_length
-  (optimised + meta_length) / (verbose + meta_length)
+  (optimized + meta_length) / (verbose + meta_length)
 }
 plot(
   2:20, ratio(2:20, 1000, 1000), type = "l", 
-  xlab = "Label length", ylab = "optimised bytes / verbose bytes", 
+  xlab = "Label length", ylab = "optimized bytes / verbose bytes", 
   xlim = c(1, 20), ylim = c(0, 1.5))
 lines(1:20, ratio(1:20, 10, 1000), col = "blue")
 lines(1:20, ratio(1:20, 3, 1000), col = "red")
@@ -112,11 +112,11 @@ abline(h = 1, lty = 2)
 
 The effect of the number of observations is mainly due to the overhead of storing the metadata. The importance of this overhead increases when the number of observations is small.
 
-```{r factor_observations, echo = FALSE, fig.cap = "Effect of the number of observations on the efficiency of storing factor optimised assuming labels with 10 characters. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
+```{r factor_observations, echo = FALSE, fig.cap = "Effect of the number of observations on the efficiency of storing factor optimized assuming labels with 10 characters. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
 n_obs <- c(1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000)
 plot(log10(n_obs), ratio(10, 1000, n_obs), type = "l", xlim = c(0, 4), 
   ylim = c(0, 1), xlab = "Log10 number of observations", 
-  ylab = "optimised bytes / verbose bytes")
+  ylab = "optimized bytes / verbose bytes")
 lines(log10(n_obs), ratio(10, 10, n_obs), col = "blue")
 lines(log10(n_obs), ratio(10, 3, n_obs), col = "red")
 abline(h = 1, lty = 2)
@@ -168,15 +168,15 @@ repo_size <- replicate(
     write.table(this_sorted, fn_wts, sep = "\t")
     fn_rds <- file.path(workdir(repo_rds), "base_R.rds")
     saveRDS(this, fn_rds)
-    fn_wvco <- write_vc(this, "airbag_optimise", repo_wvco, sorting = "X")
+    fn_wvco <- write_vc(this, "airbag_optimize", repo_wvco, sorting = "X")
     fn_wvcv <- write_vc(
-      this, "airbag_verbose", repo_wvcv, sorting = "X", optimise = FALSE
+      this, "airbag_verbose", repo_wvcv, sorting = "X", optimize = FALSE
     )
     c(
       write.table = commit_and_size(repo_wt, fn_wt),
       write.table.sorted = commit_and_size(repo_wts, fn_wts),
       saveRDS = commit_and_size(repo_rds, fn_rds), 
-      write_vc.optimised = commit_and_size(repo_wvco, fn_wvco), 
+      write_vc.optimized = commit_and_size(repo_wvco, fn_wvco), 
       write_vc.verbose = commit_and_size(repo_wvcv, fn_wvcv)
     )
 })
@@ -194,22 +194,22 @@ if (system.file("efficiency", "git_size.rds", package = "git2rdata") == "") {
 
 Each version of the data has on purpose a random order of observations and variables. This is what would happen in a worst case scenario as it would generate the largest posibble diff. We also test `write.table()` with a stable ordering of the observations and variables. 
 
-The randomised `write.table()` yields the largest git repository, converging to about 6.5 times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a 25% reduction in repostory size compared to the randomised `write.table()`, but still almost 5 times larger than the sorted `write.table()`. Note that the gain of storing binary files in git repository is much smaller than the gain in individual file size because the git repository will be compressed too. `write_vc()` requires 79% (optimised) to 85% (verbose) of the repository size of the sorted `write.table()`. The gains are smaller at the start of the history (optimised 83% and verbose 88%) due to the overhead of storing the metadata.
+The randomised `write.table()` yields the largest git repository, converging to about 6.5 times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a 25% reduction in repostory size compared to the randomised `write.table()`, but still is almost 5 times larger than the sorted `write.table()`. Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because the git repository will be compressed too. The optimized `write_vc()` starts at 81% converges toward 74%, the verbose version starts at 88% and converges towards 99%. There is a clear gain when using `write_vc()` with optimization in terms of storage size and the availability of metadata. The verbose option of `write_vc()` lack the gain in terms of storage size but still has the metadata advantange.
 
-```{r plot_git_size, echo = FALSE, fig.cap = "Size of the git history using the different storage methods. black: saveRDS(), solid red: write.table(), dashed red: sorted write.table() blue: write_vc(), verbose, green: write_vc(), optimised."}
+```{r plot_git_size, echo = FALSE, fig.cap = "Size of the git history using the different storage methods. black: saveRDS(), solid red: write.table(), dashed red: sorted write.table() blue: write_vc(), verbose, green: write_vc(), optimized."}
 plot(repo_size["saveRDS", ], type = "l", ylim = c(0, max(repo_size)), 
      xlab = "commit", ylab = "repo size in KiB")
 lines(repo_size["write.table", ], col = "red")
 lines(repo_size["write.table.sorted", ], col = "red", lty = 2)
-lines(repo_size["write_vc.optimised", ], col = "green")
+lines(repo_size["write_vc.optimized", ], col = "green")
 lines(repo_size["write_vc.verbose", ], col = "blue")
 ```
 
-```{r plot_rel_git_size, echo = FALSE, fig.cap = "Relative size of the git repository when compared to write.table(). black: saveRDS(), solid red: write.table(), dashed red: sorted write.table() blue: write_vc(), verbose, green: write_vc(), optimised."}
+```{r plot_rel_git_size, echo = FALSE, fig.cap = "Relative size of the git repository when compared to write.table(). black: saveRDS(), solid red: write.table(), dashed red: sorted write.table() blue: write_vc(), verbose, green: write_vc(), optimized."}
 plot(repo_size["saveRDS", ] / repo_size["write.table.sorted", ], type = "l", 
      xlab = "commit", ylab = "relative repo size compared to sorted write.table()", 
      ylim = c(0.5, 7))
-lines(repo_size["write_vc.optimised", ] / repo_size["write.table.sorted", ], 
+lines(repo_size["write_vc.optimized", ] / repo_size["write.table.sorted", ], 
       col = "green")
 lines(repo_size["write_vc.verbose", ] / repo_size["write.table.sorted", ], 
       col = "blue")
@@ -229,9 +229,9 @@ library(microbenchmark)
 mb <- microbenchmark(
   write.table = write.table(airbag, file.path(root, "base_R.tsv"), sep = "\t"),
   saveRDS = saveRDS(airbag, file.path(root, "base_R.rds")),
-  write_vc.optim = write_vc(airbag, "airbag_optimise", root, sorting = "X"),
+  write_vc.optim = write_vc(airbag, "airbag_optimize", root, sorting = "X"),
   write_vc.verbose = write_vc(airbag, "airbag_verbose", root, sorting = "X", 
-                              optimise = FALSE)
+                              optimize = FALSE)
 )
 mb$time <- mb$time / 1e6
 ```
@@ -250,7 +250,9 @@ if (system.file("efficiency", "file_timings.rds", package = "git2rdata") == "") 
 
 ```{r plot_file_timings, echo = FALSE, fig.cap = "Boxplot of the write timings for the different methods."}
 mb$expr <- reorder(mb$expr, mb$time, FUN = median)
-boxplot(time ~ expr, data = mb, ylab = "Time (in milliseconds)")
+levels(mb$expr) <- gsub("write_vc\\.", "write_vc\n", levels(mb$expr))
+boxplot(time ~ expr, data = mb, 
+        ylim = c(0, max(mb$time)), ylab = "Time (in milliseconds)")
 ```
 
 ### Reading data
@@ -260,7 +262,7 @@ mb <- microbenchmark(
   read.table = read.table(file.path(root, "base_R.tsv"), header = TRUE, 
                           sep = "\t"),
   readRDS = readRDS(file.path(root, "base_R.rds")),
-  read_vc.optim = read_vc("airbag_optimise", root),
+  read_vc.optim = read_vc("airbag_optimize", root),
   read_vc.verbose = read_vc("airbag_verbose", root)
 )
 mb$time <- mb$time / 1e6
@@ -276,10 +278,11 @@ if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") 
 }
 ```
 
-The timings on reading the data is is more extreme story. Reading the binary format takes about 8% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 70% of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
+The timings on reading the data is is more extreme story. Reading the binary format takes about 7% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 69% (optimized) and 81% (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
 
 ```{r plot_read_timings, echo = FALSE, fig.cap = "Boxplots for the read timings for the different methods."}
 mb$expr <- reorder(mb$expr, mb$time, FUN = median)
+levels(mb$expr) <- gsub("read_vc\\.", "read_vc\n", levels(mb$expr))
 boxplot(time ~ expr, data = mb, ylim = c(0, max(mb$time)), 
         ylab = "Time (in milliseconds)")
 ```
