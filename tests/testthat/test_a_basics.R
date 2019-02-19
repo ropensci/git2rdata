@@ -203,3 +203,52 @@ test_that(
     expect_match(attr(mz, "meta"), "class: complex")
   }
 )
+
+
+test_that("user specified na strings work", {
+  x <- data.frame(
+    a = c(NA, "NA", "b"),
+    b = factor(c("NA", NA, "d")),
+    z = c(1:2, NA),
+    y = c(pi, NA, Inf),
+    stringsAsFactors = FALSE
+  )
+  root <- tempfile("na_string")
+  dir.create(root)
+  expect_error(
+    write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE),
+    "one of the strings matches the NA string"
+  )
+  expect_is(
+    fn <- write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
+                   na = "junk"),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root),
+    x[order(x$a), ],
+    check.attributes = FALSE
+  )
+  expect_identical(
+    grep("junk", readLines(file.path(root, fn[1]))),
+    2:4
+  )
+  expect_error(
+    fn <- write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
+                   na = "different"),
+    "old data has 'junk' as NA string"
+  )
+  expect_is(
+    fn <- write_vc(x, "test_na_string_optimize", root, "a", na = "junk"),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root),
+    x[order(x$a), ],
+    check.attributes = FALSE
+  )
+  expect_identical(
+    grep("junk", readLines(file.path(root, fn[1]))),
+    2:4
+  )
+})

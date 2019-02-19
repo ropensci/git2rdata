@@ -20,8 +20,7 @@ read_vc.default <- function(file, root) {
 #' @importFrom stats setNames
 #' @importFrom git2r hashfile
 read_vc.character <- function(file, root = ".") {
-  assert_that(is.string(file))
-  assert_that(is.string(root))
+  assert_that(is.string(file), is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
 
   file <- clean_data_path(root = root, file = file)
@@ -30,7 +29,10 @@ read_vc.character <- function(file, root = ".") {
     msg = "raw file and/or meta file missing"
   )
 
+  # read the metadata
   meta_data <- readLines(file["meta_file"])
+
+  # glue factor labels with line breaks
   start_quote <- grep("^        - \"", meta_data)
   if (length(start_quote) > 0) {
     end_quote <- grep("^( {8}- \".*|(?! {8}- ).*)\"$", meta_data, perl = TRUE)
@@ -49,6 +51,8 @@ read_vc.character <- function(file, root = ".") {
       )
     }
   }
+
+  # extract columns and their class
   meta_cols <- grep("^\\S*:$", meta_data)
   col_names <- gsub(":", "", meta_data[meta_cols])
   if (tail(meta_data, 1) == "optimized") {
@@ -69,9 +73,15 @@ read_vc.character <- function(file, root = ".") {
     stop("error in metadata")
   }
   col_classes <- gsub(" {4}class: (.*)", "\\1", meta_data[meta_cols + 1])
+
+  # get the NA string
+  na_string <- grep("^NA string: \\S*", meta_data)
+  na_string <- gsub("^NA string: (\\S*)", "\\1", meta_data[na_string])
+
+  # read the raw data
   raw_data <- read.table(
     file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
-    dec = ".", numerals = "warn.loss", na.strings = "NA",
+    dec = ".", numerals = "warn.loss", na.strings = na_string,
     colClasses = setNames(col_type[col_classes], col_names),
     stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
   )
@@ -109,6 +119,7 @@ read_vc.character <- function(file, root = ".") {
       }
     } else {
       for (id in names(col_factor_level)) {
+        raw_data[[id]] == na_string[id]
         raw_data[[id]] <- factor(
           raw_data[[id]],
           levels = col_factor_level[[id]],

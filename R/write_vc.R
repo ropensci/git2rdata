@@ -15,20 +15,22 @@
 #' potentially lead to large diffs. Defaults to FALSE.
 #' @param ... additional parameters used in some methods
 #' @inheritParams meta
+#' @inheritParams utils::write.table
 #' @return a named vector with the file paths relative to `root`. The names
 #' contain the hashes of the files.
 #' @export
 #' @family storage
 #' @template example-io
 write_vc <- function(
-  x, file, root = ".", sorting, override = FALSE, optimize = TRUE, ...
+  x, file, root = ".", sorting, override = FALSE, optimize = TRUE, na = "NA",
+  ...
 ) {
   UseMethod("write_vc", root)
 }
 
 #' @export
 write_vc.default <- function(
-  x, file, root, sorting, override = FALSE, optimize = TRUE, ...
+  x, file, root, sorting, override = FALSE, optimize = TRUE, na = "NA", ...
 ) {
   stop("a 'root' of class ", class(root), " is not supported")
 }
@@ -38,11 +40,13 @@ write_vc.default <- function(
 #' @importFrom utils tail write.table
 #' @importFrom git2r hashfile
 write_vc.character <- function(
-  x, file, root = ".", sorting, override = FALSE, optimize = TRUE, ...
+  x, file, root = ".", sorting, override = FALSE, optimize = TRUE, na = "NA",
+  ...
 ){
-  assert_that(inherits(x, "data.frame"))
-  assert_that(is.string(file))
-  assert_that(is.string(root))
+  assert_that(
+    inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
+    noNA(na), no_whitespace(na), is.flag(override), is.flag(optimize)
+  )
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   if (!missing(sorting)) {
     assert_that(is.character(sorting))
@@ -55,8 +59,6 @@ write_vc.character <- function(
       msg = "use only variables of 'x' for sorting"
     )
   }
-  assert_that(is.flag(override))
-  assert_that(is.flag(optimize))
 
   file <- clean_data_path(root = root, file = file)
   if (!file.exists(dirname(file["raw_file"]))) {
@@ -65,7 +67,7 @@ write_vc.character <- function(
 
   # prepare metadata
   raw_data <- as.data.frame(
-    lapply(x, meta, optimize = optimize),
+    lapply(x, meta, optimize = optimize, na = na),
     stringsAsFactors = FALSE
   )
   metadata <- paste(
@@ -75,15 +77,15 @@ write_vc.character <- function(
   )
   names(metadata) <- colnames(x)
   if (override || !file.exists(file["meta_file"])) {
-    #write new metadata
+    # write new metadata
     if (missing(sorting)) {
       stop("new metadata requires 'sorting'")
     }
     metadata[sorting] <- paste0(metadata[sorting], "\n    sort")
     if (optimize) {
-      store_metadata <- c(metadata, "optimized")
+      store_metadata <- c(metadata, sprintf("NA string: %s\noptimized", na))
     } else {
-      store_metadata <- c(metadata, "verbose")
+      store_metadata <- c(metadata, sprintf("NA string: %s\nverbose", na))
     }
     writeLines(store_metadata, file["meta_file"])
   } else {
@@ -99,10 +101,14 @@ write_vc.character <- function(
     } else {
       stop("error in existing metadata")
     }
+    old_na <- gsub("^NA string: (\\S*)$", "\\1", tail(old_metadata, 2)[1])
+    if (na != old_na) {
+      stop("old data has '", old_na, "' as NA string")
+    }
     meta_cols <- grep("^\\S*:$", old_metadata)
     positions <- cbind(
       start = meta_cols,
-      end = c(tail(meta_cols, -1) - 1, length(old_metadata) - 1)
+      end = c(tail(meta_cols, -1) - 1, length(old_metadata) - 2)
     )
     old_metadata <- apply(
       positions,
@@ -133,7 +139,7 @@ write_vc.character <- function(
   raw_data <- raw_data[do.call(order, x[sorting]), , drop = FALSE] # nolint
   write.table(
     x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
-    sep = "\t", eol = "\n", na = "NA", dec = ".", row.names = FALSE,
+    sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
     col.names = TRUE, fileEncoding = "UTF-8"
   )
 
@@ -153,18 +159,17 @@ setOldClass("git_repository")
 #' @importFrom git2r workdir add
 #' @importFrom assertthat assert_that is.flag
 write_vc.git_repository <- function(
-  x, file, root, sorting, override = FALSE, optimize = TRUE, ...,
+  x, file, root, sorting, override = FALSE, optimize = TRUE, na = "NA", ...,
   stage = FALSE, force = FALSE
 ){
+  assert_that(is.flag(stage), is.flag(force))
   hashes <- write_vc(
     x = x, file = file, root = workdir(root), sorting = sorting,
-    override = override, optimize = optimize, ...
+    override = override, optimize = optimize, na = na, ...
   )
-  assert_that(is.flag(stage))
   if (!stage) {
     return(hashes)
   }
-  assert_that(is.flag(force))
   add(root, path = hashes, force = force)
   return(hashes)
 }

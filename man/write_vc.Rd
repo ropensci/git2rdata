@@ -6,10 +6,10 @@
 \title{Write a \code{data.frame} to a git repository}
 \usage{
 write_vc(x, file, root = ".", sorting, override = FALSE,
-  optimize = TRUE, ...)
+  optimize = TRUE, na = "NA", ...)
 
 \method{write_vc}{git_repository}(x, file, root, sorting,
-  override = FALSE, optimize = TRUE, ..., stage = FALSE,
+  override = FALSE, optimize = TRUE, na = "NA", ..., stage = FALSE,
   force = FALSE)
 }
 \arguments{
@@ -30,6 +30,8 @@ variables are added or variables are deleted. Setting this to TRUE can
 potentially lead to large diffs. Defaults to FALSE.}
 
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
+
+\item{na}{the string to use for missing values in the data.}
 
 \item{...}{additional parameters used in some methods}
 
