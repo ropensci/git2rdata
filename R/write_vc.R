@@ -190,7 +190,7 @@ compare_meta <- function(new, old) {
   common_variables <- common_variables[old_class == new_class]
   old_class <- old_class[old_class == new_class]
   for (id in common_variables[old_class == "factor"]) {
-    if (old[[id]]$ordered != old[[id]]$ordered) {
+    if (old[[id]]$ordered != new[[id]]$ordered) {
       problems <- c(
         problems,
         sprintf(

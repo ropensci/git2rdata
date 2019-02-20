@@ -155,6 +155,17 @@ expect_error(
   ),
   "new data uses different variables for sorting"
 )
+test_changed <- test_data
+test_changed$test_ordered <- factor(
+  test_changed$test_ordered,
+  levels = levels(test_changed$test_ordered),
+  ordered = FALSE
+)
+expect_error(
+  suppressWarnings(write_vc(test_changed, file = "sorting", root = root
+  )),
+  "test_ordered changes from ordinal to nominal"
+)
 
 test_no <- test_data
 test_no$test_ordered <- NULL
