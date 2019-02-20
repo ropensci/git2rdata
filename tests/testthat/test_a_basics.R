@@ -202,12 +202,16 @@ test_that("user specified na strings work", {
   root <- tempfile("na_string")
   dir.create(root)
   expect_error(
-    write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE),
+    suppressWarnings(
+      write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE)
+    ),
     "one of the strings matches the NA string"
   )
   expect_is(
-    fn <- write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
-                   na = "junk"),
+    fn <- suppressWarnings(
+      write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
+               na = "junk")
+    ),
     "character"
   )
   expect_equal(
@@ -220,12 +224,16 @@ test_that("user specified na strings work", {
     2:4
   )
   expect_error(
-    write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
-             na = "different"),
+    suppressWarnings(
+      write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
+               na = "different")
+    ),
     "new data uses 'different' as NA string, whereas old data used 'junk'"
   )
   expect_is(
-    fn <- write_vc(x, "test_na_string_optimize", root, "a", na = "junk"),
+    fn <- suppressWarnings(
+      write_vc(x, "test_na_string_optimize", root, "a", na = "junk")
+    ),
     "character"
   )
   expect_equal(

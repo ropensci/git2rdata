@@ -57,13 +57,8 @@ write_vc.character <- function(
   if (file.exists(file["meta_file"])) {
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
-    if (missing(sorting)) {
-      sorting <- old[["..generic"]][["sorting"]]
-      if (is.null(sorting)) {
-        sorting <- character(0)
-      }
-    }
-    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
+    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting,
+                     old = old)
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       if (strict) {

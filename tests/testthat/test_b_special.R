@@ -33,7 +33,7 @@ expect_equal(
 z <- rbind(ds, "NA")
 z$a <- factor(z$a)
 expect_is(
-  write_vc(z, "factor", root, sorting = "a"),
+  suppressWarnings(write_vc(z, "factor", root, sorting = "a")),
   "character"
 )
 expect_equal(

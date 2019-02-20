@@ -71,7 +71,7 @@ meta.numeric <- function(x, ...) {
 #' @param index an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from `x` will get new indices.
 #' @inheritParams utils::write.table
 meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
-  if (missing(index)) {
+  if (missing(index) || is.null(index)) {
     index <- seq_along(levels(x))
     names(index) <- levels(x)
   } else {
@@ -163,8 +163,17 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
   assert_that(!has_name(x, "..generic"), msg = "'..generic' is a reserved name")
   generic <- list(optimize = optimize, "NA string" = na)
 
+  dots <- list(...)
+  if (has_name(dots, "old")) {
+    old <- dots$old
+    assert_that(inherits(old, "meta_list"))
+    if (missing(sorting)) {
+      sorting <- old[["..generic"]][["sorting"]]
+    }
+  }
+
   # apply sorting
-  if (missing(sorting)) {
+  if (missing(sorting) || is.null(sorting)) {
     warning("no sorting applied")
   } else {
     assert_that(is.character(sorting))
@@ -179,7 +188,34 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
     generic <- c(generic, sorting = sorting)
   }
   # calculate meta for each column
-  z <- lapply(x, meta, optimize = optimize, na = na)
+  if (has_name(dots, "old")) {
+    common <- names(old)[names(old) %in% colnames(x)]
+    if (length(common)) {
+      z_common <- lapply(
+        common,
+        function(id, optimize, na) {
+          meta(
+            x[[id]], optimize = optimize, na = na,
+            index = setNames(old[[id]][["index"]], old[[id]][["labels"]])
+          )
+        },
+        optimize = old[["..generic"]][["optimize"]],
+        na = old[["..generic"]][["NA string"]]
+      )
+      names(z_common) <- common
+    } else {
+      z_common <- list()
+    }
+    new <- colnames(x)[!colnames(x) %in% names(old)]
+    if (length(new)) {
+      z_new <- lapply(x[new], meta, optimize = optimize, na = na)
+    } else {
+      z_new <- list()
+    }
+    z <- c(z_common, z_new)
+  } else {
+    z <- lapply(x, meta, optimize = optimize, na = na)
+  }
 
   # compose generic metadata list
   m <- lapply(z, attr, "meta")
