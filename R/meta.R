@@ -185,7 +185,7 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
       )
     }
     x <- x[do.call(order, x[sorting]), , drop = FALSE] # nolint
-    generic <- c(generic, sorting = sorting)
+    generic <- c(generic, sorting = list(sorting))
   }
   # calculate meta for each column
   if (has_name(dots, "old")) {

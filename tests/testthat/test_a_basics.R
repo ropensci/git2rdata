@@ -120,26 +120,32 @@ expect_warning(
 )
 expect_is(output, "character")
 expect_true(all(file.exists(git2rdata:::clean_data_path(root, "sorting"))))
+expect_warning(
+  write_vc(test_data, file = "sorting", root = root,
+           sorting = c("test_factor", "test_Date"), strict = FALSE),
+  "new data uses more variables for sorting"
+)
+expect_error(
+  suppressWarnings(
+    write_vc(test_data, file = "sorting", root = root, sorting = "test_factor")
+  ),
+  "new data uses less variables for sorting"
+)
 test_changed <- test_data
 test_changed$junk <- test_changed$test_character
 expect_error(
-  suppressWarnings(write_vc(
-    test_changed, file = "sorting", root = root, sorting = "test_factor"
-  )),
+  suppressWarnings(write_vc(test_changed, file = "sorting", root = root)),
   "new data has a different number of variables"
 )
 test_changed$test_character <- NULL
 expect_error(
-  suppressWarnings(write_vc(
-    test_changed, file = "sorting", root = root, sorting = "test_factor"
-  )),
+  suppressWarnings(write_vc(test_changed, file = "sorting", root = root)),
   "new variables: junk\ndeleted variables: test_character"
 )
 test_changed <- test_data
 test_changed$test_character <- factor(test_changed$test_character)
 expect_error(
-  suppressWarnings(write_vc(
-    test_changed, file = "sorting", root = root, sorting = "test_factor"
+  suppressWarnings(write_vc(test_changed, file = "sorting", root = root
   )),
   "change in class: test_character from character to factor"
 )

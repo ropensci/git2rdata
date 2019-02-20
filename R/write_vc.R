@@ -65,12 +65,12 @@ write_vc.character <- function(
         stop(paste(problems, collapse = "\n"))
       }
       warning(paste(problems, collapse = "\n"))
-      raw_data <- meta(
-        x,
-        optimize = old[["..generic"]][["optimize"]],
-        na = old[["..generic"]][["NA string"]],
-        sorting = old[["..generic"]][["sorting"]]
-      )
+      if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
+        sorting <- old[["..generic"]][["sorting"]]
+      }
+      raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
+      write_yaml(attr(raw_data, "meta"), file["meta_file"],
+                 fileEncoding = "UTF-8")
     }
   } else {
     raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
@@ -143,12 +143,14 @@ compare_meta <- function(new, old) {
   new_sorting <- new[["..generic"]][["sorting"]]
   old_sorting <- old[["..generic"]][["sorting"]]
   if (!isTRUE(all.equal(new_sorting, old_sorting))) {
-    if (length(new_sorting) < length(old_sorting)) {
-      problems <- c(problems, "new data uses less variables for sorting")
-    }
     common_sorting <- seq_len(min(length(new_sorting), length(old_sorting)))
     if (any(new_sorting[common_sorting] != old_sorting[common_sorting])) {
       problems <- c(problems, "new data uses different variables for sorting")
+    }
+    if (length(old_sorting) > length(common_sorting)) {
+      problems <- c(problems, "new data uses less variables for sorting")
+    } else if (length(new_sorting) > length(common_sorting)) {
+      problems <- c(problems, "new data uses more variables for sorting")
     }
   }
 
