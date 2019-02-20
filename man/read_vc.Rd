@@ -29,10 +29,10 @@ read_vc("iris", root)
 write_vc(iris[1:5, ], "iris", root)
 list.files(root, recursive = TRUE)
 write_vc(
-  iris[1:6, -2], "iris", root, sorting = "Sepal.Length", override = TRUE
+  iris[1:6, -2], "iris", root, sorting = "Sepal.Length", strict = FALSE
 )
 list.files(root, recursive = TRUE)
-write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", override = TRUE)
+write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", strict = FALSE)
 list.files(root, recursive = TRUE)
 write_vc(
   iris[1:6, ], "iris2", root, sorting = "Sepal.Width", optimize = FALSE
@@ -50,11 +50,11 @@ read_vc("iris", repo)
 write_vc(iris[1:5, ], "iris", repo, stage = TRUE)
 status(repo)
 write_vc(
-  iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", override = TRUE
+  iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", strict = FALSE
 )
 status(repo)
 write_vc(
-  iris[1:6, ], "iris", repo, sorting = "Sepal.Width", override = TRUE,
+  iris[1:6, ], "iris", repo, sorting = "Sepal.Width", strict = FALSE,
   stage = TRUE
 )
 status(repo)

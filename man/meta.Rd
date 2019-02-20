@@ -14,7 +14,7 @@ meta(x, ...)
 
 \method{meta}{character}(x, na = "NA", ...)
 
-\method{meta}{factor}(x, optimize = TRUE, na = "NA", ...)
+\method{meta}{factor}(x, optimize = TRUE, na = "NA", index, ...)
 
 \method{meta}{logical}(x, optimize = TRUE, ...)
 
@@ -30,6 +30,8 @@ meta(x, ...)
 \item{na}{the string to use for missing values in the data.}
 
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
+
+\item{index}{an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from \code{x} will get new indices.}
 }
 \value{
 the optimized vector \code{x} with \code{meta} attribute

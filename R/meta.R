@@ -39,35 +39,54 @@ meta.character <- function(x, na = "NA", ...) {
     stop("one of the strings matches the NA string ('", na, "')
 Please use a different NA string or consider using a factor.")
   }
-  attr(x, "meta") <- "    class: character"
-  attr(x, "na_string") <- na
   x <- gsub("\\\"", "\\\"\\\"", x)
   to_escape <- grepl("(\"|\t|\n)", x)
   x[to_escape] <- paste0("\"", x[to_escape], "\"")
   x[is.na(x)] <- na
+  m <- list(class = "character", na_string = na)
+  class(m) <- "meta_detail"
+  attr(x, "meta") <- m
   return(x)
 }
 
 #' @export
 meta.integer <- function(x, ...) {
-  attr(x, "meta") <- "    class: integer"
+  m <- list(class = "integer")
+  class(m) <- "meta_detail"
+  attr(x, "meta") <- m
   return(x)
 }
 
 #' @export
 meta.numeric <- function(x, ...) {
-  attr(x, "meta") <- "    class: numeric"
+  m <- list(class = "numeric")
+  class(m) <- "meta_detail"
+  attr(x, "meta") <- m
   return(x)
 }
 
 #' @export
 #' @rdname meta
 #' @param optimize recode the data to get smaller text files. Defaults to TRUE
+#' @param index an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from `x` will get new indices.
 #' @inheritParams utils::write.table
-meta.factor <- function(x, optimize = TRUE, na = "NA", ...) {
+meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
+  if (missing(index)) {
+    index <- seq_along(levels(x))
+    names(index) <- levels(x)
+  } else {
+    assert_that(is.integer(index))
+    assert_that(anyDuplicated(index) == 0, msg = "duplicate indices")
+    new_levels <- which(!levels(x) %in% names(index))
+    candidate_index <- seq_len(length(new_levels) + length(index))
+    candidate_index <- candidate_index[!candidate_index %in% index]
+    extra_index <- candidate_index[seq_along(new_levels)]
+    names(extra_index) <- levels(x)[new_levels]
+    index <- c(index, extra_index)[levels(x)]
+  }
+
   if (isTRUE(optimize)) {
-    z <- as.integer(x)
-    na <- "NA"
+    z <- index[x]
   } else {
     assert_that(is.string(na), noNA(na), no_whitespace(na))
     if (na %in% levels(x)) {
@@ -76,13 +95,12 @@ Please use a different NA string or use optimize = TRUE")
     }
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
-  levels(x) <- gsub("\\\"", "\\\"\\\"", levels(x))
-  sprintf(
-    "    class: factor\n    levels:\n%s%s",
-    paste0("        - \"", levels(x), "\"", collapse = "\n"),
-    ifelse(is.ordered(x), "\n    ordered", "")
-  ) -> attr(z, "meta")
-  attr(z, "na_string") <- na
+
+  m <- list(class = "factor", na_string = na, optimize = isTRUE(optimize),
+            labels = names(index), index = unname(index),
+            ordered = is.ordered(x))
+  class(m) <- "meta_detail"
+  attr(z, "meta") <- m
   return(z)
 }
 
@@ -92,13 +110,17 @@ meta.logical <- function(x, optimize = TRUE, ...){
   if (isTRUE(optimize)) {
     x <- as.integer(x)
   }
-  attr(x, "meta") <- "    class: logical"
+  m <- list(class = "logical", optimize = isTRUE(optimize))
+  class(m) <- "meta_detail"
+  attr(x, "meta") <- m
   return(x)
 }
 
 #' @export
 meta.complex <- function(x, ...) {
-  attr(x, "meta") <- "    class: complex"
+  m <- list(class = "complex")
+  class(m) <- "meta_detail"
+  attr(x, "meta") <- m
   return(x)
 }
 
@@ -107,13 +129,15 @@ meta.complex <- function(x, ...) {
 meta.POSIXct <- function(x, optimize = TRUE, ...) {
   if (isTRUE(optimize)) {
     z <- unclass(x)
-    attr(z, "meta") <-
-      "    class: POSIXct\n    origin: 1970-01-01 00:00:00\n    timezone: UTC"
+    m <- list(class = "POSIXct", optimize = TRUE,
+              origin = "1970-01-01 00:00:00", timezone = "UTC")
   } else {
     z <- format(x, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
-    attr(z, "meta") <-
-      "    class: POSIXct\n    format: %Y-%m-%dT%H:%M:%SZ\n    timezone: UTC"
+    m <- list(class = "POSIXct", optimize = FALSE,
+              format = "%Y-%m-%dT%H:%M:%SZ", timezone = "UTC")
   }
+  class(m) <- "meta_detail"
+  attr(z, "meta") <- m
   return(z)
 }
 
@@ -122,13 +146,57 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
 meta.Date <- function(x, optimize = TRUE, ...){
   if (isTRUE(optimize)) {
     z <- as.integer(x)
-    attr(z, "meta") <-
-      "    class: Date\n    origin: 1970-01-01\n"
+    m <- list(class = "Date", optimize = TRUE, origin = "1970-01-01")
   } else {
     z <- format(x, format = "%Y-%m-%d", tz = "UTC")
-    attr(z, "meta") <-
-      "    class: Date\n    format: %Y-%m-%d\n"
+    m <- list(class = "Date", optimize = FALSE, format = "%Y-%m-%d")
   }
+  class(m) <- "meta_detail"
+  attr(z, "meta") <- m
+  return(z)
+}
+
+#' @export
+#' @importFrom assertthat assert_that
+#' @importFrom git2r hash
+meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
+  assert_that(!has_name(x, "..generic"), msg = "'..generic' is a reserved name")
+  generic <- list(optimize = optimize, "NA string" = na)
+
+  # apply sorting
+  if (missing(sorting)) {
+    warning("no sorting applied")
+  } else {
+    assert_that(is.character(sorting))
+    assert_that(all(sorting %in% colnames(x)),
+                msg = "all sorting variables must be available")
+    if (anyDuplicated(x[sorting])) {
+      warning(
+"sorting results in ties. Add extra sorting variables to ensure small diffs."
+      )
+    }
+    x <- x[do.call(order, x[sorting]), , drop = FALSE] # nolint
+    generic <- c(generic, sorting = sorting)
+  }
+  # calculate meta for each column
+  z <- lapply(x, meta, optimize = optimize, na = na)
+
+  # compose generic metadata list
+  m <- lapply(z, attr, "meta")
+  m <- lapply(
+    m,
+    function(x) {
+      x[!names(x) %in% c("optimize", "na_string")]
+    }
+  )
+  m <- c(..generic = list(generic), m)
+  class(m) <- "meta_list"
+  m[["..generic"]] <- c(m[["..generic"]], hash = hash(as.yaml(m)))
+  z <- lapply(z, `attr<-`, "meta", NULL)
+
+  # convert z to dataframe and add metadata list
+  z <- as.data.frame(z, row.names = seq_len(nrow(x)), stringsAsFactors = FALSE)
+  attr(z, "meta") <- m
   return(z)
 }
 
@@ -139,4 +207,26 @@ no_whitespace <- function(na) {
 #' @importFrom assertthat on_failure<-
 on_failure(no_whitespace) <- function(call, env) {
   paste0(deparse(call$na), " contains whitespace characters")
+}
+
+#' @export
+#' @importFrom yaml as.yaml
+format.meta_list <- function(x, ...) {
+  as.yaml(x, ...)
+}
+
+#' @export
+#' @importFrom yaml as.yaml
+format.meta_detail <- function(x, ...) {
+  as.yaml(x, ...)
+}
+
+#' @export
+print.meta_list <- function(x, ...) {
+  cat(format(x), sep = "\n")
+}
+
+#' @export
+print.meta_detail <- function(x, ...) {
+  cat(format(x), sep = "\n")
 }

@@ -18,7 +18,8 @@ Depends: R (>= 3.4.0)
 Imports:
   assertthat,
   git2r (>= 0.23.0),
-  methods
+  methods,
+  yaml
 Suggests:
   knitr,
   microbenchmark,

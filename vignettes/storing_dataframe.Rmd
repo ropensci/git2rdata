@@ -133,9 +133,9 @@ str(x)
 
 Use `write_vc()` to store the dataframe. The `root` argument refers to the base directory where the data is stored. The `file` argument is used as the base name of the files. The data file gets a `.tsv` extension, the metadata file a `.yml` extension. `file` can include a relative path starting from `root`.
 
-```{r error = TRUE}
+```{r}
 library(git2rdata)
-write_vc(x = x, file = "first_test", root = path)
+write_vc(x = x, file = "unsorted", root = path)
 ```
 
 When a file is written for the first time, you also need to specify a vector of variable names on which to sort the rows. `write_vc()` returns a named vector with the file hash of the data and metadata. The names contain the relative path to the files.
@@ -150,7 +150,7 @@ The `sorting` argument is no longer required when updating an existing file.
 write_vc(x = head(x, 2), file = "first_test", root = path)
 ```
 
-The new version of the dataframe is compared with the old metadata. Any mismatch in metadata leads to an error. The user can manually override this check, resulting in the creation of new metadata. Use this with care since this can result in large diffs.
+The new version of the dataframe is compared with the old metadata. Any mismatch in metadata leads to an error. Use `strict = FALSE` to turn this error into an warning.
 
 ```{r error = TRUE}
 write_vc(x = x[, -1], file = "first_test", root = path)
@@ -161,7 +161,7 @@ write_vc(x = x, file = "first_test", root = path, sorting = "x")
 ```{r}
 write_vc(
   x = x, file = "first_test", root = path, sorting = c("def", "x"), 
-  override = TRUE
+  strict = FALSE
 )
 ```
 

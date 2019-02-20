@@ -12,10 +12,6 @@ expect_error(read_vc(root = 1), "a 'root' of class numeric is not supported")
 root <- tempfile(pattern = "git2rdata-basic")
 dir.create(root)
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
-expect_error(
-  write_vc(x = test_data, file = "test.txt", root = root),
-  "new metadata requires 'sorting'"
-)
 expect_is(
   output <- write_vc(
     x = test_data, file = "test.txt", root = root, sorting = "test_Date"
@@ -44,14 +40,19 @@ expect_identical(
 )
 expect_error(
   write_vc(x = test_data, file = "test", root = root, optimize = FALSE),
-  "old data was stored optimized"
+  "new data is verbose, whereas old data was optimized"
+)
+expect_warning(
+  write_vc(x = test_data, file = "test", root = root, optimize = FALSE,
+           strict = FALSE),
+  "new data is verbose, whereas old data was optimized"
 )
 expect_error(
   write_vc(
     x = test_data[, colnames(test_data) != "test_Date"],
     file = "test", root = root
   ),
-  "new data lacks old sorting variable"
+  "all sorting variables must be available"
 )
 
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
@@ -79,7 +80,7 @@ for (i in colnames(stored)) {
 }
 expect_error(
   write_vc(x = test_data, file = "a/verbose", root = root),
-  "old data was stored verbose"
+  "new data is optimized, whereas old data was verbose"
 )
 
 expect_is(
@@ -108,12 +109,8 @@ expect_error(
   "sorting is not a character vector"
 )
 expect_error(
-  write_vc(test_data, file = "error", root = root, sorting = character()),
-  "at least one variable is required for sorting"
-)
-expect_error(
   write_vc(test_data, file = "error", root = root, sorting = "junk"),
-  "use only variables of 'x' for sorting"
+  "all sorting variables must be available"
 )
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "sorting"))))
 expect_warning(
@@ -126,43 +123,31 @@ expect_true(all(file.exists(git2rdata:::clean_data_path(root, "sorting"))))
 test_changed <- test_data
 test_changed$junk <- test_changed$test_character
 expect_error(
-  write_vc(
+  suppressWarnings(write_vc(
     test_changed, file = "sorting", root = root, sorting = "test_factor"
-  ),
-  "old data has different number of variables"
+  )),
+  "new data has a different number of variables"
 )
 test_changed$test_character <- NULL
 expect_error(
-  write_vc(
+  suppressWarnings(write_vc(
     test_changed, file = "sorting", root = root, sorting = "test_factor"
-  ),
-  "old data has different variables"
+  )),
+  "new variables: junk\ndeleted variables: test_character"
 )
 test_changed <- test_data
 test_changed$test_character <- factor(test_changed$test_character)
 expect_error(
-  write_vc(
+  suppressWarnings(write_vc(
     test_changed, file = "sorting", root = root, sorting = "test_factor"
+  )),
+  "change in class: test_character from character to factor"
+)
+expect_error(
+  suppressWarnings(
+    write_vc(test_data, file = "sorting", root = root, sorting = "test_logical")
   ),
-  "old data has different variable types or sorting"
-)
-expect_error(
-  write_vc(
-    test_data, file = "sorting", root = root, sorting = "test_logical"
-  ),
-  "old data has different variable types or sorting"
-)
-
-yml <- file.path(root, "sorting.yml")
-meta <- head(readLines(yml), -1)
-writeLines(text = meta, con = yml)
-expect_error(
-  write_vc(test_data, file = "sorting", root = root, sorting = "test_factor"),
-  "error in existing metadata"
-)
-expect_error(
-  read_vc(file = "sorting", root = root),
-  "error in metadata"
+  "new data uses different variables for sorting"
 )
 
 test_no <- test_data
@@ -200,7 +185,8 @@ test_that(
       check.attributes = FALSE
     )
     expect_true(assertthat::has_attr(mz, "meta"))
-    expect_match(attr(mz, "meta"), "class: complex")
+    expect_equal(attr(mz, "meta"), list(class = "complex"),
+                 check.attributes = FALSE)
   }
 )
 
@@ -234,9 +220,9 @@ test_that("user specified na strings work", {
     2:4
   )
   expect_error(
-    fn <- write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
-                   na = "different"),
-    "old data has 'junk' as NA string"
+    write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
+             na = "different"),
+    "new data uses 'different' as NA string, whereas old data used 'junk'"
   )
   expect_is(
     fn <- write_vc(x, "test_na_string_optimize", root, "a", na = "junk"),
@@ -250,5 +236,23 @@ test_that("user specified na strings work", {
   expect_identical(
     grep("junk", readLines(file.path(root, fn[1]))),
     2:4
+  )
+})
+
+test_that("write_vc() allows changes in factor levels", {
+  x <- data.frame(
+    test_factor = factor(c("a", "b")),
+    stringsAsFactors = FALSE
+  )
+  root <- tempfile("factor_levels")
+  dir.create(root)
+  expect_is(
+    fn <- write_vc(x, "factor_levels", root, sorting = "test_factor"),
+    "character"
+  )
+  x$test_factor <- factor(x$test_factor, levels = c("a", "b", "c"))
+  expect_error(
+    write_vc(x, "factor_levels", root),
+    "new factor labels for test_factor\nnew indices labels for test_factor"
   )
 })

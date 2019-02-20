@@ -5,12 +5,11 @@
 \alias{write_vc.git_repository}
 \title{Write a \code{data.frame} to a git repository}
 \usage{
-write_vc(x, file, root = ".", sorting, override = FALSE,
+write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ...)
 
-\method{write_vc}{git_repository}(x, file, root, sorting,
-  override = FALSE, optimize = TRUE, na = "NA", ..., stage = FALSE,
-  force = FALSE)
+\method{write_vc}{git_repository}(x, file, root, sorting, strict = TRUE,
+  optimize = TRUE, na = "NA", ..., stage = FALSE, force = FALSE)
 }
 \arguments{
 \item{x}{the `data.frame}
@@ -25,9 +24,9 @@ Defaults to the current working directory (".").}
 sorting \code{x} and in what order to use them. Only required when writing
 new metadata.}
 
-\item{override}{Ignore existing meta data. This is required when new
-variables are added or variables are deleted. Setting this to TRUE can
-potentially lead to large diffs. Defaults to FALSE.}
+\item{strict}{What to do when the metadata changes. \code{strict = FALSE} will
+overwrite the data with a warning listing the changes, \code{strict = TRUE} will
+return an error and leave the data as is. Default to \code{TRUE}}
 
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
 
@@ -57,10 +56,10 @@ read_vc("iris", root)
 write_vc(iris[1:5, ], "iris", root)
 list.files(root, recursive = TRUE)
 write_vc(
-  iris[1:6, -2], "iris", root, sorting = "Sepal.Length", override = TRUE
+  iris[1:6, -2], "iris", root, sorting = "Sepal.Length", strict = FALSE
 )
 list.files(root, recursive = TRUE)
-write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", override = TRUE)
+write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", strict = FALSE)
 list.files(root, recursive = TRUE)
 write_vc(
   iris[1:6, ], "iris2", root, sorting = "Sepal.Width", optimize = FALSE
@@ -78,11 +77,11 @@ read_vc("iris", repo)
 write_vc(iris[1:5, ], "iris", repo, stage = TRUE)
 status(repo)
 write_vc(
-  iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", override = TRUE
+  iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", strict = FALSE
 )
 status(repo)
 write_vc(
-  iris[1:6, ], "iris", repo, sorting = "Sepal.Width", override = TRUE,
+  iris[1:6, ], "iris", repo, sorting = "Sepal.Width", strict = FALSE,
   stage = TRUE
 )
 status(repo)
