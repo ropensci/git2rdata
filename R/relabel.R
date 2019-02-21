@@ -29,6 +29,7 @@
 #'   stringsAsFactors = FALSE
 #' )
 #' relabel("relabel", root, change)
+#' @family storage
 relabel <- function(file, root, change) {
   UseMethod("relabel", change)
 }

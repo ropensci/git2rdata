@@ -92,6 +92,7 @@ status(repo)
 }
 \seealso{
 Other storage: \code{\link{prune_meta}},
-  \code{\link{read_vc}}, \code{\link{rm_data}}
+  \code{\link{read_vc}}, \code{\link{relabel}},
+  \code{\link{rm_data}}
 }
 \concept{storage}

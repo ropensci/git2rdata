@@ -14,6 +14,8 @@ navbar:
   - text: Contributing
     href: CONTRIBUTING.html
   right:
+  - text: NEWS
+    href: news/index.html
   - icon: fa-twitter fa-lg
     href: https://twitter.com/INBOVlaanderen
   - icon: fa-github fa-lg

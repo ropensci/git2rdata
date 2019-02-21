@@ -65,6 +65,7 @@ status(repo)
 }
 \seealso{
 Other storage: \code{\link{prune_meta}},
-  \code{\link{rm_data}}, \code{\link{write_vc}}
+  \code{\link{relabel}}, \code{\link{rm_data}},
+  \code{\link{write_vc}}
 }
 \concept{storage}
