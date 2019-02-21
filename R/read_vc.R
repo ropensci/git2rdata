@@ -50,7 +50,7 @@ read_vc.character <- function(file, root = ".") {
   na_string <- meta_data[["..generic"]][["NA string"]]
   details <- meta_data[names(meta_data) != "..generic"]
   col_names <- names(details)
-  col_classes <- sapply(details, "[[", "class")
+  col_classes <- vapply(details, "[[", character(1), "class")
 
   # read the raw data
   raw_data <- read.table(

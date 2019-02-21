@@ -177,8 +177,8 @@ compare_meta <- function(new, old) {
   }
 
   common_variables <- names(old)[names(old) %in% names(new)]
-  old_class <- sapply(old[common_variables], "[[", "class")
-  new_class <- sapply(new[common_variables], "[[", "class")
+  old_class <- vapply(old[common_variables], "[[", character(1), "class")
+  new_class <- vapply(new[common_variables], "[[", character(1), "class")
   delta <- which(old_class != new_class)
   if (length(delta)) {
     problems <- c(problems,

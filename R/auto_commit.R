@@ -52,9 +52,9 @@ auto_commit.git_repository <- function(package, repo = ".", push = FALSE, ...) {
     "\nBase packages: ",
       paste0(info$basePkgs, collapse = ", "), "\n", #nolint
     "\nOther package(s):\n",
-      paste(sapply(info$otherPkgs, format_other), collapse = ""), #nolint
+      paste(vapply(info$otherPkgs, format_other, character(1)), collapse = ""), #nolint
     "\nLoaded via a namespace:\n",
-      paste(sapply(info$loadedOnly, format_other), collapse = "") #nolint
+      paste(vapply(info$loadedOnly, format_other, character(1)), collapse = "") #nolint
   )
 
   committed <- tryCatch(
