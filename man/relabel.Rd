@@ -13,9 +13,12 @@ relative path. It is relative to the \code{root}.}
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (".").}
 
-\item{change}{a named list with named vectors. The name of list elements must
-match the names of the variables. The names of the vector elements must match
-the existing factor labels. The values represent the new factor labels}
+\item{change}{either list or a data.frame. In case of a list is a named list
+with named vectors. The name of list elements must match the names of the
+variables. The names of the vector elements must match the existing factor
+labels. The values represent the new factor labels. In case of a data.frame
+it needs to have the variables \code{factor} (name of the factor), \code{old} (the old)
+factor label and \code{new} (the new factor label). Other columns are ignored.}
 }
 \value{
 invisible \code{NULL}
@@ -35,4 +38,11 @@ new_labels <- list(
   a = list(a2 = "a3")
 )
 relabel("relabel", root, new_labels)
+change <- data.frame(
+  factor = c("a", "a", "b"),
+  old = c("a3", "a1", "b2"),
+  new = c("c2", "c1", "b3"),
+  stringsAsFactors = FALSE
+)
+relabel("relabel", root, change)
 }

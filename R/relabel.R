@@ -5,9 +5,12 @@
 #' the factor indices and the metadata contains the link between the factor
 #' index and the corresponding label.
 #' @inheritParams write_vc
-#' @param change a named list with named vectors. The name of list elements must
-#' match the names of the variables. The names of the vector elements must match
-#' the existing factor labels. The values represent the new factor labels
+#' @param change either list or a data.frame. In case of a list is a named list
+#' with named vectors. The name of list elements must match the names of the
+#' variables. The names of the vector elements must match the existing factor
+#' labels. The values represent the new factor labels. In case of a data.frame
+#' it needs to have the variables `factor` (name of the factor), `old` (the old)
+#' factor label and `new` (the new factor label). Other columns are ignored.
 #' @return invisible `NULL`
 #' @export
 #' @examples
@@ -19,6 +22,13 @@
 #'   a = list(a2 = "a3")
 #' )
 #' relabel("relabel", root, new_labels)
+#' change <- data.frame(
+#'   factor = c("a", "a", "b"),
+#'   old = c("a3", "a1", "b2"),
+#'   new = c("c2", "c1", "b3"),
+#'   stringsAsFactors = FALSE
+#' )
+#' relabel("relabel", root, change)
 relabel <- function(file, root, change) {
   UseMethod("relabel", change)
 }
@@ -73,4 +83,26 @@ Use write_vc() instead.")
                                 hash = hash(as.yaml(meta_data)))
   write_yaml(meta_data, file["meta_file"])
   return(invisible(NULL))
+}
+
+#' @export
+#' @importFrom assertthat assert_that has_name
+#' @importFrom stats setNames
+relabel.data.frame <- function(file, root, change) {
+  assert_that(
+    has_name(change, "factor"),
+    has_name(change, "old"),
+    has_name(change, "new")
+  )
+  change_list <- lapply(
+    unique(change$factor),
+    function(id) {
+      setNames(
+        change[change$factor == id, "new"],
+        change[change$factor == id, "old"]
+      )
+    }
+  )
+  names(change_list) <- unique(change$factor)
+  relabel(file = file, root = root, change = change_list)
 }

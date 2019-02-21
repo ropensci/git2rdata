@@ -24,6 +24,16 @@ test_that("relabel handles a list of changes", {
   expect_identical(c_1, c_2)
 })
 
+test_that("relabel handles a data.frame of changes", {
+  change <- data.frame(
+    factor = c("a", "a", "b"),
+    old = c("a3", "a1", "b2"),
+    new = c("c2", "c1", "b3"),
+    stringsAsFactors = FALSE
+  )
+  expect_null(relabel("relabel", root, change))
+})
+
 test_that("relabel only works on optimized files", {
   write_vc(ds, "relabel_verbose", root, sorting = "b", optimize = FALSE)
   expect_error(relabel("relabel_verbose", root, new_labels),
