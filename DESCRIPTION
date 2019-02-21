@@ -42,4 +42,5 @@ Collate:
     'read_vc.R'
     'recent_commit.R'
     'reexport.R'
+    'relabel.R'
 VignetteBuilder: knitr
