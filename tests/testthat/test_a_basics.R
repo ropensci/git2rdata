@@ -39,6 +39,13 @@ expect_identical(
   output
 )
 expect_error(
+  write_vc(data.frame(junk = 5), file = "test", root = root, sorting = "junk"),
+"new data uses different variables for sorting
+new data has a different number of variables
+new variables: junk
+deleted variables: test_character, test_factor, test_ordered, test_integer"
+)
+expect_error(
   write_vc(x = test_data, file = "test", root = root, optimize = FALSE),
   "new data is verbose, whereas old data was optimized"
 )
@@ -280,4 +287,11 @@ test_that("write_vc() allows changes in factor levels", {
     write_vc(x, "factor_levels", root),
     "new factor labels for test_factor\nnew indices labels for test_factor"
   )
+})
+
+test_that("meta attributes are printed as yaml", {
+  expect_output(print(suppressWarnings(attr(meta(test_data), "meta"))),
+                "hash: d8b9851bcc840c6203c39f70c514803e7acb96d0")
+  expect_output(print(attr(meta(test_data$test_factor), "meta")),
+                "class: factor.*\nordered: no")
 })
