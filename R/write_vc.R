@@ -32,7 +32,7 @@ write_vc <- function(
 write_vc.default <- function(
   x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...
 ) {
-  stop("a 'root' of class ", class(root), " is not supported")
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
@@ -62,7 +62,7 @@ write_vc.character <- function(
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       if (strict) {
-        stop(paste(problems, collapse = "\n"))
+        stop(paste(problems, collapse = "\n"), call. = FALSE)
       }
       warning(paste(problems, collapse = "\n"))
       if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
