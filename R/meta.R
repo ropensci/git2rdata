@@ -37,7 +37,7 @@ meta.character <- function(x, na = "NA", ...) {
   assert_that(is.string(na), noNA(na), no_whitespace(na))
   if (na %in% x) {
     stop("one of the strings matches the NA string ('", na, "')
-Please use a different NA string or consider using a factor.")
+Please use a different NA string or consider using a factor.", call. = FALSE)
   }
   x <- gsub("\\\"", "\\\"\\\"", x)
   to_escape <- grepl("(\"|\t|\n)", x)
@@ -91,7 +91,7 @@ meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
     assert_that(is.string(na), noNA(na), no_whitespace(na))
     if (na %in% levels(x)) {
       stop("one of the levels matches the NA string ('", na, "').
-Please use a different NA string or use optimize = TRUE")
+Please use a different NA string or use optimize = TRUE", call. = FALSE)
     }
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
