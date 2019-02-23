@@ -68,7 +68,6 @@ write_vc.character <- function(
       if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
         sorting <- old[["..generic"]][["sorting"]]
       }
-      raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
       write_yaml(attr(raw_data, "meta"), file["meta_file"],
                  fileEncoding = "UTF-8")
     }
