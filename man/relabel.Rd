@@ -4,7 +4,7 @@
 \alias{relabel}
 \title{Relabel factor levels}
 \usage{
-relabel(file, root, change)
+relabel(file, root = ".", change)
 }
 \arguments{
 \item{file}{the name of the file without file extension. Can include a

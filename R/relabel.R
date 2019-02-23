@@ -30,7 +30,7 @@
 #' )
 #' relabel("relabel", root, change)
 #' @family storage
-relabel <- function(file, root, change) {
+relabel <- function(file, root = ".", change) {
   UseMethod("relabel", change)
 }
 
@@ -43,7 +43,7 @@ relabel.default <- function(file, root, change) {
 #' @importFrom git2r workdir hash
 #' @importFrom assertthat assert_that is.string has_name
 #' @importFrom yaml read_yaml write_yaml
-relabel.list <- function(file, root, change) {
+relabel.list <- function(file, root = ".", change) {
   if (inherits(root, "git_repository")) {
     return(relabel(file = file, root = workdir(root), change = change))
   }
