@@ -32,6 +32,23 @@ test_that("relabel handles a data.frame of changes", {
     stringsAsFactors = FALSE
   )
   expect_null(relabel("relabel", root, change))
+  meta2 <- yaml::read_yaml(file.path(root, "relabel.yml"))
+  expect_true(all(change$new[change$factor == "a"] %in%
+                    meta2[["a"]][["labels"]]))
+  expect_true(all(change$new[change$factor == "b"] %in%
+                    meta2[["b"]][["labels"]]))
+  change <- data.frame(
+    factor = c("a", "b", "b"),
+    old = c("c2", "b3", "b1"),
+    new = c("a2", "d1", "d2"),
+    stringsAsFactors = TRUE
+  )
+  expect_null(relabel("relabel", root, change))
+  meta2 <- yaml::read_yaml(file.path(root, "relabel.yml"))
+  expect_true(all(change$new[change$factor == "a"] %in%
+                    meta2[["a"]][["labels"]]))
+  expect_true(all(change$new[change$factor == "b"] %in%
+                    meta2[["b"]][["labels"]]))
 })
 
 test_that("relabel only works on optimized files", {

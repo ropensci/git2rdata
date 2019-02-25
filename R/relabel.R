@@ -95,6 +95,21 @@ relabel.data.frame <- function(file, root, change) {
     has_name(change, "old"),
     has_name(change, "new")
   )
+  if (is.factor(change$factor)) {
+    change$factor <- as.character(change$factor)
+  } else {
+    assert_that(inherits(change$factor, "character"))
+  }
+  if (is.factor(change$old)) {
+    change$old <- as.character(change$old)
+  } else {
+    assert_that(inherits(change$old, "character"))
+  }
+  if (is.factor(change$new)) {
+    change$new <- as.character(change$new)
+  } else {
+    assert_that(inherits(change$new, "character"))
+  }
   change_list <- lapply(
     unique(change$factor),
     function(id) {
