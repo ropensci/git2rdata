@@ -20,7 +20,7 @@ a \code{data.frame} with \code{commit}, \code{author} and \code{when} for the mo
 commit in which the file was altered
 }
 \description{
-Retrieve the most recent commit in which a file or data object existed.
+Retrieve the most recent commit in which a file or data object was added or updated.
 }
 \examples{
 repo_path <- tempfile("git2rdata-repo")
