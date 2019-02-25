@@ -53,6 +53,18 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
+      "identifier": "ggplot2",
+      "name": "ggplot2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=ggplot2"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "knitr",
       "name": "knitr",
       "provider": {
@@ -151,7 +163,7 @@
     }
   ],
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "328.146KB",
+  "fileSize": "335.385KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",

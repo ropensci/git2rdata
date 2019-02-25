@@ -65,3 +65,14 @@ a:hover {
   font-weight: normal;
   font-style: normal;
 }
+
+code.sourceCode.diff span.st {
+  background-color: #C04384;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+code.sourceCode.diff span.va {
+  background-color: #E4E517;
+  font-weight: bold;
+}

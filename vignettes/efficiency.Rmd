@@ -1,14 +1,16 @@
 ---
 title: "Efficiency in terms of storage and time"
 author: "Thierry Onkelinx"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+        fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Efficiency in terms of storage and time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{git2r}
   %\VignetteDepends{microbenchmark}
+  %\VignetteDepends{ggplot2}
 ---
 
 ```{r setup, include = FALSE}
@@ -18,7 +20,101 @@ opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-par(cex = 0.5)
+library(ggplot2)
+inbo_colours <- c("#959B38", "#729BB7", "#E87837", "#BDDDD7", "#E4E517", 
+                  "#843860", "#C04384", "#C2C444", "#685457")
+theme_inbo <- function(base_size = 12, base_family = "") {
+  rect.bg <- "white"
+  legend.bg <- "white"
+  panel.bg <- "#F3F3F3"
+  panel.grid <- "white"
+  plot.bg <- "white"
+  half_line <- base_size / 2
+  theme(
+    line = element_line(colour = "black", size = 0.5, linetype = 1, 
+                        lineend = "butt"),
+    rect = element_rect(fill = rect.bg, colour = "black", size = 0.5, 
+                        linetype = 1),
+    text = element_text(family = base_family, face = "plain", 
+                        colour = "#843860", size = base_size, hjust = 0.5, 
+                        vjust = 0.5, angle = 0, lineheight = 0.9, 
+                        margin = margin(), debug = FALSE),
+    axis.line = element_blank(),
+    axis.line.x = element_blank(),
+    axis.line.y = element_blank(),
+    axis.text = element_text(size = rel(0.8)),
+    axis.text.x = element_text(margin = margin(t = 0.8 * half_line / 2), 
+                               vjust = 1),
+    axis.text.x.top = NULL,
+    axis.text.y = element_text(margin = margin(r = 0.8 * half_line / 2), 
+                               hjust = 1),
+    axis.text.y.right = NULL,
+    axis.ticks = element_line(),
+    axis.ticks.length = unit(0.15, "cm"),
+    axis.title = element_text(colour = "black"),
+    axis.title.x = element_text(
+      margin = margin(t = 0.8 * half_line, b = 0.8 * half_line / 2)
+    ),
+    axis.title.x.top = NULL,
+    axis.title.y = element_text(
+      margin = margin(r = 0.8 * half_line, l = 0.8 * half_line / 2),
+      angle = 90
+    ),
+    axis.title.y.right = NULL,
+    legend.background = element_rect(colour = NA, fill = legend.bg),
+    legend.key = element_rect(fill = panel.bg, colour = NA),
+    legend.key.size = unit(1.2, "lines"),
+    legend.key.height = NULL,
+    legend.key.width = NULL,
+    legend.margin = NULL,
+    legend.spacing = unit(0.2, "cm"),
+    legend.spacing.x = NULL,
+    legend.spacing.y = NULL,
+    legend.text = element_text(size = rel(0.8)),
+    legend.text.align = NULL,
+    legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0, 
+                                colour = "black"),
+    legend.title.align = NULL,
+    legend.position = "right",
+    legend.direction = NULL,
+    legend.justification = "center",
+    legend.box = NULL,
+    legend.box.margin = margin(half_line, half_line, half_line, half_line),
+    legend.box.background = element_rect(colour = NA, fill = legend.bg),
+    legend.box.spacing = unit(0.2, "cm"),
+    panel.background = element_rect(fill = panel.bg, colour = NA),
+    panel.border = element_blank(),
+    panel.grid = element_line(colour = panel.grid),
+    panel.grid.minor = element_line(colour = panel.grid, size = 0.25),
+    panel.spacing = unit(half_line, "pt"),
+    panel.spacing.x = NULL,
+    panel.spacing.y = NULL,
+    panel.ontop = FALSE,
+    strip.background = element_rect(fill = "#8E9DA7", colour = NA),
+    strip.text = element_text(size = rel(0.8), colour = "#F3F3F3"),
+    strip.text.x = element_text(margin = margin(t = half_line, b = half_line)),
+    strip.text.y = element_text(margin = margin(r = half_line, l = half_line),
+                                angle = -90),
+    strip.switch.pad.grid = unit(0.1, "cm"),
+    strip.switch.pad.wrap = unit(0.1, "cm"),
+    strip.placement = "outside",
+    plot.background = element_rect(colour = NA, fill = plot.bg),
+    plot.title = element_text(size = rel(1.2), 
+                              margin = margin(0, 0, half_line, 0)),
+    plot.subtitle = element_text(size = rel(1),
+                                 margin = margin(0, 0, half_line, 0)),
+    plot.caption = element_text(size = rel(0.6),
+                                margin = margin(0, 0, half_line, 0)),
+    plot.margin = margin(half_line, half_line, half_line, half_line),
+    plot.tag = element_text(size = rel(1.2), hjust = 0.5, vjust = 0.5),
+    plot.tag.position = "topleft",
+    complete = TRUE
+  )
+}
+theme_set(theme_inbo())
+update_geom_defaults("line", list(colour = "#356196"))
+update_geom_defaults("hline", list(colour = "#356196"))
+update_geom_defaults("boxplot", list(colour = "#356196"))
 ```
 
 ## Introduction
@@ -94,32 +190,84 @@ kable(
 
 The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounces when the factor has a large number of levels. The optimization fails only in the extreme cases with very short factor labels and a high number of labels.
 
-```{r factor_label_length, echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimized, assuming 1000 observations. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
+```{r factor_label_length, echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimized, assuming 1000 observations", warning = FALSE}
 ratio <- function(label_length = 1:20, n_levels = 9, n_obs = 1000) {
   meta_length <- 30 + (12 + label_length) * n_levels
   optimized <- n_obs * mean(ceiling(log10(seq_len(n_levels) + 1)))
   verbose <- n_obs * label_length
-  (optimized + meta_length) / (verbose + meta_length)
+  ifelse(
+    62 ^ label_length >= n_levels,
+    (optimized + meta_length) / (verbose + meta_length),
+    NA
+  )
 }
-plot(
-  2:20, ratio(2:20, 1000, 1000), type = "l", 
-  xlab = "Label length", ylab = "optimized bytes / verbose bytes", 
-  xlim = c(1, 20), ylim = c(0, 1.5))
-lines(1:20, ratio(1:20, 10, 1000), col = "blue")
-lines(1:20, ratio(1:20, 3, 1000), col = "red")
-abline(h = 1, lty = 2)
+lengths <- 1:50
+f_ratio <- rbind(
+  data.frame(
+    label_length = lengths,
+    levels = 1000,
+    ratio = ratio(lengths, 1000, 1000)
+  ),
+  data.frame(
+    label_length = lengths,
+    levels = 100,
+    ratio = ratio(lengths, 100, 1000)
+  ),
+  data.frame(
+    label_length = lengths,
+    levels = 10,
+    ratio = ratio(lengths, 10, 1000)
+  ),
+  data.frame(
+    label_length = lengths,
+    levels = 3,
+    ratio = ratio(lengths, 3, 1000)
+  )
+)
+f_ratio$levels <- factor(f_ratio$levels, levels = c(1000, 100, 10, 3))
+ggplot(f_ratio, aes(x = label_length, y = ratio, colour = levels)) +
+  geom_hline(yintercept = 1, linetype = 2) +
+  geom_line() +
+  scale_x_continuous("label length (characters)") +
+  scale_y_continuous("optimized bytes / verbose bytes", 
+                     breaks = seq(0, 1.25, by = 0.25)) +
+  scale_colour_manual("number of \nlevels", values = inbo_colours)
 ```
 
 The effect of the number of observations is mainly due to the overhead of storing the metadata. The importance of this overhead increases when the number of observations is small.
 
-```{r factor_observations, echo = FALSE, fig.cap = "Effect of the number of observations on the efficiency of storing factor optimized assuming labels with 10 characters. Black line: 1000 levels, blue line: 10 levels, red line: 3 levels."}
-n_obs <- c(1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000)
-plot(log10(n_obs), ratio(10, 1000, n_obs), type = "l", xlim = c(0, 4), 
-  ylim = c(0, 1), xlab = "Log10 number of observations", 
-  ylab = "optimized bytes / verbose bytes")
-lines(log10(n_obs), ratio(10, 10, n_obs), col = "blue")
-lines(log10(n_obs), ratio(10, 3, n_obs), col = "red")
-abline(h = 1, lty = 2)
+```{r factor_observations, echo = FALSE, fig.cap = "Effect of the number of observations on the efficiency of storing factor optimized assuming labels with 10 characters"}
+n_obs <- 10 ^ seq(log10(1), log10(10000), length = 41)
+f_ratio <- rbind(
+  data.frame(
+    observations = n_obs,
+    levels = 3,
+    ratio = sapply(n_obs, ratio, label_length = 10, n_levels = 3)
+  ),
+  data.frame(
+    observations = n_obs,
+    levels = 10,
+    ratio = sapply(n_obs, ratio, label_length = 10, n_levels = 10)
+  ),
+  data.frame(
+    observations = n_obs,
+    levels = 100,
+    ratio = sapply(n_obs, ratio, label_length = 10, n_levels = 100)
+  ),
+  data.frame(
+    observations = n_obs,
+    levels = 1000,
+    ratio = sapply(n_obs, ratio, label_length = 10, n_levels = 1000)
+  )
+)
+f_ratio$levels <- factor(f_ratio$levels, levels = c(1000, 100, 10, 3))
+ggplot(f_ratio, aes(x = observations, y = ratio, colour = levels)) +
+  geom_hline(yintercept = 1, linetype = 2) +
+  geom_line() +
+  scale_x_log10() +
+  scale_y_continuous("optimized bytes / verbose bytes", 
+                     breaks = seq(0, 1.25, by = 0.25)) +
+  scale_colour_manual("number of \nlevels", values = inbo_colours)
 ```
 
 ### In git repositories
@@ -196,26 +344,43 @@ Each version of the data has on purpose a random order of observations and varia
 
 The randomised `write.table()` yields the largest git repository, converging to about 6.5 times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a 25% reduction in repostory size compared to the randomised `write.table()`, but still is almost 5 times larger than the sorted `write.table()`. Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because the git repository will be compressed too. The optimized `write_vc()` starts at 81% converges toward 74%, the verbose version starts at 88% and converges towards 99%. There is a clear gain when using `write_vc()` with optimization in terms of storage size and the availability of metadata. The verbose option of `write_vc()` lack the gain in terms of storage size but still has the metadata advantange.
 
-```{r plot_git_size, echo = FALSE, fig.cap = "Size of the git history using the different storage methods. black: saveRDS(), solid red: write.table(), dashed red: sorted write.table() blue: write_vc(), verbose, green: write_vc(), optimized."}
-plot(repo_size["saveRDS", ], type = "l", ylim = c(0, max(repo_size)), 
-     xlab = "commit", ylab = "repo size in KiB")
-lines(repo_size["write.table", ], col = "red")
-lines(repo_size["write.table.sorted", ], col = "red", lty = 2)
-lines(repo_size["write_vc.optimized", ], col = "green")
-lines(repo_size["write_vc.verbose", ], col = "blue")
+```{r plot_git_size, echo = FALSE, fig.cap = "Size of the git history using the different storage methods."}
+rs <- lapply(
+  rownames(repo_size),
+  function(x) {
+    if (x == "saveRDS") {
+      fun <- "saveRDS"
+      method = "default"
+    } else if (x == "write_vc.optimized") {
+      fun <- "write_vc"
+      method = "default"
+    } else if (x == "write_vc.verbose") {
+      fun <- "write_vc"
+      method = "verbose"
+    } else if (x == "write.table") {
+      fun <- "write.table"
+      method = "default"
+    } else if (x == "write.table.sorted") {
+      fun <- "write.table"
+      method = "sorted"
+    }
+    data.frame(commit = seq_along(repo_size[x, ]), size = repo_size[x, ], 
+               rel_size = repo_size[x, ] / repo_size["write.table.sorted", ],
+               fun = fun, method = method,stringsAsFactors = FALSE)
+  }
+)
+rs <- do.call(rbind, rs)
+ggplot(rs, aes(x = commit, y = size / 2^10, colour = fun, linetype = method)) +
+  geom_line() +
+  scale_y_continuous("repo size (in MiB)") +
+  scale_colour_manual("function", values = inbo_colours)
 ```
 
-```{r plot_rel_git_size, echo = FALSE, fig.cap = "Relative size of the git repository when compared to write.table(). black: saveRDS(), solid red: write.table(), dashed red: sorted write.table() blue: write_vc(), verbose, green: write_vc(), optimized."}
-plot(repo_size["saveRDS", ] / repo_size["write.table.sorted", ], type = "l", 
-     xlab = "commit", ylab = "relative repo size compared to sorted write.table()", 
-     ylim = c(0.5, 7))
-lines(repo_size["write_vc.optimized", ] / repo_size["write.table.sorted", ], 
-      col = "green")
-lines(repo_size["write_vc.verbose", ] / repo_size["write.table.sorted", ], 
-      col = "blue")
-lines(repo_size["write.table", ] / repo_size["write.table.sorted", ], 
-      col = "red")
-abline(h = 1, col = "red", lty = 2)
+```{r plot_rel_git_size, echo = FALSE, fig.cap = "Relative size of the git repository when compared to write.table()."}
+ggplot(rs, aes(x = commit, y = rel_size, colour = fun, linetype = method)) +
+  geom_line() +
+  scale_y_continuous("size relative to sorted write.table()", breaks = 0:10) + 
+  scale_colour_manual("function", values = inbo_colours)
 ```
 
 ## Timings
@@ -251,8 +416,10 @@ if (system.file("efficiency", "file_timings.rds", package = "git2rdata") == "") 
 ```{r plot_file_timings, echo = FALSE, fig.cap = "Boxplot of the write timings for the different methods."}
 mb$expr <- reorder(mb$expr, mb$time, FUN = median)
 levels(mb$expr) <- gsub("write_vc\\.", "write_vc\n", levels(mb$expr))
-boxplot(time ~ expr, data = mb, 
-        ylim = c(0, max(mb$time)), ylab = "Time (in milliseconds)")
+ggplot(mb, aes(x = expr, y = time)) +
+  geom_boxplot() +
+  scale_y_continuous("Time (in milliseconds)", limits = c(0, NA)) +
+  theme(axis.title.x = element_blank())
 ```
 
 ### Reading data
@@ -281,8 +448,13 @@ if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") 
 The timings on reading the data is is more extreme story. Reading the binary format takes about 7% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 69% (optimized) and 81% (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
 
 ```{r plot_read_timings, echo = FALSE, fig.cap = "Boxplots for the read timings for the different methods."}
-mb$expr <- reorder(mb$expr, mb$time, FUN = median)
+mb$expr <- factor(
+  mb$expr, 
+  levels = c("readRDS", "read.table", "read_vc.optim", "read_vc.verbose")
+)
 levels(mb$expr) <- gsub("read_vc\\.", "read_vc\n", levels(mb$expr))
-boxplot(time ~ expr, data = mb, ylim = c(0, max(mb$time)), 
-        ylab = "Time (in milliseconds)")
+ggplot(mb, aes(x = expr, y = time)) +
+  geom_boxplot() +
+  scale_y_continuous("Time (in milliseconds)", limits = c(0, NA)) +
+  theme(axis.title.x = element_blank())
 ```

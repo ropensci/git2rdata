@@ -15,6 +15,7 @@ opts_chunk$set(
   warning = FALSE,
   comment = "#>"
 )
+options(width = 83)
 ```
 
 ## Introduction
@@ -88,21 +89,16 @@ write_vc(x = x, file = "first_test", root = path, strict = FALSE)
 
 `write_vc()` returns a vector of relative paths to the raw data and metadata files. The hashes of these files are uses as names of the vector. We can have a look at both files. We'll only display the first 10 rows of the raw data. Notice that the YAML format of the metadata has the benefit of being both human and machine readable. 
 
-```{r manual_data, eval = FALSE}
-readLines(file.path(path, "first_test.tsv"), n = 10)
+```{r manual_data}
+print_file <- function(file, root, n = -1) {
+  fn <- file.path(root, file)
+  data <- readLines(fn, n = n)
+  cat(data, sep = "\n")
+}
+print_file("first_test.tsv", path, 10)
+print_file("first_test.yml", path)
 ```
 
-```{r manual_data_eval, echo = FALSE}
-cat(readLines(file.path(path, "first_test.tsv"), n = 10), sep = "\n")
-```
-
-```{r manual_meta, eval = FALSE}
-readLines(file.path(path, "first_test.yml"))
-```
-
-```{r manual_meta_eval, echo = FALSE}
-cat(readLines(file.path(path, "first_test.yml")), sep = "\n")
-```
 
 ## Storing verbose
 
@@ -112,20 +108,9 @@ Adding `optimize = FALSE` to `write_vc()` will keep the raw data in a human read
 write_vc(x = x, file = "verbose", root = path, optimize = FALSE, strict = FALSE)
 ```
 
-```{r manual_verbose_data, eval = FALSE}
-readLines(file.path(path, "verbose.tsv"), n = 10)
-```
-
-```{r manual_verbose_data_eval, echo = FALSE}
-cat(readLines(file.path(path, "verbose.tsv"), n = 10), sep = "\n")
-```
-
-```{r manual_verbose_meta, eval = FALSE}
-readLines(file.path(path, "verbose.yml"))
-```
-
-```{r manual_verbose_meta_eval, echo = FALSE}
-cat(readLines(file.path(path, "verbose.yml")), sep = "\n")
+```{r manual_verbose_data}
+print_file("verbose.tsv", path, 10)
+print_file("verbose.yml", path)
 ```
 
 ## Efficiency in terms of file storage
@@ -160,12 +145,9 @@ write_vc(x, "custom_na", path, strict = FALSE, na = "b")
 
 Please note that a single NA string is used for the entire dataset, thus for every variable. 
 
-```{r manual_na_data, eval = FALSE}
-readLines(file.path(path, "custom_na.tsv"), n = 10)
-```
-
-```{r manual_na_data_eval, echo = FALSE}
-cat(readLines(file.path(path, "custom_na.tsv"), n = 10), sep = "\n")
+```{r manual_na_data}
+print_file("custom_na.tsv", path, 10)
+print_file("custom_na.yml", path, 4)
 ```
 
 The default string for missing values is `"NA"`. We recommend to keep this default, as long as the dataset permits it. A first good alternative is an empty string (`""`). If that won't work either, you'll have to use your imagination. Try to keep is short, clear and robust^[robust in the sense that you won't need to change it later].

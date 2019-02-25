@@ -2,11 +2,15 @@ navbar:
   title: ~
   type: default
   left:
+  - text: NEWS
+    href: news/index.html
   - text: Tutorials
     href: articles/index.html
     menu:
     - text: Storing dataframes as plain text
       href: articles/plain_text.html
+    - text: Storing dataframes under version control
+      href: articles/version_control.html
     - text: Efficiency
       href: articles/efficiency.html
   - text: Functions
@@ -14,8 +18,6 @@ navbar:
   - text: Contributing
     href: CONTRIBUTING.html
   right:
-  - text: NEWS
-    href: news/index.html
   - icon: fa-github fa-lg
     href: https://github.com/inbo/git2rdata
   - icon: fa-twitter fa-lg
