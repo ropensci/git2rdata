@@ -2,6 +2,7 @@ context("rm_data & prune_meta")
 
 expect_error(rm_data(root = 1), "a 'root' of class numeric is not supported")
 expect_error(prune_meta(root = 1), "a 'root' of class numeric is not supported")
+expect_error(list_data(root = 1), "a 'root' of class numeric is not supported")
 
 root <- tempfile(pattern = "git2rdata-")
 root <- normalizePath(root, winslash = "/", mustWork = FALSE)

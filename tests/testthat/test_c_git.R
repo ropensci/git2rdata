@@ -6,6 +6,7 @@ git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
 writeLines("ignore.*\nforce.*", file.path(git2r::workdir(root), ".gitignore"))
 git2r::add(root, ".gitignore")
 commit(root, "initial commit")
+expect_identical(rm_data(root, "."), character(0))
 untracked <- write_vc(
   test_data, file = "untracked", root = root, sorting = "test_Date"
 )
