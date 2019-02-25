@@ -38,6 +38,7 @@ Collate:
     'auto_commit.R'
     'clean_data_path.R'
     'git2rdata-package.R'
+    'list_data.R'
     'meta.R'
     'prune.R'
     'read_vc.R'

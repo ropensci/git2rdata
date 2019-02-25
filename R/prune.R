@@ -27,34 +27,13 @@ rm_data.default <- function(
 rm_data.character <- function(
   root = ".", path = NULL, recursive = TRUE, ...
 ){
-  assert_that(is.string(root))
-  root <- normalizePath(root, winslash = "/", mustWork = TRUE)
-  assert_that(is.string(path))
-  path <- file.path(root, path, fsep = "/")
-  path <- normalizePath(path, winslash = "/", mustWork = FALSE)
-  if (!dir.exists(path)) {
-    return(invisible(NULL))
+  to_do <- list_data(root = root, path = path, recursive = recursive)
+  if (length(to_do) == 0) {
+    return(to_do)
   }
-  assert_that(is.flag(recursive))
+  file.remove(sprintf("%s/%s.tsv", root, to_do))
 
-  to_do <- list.files(
-    path = path,
-    pattern = "\\.tsv$",
-    recursive = recursive,
-    full.names = TRUE
-  )
-  yml <- list.files(
-    path = path,
-    pattern = "\\.yml$",
-    recursive = recursive,
-    full.names = TRUE
-  )
-  yml <- gsub("\\.yml$", ".tsv", yml)
-  to_do <- to_do[to_do %in% yml]
-  file.remove(to_do)
-  to_do <- gsub(paste0("^", root, "/"), "", to_do)
-
-  return(invisible(to_do))
+  return(invisible(paste0(to_do, ".tsv")))
 }
 
 #' @export
@@ -68,24 +47,12 @@ rm_data.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE,
   type = c("unmodified", "modified", "ignored", "all")
 ){
-  assert_that(is.string(path))
-  assert_that(is.flag(stage))
   type <- match.arg(type)
-  root_wd <- workdir(root)
-  path <- file.path(root_wd, path, fsep = "/")
-  path <- normalizePath(path, winslash = "/", mustWork = FALSE)
-  if (!dir.exists(path)) {
-    return(invisible(NULL))
+  to_do <- list_data(root = root, path = path, recursive = recursive)
+  if (length(to_do) == 0) {
+    return(to_do)
   }
-
-  to_do <- list.files(
-    path, pattern = "\\.tsv$", recursive = recursive, full.names = TRUE
-  )
-  yml <- list.files(
-    path, pattern = "\\.yml$", recursive = recursive, full.names = TRUE
-  )
-  yml <- gsub("\\.yml$", ".tsv", yml)
-  to_do <- to_do[to_do %in% yml]
+  to_do <- paste0(to_do, ".tsv")
 
   keep <- unlist(switch(type,
     unmodified = status(
@@ -99,15 +66,15 @@ rm_data.git_repository <- function(
     ),
     all = list()
   ))
-  to_do <- to_do[!to_do %in% file.path(root_wd, keep, fsep = "/")]
+  to_do <- to_do[!to_do %in% keep]
   if (length(to_do) == 0) {
     return(invisible(NULL))
   }
-  file.remove(to_do)
-  to_do <- gsub(sprintf("^%s/(.*)$", root_wd), "\\1", to_do)
+  file.remove(file.path(workdir(root), to_do))
   if (stage) {
     add(repo = root, path = to_do)
   }
+
   return(invisible(to_do))
 }
 

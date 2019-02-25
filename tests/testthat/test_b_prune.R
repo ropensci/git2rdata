@@ -5,10 +5,9 @@ expect_error(prune_meta(root = 1), "a 'root' of class numeric is not supported")
 
 root <- tempfile(pattern = "git2rdata-")
 root <- normalizePath(root, winslash = "/", mustWork = FALSE)
-expect_error(rm_data(root), root)
+expect_error(rm_data(root, "."), root)
 expect_error(prune_meta(root), root)
 dir.create(root)
-expect_null(rm_data(root, path = "junk"))
 expect_null(prune_meta(root, path = "junk"))
 write_vc(test_data, file = "test", root = root, sorting = "test_Date")
 write_vc(

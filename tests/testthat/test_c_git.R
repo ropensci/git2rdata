@@ -163,7 +163,6 @@ for (i in colnames(stored)) {
 }
 commit(root, "update data")
 
-expect_null(rm_data(root, path = "junk"))
 expect_null(prune_meta(root, path = "junk"))
 
 staged <- write_vc(
