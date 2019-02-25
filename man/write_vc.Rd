@@ -91,8 +91,8 @@ write_vc(
 status(repo)
 }
 \seealso{
-Other storage: \code{\link{prune_meta}},
-  \code{\link{read_vc}}, \code{\link{relabel}},
-  \code{\link{rm_data}}
+Other storage: \code{\link{list_data}},
+  \code{\link{prune_meta}}, \code{\link{read_vc}},
+  \code{\link{relabel}}, \code{\link{rm_data}}
 }
 \concept{storage}

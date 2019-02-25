@@ -61,8 +61,8 @@ list_data(repo)
 status(repo)
 }
 \seealso{
-Other storage: \code{\link{read_vc}},
-  \code{\link{relabel}}, \code{\link{rm_data}},
-  \code{\link{write_vc}}
+Other storage: \code{\link{list_data}},
+  \code{\link{read_vc}}, \code{\link{relabel}},
+  \code{\link{rm_data}}, \code{\link{write_vc}}
 }
 \concept{storage}

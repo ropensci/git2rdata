@@ -47,8 +47,8 @@ change <- data.frame(
 relabel("relabel", root, change)
 }
 \seealso{
-Other storage: \code{\link{prune_meta}},
-  \code{\link{read_vc}}, \code{\link{rm_data}},
-  \code{\link{write_vc}}
+Other storage: \code{\link{list_data}},
+  \code{\link{prune_meta}}, \code{\link{read_vc}},
+  \code{\link{rm_data}}, \code{\link{write_vc}}
 }
 \concept{storage}
