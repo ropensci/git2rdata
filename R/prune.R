@@ -1,6 +1,6 @@
 #' Remove data files
 #'
-#' Removes all data (`.tsv` files) from the `path` when they have accompanying metadata (`.yml` file). The metadata remains untouched.
+#' Removes all data (`.tsv` files) from the `path` when they have accompanying metadata (`.yml` file). The metadata remains untouched. See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette (`vignette("workflow", package = "git2rdata")`) for some examples on how to use this.
 #' @param path the directory in which to clean all the data files
 #' @param recursive remove files in subdirectories too
 #' @return returns invisibily a vector of removed files names. The paths are
@@ -80,7 +80,7 @@ rm_data.git_repository <- function(
 
 #' Prune metadata files
 #'
-#' Removes all metadata (`.yml` files) from the `path` when they don't have accompanying data (`.tsv` file).
+#' Removes all metadata (`.yml` files) from the `path` when they don't have accompanying data (`.tsv` file). See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette (`vignette("workflow", package = "git2rdata")`) for some examples on how to use this.
 #' @inheritParams rm_data
 #' @return returns invisibily a vector of removed files names. The paths are
 #' relative to `root`.

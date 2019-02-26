@@ -30,36 +30,61 @@ returns invisibily a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
-Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying metadata (\code{.yml} file). The metadata remains untouched.
+Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying metadata (\code{.yml} file). The metadata remains untouched. See the \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette (\code{vignette("workflow", package = "git2rdata")}) for some examples on how to use this.
 }
 \examples{
-# on file system
+## on file system
+
+# create a directory
 root <- tempfile("git2rdata-")
 dir.create(root)
+
+# store a dataframe
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+# list the available data and the files
 list_data(root)
 list.files(root, recursive = TRUE)
+
+# remove all .tsv files with an associated .yml file
 rm_data(root, path = ".")
-list.files(root, recursive = TRUE)
-list_data(root)
-prune_meta(root, path = ".")
+# check the removal of the data
 list.files(root, recursive = TRUE)
 list_data(root)
 
-# on git repo
+# remove dangling meta data files
+prune_meta(root, path = ".")
+# check the removal of the meta data
+list.files(root, recursive = TRUE)
+list_data(root)
+
+
+## on git repo
+
+# initialise a git repo using git2r
 repo_path <- tempfile("git2rdata-repo-")
 dir.create(repo_path)
 repo <- git2r::init(repo_path)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
+
+# store a dataframe
 write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
+# check that the dataframe is stored
 status(repo)
 list_data(repo)
+
+# commit the current version and check the git repo
 commit(repo, "add iris data", session = TRUE)
 status(repo)
+
+# remove the data files from the repo
 rm_data(repo, path = ".")
+# check the removal
 list_data(repo)
 status(repo)
+
+# remove dangling meta data
 prune_meta(repo, path = ".")
+# check the removal
 list_data(repo)
 status(repo)
 }

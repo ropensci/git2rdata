@@ -14,19 +14,26 @@
 #' @return invisible `NULL`
 #' @export
 #' @examples
+#'
+#' # setup a directory
 #' root <- tempfile("git2rdata-relabel")
 #' dir.create(root)
+#'
+#' # create a dataframe and store it
 #' ds <- ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"))
 #' write_vc(ds, "relabel", root, sorting = "b")
+#'
+#' # define new labels as a list and apply them
 #' new_labels <- list(
 #'   a = list(a2 = "a3")
 #' )
 #' relabel("relabel", root, new_labels)
+#'
+#' # define new labels as a dataframe and apply them
 #' change <- data.frame(
 #'   factor = c("a", "a", "b"),
 #'   old = c("a3", "a1", "b2"),
-#'   new = c("c2", "c1", "b3"),
-#'   stringsAsFactors = FALSE
+#'   new = c("c2", "c1", "b3")
 #' )
 #' relabel("relabel", root, change)
 #' @family storage
