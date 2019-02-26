@@ -5,160 +5,88 @@
 #' @param x the `data.frame
 #' @param file the name of the file without file extension. Can include a
 #' relative path. It is relative to the `root`.
-#' @param root The root of a project. Can be a file path or a `git-repository`
+#' @param root The root of a project. Can be a file path or a `git-repository`.
+#' Defaults to the current working directory (".").
 #' @param sorting a vector of column names defining which columns to use for
 #' sorting \code{x} and in what order to use them. Only required when writing
 #' new metadata.
-#' @param override Ignore existing meta data. This is required when new
-#' variables are added or variables are deleted. Setting this to TRUE can
-#' potentially lead to large diffs. Defaults to FALSE.
+#' @param strict What to do when the metadata changes. `strict = FALSE` will
+#' overwrite the data with a warning listing the changes, `strict = TRUE` will
+#' return an error and leave the data as is. Default to `TRUE`
 #' @param ... additional parameters used in some methods
 #' @inheritParams meta
-#' @return a named vector with the hashes of the files. The names contains the
-#' files with their paths relative to `root`.
-#' @rdname write_vc
-#' @exportMethod write_vc
-#' @docType methods
-#' @importFrom methods setGeneric
+#' @inheritParams utils::write.table
+#' @return a named vector with the file paths relative to `root`. The names
+#' contain the hashes of the files.
+#' @export
 #' @family storage
-setGeneric(
-  name = "write_vc",
-  def = function(
-    x, file, root, sorting, override = FALSE, optimize = TRUE, ...
-  ){
-    standardGeneric("write_vc") # nocov
-  }
-)
+#' @template example-io
+write_vc <- function(
+  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA",
+  ...
+) {
+  UseMethod("write_vc", root)
+}
 
-#' @rdname write_vc
-#' @importFrom methods setMethod
-setMethod(
-  f = "write_vc",
-  signature = signature(root = "ANY"),
-  definition = function(
-    x, file, root, sorting, override = FALSE, optimize = TRUE, ...
-  ){
-    if (missing(root)) {
-      stop("'root' is missing")
-    }
-    stop("a 'root' of class ", class(root), " is not supported")
-  }
-)
+#' @export
+write_vc.default <- function(
+  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...
+) {
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
+}
 
-#' @rdname write_vc
-#' @importFrom methods setMethod
+#' @export
 #' @importFrom assertthat assert_that is.string is.flag
-#' @importFrom readr write_tsv
-#' @importFrom utils tail
+#' @importFrom yaml read_yaml write_yaml
+#' @importFrom utils write.table
 #' @importFrom git2r hashfile
-setMethod(
-  f = "write_vc",
-  signature = signature(root = "character"),
-  definition = function(
-    x, file, root, sorting, override = FALSE, optimize = TRUE, ...
-  ){
-    assert_that(inherits(x, "data.frame"))
-    assert_that(is.string(file))
-    assert_that(is.string(root))
-    root <- normalizePath(root, winslash = "/", mustWork = TRUE)
-    if (!missing(sorting)) {
-      assert_that(is.character(sorting))
-      assert_that(
-        length(sorting) >= 1,
-        msg = "at least one variable is required for sorting"
-      )
-      assert_that(
-        all(sorting %in% colnames(x)),
-        msg = "use only variables of 'x' for sorting"
-      )
-    }
-    assert_that(is.flag(override))
-    assert_that(is.flag(optimize))
-
-    file <- clean_data_path(root = root, file = file)
-    if (!file.exists(dirname(file["raw_file"]))) {
-      dir.create(dirname(file["raw_file"]), recursive = TRUE)
-    }
-
-    # prepare metadata
-    raw_data <- as.data.frame(
-      lapply(x, meta, optimize = optimize),
-      stringsAsFactors = FALSE
-    )
-    metadata <- paste(
-      colnames(x),
-      vapply(raw_data, attr, "", which = "meta"),
-      sep = ":\n"
-    )
-    names(metadata) <- colnames(x)
-    if (override || !file.exists(file["meta_file"])) {
-      #write new metadata
-      if (missing(sorting)) {
-        stop("new metadata requires 'sorting'")
-      }
-      metadata[sorting] <- paste0(metadata[sorting], "\n    sort")
-      if (optimize) {
-        store_metadata <- c(metadata, "optimized")
-      } else {
-        store_metadata <- c(metadata, "verbose")
-      }
-      writeLines(store_metadata, file["meta_file"])
-    } else {
-      old_metadata <- readLines(file["meta_file"])
-      if (tail(old_metadata, 1) == "verbose") {
-        if (optimize) {
-          stop("old data was stored verbose")
-        }
-      } else if (tail(old_metadata, 1) == "optimized") {
-        if (!optimize) {
-          stop("old data was stored optimized")
-        }
-      } else {
-        stop("error in existing metadata")
-      }
-      meta_cols <- grep("^\\S*:$", old_metadata)
-      positions <- cbind(
-        start = meta_cols,
-        end = c(tail(meta_cols, -1) - 1, length(old_metadata) - 1)
-      )
-      old_metadata <- apply(
-        positions,
-        1,
-        function(i) {
-          paste(old_metadata[i["start"]:i["end"]], collapse = "\n")
-        }
-      )
-      if (missing(sorting)) {
-        sorting <- grep(".*sort", old_metadata)
-        sorting <- gsub("(\\S*?):\n.*", "\\1", old_metadata)[sorting]
-        if (!all(sorting %in% colnames(x))) {
-          stop("new data lacks old sorting variable, use override = TRUE")
-        }
-      }
-      metadata[sorting] <- paste0(metadata[sorting], "\n    sort")
-      metadata <- compare_meta(metadata, old_metadata)
-    }
-
-    # order the variables
-    raw_data <- raw_data[gsub("(\\S*?):.*", "\\1", metadata)]
-    # order the observations
-    if (anyDuplicated(raw_data[sorting])) {
-      warning(
-"sorting results in ties. Add extra sorting variables to ensure small diffs."
-      )
-    }
-    raw_data <- raw_data[do.call(order, raw_data[sorting]), , drop = FALSE] # nolint
-    write_tsv(
-      x = raw_data, path = file["raw_file"], append = FALSE, na = "NA",
-      col_names = TRUE
-    )
-
-    hashes <- hashfile(file)
-    names(hashes) <- gsub(paste0("^", root, "/"), "", file)
-
-    return(hashes)
+write_vc.character <- function(
+  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA",
+  ...
+){
+  assert_that(
+    inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
+    noNA(na), no_whitespace(na), is.flag(strict), is.flag(optimize)
+  )
+  root <- normalizePath(root, winslash = "/", mustWork = TRUE)
+  file <- clean_data_path(root = root, file = file)
+  if (!file.exists(dirname(file["raw_file"]))) {
+    dir.create(dirname(file["raw_file"]), recursive = TRUE)
   }
-)
+
+  if (file.exists(file["meta_file"])) {
+    old <- read_yaml(file["meta_file"])
+    class(old) <- "meta_list"
+    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting,
+                     old = old)
+    problems <- compare_meta(attr(raw_data, "meta"), old)
+    if (length(problems)) {
+      if (strict) {
+        stop(paste(problems, collapse = "\n"), call. = FALSE)
+      }
+      warning(paste(problems, collapse = "\n"))
+      if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
+        sorting <- old[["..generic"]][["sorting"]]
+      }
+      write_yaml(attr(raw_data, "meta"), file["meta_file"],
+                 fileEncoding = "UTF-8")
+    }
+  } else {
+    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
+    write_yaml(attr(raw_data, "meta"), file["meta_file"],
+               fileEncoding = "UTF-8")
+  }
+  write.table(
+    x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
+    sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
+    col.names = TRUE, fileEncoding = "UTF-8"
+  )
+
+  hashes <- gsub(paste0("^", root, "/"), "", file)
+  names(hashes) <- hashfile(file)
+
+  return(hashes)
+}
 
 #' @importFrom methods setOldClass
 setOldClass("git_repository")
@@ -166,47 +94,118 @@ setOldClass("git_repository")
 #' @rdname write_vc
 #' @param stage stage the changes after writing the data. Defaults to FALSE
 #' @inheritParams git2r::add
-#' @importFrom methods setMethod
+#' @export
 #' @importFrom git2r workdir add
 #' @importFrom assertthat assert_that is.flag
-setMethod(
-  f = "write_vc",
-  signature = signature(root = "git_repository"),
-  definition = function(
-    x, file, root, sorting, override = FALSE, optimize = TRUE, ...,
-    stage = FALSE, force = FALSE
-  ){
-    hashes <- write_vc(
-      x = x, file = file, root = workdir(root), sorting = sorting,
-      override = override, optimize = optimize, ...
-    )
-    assert_that(is.flag(stage))
-    if (!stage) {
-      return(hashes)
-    }
-    assert_that(is.flag(force))
-    add(root, path = names(hashes), force = force)
+write_vc.git_repository <- function(
+  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
+  stage = FALSE, force = FALSE
+){
+  assert_that(is.flag(stage), is.flag(force))
+  hashes <- write_vc(
+    x = x, file = file, root = workdir(root), sorting = sorting,
+    strict = strict, optimize = optimize, na = na, ...
+  )
+  if (!stage) {
     return(hashes)
   }
-)
+  add(root, path = hashes, force = force)
+  return(hashes)
+}
 
-compare_meta <- function(metadata, old_metadata) {
-  if (length(old_metadata) != length(metadata)) {
-    stop(
-      call. = FALSE,
-      "old data has different number of variables, use override = TRUE"
+compare_meta <- function(new, old) {
+  problems <- character(0)
+  if (isTRUE(all.equal(new, old))) {
+    return(problems)
+  }
+  new_optimize <- new[["..generic"]][["optimize"]]
+  old_optimize <- old[["..generic"]][["optimize"]]
+  if (new_optimize != old_optimize) {
+    problems <- c(
+      problems,
+      sprintf(
+        "new data is %s, whereas old data was %s",
+        ifelse(new_optimize, "optimized", "verbose"),
+        ifelse(old_optimize, "optimized", "verbose")
+      )
     )
   }
-  old_col_names <- gsub("(\\S*?):.*", "\\1", old_metadata)
-  col_names <- gsub("(\\S*?):.*", "\\1", metadata)
-  if (!all(sort(col_names) == sort(old_col_names))) {
-    stop(call. = FALSE, "old data has different variables, use override = TRUE")
-  }
-  if (!all(sort(metadata) == sort(old_metadata))) {
-    stop(
-      call. = FALSE,
-      "old data has different variable types or sorting, use override = TRUE"
+  if (new[["..generic"]][["NA string"]] != old[["..generic"]][["NA string"]]) {
+    problems <- c(
+      problems,
+      sprintf(
+        "new data uses '%s' as NA string, whereas old data used '%s'",
+        new[["..generic"]][["NA string"]], old[["..generic"]][["NA string"]]
+      )
     )
   }
-  return(old_metadata)
+  new_sorting <- new[["..generic"]][["sorting"]]
+  old_sorting <- old[["..generic"]][["sorting"]]
+  if (!isTRUE(all.equal(new_sorting, old_sorting))) {
+    common_sorting <- seq_len(min(length(new_sorting), length(old_sorting)))
+    if (any(new_sorting[common_sorting] != old_sorting[common_sorting])) {
+      problems <- c(problems, "new data uses different variables for sorting")
+    }
+    if (length(old_sorting) > length(common_sorting)) {
+      problems <- c(problems, "new data uses less variables for sorting")
+    } else if (length(new_sorting) > length(common_sorting)) {
+      problems <- c(problems, "new data uses more variables for sorting")
+    }
+  }
+
+  new <- new[names(new) != "..generic"]
+  old <- old[names(old) != "..generic"]
+  if (length(new) != length(old)) {
+    problems <- c(problems, "new data has a different number of variables")
+  }
+  if (!all(names(new) %in% names(old))) {
+    problems <- c(problems,
+      paste(
+        "new variables:",
+        paste(names(new)[!names(new) %in% names(old)], collapse = ", ")
+      )
+    )
+  }
+  if (!all(names(old) %in% names(new))) {
+    problems <- c(problems,
+      paste(
+        "deleted variables:",
+        paste(names(old)[!names(old) %in% names(new)], collapse = ", ")
+      )
+    )
+  }
+
+  common_variables <- names(old)[names(old) %in% names(new)]
+  old_class <- vapply(old[common_variables], "[[", character(1), "class")
+  new_class <- vapply(new[common_variables], "[[", character(1), "class")
+  delta <- which(old_class != new_class)
+  if (length(delta)) {
+    problems <- c(problems,
+      sprintf("change in class: %s from %s to %s", common_variables[delta],
+              old_class[delta], new_class[delta])
+    )
+  }
+
+  common_variables <- common_variables[old_class == new_class]
+  old_class <- old_class[old_class == new_class]
+  for (id in common_variables[old_class == "factor"]) {
+    if (old[[id]]$ordered != new[[id]]$ordered) {
+      problems <- c(
+        problems,
+        sprintf(
+          "%s changes from %s to %s", id,
+          ifelse(old[[id]]$ordered, "ordinal", "nominal"),
+          ifelse(new[[id]]$ordered, "ordinal", "nominal")
+        )
+      )
+    }
+    if (!isTRUE(all.equal(old[[id]][["labels"]],  new[[id]][["labels"]]))) {
+      problems <- c(problems, sprintf("new factor labels for %s", id))
+    }
+    if (!isTRUE(all.equal(old[[id]][["index"]],  new[[id]][["index"]]))) {
+      problems <- c(problems, sprintf("new indices labels for %s", id))
+    }
+  }
+
+  return(problems)
 }

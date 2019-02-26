@@ -1,0 +1,157 @@
+---
+title: "Storing dataframes as plain text files"
+author: "Thierry Onkelinx"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Storing dataframes as plain text files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  comment = "#>"
+)
+options(width = 83)
+```
+
+## Introduction
+
+This vignette motivates why we wrote `git2rdata` and illustrates how you can use it to store dataframes as plain text files.
+
+### Maintaining variable classes
+
+R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()` .Some other options are `readr::write_delim()`, `readr::write_csv()` and `readr::write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `readr::read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. The functions determines the factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
+
+The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe. The `vc` suffix stands for **v**ersion **c**ontrol as these functions use their full capacity in combination with a version control system.
+
+### Optimizing file storage
+
+Plain text files require more disk space than binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to space optimize the data prior to writing. Since we use a tab delimited file format, we can omit quotes around character variables. This saves 2 byte per row for each character variable. Quotes are added automatically in the exptional cases when they are needed, e.g. to store a string that contains tab or newline characters. In such case, only those strings are quotes when it is strictly necessary.
+
+Since we store the class of each variable, further file size reductions can be achieved by following rules:
+
+- `logical` is written as 0 (FALSE), 1 (TRUE) or NA to the data
+- `factor` is stored as its indices in the data. The index and labels of levels and their order are stored in the metadata.
+- `POSIXct` is written as an integer to the data. The class and the origin are stored in the metadata. Timestamps are always stored and returned as UTC.
+- `Date` is written as an integer to the data. The class and the origin are stored in the metadata.
+
+Storing the factors, POSIXct and Date as their index, makes them less user readable. The user can turn off this optimization when user readability is more important than file size.
+
+### Optimized for version control
+
+Another main goal of of `git2rdata` is to optimise the storage of the plain text files under version control. `write_vc()` and `read_vc()` has methods for interacting with [git](https://git-scm.com/) repositories using the `git2r` framework. Users who want to use git without `git2r` or use a different version control system (e.g. [Subversion](https://subversion.apache.org/), [Mercurial](https://www.mercurial-scm.org/)), still can use `git2rdata` to write the files to disk and uses their prefered workflow on version control. 
+
+Hence, `write_vc()` will always perform checks to look for changes which potentially lead to large diffs. More details on this in a dedicated vignette. Some problem will always yield a warning. Other problems will yield by default an error. The user can turn these errors into warnings by setting the `strict = FALSE` argument.
+
+As this vignette ignores the part on version control, we will always use `write_vc(strict = FALSE)` and hide the warnings to improve the readability.
+
+## Basic usage
+
+Let's start by setting up the environment. We need a directory to store the data and a dataframe to store.
+
+```{r}
+# Create a directory in tempdir
+path <- tempfile(pattern = "git2r-")
+dir.create(path)
+# Create dummy data
+set.seed(20190222)
+x <- data.frame(
+  x = sample(LETTERS),
+  y = factor(
+    sample(c("a", "b", NA), 26, replace = TRUE),
+    levels = c("a", "b", "c")
+  ),
+  z = c(NA, 1:25),
+  abc = c(rnorm(25), NA),
+  def = sample(c(TRUE, FALSE, NA), 26, replace = TRUE),
+  timestamp = seq(
+    as.POSIXct("2018-01-01"),
+    as.POSIXct("2019-01-01"),
+    length = 26
+  ),
+  stringsAsFactors = FALSE
+)
+str(x)
+```
+
+## Storing optimized
+
+Use `write_vc()` to store the dataframe. The `root` argument refers to the base directory where the data is stored. The `file` argument is used as the base name of the files. The data file gets a `.tsv` extension, the metadata file a `.yml` extension. `file` can include a relative path starting from `root`.
+
+```{r first_write}
+library(git2rdata)
+write_vc(x = x, file = "first_test", root = path, strict = FALSE)
+```
+
+`write_vc()` returns a vector of relative paths to the raw data and metadata files. The hashes of these files are uses as names of the vector. We can have a look at both files. We'll only display the first 10 rows of the raw data. Notice that the YAML format of the metadata has the benefit of being both human and machine readable. 
+
+```{r manual_data}
+print_file <- function(file, root, n = -1) {
+  fn <- file.path(root, file)
+  data <- readLines(fn, n = n)
+  cat(data, sep = "\n")
+}
+print_file("first_test.tsv", path, 10)
+print_file("first_test.yml", path)
+```
+
+
+## Storing verbose
+
+Adding `optimize = FALSE` to `write_vc()` will keep the raw data in a human readable format. The metadata file is slightly different. The most obvious is the `optimize: no` tag and the different hash. Another difference is the metadata for POSIXct and Date classes. They will no longer have an origin tag but a format tag.
+
+```{r write_verbose}
+write_vc(x = x, file = "verbose", root = path, optimize = FALSE, strict = FALSE)
+```
+
+```{r manual_verbose_data}
+print_file("verbose.tsv", path, 10)
+print_file("verbose.yml", path)
+```
+
+## Efficiency in terms of file storage
+
+Storing dataframes optimized or verbose has an impact on the required file size. A comparison can be found in the [efficiency](efficiency.html#on-a-file-system) vignette.
+
+## Reading data
+
+The data can be retrieved with `read_vc()`. This function will reinstate the variables to their original state.
+
+```{r first_read}
+y <- read_vc(file = "first_test", root = path)
+all.equal(x, y, check.attributes = FALSE)
+y2 <- read_vc(file = "verbose", root = path)
+all.equal(x, y2, check.attributes = FALSE)
+```
+
+## Missing values
+
+`write_vc()` has an `na` arguments which specifies the string which is used to indicate missing values. Because we avoid using quotes, this string must be different from any character value in the data. This include factor labels when the data is stored verbose. This is checked and will always return an error, even with `strict = FALSE`.
+
+```{r echo = FALSE, results = "hide"}
+stopifnot("X" %in% x$x, "b" %in% x$y)
+```
+
+```{r na_string, error = TRUE}
+write_vc(x, "custom_na", path, strict = FALSE, na = "X", optimize = FALSE)
+write_vc(x, "custom_na", path, strict = FALSE, na = "b", optimize = FALSE)
+write_vc(x, "custom_na", path, strict = FALSE, na = "X")
+write_vc(x, "custom_na", path, strict = FALSE, na = "b")
+```
+
+Please note that a single NA string is used for the entire dataset, thus for every variable. 
+
+```{r manual_na_data}
+print_file("custom_na.tsv", path, 10)
+print_file("custom_na.yml", path, 4)
+```
+
+The default string for missing values is `"NA"`. We recommend to keep this default, as long as the dataset permits it. A first good alternative is an empty string (`""`). If that won't work either, you'll have to use your imagination. Try to keep is short, clear and robust^[robust in the sense that you won't need to change it later].
+
+```{r empty_na}
+write_vc(x, "custom_na", path, strict = FALSE, na = "")
+```

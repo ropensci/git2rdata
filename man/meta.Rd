@@ -3,38 +3,35 @@
 \docType{methods}
 \name{meta}
 \alias{meta}
-\alias{meta,character-method}
-\alias{meta,integer-method}
-\alias{meta,numeric-method}
-\alias{meta,factor-method}
-\alias{meta,logical-method}
-\alias{meta,complex-method}
-\alias{meta,POSIXct-method}
-\alias{meta,Date-method}
+\alias{meta.character}
+\alias{meta.factor}
+\alias{meta.logical}
+\alias{meta.POSIXct}
+\alias{meta.Date}
 \title{Optimize a vector for storage as plain text and add meta data}
 \usage{
-meta(x, optimize = TRUE)
+meta(x, ...)
 
-\S4method{meta}{character}(x, optimize = TRUE)
+\method{meta}{character}(x, na = "NA", ...)
 
-\S4method{meta}{integer}(x, optimize = TRUE)
+\method{meta}{factor}(x, optimize = TRUE, na = "NA", index, ...)
 
-\S4method{meta}{numeric}(x, optimize = TRUE)
+\method{meta}{logical}(x, optimize = TRUE, ...)
 
-\S4method{meta}{factor}(x, optimize = TRUE)
+\method{meta}{POSIXct}(x, optimize = TRUE, ...)
 
-\S4method{meta}{logical}(x, optimize = TRUE)
-
-\S4method{meta}{complex}(x, optimize = TRUE)
-
-\S4method{meta}{POSIXct}(x, optimize = TRUE)
-
-\S4method{meta}{Date}(x, optimize = TRUE)
+\method{meta}{Date}(x, optimize = TRUE, ...)
 }
 \arguments{
 \item{x}{the vector}
 
+\item{...}{further arguments to the methods}
+
+\item{na}{the string to use for missing values in the data.}
+
 \item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
+
+\item{index}{an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from \code{x} will get new indices.}
 }
 \value{
 the optimized vector \code{x} with \code{meta} attribute
@@ -42,5 +39,24 @@ the optimized vector \code{x} with \code{meta} attribute
 \description{
 \code{\link{write_vc}} applies this function automatically on your
 data.frame.
+}
+\examples{
+meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))
+meta(1:3)
+meta(seq(1, 3, length = 4))
+meta(factor(c("b", NA, "NA"), levels = c("NA", "b", "c")))
+meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")), optimize = FALSE)
+meta(factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE))
+meta(
+  factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE),
+  optimize = FALSE
+)
+meta(c(FALSE, NA, TRUE))
+meta(c(FALSE, NA, TRUE), optimize = FALSE)
+meta(complex(real = c(1, NA, 2), imaginary = c(3, NA, -1)))
+meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"))
+meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"), optimize = FALSE)
+meta(as.Date("2019-02-01"))
+meta(as.Date("2019-02-01"), optimize = FALSE)
 }
 \concept{internal}

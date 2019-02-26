@@ -7,9 +7,8 @@
 See \code{\link[git2r]{pull}}
 }
 \seealso{
-Other version_control: \code{\link{auto_commit}},
-  \code{\link{commit}}, \code{\link{push}},
-  \code{\link{recent_commit}}, \code{\link{repository}},
-  \code{\link{status}}
+Other version_control: \code{\link{commit}},
+  \code{\link{push}}, \code{\link{recent_commit}},
+  \code{\link{repository}}, \code{\link{status}}
 }
 \concept{version_control}

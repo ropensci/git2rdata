@@ -1,4 +1,4 @@
 library(testthat)
 library(git2rdata)
 
-test_check("git2rdata", reporter = "summary")
+test_check("git2rdata")

@@ -1,3 +1,32 @@
+navbar:
+  title: ~
+  type: default
+  left:
+  - text: NEWS
+    href: news/index.html
+  - text: Tutorials
+    href: articles/index.html
+    menu:
+    - text: Storing dataframes as plain text
+      href: articles/plain_text.html
+    - text: Storing dataframes under version control
+      href: articles/version_control.html
+    - text: Potential workflow
+      href: articles/workflow.html
+    - text: Efficiency
+      href: articles/efficiency.html
+  - text: Functions
+    href: reference/index.html
+  - text: Contributing
+    href: CONTRIBUTING.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/inbo/git2rdata
+  - icon: fa-twitter fa-lg
+    href: https://twitter.com/INBOVlaanderen
+  - icon: fa-facebook fg-lg
+    href: https://www.facebook.com/pg/INBOVlaanderen
+
 reference:
 - title: Storage
   contents:
@@ -14,4 +43,4 @@ authors:
     href: "https://www.muscardinus.be"
   Research Institute for Nature and Forest:
     href: "https://www.inbo.be/en"
-    html: "<img src='man/figures/logo_en.png' height=24>"
+    html: "<img src='https://inbo.github.io/git2rdata/reference/figures/logo_en.png' height=24>"
