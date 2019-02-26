@@ -20,7 +20,7 @@
 #' write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
 #' status(repo)
 #' list_data(repo)
-#' auto_commit(package = "my_package", repo)
+#' commit(repo, "add iris data", session = TRUE)
 #' status(repo)
 #' rm_data(repo, path = ".")
 #' list_data(repo)

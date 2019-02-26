@@ -26,6 +26,7 @@ git2rdata 0.0.2 (2019-02-21)
       * `git2rdata` has an hexsticker logo
       * A DOI is added
       * The installation instructions uses `remotes` and build the vignettes
+  * `auto_commit()` was removed because of limited extra functionality over `git2r::commit()`
 
 git2rdata 0.0.1 (2018-11-12)
 ============================

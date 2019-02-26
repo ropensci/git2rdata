@@ -28,13 +28,13 @@ dir.create(repo_path)
 repo <- git2r::init(repo_path)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
-auto_commit("important analysis", repo)
+commit(repo, "important analysis", session = TRUE)
 Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 write_vc(iris[7:12, ], "iris2", repo, sorting = "Sepal.Length", stage = TRUE)
-auto_commit("important analysis", repo)
+commit(repo, "important analysis", session = TRUE)
 Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
-auto_commit("important analysis", repo)
+commit(repo, "important analysis", session = TRUE)
 # "iris.tsv" was last updated in the third commit
 recent_commit("iris.tsv", repo)
 # "iris.yml" was last updated in the first commit
@@ -45,15 +45,14 @@ recent_commit("iris2.yml", repo)
 recent_commit("iris", repo, data = TRUE)
 file.remove(file.path(repo_path, "iris.tsv"))
 prune_meta(repo, ".")
-commit(repo, message = "remove iris", all = TRUE)
+commit(repo, message = "remove iris", all = TRUE, session = TRUE)
 # still points to the third commit as it is the latest commit in which the
 # data was present
 recent_commit("iris", repo, data = TRUE)
 }
 \seealso{
-Other version_control: \code{\link{auto_commit}},
-  \code{\link{commit}}, \code{\link{pull}},
-  \code{\link{push}}, \code{\link{repository}},
-  \code{\link{status}}
+Other version_control: \code{\link{commit}},
+  \code{\link{pull}}, \code{\link{push}},
+  \code{\link{repository}}, \code{\link{status}}
 }
 \concept{version_control}

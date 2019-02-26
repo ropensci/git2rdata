@@ -287,7 +287,7 @@ tmp_repo <- function() {
 }
 commit_and_size <- function(repo, filename) {
   add(repo, filename)
-  auto_commit("test", repo)
+  commit(repo, "test", session = TRUE)
   git_size <- system(
     sprintf("cd %s\ngit gc\ngit count-objects -v", dirname(repo$path)), 
     intern = TRUE

@@ -15,13 +15,13 @@
 #' repo <- git2r::init(repo_path)
 #' git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 #' write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
-#' auto_commit("important analysis", repo)
+#' commit(repo, "important analysis", session = TRUE)
 #' Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 #' write_vc(iris[7:12, ], "iris2", repo, sorting = "Sepal.Length", stage = TRUE)
-#' auto_commit("important analysis", repo)
+#' commit(repo, "important analysis", session = TRUE)
 #' Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 #' write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
-#' auto_commit("important analysis", repo)
+#' commit(repo, "important analysis", session = TRUE)
 #' # "iris.tsv" was last updated in the third commit
 #' recent_commit("iris.tsv", repo)
 #' # "iris.yml" was last updated in the first commit
@@ -32,7 +32,7 @@
 #' recent_commit("iris", repo, data = TRUE)
 #' file.remove(file.path(repo_path, "iris.tsv"))
 #' prune_meta(repo, ".")
-#' commit(repo, message = "remove iris", all = TRUE)
+#' commit(repo, message = "remove iris", all = TRUE, session = TRUE)
 #' # still points to the third commit as it is the latest commit in which the
 #' # data was present
 #' recent_commit("iris", repo, data = TRUE)
@@ -42,7 +42,7 @@ recent_commit <- function(file, root, data = FALSE){
 
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag
-#' @importFrom git2r odb_blobs
+#' @importFrom git2r odb_blobs last_commit
 recent_commit.git_repository <- function(file, root, data = FALSE) {
   assert_that(is.string(file), is.flag(data))
 
