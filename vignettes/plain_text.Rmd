@@ -30,7 +30,7 @@ The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the cl
 
 ### Optimizing file storage
 
-Plain text files require more disk space than binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to space optimize the data prior to writing. Since we use a tab delimited file format, we can omit quotes around character variables. This saves 2 byte per row for each character variable. Quotes are added automatically in the exptional cases when they are needed, e.g. to store a string that contains tab or newline characters. In such case, only those strings are quotes when it is strictly necessary.
+Plain text files require more disk space than binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to space optimize the data prior to writing. Since we use a tab delimited file format, we can omit quotes around character variables. This saves 2 byte per row for each character variable. Quotes are added automatically in the exceptional cases when they are needed, e.g. to store a string that contains tab or newline characters. In such case, only those strings are quoted when it is strictly necessary.
 
 Since we store the class of each variable, further file size reductions can be achieved by following rules:
 
@@ -43,7 +43,7 @@ Storing the factors, POSIXct and Date as their index, makes them less user reada
 
 ### Optimized for version control
 
-Another main goal of of `git2rdata` is to optimise the storage of the plain text files under version control. `write_vc()` and `read_vc()` has methods for interacting with [git](https://git-scm.com/) repositories using the `git2r` framework. Users who want to use git without `git2r` or use a different version control system (e.g. [Subversion](https://subversion.apache.org/), [Mercurial](https://www.mercurial-scm.org/)), still can use `git2rdata` to write the files to disk and uses their prefered workflow on version control. 
+Another main goal of of `git2rdata` is to optimise the storage of the plain text files under version control. `write_vc()` and `read_vc()` has methods for interacting with [git](https://git-scm.com/) repositories using the `git2r` framework. Users who want to use git without `git2r` or use a different version control system (e.g. [Subversion](https://subversion.apache.org/), [Mercurial](https://www.mercurial-scm.org/)), still can use `git2rdata` to write the files to disk and uses their preferred workflow on version control. 
 
 Hence, `write_vc()` will always perform checks to look for changes which potentially lead to large diffs. More details on this in a dedicated vignette. Some problem will always yield a warning. Other problems will yield by default an error. The user can turn these errors into warnings by setting the `strict = FALSE` argument.
 
