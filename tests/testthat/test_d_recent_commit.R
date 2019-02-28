@@ -1,8 +1,8 @@
 context("recent_commit")
 
-# currently odb_blobs() can't handle subsecond commits
-# when TRUE Sys.sleep(1.1) is added before each commit
-subsecond <- TRUE
+# git timings don't handle subsecond changes
+# therefore Sys.sleep(subsecond) is added before each commit
+subsecond <- 1.2
 
 root <- tempfile(pattern = "git2rdata-recent")
 dir.create(root)
@@ -25,14 +25,14 @@ write_vc(
   test_data[5:6, ], file = "test1", root = root, stage = TRUE,
   sorting = "test_Date"
 )
-if (subsecond) Sys.sleep(1.1)
+Sys.sleep(subsecond)
 commit_3 <- commit(root, "update first file")
 
 write_vc(
   test_data[7:8, ], file = "test3", root = root, stage = TRUE,
   sorting = "test_Date"
 )
-if (subsecond) Sys.sleep(1.1)
+Sys.sleep(subsecond)
 commit_4 <- commit(root, "add third file")
 
 write_vc(
