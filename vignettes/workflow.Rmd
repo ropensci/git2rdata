@@ -109,7 +109,7 @@ cat(cm$message)
 
 ### Second commit
 
-Let's assume that at second point time group A has updated data, group B remains unchanged and a new group C emerges. We write all three data sets to the repo. `status()` indicated that only the data of group A has changed.
+Let's assume that at a second point in time group A has updated data, group B remains unchanged and a new group C emerges. We write all three data sets to the repo. `status()` indicated that only the data of group A has changed.
 
 ```{r store_data_2}
 A <- generate_data(A)
@@ -133,7 +133,7 @@ cm <- commit(repo, message = "Second commit")
 
 ### Third commit
 
-During the third point in time, group A is removed, group B unchanged and group C updated. So we remove group A and write the two other groups. We use `add = TRUE` to stage the unstaged removal of group A. Since group C was force into the history, `.gitignored` is overruled for these two files.
+During the third point in time, group A is removed, group B unchanged and group C updated. So we remove group A and write the two other groups. We use `add = TRUE` to stage the unstaged removal of group A. Since group C was force into the history, `.gitignore` is overruled for these two files.
 
 ```{r store_data_3}
 C <- generate_data(C)
@@ -150,11 +150,11 @@ status(repo)
 ## Automated workflow for storing dataframes
 
 The list `content` contains the relevant data at the different points in time. We create a
-custom function to store the data in an automated way. In pratice we will run this function each time we want to make a snapshot of the data. In this examples we emulate that by applying it to each element of `content`.
+custom function to store the data in an automated way. In pratice we will run this function each time we want to make a snapshot of the data. In this example we emulate that by applying it to each element of `content`.
 
-We start by pulling the remote repository to make sure that our local repository has the latest version. Then we want to write the dataframe for each group. But how do we detect with groups are no longer present? A straightforward workaround this problem is to first remove all data files. Then write all currently existing dataframes to the repository. Since we only removed the data files, any preexisting metadata is still available. After writing all existing dataframe we only are left with cleaning daggling metadata files. The make this process more convenient we created `rm_data()` and `prune_meta()`. `prune_meta()` will remove any `.yml` file without matching `.tsv` file. `rm_data()` removes by default all `.tsv` files with associated `.yml` file. When applied on a `git_repository` object, there is an extra fail-safe because then it will only remove unmodified files. _Caveat_: when applied on a path, it will remove _all_ data files, without warning. Even when the path points to a git repository. So use `rm_data()` and `prune_meta()` with care.
+We start by pulling the remote repository to make sure that our local repository has the latest version. Then we want to write the dataframe for each group. But how do we detect which groups are no longer present? A straightforward workaround for this problem is to first remove all data files. Then write all currently existing dataframes to the repository. Since we only removed the data files, any preexisting metadata is still available. After writing all existing dataframes we only are left with cleaning dangling metadata files. To make this process more convenient we created `rm_data()` and `prune_meta()`. `prune_meta()` will remove any `.yml` file without matching `.tsv` file. `rm_data()` removes by default all `.tsv` files with associated `.yml` file. When applied on a `git_repository` object, there is an extra fail-safe because then it will only remove unmodified files. _Caveat_: when applied on a path, it will remove _all_ data files, without warning. Even when the path points to a git repository. So use `rm_data()` and `prune_meta()` with care.
 
-The last steps in the function consists of commiting the changes and push them to the remote repository. We had to add a `Sys.sleep(1)` to avoid commits within the same second. This is should not be needed in a real-life situation. 
+The last steps in the function consists of committing the changes and push them to the remote repository. We had to add a `Sys.sleep(1)` to avoid commits within the same second. This should not be needed in a real-life situation. 
 
 ```{r automated_flow}
 store_data <- function(df, repo) {
@@ -238,8 +238,8 @@ report(previous$B)
 report(previous$C)
 ```
 
-If you inspect the reported results carefully you'll notice that the output for dataset "B" is identical. This makes sense since dataset B didn't change during the last commit. Dataset "C" did change, which results in different estimated _and_ a different commit hash.
+If you inspect the reported results carefully you'll notice that the output for dataset "B" is identical. This makes sense since dataset B didn't change during the last commit. Dataset "C" did change, which results in different estimates _and_ a different commit hash.
 
 ### Long running analysis
 
-Image the case where an individual analysis takes quite a while to run. We store the most recent version of each analysis and add the information from `recent_commit()`. When preparing the analysis, you can run `recent_commit()` again on the dataset and compare the commit hash with that one of the currently available analysis. If the commit hashes match, then the data hasn't changed. So there is no need to rerun the analysis^[assuming the code for running the analysis didn't change.], saving valuable computing resources. 
+Imagine the case where an individual analysis takes quite a while to run. We store the most recent version of each analysis and add the information from `recent_commit()`. When preparing the analysis, you can run `recent_commit()` again on the dataset and compare the commit hash with that one of the currently available analysis. If the commit hashes match, then the data hasn't changed. So there is no need to rerun the analysis^[assuming the code for running the analysis didn't change.], saving valuable computing resources. 
