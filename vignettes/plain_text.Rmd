@@ -128,6 +128,8 @@ y2 <- read_vc(file = "verbose", root = path)
 all.equal(x, y2, check.attributes = FALSE)
 ```
 
+As `read_vc()` requires the meta data, it can only read dataframes which were stored by `write_vc()`.
+
 ## Missing values
 
 `write_vc()` has an `na` arguments which specifies the string which is used to indicate missing values. Because we avoid using quotes, this string must be different from any character value in the data. This includes factor labels when the data is stored verbose. This is checked and will always return an error, even with `strict = FALSE`.
