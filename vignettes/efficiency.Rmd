@@ -350,34 +350,35 @@ rs <- lapply(
   function(x) {
     if (x == "saveRDS") {
       fun <- "saveRDS"
-      method = "default"
+      optimized = "yes"
     } else if (x == "write_vc.optimized") {
       fun <- "write_vc"
-      method = "default"
+      optimized = "yes"
     } else if (x == "write_vc.verbose") {
       fun <- "write_vc"
-      method = "verbose"
+      optimized = "no"
     } else if (x == "write.table") {
       fun <- "write.table"
-      method = "default"
+      optimized = "no"
     } else if (x == "write.table.sorted") {
       fun <- "write.table"
-      method = "sorted"
+      optimized = "yes"
     }
     data.frame(commit = seq_along(repo_size[x, ]), size = repo_size[x, ], 
                rel_size = repo_size[x, ] / repo_size["write.table.sorted", ],
-               fun = fun, method = method,stringsAsFactors = FALSE)
+               fun = fun, optimized = optimized, stringsAsFactors = FALSE)
   }
 )
 rs <- do.call(rbind, rs)
-ggplot(rs, aes(x = commit, y = size / 2^10, colour = fun, linetype = method)) +
+rs$optimized <- factor(rs$optimized, levels = c("yes", "no"))
+ggplot(rs, aes(x = commit, y = size / 2^10, colour = fun, linetype = optimized)) +
   geom_line() +
   scale_y_continuous("repo size (in MiB)") +
   scale_colour_manual("function", values = inbo_colours)
 ```
 
 ```{r plot_rel_git_size, echo = FALSE, fig.cap = "Relative size of the git repository when compared to write.table()."}
-ggplot(rs, aes(x = commit, y = rel_size, colour = fun, linetype = method)) +
+ggplot(rs, aes(x = commit, y = rel_size, colour = fun, linetype = optimized)) +
   geom_line() +
   scale_y_continuous("size relative to sorted write.table()", breaks = 0:10) + 
   scale_colour_manual("function", values = inbo_colours)
