@@ -5,6 +5,10 @@ body {
   font-family: FlandersArtSans-Light, Verdana, Arial, sans-serif;
 }
 
+.row{
+  background-color: #ffffff;
+}
+
 a {
   color: #c04384;
 }
