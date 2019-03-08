@@ -151,7 +151,7 @@ str(airbag)
 
 ### On a file system
 
-We start by writing the dataset as is with `write.table()`, `saveRDS()`, `write_vc()` and `write_vc()` without storage optimization. Note that `write_vc()` uses optimization by default. Since `write_vc()` creates two files for each data set, we take their combinated file size into account.
+We start by writing the dataset as is with `write.table()`, `saveRDS()`, `write_vc()` and `write_vc()` without storage optimization. Note that `write_vc()` uses optimization by default. Since `write_vc()` creates two files for each data set, we take their combined file size into account.
 
 ```{r set_tmp_dir}
 library(git2rdata)
@@ -173,7 +173,7 @@ fn <- write_vc(airbag, "airbag_verbose", root, sorting = "X", optimize = FALSE)
 verbose_size <- sum(file.size(file.path(root, fn)))
 ```
 
-Since the data is highly compressable, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimized version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short levels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
+Since the data is highly compressable, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimized version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short labels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
 
 ```{r table_file_size, echo = FALSE}
 kable(
@@ -445,7 +445,7 @@ if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") 
 }
 ```
 
-The timings on reading the data is is more extreme story. Reading the binary format takes about 8% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 65% (optimized) and 79% (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
+The timings on reading the data is another story. Reading the binary format takes about 8% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 65% (optimized) and 79% (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
 
 ```{r plot_read_timings, echo = FALSE, fig.cap = "Boxplots for the read timings for the different methods."}
 mb$expr <- factor(
