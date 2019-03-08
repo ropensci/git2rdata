@@ -133,7 +133,7 @@ cm <- commit(repo, message = "Second commit")
 
 ### Third commit
 
-During the third point in time, group A is removed, group B unchanged and group C updated. So we remove group A and write the two other groups. We use `add = TRUE` to stage the unstaged removal of group A. Since group C was force into the history, `.gitignore` is overruled for these two files.
+During the third point in time, group A is removed, group B unchanged and group C updated. So we remove group A and write the two other groups. We use `all = TRUE` to stage the unstaged removal of group A. Since group C was force into the history, `.gitignore` is overruled for these two files.
 
 ```{r store_data_3}
 C <- generate_data(C)
