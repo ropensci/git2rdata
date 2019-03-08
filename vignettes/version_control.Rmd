@@ -58,7 +58,7 @@ Version control systems like [git](https://git-scm.com/), [subversion](https://s
 
 ## Sorting observations
 
-Version control systems often track changes on plain text files based on row based differences. In layman's terms it only records which lines in a file are removed and which lines are inserted at what location. Changing an existing line implies removing the old version and inserting the new one. This is illustrated is the minimal example below.
+Version control systems often track changes in plain text files based on row based differences. In layman's terms it only records which lines in a file are removed and which lines are inserted at what location. Changing an existing line implies removing the old version and inserting the new one. This is illustrated is the minimal example below.
 
 Original version
 
@@ -131,7 +131,7 @@ fn <- write_vc(x, "row_order", root, sorting = "y", strict = FALSE)
 fn <- write_vc(x, "row_order", root, sorting = c("y", "x"), strict = FALSE)
 ```
 
-Once the sorting is defined we may omit it when writing new versions. The sorting as defined in the existing metadata will be used to sort the observations. A check for potential ties will be performed and results in a warning when ties are found.
+Once the sorting is defined we may omit the `sorting` argument when writing new versions. The sorting as defined in the existing metadata will be used to sort the observations. A check for potential ties will be performed and results in a warning when ties are found.
 
 ```{r update_sorted}
 print_file <- function(file, root, n = -1) {

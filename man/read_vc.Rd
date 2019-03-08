@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_vc.R
 \name{read_vc}
 \alias{read_vc}
-\title{Read a \code{data.frame} from a repository}
+\title{Read a \code{data.frame}}
 \usage{
 read_vc(file, root = ".")
 }

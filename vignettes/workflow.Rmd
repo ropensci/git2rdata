@@ -84,9 +84,9 @@ generate_data <- function(x, n = rpois(1, 10)) {
 
 ### First commit
 
-Suppose that we have two groups at the first point in time. We read the data for these group from the database. We also store them in a list called `content` to be reused in the [next section](#automated-workflow-for-storing-dataframes).
+Suppose that we have two groups at the first point in time. We read the data for these groups from the database. We also store them in a list called `content` to be reused in the [next section](#automated-workflow-for-storing-dataframes).
 
-Then we connect to the git repository using `repository()`. Note that this assumes that `path` is an existing git repository. Now we can write each group to a dedicated data file in the repository. When the `root` argument of `write_vc()` is a `git_repository`, then it gains two additional arguments: `stage` and `force`. Setting `stage = TRUE`, will automatically stage the files written by `write_vc()`.
+Then we connect to the git repository using `repository()`. Note that this assumes that `path` is an existing git repository. Now we can write each group to a dedicated data file in the repository. If the `root` argument of `write_vc()` is a `git_repository`, it gains two additional arguments: `stage` and `force`. Setting `stage = TRUE`, will automatically stage the files written by `write_vc()`.
 
 ```{r store_data_1}
 A <- generate_data()
@@ -133,7 +133,7 @@ cm <- commit(repo, message = "Second commit")
 
 ### Third commit
 
-During the third point in time, group A is removed, group B unchanged and group C updated. So we remove group A and write the two other groups. We use `add = TRUE` to stage the unstaged removal of group A. Since group C was force into the history, `.gitignore` is overruled for these two files.
+During the third point in time, group A is removed, group B unchanged and group C updated. So we remove group A and write the two other groups. We use `all = TRUE` to stage the unstaged removal of group A. Since group C was force into the history, `.gitignore` is overruled for these two files.
 
 ```{r store_data_3}
 C <- generate_data(C)
@@ -154,7 +154,7 @@ custom function to store the data in an automated way. In pratice we will run th
 
 We start by pulling the remote repository to make sure that our local repository has the latest version. Then we want to write the dataframe for each group. But how do we detect which groups are no longer present? A straightforward workaround for this problem is to first remove all data files. Then write all currently existing dataframes to the repository. Since we only removed the data files, any preexisting metadata is still available. After writing all existing dataframes we only are left with cleaning dangling metadata files. To make this process more convenient we created `rm_data()` and `prune_meta()`. `prune_meta()` will remove any `.yml` file without matching `.tsv` file. `rm_data()` removes by default all `.tsv` files with associated `.yml` file. When applied on a `git_repository` object, there is an extra fail-safe because then it will only remove unmodified files. _Caveat_: when applied on a path, it will remove _all_ data files, without warning. Even when the path points to a git repository. So use `rm_data()` and `prune_meta()` with care.
 
-The last steps in the function consists of committing the changes and push them to the remote repository. We had to add a `Sys.sleep(1)` to avoid commits within the same second. This should not be needed in a real-life situation. 
+The last steps in the function consist of committing the changes and push them to the remote repository. We had to add a `Sys.sleep(1)` to avoid commits within the same second. This should not be needed in a real-life situation. 
 
 ```{r automated_flow}
 store_data <- function(df, repo) {

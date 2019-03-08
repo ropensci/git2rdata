@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_data.R
 \name{list_data}
 \alias{list_data}
-\title{list available data objects in the repository}
+\title{List available data files}
 \usage{
 list_data(root = ".", path = ".", recursive = TRUE)
 }
@@ -17,7 +17,7 @@ list_data(root = ".", path = ".", recursive = TRUE)
 a character vector is dataframe names, including their relative path
 }
 \description{
-list available data objects in the repository
+List available data files
 }
 \examples{
 ## on file system
