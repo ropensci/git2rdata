@@ -1,4 +1,4 @@
-#' list available data objects in the repository
+#' List available data files
 #' @param root the `root` of the repository. Either a path or a `git-repository`
 #' @param path relative `path` from the `root`. Defaults to the `root`
 #' @inheritParams base::list.files
