@@ -10,7 +10,7 @@
 [![DOI](https://zenodo.org/badge/147685405.svg)](https://zenodo.org/badge/latestdoi/147685405)
 ## Rationale
 
-The `git2rdata` package writes and reads dataframes as plain text files. Important information is stored in a metadata file.
+The `git2rdata` package is an R package for writing and reading dataframes as plain text files. Important information is stored in a metadata file.
 
 1. Storing metadata allows to maintain variables classes. By default, the data is optimized for file storage prior to writing. This makes the data less human readable and can be turned off. Details on the implementation are available in the [plain text](https://inbo.github.io/git2rdata/articles/plain_text.html) vignette.
 1. Storing metadata also allows to minimize row base [diffs](https://en.wikipedia.org/wiki/Diff) between two consecutive [commits](https://en.wikipedia.org/wiki/Commit_(version_control)). This is a useful feature when storing data as plain text files under version control. Details on this part of the implementation are available in the [version control](https://inbo.github.io/git2rdata/articles/version_control.html) vignette. Although `git2rdata` was envisioned with a [git](https://git-scm.com/) workflow in mind, it can also be used in combination with other version control systems like [subversion](https://subversion.apache.org/) or [mercurial](https://www.mercurial-scm.org/).
