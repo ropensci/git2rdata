@@ -1,4 +1,4 @@
-#' Read a \code{data.frame} from a repository
+#' Read a \code{data.frame}
 #' @inheritParams write_vc
 #' @return The \code{data.frame} with the file names and hashes as attributes
 #' @rdname read_vc
