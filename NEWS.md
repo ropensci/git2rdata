@@ -5,7 +5,7 @@ git2rdata 0.0.2 (2019-02-26)
 
   * metadata is added as a list to the objects rather than in YAML format.
   * the [yaml](https://cran.r-project.org/package=yaml) package is used to store the metadata list in YAML format.
-  * `write_vc()` now used the 'strict' argument instead of 'override'
+  * `write_vc()` now uses the 'strict' argument instead of 'override'
   * the functionality `rm_data()` is split into `rm_data()` and `prune_meta()` (#9)
 
 ### NEW FEATURES
@@ -30,9 +30,9 @@ git2rdata 0.0.2 (2019-02-26)
   * each helpfile contains a working example (#11)
   * README updated (#12)
       * Updated the rationale with links to the vignettes
-      * `git2rdata` has an hexsticker logo
+      * `git2rdata` has a hexsticker logo
       * A DOI is added
-      * The installation instructions uses `remotes` and build the vignettes
+      * The installation instructions use `remotes` and build the vignettes
   * `auto_commit()` was removed because of limited extra functionality over `git2r::commit()`
   * dataframes are read and written by base R functions instead of `readr` functions
 

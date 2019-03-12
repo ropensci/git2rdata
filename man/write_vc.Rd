@@ -3,7 +3,7 @@
 \name{write_vc}
 \alias{write_vc}
 \alias{write_vc.git_repository}
-\title{Write a \code{data.frame} to a git repository}
+\title{Write a \code{data.frame}}
 \usage{
 write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ...)

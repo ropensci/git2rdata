@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_vc.R
 \name{read_vc}
 \alias{read_vc}
-\title{Read a \code{data.frame} from a repository}
+\title{Read a \code{data.frame}}
 \usage{
 read_vc(file, root = ".")
 }
@@ -17,7 +17,7 @@ Defaults to the current working directory (".").}
 The \code{data.frame} with the file names and hashes as attributes
 }
 \description{
-Read a \code{data.frame} from a repository
+Note that the dataframe has to be written with \code{write_vc()} before it can be read with \code{read_vc()}.
 }
 \examples{
 ## on file system
