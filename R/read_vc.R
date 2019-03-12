@@ -1,4 +1,4 @@
-#' Read a \code{data.frame} from a repository
+#' Read a \code{data.frame}
 #'
 #' Note that the dataframe has to be written with `write_vc()` before it can be read with `read_vc()`.
 #' @inheritParams write_vc
