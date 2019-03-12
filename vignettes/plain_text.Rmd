@@ -1,9 +1,9 @@
 ---
-title: "Storing dataframes as plain text files"
+title: "Getting started"
 author: "Thierry Onkelinx"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Storing dataframes as plain text files}
+  %\VignetteIndexEntry{Getting started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

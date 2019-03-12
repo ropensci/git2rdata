@@ -1,9 +1,9 @@
 ---
-title: "Potential workflows for working with dataframes under version control"
+title: "Suggested workflow for storing a variable set of dataframes under version control"
 author: "Thierry Onkelinx"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Potential workflows for working with dataframes under version control}
+  %\VignetteIndexEntry{Suggested workflow for storing a variable set of dataframes under version control}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{git2r}
@@ -20,11 +20,11 @@ set.seed(20120225)
 
 ## Introduction
 
-This vignette describes a potential workflow for storing dataframes. This time we use a `git2r::repository()` object as the root. This adds git functionality to `write_vc()` and `read_vc()`.
+This vignette describes a suggested workflow for storing dataframes. This time we use a `git2r::repository()` object as the root. This adds git functionality to `write_vc()` and `read_vc()`, provided by the [`git2r`](https://cran.r-project.org/package=git2r) package. This allows to pull, stage, commit and push from within R.
 
 The rationale behind this workflow is that we have read-only access to a database containing the raw data. The database is beyond our control. Observations in the database can be added, removed or updated without our knowledge. These changes cannot be traced in the database.
 
-The database defines a variable number of groups (e.g. species). We have defined a standard analysis which should run for each group. We want to repeat the analyses with some predefined frequency (e.g. once every year). In order to make the analyses reproducible, we want to store the relevant data in a git repository.
+The database defines a variable number of dataframe (e.g. species can be added or removed). We have defined a standard analysis which should run for each group. We want to repeat the analyses with some predefined frequency (e.g. once every year). In order to make the analyses reproducible, we want to store the relevant data in a git repository.
 
 ## Setup
 
@@ -149,12 +149,13 @@ status(repo)
 
 ## Automated workflow for storing dataframes
 
-The list `content` contains the relevant data at the different points in time. We create a
-custom function to store the data in an automated way. In pratice we will run this function each time we want to make a snapshot of the data. In this example we emulate that by applying it to each element of `content`.
+To mimic a changing dataset we reuse the list `content` created above. This contains the relevant data at the different points in time. We create a custom function to store the data in an automated way. In pratice we will run this function each time we want to make a snapshot of the data. In this example we emulate that by applying it to each element of `content`.
 
 We start by pulling the remote repository to make sure that our local repository has the latest version. Then we want to write the dataframe for each group. But how do we detect which groups are no longer present? A straightforward workaround for this problem is to first remove all data files. Then write all currently existing dataframes to the repository. Since we only removed the data files, any preexisting metadata is still available. After writing all existing dataframes we only are left with cleaning dangling metadata files. To make this process more convenient we created `rm_data()` and `prune_meta()`. `prune_meta()` will remove any `.yml` file without matching `.tsv` file. `rm_data()` removes by default all `.tsv` files with associated `.yml` file. When applied on a `git_repository` object, there is an extra fail-safe because then it will only remove unmodified files. _Caveat_: when applied on a path, it will remove _all_ data files, without warning. Even when the path points to a git repository. So use `rm_data()` and `prune_meta()` with care.
 
-The last steps in the function consist of committing the changes and push them to the remote repository. We had to add a `Sys.sleep(1)` to avoid commits within the same second. This should not be needed in a real-life situation. 
+The last steps in the function consist of committing the changes and push them to the remote repository. We had to add a `Sys.sleep(2)` to avoid commits within the same second. This should not be needed in a real-life situation. 
+
+Please note that the function below is intended as a template. In practice, step 3 would contain user defined functions to create the relevant dataframes and store them using `write_vc()`. 
 
 ```{r automated_flow}
 store_data <- function(df, repo) {
@@ -162,7 +163,7 @@ store_data <- function(df, repo) {
   pull(repo)
   # step 2: remove all exisiting data files
   rm_data(repo, path = ".", type = "all", stage = TRUE)
-  # step 3: write all current data
+  # step 3: create and write all relevant dataframe
   lapply(
     names(df), 
     function(i) {
@@ -176,7 +177,7 @@ store_data <- function(df, repo) {
   commit(repo, "Scripted commit from git2rdata", session = TRUE)
   # step 6: update the remote repository
   push(repo)
-  # avoid subsecond commits
+  # avoid subsecond commits, only needed in this toy example
   Sys.sleep(2)
 }
 ```

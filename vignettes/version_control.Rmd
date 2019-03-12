@@ -1,9 +1,9 @@
 ---
-title: "Storing dataframes under version control"
+title: "Optimizing storage for version control"
 author: "Thierry Onkelinx"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Storing dataframes under version control}
+  %\VignetteIndexEntry{Optimizing storage for version control}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
