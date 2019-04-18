@@ -4,7 +4,7 @@
 #' @inheritParams base::list.files
 #' @export
 #' @template example-prune
-#' @return a character vector is dataframe names, including their relative path
+#' @return a character vector of dataframe names, including their relative path
 #' @family storage
 list_data <- function(root = ".", path = ".", recursive = TRUE) {
   UseMethod("list_data", root)

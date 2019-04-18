@@ -67,7 +67,8 @@ meta.numeric <- function(x, ...) {
 
 #' @export
 #' @rdname meta
-#' @param optimize recode the data to get smaller text files. Defaults to TRUE
+#' @param optimize recode and re-order the data to get smaller text files.
+#'   Defaults to TRUE
 #' @param index an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from `x` will get new indices.
 #' @inheritParams utils::write.table
 meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
@@ -160,7 +161,7 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #' @importFrom assertthat assert_that
 #' @importFrom git2r hash
 meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
-  assert_that(!has_name(x, "..generic"), msg = "'..generic' is a reserved name")
+  assert_that(!has_name(x, "..generic"), msg = "'..generic' is a reserved column name")
   generic <- list(optimize = optimize, "NA string" = na)
 
   dots <- list(...)
@@ -173,7 +174,7 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
   }
 
   # apply sorting
-  if (missing(sorting) || is.null(sorting)) {
+  if (missing(sorting) || is.null(sorting) || !length(sorting)) {
     warning("no sorting applied")
   } else {
     assert_that(is.character(sorting))

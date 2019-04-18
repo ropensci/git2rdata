@@ -24,7 +24,7 @@ This vignette describes a suggested workflow for storing dataframes. This time w
 
 The rationale behind this workflow is that we have read-only access to a database containing the raw data. The database is beyond our control. Observations in the database can be added, removed or updated without our knowledge. These changes cannot be traced in the database.
 
-The database defines a variable number of dataframe (e.g. species can be added or removed). We have defined a standard analysis which should run for each group. We want to repeat the analyses with some predefined frequency (e.g. once every year). In order to make the analyses reproducible, we want to store the relevant data in a git repository.
+The database defines a variable number of dataframes (e.g. species can be added or removed). We have defined a standard analysis which should run for each group. We want to repeat the analyses with some predefined frequency (e.g. once every year). In order to make the analyses reproducible, we want to store the relevant data in a git repository.
 
 ## Setup
 
@@ -43,7 +43,7 @@ init_repo <- git2r::clone(remote, path, progress = FALSE)
 git2r::config(init_repo, user.name = "me", user.email = "me@me.com")
 # add an initial commit with .gitignore file
 writeLines("C.*", file.path(path, ".gitignore"))
-git2r::add(init_repo, ".gitignore")
+git2r::add(init_repo, ".gitignore", force=TRUE)
 git2r::commit(init_repo, message = "Initial commit")
 # push initial commit to remote
 git2r::push(init_repo, "origin", "refs/heads/master")

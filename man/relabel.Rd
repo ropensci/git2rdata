@@ -24,7 +24,7 @@ factor label and \code{new} (the new factor label). Other columns are ignored.}
 invisible \code{NULL}
 }
 \description{
-Imaging the situation where we have a dataframe with a factor variable and we
+Imagine the situation where we have a dataframe with a factor variable and we
 have stored it with \code{write_vc(optimize = TRUE)}. The raw data file contains
 the factor indices and the metadata contains the link between the factor
 index and the corresponding label.

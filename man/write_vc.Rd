@@ -12,7 +12,7 @@ write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ..., stage = FALSE, force = FALSE)
 }
 \arguments{
-\item{x}{the `data.frame}
+\item{x}{the \code{data.frame}}
 
 \item{file}{the name of the file without file extension. Can include a
 relative path. It is relative to the \code{root}.}
@@ -28,7 +28,8 @@ new metadata.}
 overwrite the data with a warning listing the changes, \code{strict = TRUE} will
 return an error and leave the data as is. Default to \code{TRUE}}
 
-\item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
+\item{optimize}{recode and re-order the data to get smaller text files.
+Defaults to TRUE}
 
 \item{na}{the string to use for missing values in the data.}
 

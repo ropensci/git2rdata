@@ -19,9 +19,9 @@ options(width = 83)
 
 ## Introduction
 
-This vignette focuses on what `git2rdata` does to make storing dataframes under version control more efficient and convenient. All details on the actual file format are described in the [plain text storage](plain_text.html) vignette. Hence we not discuss the `optimize` and `na` arguments.
+This vignette focuses on what `git2rdata` does to make storing dataframes under version control more efficient and convenient. All details on the actual file format are described in the [plain text storage](plain_text.html) vignette. Hence we will not discuss the `optimize` and `na` arguments to the `write_vc()` function.
 
-We will neither illustrate the efficiency of `write_vc()` and `read_vc()` since that is covered in the [efficiency](efficiency.html) vignette.
+We will not illustrate the efficiency of `write_vc()` and `read_vc()` since that is covered in the [efficiency](efficiency.html) vignette.
 
 ## Setup
 
@@ -58,7 +58,7 @@ Version control systems like [git](https://git-scm.com/), [subversion](https://s
 
 ## Sorting observations
 
-Version control systems often track changes in plain text files based on row based differences. In layman's terms it only records which lines in a file are removed and which lines are inserted at what location. Changing an existing line implies removing the old version and inserting the new one. This is illustrated is the minimal example below.
+Version control systems often track changes in plain text files based on row based differences. In layman's terms they only record which lines in a file are removed and which lines are inserted at what location. Changing an existing line implies removing the old version and inserting the new one. This is illustrated in the minimal example below.
 
 Original version
 

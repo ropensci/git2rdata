@@ -14,7 +14,7 @@ list_data(root = ".", path = ".", recursive = TRUE)
 \item{recursive}{logical.  Should the listing recurse into directories?}
 }
 \value{
-a character vector is dataframe names, including their relative path
+a character vector of dataframe names, including their relative path
 }
 \description{
 List available data files
