@@ -69,7 +69,7 @@ A,B
 3,12
 ```
 
-Altered version. The row containing `1, 10` was moved to the last line. The row containing `3,12` was changed to `3,12`
+Altered version. The row containing `1, 10` was moved to the last line. The row containing `3,12` was changed to `3,0`
 
 ```
 A,B
