@@ -2,7 +2,7 @@
 #'
 #' This will create two files. The `".tsv"` file contains the raw data.
 #' The `".yml"` contains the meta data on the columns in YAML format.
-#' @param x the `data.frame
+#' @param x the `data.frame`
 #' @param file the name of the file without file extension. Can include a
 #' relative path. It is relative to the `root`.
 #' @param root The root of a project. Can be a file path or a `git-repository`.
