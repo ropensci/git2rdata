@@ -71,7 +71,9 @@ meta.numeric <- function(x, ...) {
 #'   Defaults to TRUE
 #' @param index an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from `x` will get new indices.
 #' @inheritParams utils::write.table
+#' @importFrom assertthat assert_that is.flag noNA
 meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
+  assert_that(is.flag(optimize), noNA(optimize))
   if (missing(index) || is.null(index)) {
     index <- seq_along(levels(x))
     names(index) <- levels(x)
@@ -86,7 +88,7 @@ meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
     index <- c(index, extra_index)[levels(x)]
   }
 
-  if (isTRUE(optimize)) {
+  if (optimize) {
     z <- index[x]
   } else {
     assert_that(is.string(na), noNA(na), no_whitespace(na))
@@ -97,7 +99,7 @@ Please use a different NA string or use optimize = TRUE", call. = FALSE)
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
 
-  m <- list(class = "factor", na_string = na, optimize = isTRUE(optimize),
+  m <- list(class = "factor", na_string = na, optimize = optimize,
             labels = names(index), index = unname(index),
             ordered = is.ordered(x))
   class(m) <- "meta_detail"
@@ -107,11 +109,13 @@ Please use a different NA string or use optimize = TRUE", call. = FALSE)
 
 #' @export
 #' @rdname meta
+#' @importFrom assertthat assert_that is.flag noNA
 meta.logical <- function(x, optimize = TRUE, ...){
-  if (isTRUE(optimize)) {
+  assert_that(is.flag(optimize), noNA(optimize))
+  if (optimize) {
     x <- as.integer(x)
   }
-  m <- list(class = "logical", optimize = isTRUE(optimize))
+  m <- list(class = "logical", optimize = optimize)
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -127,8 +131,10 @@ meta.complex <- function(x, ...) {
 
 #' @export
 #' @rdname meta
+#' @importFrom assertthat assert_that is.flag noNA
 meta.POSIXct <- function(x, optimize = TRUE, ...) {
-  if (isTRUE(optimize)) {
+  assert_that(is.flag(optimize), noNA(optimize))
+  if (optimize) {
     z <- unclass(x)
     m <- list(class = "POSIXct", optimize = TRUE,
               origin = "1970-01-01 00:00:00", timezone = "UTC")
@@ -144,8 +150,10 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
 
 #' @export
 #' @rdname meta
+#' @importFrom assertthat assert_that is.flag noNA
 meta.Date <- function(x, optimize = TRUE, ...){
-  if (isTRUE(optimize)) {
+  assert_that(is.flag(optimize), noNA(optimize))
+  if (optimize) {
     z <- as.integer(x)
     m <- list(class = "Date", optimize = TRUE, origin = "1970-01-01")
   } else {

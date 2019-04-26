@@ -57,12 +57,12 @@ recent_commit <- function(file, root, data = FALSE){
 }
 
 #' @export
-#' @importFrom assertthat assert_that is.string is.flag
+#' @importFrom assertthat assert_that is.string is.flag noNA
 #' @importFrom git2r odb_blobs last_commit
 recent_commit.git_repository <- function(file, root, data = FALSE) {
-  assert_that(is.string(file), is.flag(data))
+  assert_that(is.string(file), is.flag(data), noNA(data))
 
-  if (isTRUE(data)) {
+  if (data) {
     file <- clean_data_path(root = ".", file, normalize = FALSE)
   }
   name <- basename(file)

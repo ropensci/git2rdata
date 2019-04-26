@@ -7,7 +7,9 @@
 #' `".tsv"` and `".yml"` files
 #' @noRd
 #' @family internal
+#' @importFrom assertthat assert_that is.flag noNA
 clean_data_path <- function(root, file, normalize = TRUE) {
+  assert_that(is.flag(normalize), noNA(normalize))
   dir_name <- dirname(file)
   file <- gsub("\\..*$", "", basename(file))
   if (dir_name == ".") {
@@ -15,7 +17,7 @@ clean_data_path <- function(root, file, normalize = TRUE) {
   } else {
     path <- file.path(root, dir_name, file)
   }
-  if (isTRUE(normalize)) {
+  if (normalize) {
     path <- normalizePath(path, winslash = "/", mustWork = FALSE)
   }
   c(raw_file = paste0(path, ".tsv"), meta_file = paste0(path, ".yml"))
