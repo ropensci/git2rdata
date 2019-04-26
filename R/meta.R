@@ -1,4 +1,4 @@
-#' Optimize a vector for storage as plain text and add meta data
+#' Optimize an object for storage as plain text and add meta data
 #'
 #' \code{\link{write_vc}} applies this function automatically on your
 #' data.frame.
@@ -160,8 +160,13 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom git2r hash
+#' @note `..generic` is a reserved name for the metadata and cannot be used as
+#' column name in a `data.frame`
+#' @rdname meta
 meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
-  assert_that(!has_name(x, "..generic"), msg = "'..generic' is a reserved column name")
+  assert_that(
+    !has_name(x, "..generic"),
+    msg = "'..generic' is a reserved name and not allowed as column name")
   generic <- list(optimize = optimize, "NA string" = na)
 
   dots <- list(...)

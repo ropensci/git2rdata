@@ -8,7 +8,8 @@
 \alias{meta.logical}
 \alias{meta.POSIXct}
 \alias{meta.Date}
-\title{Optimize a vector for storage as plain text and add meta data}
+\alias{meta.data.frame}
+\title{Optimize an object for storage as plain text and add meta data}
 \usage{
 meta(x, ...)
 
@@ -21,6 +22,8 @@ meta(x, ...)
 \method{meta}{POSIXct}(x, optimize = TRUE, ...)
 
 \method{meta}{Date}(x, optimize = TRUE, ...)
+
+\method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting, ...)
 }
 \arguments{
 \item{x}{the vector}
@@ -40,6 +43,10 @@ the optimized vector \code{x} with \code{meta} attribute
 \description{
 \code{\link{write_vc}} applies this function automatically on your
 data.frame.
+}
+\note{
+\code{..generic} is a reserved name for the metadata and cannot be used as
+column name in a \code{data.frame}
 }
 \examples{
 meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))
