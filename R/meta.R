@@ -189,15 +189,18 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
 
   # apply sorting
   if (missing(sorting) || is.null(sorting) || !length(sorting)) {
-    warning("no sorting applied")
+    warning("No sorting applied.
+Sorting is strongly recommended in combination with version control.")
   } else {
     assert_that(is.character(sorting))
-    assert_that(all(sorting %in% colnames(x)),
-                msg = "all sorting variables must be available")
+    assert_that(
+      all(sorting %in% colnames(x)),
+      msg = "All sorting variables must be available in the data.frame")
     if (anyDuplicated(x[sorting])) {
-      warning(
-"sorting results in ties. Add extra sorting variables to ensure small diffs."
-      )
+      sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
+      sorted <- sprintf("Sorting on %s results in ties.
+Add extra sorting variables to ensure small diffs.", sorted)
+      warning(sorted)
     }
     x <- x[do.call(order, x[sorting]), , drop = FALSE] # nolint
     generic <- c(generic, sorting = list(sorting))

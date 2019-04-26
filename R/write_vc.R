@@ -65,6 +65,10 @@ write_vc.character <- function(
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       if (strict) {
+        problems <- c(
+          "The data was not overwritten because of the issues below.",
+"See vignette('version_control', package = 'git2rdata') for more information.",
+          "", problems)
         stop(paste(problems, collapse = "\n"), call. = FALSE)
       }
       warning(paste(problems, collapse = "\n"))
@@ -127,7 +131,8 @@ compare_meta <- function(new, old) {
     problems <- c(
       problems,
       sprintf(
-        "new data is %s, whereas old data was %s",
+        "- New data is %s, whereas old data was %s.
+    Check the 'optimized' argument.",
         ifelse(new_optimize, "optimized", "verbose"),
         ifelse(old_optimize, "optimized", "verbose")
       )
@@ -137,7 +142,8 @@ compare_meta <- function(new, old) {
     problems <- c(
       problems,
       sprintf(
-        "new data uses '%s' as NA string, whereas old data used '%s'",
+        "- New data uses '%s' as NA string, whereas old data used '%s'.
+     Check the 'NA' argument.",
         new[["..generic"]][["NA string"]], old[["..generic"]][["NA string"]]
       )
     )
@@ -145,34 +151,33 @@ compare_meta <- function(new, old) {
   new_sorting <- new[["..generic"]][["sorting"]]
   old_sorting <- old[["..generic"]][["sorting"]]
   if (!isTRUE(all.equal(new_sorting, old_sorting))) {
-    common_sorting <- seq_len(min(length(new_sorting), length(old_sorting)))
-    if (any(new_sorting[common_sorting] != old_sorting[common_sorting])) {
-      problems <- c(problems, "new data uses different variables for sorting")
-    }
-    if (length(old_sorting) > length(common_sorting)) {
-      problems <- c(problems, "new data uses less variables for sorting")
-    } else if (length(new_sorting) > length(common_sorting)) {
-      problems <- c(problems, "new data uses more variables for sorting")
-    }
+    sprintf(
+      "- The sorting variables changed.
+    - Sorting for the new data: %s.
+    - Sorting for the old data: %s.",
+      paste(sprintf("'%s'", new_sorting), collapse = ", "),
+      paste(sprintf("'%s'", old_sorting), collapse = ", ")
+    ) -> extra
+    problems <- c(problems, extra)
   }
 
   new <- new[names(new) != "..generic"]
   old <- old[names(old) != "..generic"]
   if (length(new) != length(old)) {
-    problems <- c(problems, "new data has a different number of variables")
+    problems <- c(problems, "- New data has a different number of variables.")
   }
   if (!all(names(new) %in% names(old))) {
     problems <- c(problems,
-      paste(
-        "new variables:",
+      sprintf(
+        "- New variables: %s.",
         paste(names(new)[!names(new) %in% names(old)], collapse = ", ")
       )
     )
   }
   if (!all(names(old) %in% names(new))) {
     problems <- c(problems,
-      paste(
-        "deleted variables:",
+      sprintf(
+        "- Deleted variables: %s.",
         paste(names(old)[!names(old) %in% names(new)], collapse = ", ")
       )
     )
@@ -184,7 +189,7 @@ compare_meta <- function(new, old) {
   delta <- which(old_class != new_class)
   if (length(delta)) {
     problems <- c(problems,
-      sprintf("change in class: %s from %s to %s", common_variables[delta],
+      sprintf("- Change in class: '%s' from %s to %s.", common_variables[delta],
               old_class[delta], new_class[delta])
     )
   }
@@ -196,17 +201,17 @@ compare_meta <- function(new, old) {
       problems <- c(
         problems,
         sprintf(
-          "%s changes from %s to %s", id,
+          "- '%s' changes from %s to %s.", id,
           ifelse(old[[id]]$ordered, "ordinal", "nominal"),
           ifelse(new[[id]]$ordered, "ordinal", "nominal")
         )
       )
     }
     if (!isTRUE(all.equal(old[[id]][["labels"]],  new[[id]][["labels"]]))) {
-      problems <- c(problems, sprintf("new factor labels for %s", id))
+      problems <- c(problems, sprintf("- New factor labels for '%s'.", id))
     }
     if (!isTRUE(all.equal(old[[id]][["index"]],  new[[id]][["index"]]))) {
-      problems <- c(problems, sprintf("new indices labels for %s", id))
+      problems <- c(problems, sprintf("- New indices for '%s'.", id))
     }
   }
 
