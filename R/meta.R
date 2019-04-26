@@ -196,13 +196,15 @@ Sorting is strongly recommended in combination with version control.")
     assert_that(
       all(sorting %in% colnames(x)),
       msg = "All sorting variables must be available in the data.frame")
-    if (anyDuplicated(x[sorting])) {
-      sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
-      sorted <- sprintf("Sorting on %s results in ties.
+    if (nrow(x) > 1) {
+      x <- x[do.call(order, x[sorting]), , drop = FALSE] # nolint
+      if (any_duplicated(x[sorting])) {
+        sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
+        sorted <- sprintf("Sorting on %s results in ties.
 Add extra sorting variables to ensure small diffs.", sorted)
-      warning(sorted)
+        warning(sorted)
+      }
     }
-    x <- x[do.call(order, x[sorting]), , drop = FALSE] # nolint
     generic <- c(generic, sorting = list(sorting))
   }
   # calculate meta for each column
@@ -283,4 +285,26 @@ print.meta_list <- function(x, ...) {
 #' @export
 print.meta_detail <- function(x, ...) {
   cat(format(x), sep = "\n")
+}
+
+delta <- function(a, b) {
+  ifelse(
+    is.na(a),
+    is.na(b),
+    ifelse(is.na(b), FALSE, a == b)
+  )
+}
+
+any_duplicated <- function(x) {
+  y <- vapply(
+    x,
+    function(z) {
+      delta(z[-1], z[-length(z)])
+    },
+    logical(nrow(x) - 1)
+  )
+  if (inherits(y, "matrix")) {
+    y <- rowSums(y)
+  }
+  sum(y == ncol(x)) > 0
 }
