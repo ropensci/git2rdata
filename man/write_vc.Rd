@@ -20,9 +20,12 @@ relative path. It is relative to the \code{root}.}
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (".").}
 
-\item{sorting}{a vector of column names defining which columns to use for
-sorting \code{x} and in what order to use them. Only required when writing
-new metadata.}
+\item{sorting}{an optional vector of column names defining which columns to
+use for sorting \code{x} and in what order to use them. Strongly recommended
+in combination with version control. See the vignette on
+\href{https://inbo.github.io/git2rdata/articles/efficiency.html}{efficiency} for
+an illustration of the importance of sorting.
+\code{vignette("efficiency", package = "git2rdata")}}
 
 \item{strict}{What to do when the metadata changes. \code{strict = FALSE} will
 overwrite the data with a warning listing the changes, \code{strict = TRUE} will

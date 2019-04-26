@@ -171,6 +171,7 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #' @note `..generic` is a reserved name for the metadata and cannot be used as
 #' column name in a `data.frame`
 #' @rdname meta
+#' @inheritParams write_vc
 meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
   assert_that(
     !has_name(x, "..generic"),

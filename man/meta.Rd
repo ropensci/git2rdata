@@ -36,6 +36,13 @@ meta(x, ...)
 Defaults to TRUE}
 
 \item{index}{an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from \code{x} will get new indices.}
+
+\item{sorting}{an optional vector of column names defining which columns to
+use for sorting \code{x} and in what order to use them. Strongly recommended
+in combination with version control. See the vignette on
+\href{https://inbo.github.io/git2rdata/articles/efficiency.html}{efficiency} for
+an illustration of the importance of sorting.
+\code{vignette("efficiency", package = "git2rdata")}}
 }
 \value{
 the optimized vector \code{x} with \code{meta} attribute

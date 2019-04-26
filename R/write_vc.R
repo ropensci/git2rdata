@@ -7,9 +7,12 @@
 #' relative path. It is relative to the `root`.
 #' @param root The root of a project. Can be a file path or a `git-repository`.
 #' Defaults to the current working directory (".").
-#' @param sorting a vector of column names defining which columns to use for
-#' sorting \code{x} and in what order to use them. Only required when writing
-#' new metadata.
+#' @param sorting an optional vector of column names defining which columns to
+#' use for sorting \code{x} and in what order to use them. Strongly recommended
+#' in combination with version control. See the vignette on
+#' [efficiency](https://inbo.github.io/git2rdata/articles/efficiency.html) for
+#' an illustration of the importance of sorting.
+#' `vignette("efficiency", package = "git2rdata")`
 #' @param strict What to do when the metadata changes. `strict = FALSE` will
 #' overwrite the data with a warning listing the changes, `strict = TRUE` will
 #' return an error and leave the data as is. Default to `TRUE`
