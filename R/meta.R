@@ -85,7 +85,11 @@ meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
     candidate_index <- candidate_index[!candidate_index %in% index]
     extra_index <- candidate_index[seq_along(new_levels)]
     names(extra_index) <- levels(x)[new_levels]
-    index <- c(index, extra_index)[levels(x)]
+    new_index <- c(index, extra_index)
+    index <- new_index[levels(x)]
+    empty <- levels(x) == ""
+    index[empty] <- new_index[names(new_index) == ""]
+    names(index)[empty] <- ""
   }
 
   if (optimize) {
