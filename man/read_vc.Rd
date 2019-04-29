@@ -66,7 +66,7 @@ status(repo)
 # read a dataframe from a git repo
 read_vc("iris", repo)
 
-# store a new version of in the git repo
+# store a new version in the git repo
 write_vc(iris[1:5, ], "iris", repo, stage = TRUE)
 status(repo)
 
