@@ -79,6 +79,13 @@ Use write_vc() instead.")
       msg = sprintf("the names in '%s' don't match existing labels", id)
     )
     names(meta_data[[id]][["labels"]]) <- meta_data[[id]][["labels"]]
+
+    if (any(names(change[[id]]) == "")) {
+      empty_change <- which(names(change[[id]]) == "")
+      empty_meta <- which(names(meta_data[[id]][["labels"]]) == "")
+      meta_data[[id]][["labels"]][empty_meta] <- change[[id]][empty_change]
+      change[[id]] <- change[[id]][-empty_change]
+    }
     meta_data[[id]][["labels"]][names(change[[id]])] <- change[[id]]
     meta_data[[id]][["labels"]] <- unname(meta_data[[id]][["labels"]])
     assert_that(
