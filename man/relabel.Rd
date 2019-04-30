@@ -2,7 +2,7 @@
 % Please edit documentation in R/relabel.R
 \name{relabel}
 \alias{relabel}
-\title{Relabel factor levels}
+\title{Relabel factor levels by updating the metadata}
 \usage{
 relabel(file, root = ".", change)
 }
@@ -13,12 +13,7 @@ relative path. It is relative to the \code{root}.}
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (".").}
 
-\item{change}{either list or a data.frame. In case of a list is a named list
-with named vectors. The name of list elements must match the names of the
-variables. The names of the vector elements must match the existing factor
-labels. The values represent the new factor labels. In case of a data.frame
-it needs to have the variables \code{factor} (name of the factor), \code{old} (the old)
-factor label and \code{new} (the new factor label). Other columns are ignored.}
+\item{change}{either a \code{list} or a \code{data.frame}. In case of a \code{list`` is a named }list\code{with named}vectors\code{. The names of list elements must match the names of the variables. The names of the vector elements must match the existing factor labels. The values represent the new factor labels. In case of a }data.frame\code{it needs to have the variables}factor\code{(name of the factor),}old\code{(the old) factor label and}new\code{(the new factor label).}relabel()` ignores all other columns.}
 }
 \value{
 invisible \code{NULL}
@@ -27,7 +22,8 @@ invisible \code{NULL}
 Imagine the situation where we have a dataframe with a factor variable and we
 have stored it with \code{write_vc(optimize = TRUE)}. The raw data file contains
 the factor indices and the metadata contains the link between the factor
-index and the corresponding label.
+index and the corresponding label. In such a case, relabeling a factor can be
+fast and lightweight by updating the metadata.
 }
 \examples{
 

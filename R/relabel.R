@@ -1,16 +1,18 @@
-#' Relabel factor levels
+#' Relabel factor levels by updating the metadata
 #'
 #' Imagine the situation where we have a dataframe with a factor variable and we
 #' have stored it with `write_vc(optimize = TRUE)`. The raw data file contains
 #' the factor indices and the metadata contains the link between the factor
-#' index and the corresponding label.
+#' index and the corresponding label. In such a case, relabeling a factor can be
+#' fast and lightweight by updating the metadata.
 #' @inheritParams write_vc
-#' @param change either list or a data.frame. In case of a list is a named list
-#' with named vectors. The name of list elements must match the names of the
-#' variables. The names of the vector elements must match the existing factor
-#' labels. The values represent the new factor labels. In case of a data.frame
-#' it needs to have the variables `factor` (name of the factor), `old` (the old)
-#' factor label and `new` (the new factor label). Other columns are ignored.
+#' @param change either a `list` or a `data.frame`. In case of a `list`` is a
+#' named `list` with named `vectors`. The names of list elements must match the
+#' names of the variables. The names of the vector elements must match the
+#' existing factor labels. The values represent the new factor labels. In case
+#' of a `data.frame` it needs to have the variables `factor` (name of the
+#' factor), `old` (the old) factor label and `new` (the new factor label).
+#' `relabel()` ignores all other columns.
 #' @return invisible `NULL`
 #' @export
 #' @examples
@@ -55,7 +57,7 @@ relabel.list <- function(file, root = ".", change) {
     return(relabel(file = file, root = workdir(root), change = change))
   }
   assert_that(is.string(root), is.string(file))
-  assert_that(!is.null(names(change)), msg = "'change' must be named")
+  assert_that(!is.null(names(change)), msg = "'change' has no names")
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
   assert_that(
