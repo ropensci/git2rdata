@@ -1,6 +1,7 @@
 #' Read a \code{data.frame}
 #'
-#' Note that the dataframe has to be written with `write_vc()` before it can be read with `read_vc()`.
+#' Note that the dataframe has to be written with `write_vc()` before it can be
+#' read with `read_vc()`.
 #' @inheritParams write_vc
 #' @return The \code{data.frame} with the file names and hashes as attributes
 #' @rdname read_vc
@@ -58,7 +59,7 @@ read_vc.character <- function(file, root = ".") {
   raw_data <- read.table(
     file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
     dec = ".", numerals = "warn.loss", na.strings = na_string,
-    colClasses = setNames(col_type[col_classes], col_names),
+    colClasses = setNames(col_type[col_classes], col_names), comment.char = "",
     stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
   )
 

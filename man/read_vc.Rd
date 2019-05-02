@@ -17,7 +17,8 @@ Defaults to the current working directory (".").}
 The \code{data.frame} with the file names and hashes as attributes
 }
 \description{
-Note that the dataframe has to be written with \code{write_vc()} before it can be read with \code{read_vc()}.
+Note that the dataframe has to be written with \code{write_vc()} before it can be
+read with \code{read_vc()}.
 }
 \examples{
 ## on file system
