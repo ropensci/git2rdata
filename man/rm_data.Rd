@@ -19,7 +19,7 @@ Defaults to the current working directory (".").}
 
 \item{recursive}{remove files in subdirectories too}
 
-\item{...}{additional parameters used in some methods}
+\item{...}{parameters used in some methods}
 
 \item{stage}{stage the changes after removing the files. Defaults to FALSE.}
 

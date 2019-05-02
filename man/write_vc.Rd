@@ -15,7 +15,7 @@ write_vc(x, file, root = ".", sorting, strict = TRUE,
 \item{x}{the \code{data.frame}}
 
 \item{file}{the name of the file without file extension. Can include a
-relative path. It is relative to the \code{root}.}
+relative path. \code{file} is a path relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (".").}
@@ -36,9 +36,10 @@ Defaults to TRUE}
 
 \item{na}{the string to use for missing values in the data.}
 
-\item{...}{additional parameters used in some methods}
+\item{...}{parameters used in some methods}
 
-\item{stage}{stage the changes after writing the data. Defaults to FALSE}
+\item{stage}{Logical value indicating whether to stage the changes after
+writing the data. Defaults to FALSE}
 
 \item{force}{Add ignored files. Default is FALSE.}
 }

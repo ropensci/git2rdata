@@ -4,7 +4,7 @@
 #' The `".yml"` contains the meta data on the columns in YAML format.
 #' @param x the `data.frame`
 #' @param file the name of the file without file extension. Can include a
-#' relative path. It is relative to the `root`.
+#' relative path. `file` is a path relative to the `root`.
 #' @param root The root of a project. Can be a file path or a `git-repository`.
 #' Defaults to the current working directory (".").
 #' @param sorting an optional vector of column names defining which columns to
@@ -16,7 +16,7 @@
 #' @param strict What to do when the metadata changes. `strict = FALSE` will
 #' overwrite the data with a warning listing the changes, `strict = TRUE` will
 #' return an error and leave the data as is. Default to `TRUE`
-#' @param ... additional parameters used in some methods
+#' @param ... parameters used in some methods
 #' @inheritParams meta
 #' @inheritParams utils::write.table
 #' @return a named vector with the file paths relative to `root`. The names
@@ -99,7 +99,8 @@ write_vc.character <- function(
 setOldClass("git_repository")
 
 #' @rdname write_vc
-#' @param stage stage the changes after writing the data. Defaults to FALSE
+#' @param stage Logical value indicating whether to stage the changes after
+#' writing the data. Defaults to FALSE
 #' @inheritParams git2r::add
 #' @export
 #' @importFrom git2r workdir add
