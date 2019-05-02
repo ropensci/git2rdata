@@ -61,17 +61,17 @@ expect_identical(
 )
 
 write_vc(
-  test_data[11:12, ], file = "subsecond", root = root, stage = TRUE,
+  test_data[11, ], file = "subsecond", root = root, stage = TRUE,
   sorting = "test_Date"
 )
 commit_6 <- commit(root, "first subsecond")
 write_vc(
-  test_data[13:14, ], file = "subsecond", root = root, stage = TRUE,
+  test_data[13, ], file = "subsecond", root = root, stage = TRUE,
   sorting = "test_Date"
 )
 commit_7 <- commit(root, "second subsecond")
 write_vc(
-  test_data[15:16, ], file = "subsecond", root = root, stage = TRUE,
+  test_data[15, ], file = "subsecond", root = root, stage = TRUE,
   sorting = "test_Date"
 )
 commit_8 <- commit(root, "third subsecond")

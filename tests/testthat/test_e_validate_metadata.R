@@ -41,3 +41,4 @@ test_that("read_vc() handles changes in rawdata", {
   )
 })
 
+file.remove(list.files(root, recursive = TRUE, full.names = TRUE))

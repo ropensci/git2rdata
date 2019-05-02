@@ -36,3 +36,5 @@ test_that("special character are written properly as verbose factor", {
   )
   expect_equivalent(read_vc(file = file, root = root), characters)
 })
+
+file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
