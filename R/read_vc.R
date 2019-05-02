@@ -1,9 +1,10 @@
-#' Read a \code{data.frame}
+#' Read a `data.frame` stored by `write_vc()`
 #'
-#' Note that the dataframe has to be written with `write_vc()` before it can be
-#' read with `read_vc()`.
+#' `read_vc()` reads and checks the meta data. Then it reads the raw data and
+#' applies the meta data. It returns the `data.frame` as stored by `write_vc()`.
+#'
 #' @inheritParams write_vc
-#' @return The \code{data.frame} with the file names and hashes as attributes
+#' @return The `data.frame` with the file names and hashes as attributes
 #' @rdname read_vc
 #' @export
 #' @family storage
@@ -36,6 +37,23 @@ read_vc.character <- function(file, root = ".") {
   # read the metadata
   meta_data <- read_yaml(file["meta_file"])
   assert_that(has_name(meta_data, "..generic"))
+  assert_that(
+    has_name(meta_data[["..generic"]], "hash"),
+    msg = "Corrupt metadata, no hash found."
+  )
+  check_meta_data <- meta_data
+  check_meta_data[["..generic"]][["hash"]] <- NULL
+  assert_that(
+    meta_data[["..generic"]][["hash"]] == hash(as.yaml(check_meta_data)),
+    msg = "Corrupt metadata, mismatching hash."
+  )
+  correct <- names(meta_data)
+  correct <- paste(correct[correct != "..generic"], collapse = "\t")
+  header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
+  assert_that(
+    correct == header,
+    msg = paste("Corrupt data, incorrect header. Expecting:", correct)
+  )
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (optimize) {
     col_type <- c(

@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_vc.R
 \name{read_vc}
 \alias{read_vc}
-\title{Read a \code{data.frame}}
+\title{Read a \code{data.frame} stored by \code{write_vc()}}
 \usage{
 read_vc(file, root = ".")
 }
@@ -17,8 +17,8 @@ Defaults to the current working directory (".").}
 The \code{data.frame} with the file names and hashes as attributes
 }
 \description{
-Note that the dataframe has to be written with \code{write_vc()} before it can be
-read with \code{read_vc()}.
+\code{read_vc()} reads and checks the meta data. Then it reads the raw data and
+applies the meta data. It returns the \code{data.frame} as stored by \code{write_vc()}.
 }
 \examples{
 ## on file system
