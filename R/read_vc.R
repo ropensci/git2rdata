@@ -42,6 +42,7 @@ read_vc.character <- function(file, root = ".") {
     msg = "Corrupt metadata, no hash found."
   )
   check_meta_data <- meta_data
+  check_meta_data[["..generic"]][["git2rdata"]] <- NULL
   check_meta_data[["..generic"]][["hash"]] <- NULL
   check_meta_data[["..generic"]][["data_hash"]] <- NULL
   assert_that(

@@ -172,6 +172,7 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom git2r hash
+#' @importFrom utils packageVersion
 #' @note `..generic` is a reserved name for the metadata and cannot be used as
 #' column name in a `data.frame`
 #' @rdname meta
@@ -251,7 +252,9 @@ Add extra sorting variables to ensure small diffs.", sorted)
   )
   m <- c(..generic = list(generic), m)
   class(m) <- "meta_list"
-  m[["..generic"]] <- c(m[["..generic"]], hash = hash(as.yaml(m)))
+  m[["..generic"]] <- c(
+    list(git2rdata = as.character(packageVersion("git2rdata"))),
+    m[["..generic"]], hash = hash(as.yaml(m)))
   z <- lapply(z, `attr<-`, "meta", NULL)
 
   # convert z to dataframe and add metadata list
