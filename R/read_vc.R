@@ -43,6 +43,7 @@ read_vc.character <- function(file, root = ".") {
   )
   check_meta_data <- meta_data
   check_meta_data[["..generic"]][["hash"]] <- NULL
+  check_meta_data[["..generic"]][["data_hash"]] <- NULL
   assert_that(
     meta_data[["..generic"]][["hash"]] == hash(as.yaml(check_meta_data)),
     msg = "Corrupt metadata, mismatching hash."
@@ -54,6 +55,13 @@ read_vc.character <- function(file, root = ".") {
     correct == header,
     msg = paste("Corrupt data, incorrect header. Expecting:", correct)
   )
+  if (!has_name(meta_data[["..generic"]], "data_hash")) {
+    warning("Data hash missing. Was the data stored by git2rdata <= 0.0.3?")
+  } else {
+    if (meta_data[["..generic"]][["data_hash"]] != hashfile(file["raw_file"])) {
+      warning("Data hash mismatch. Was the data changed by other software?")
+    }
+  }
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (optimize) {
     col_type <- c(

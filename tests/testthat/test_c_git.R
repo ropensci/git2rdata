@@ -118,8 +118,8 @@ staged <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = list(), unstaged = "staged.tsv", untracked = unname(untracked),
-    ignored = unname(ignored)
+    staged = list(), unstaged = c("staged.tsv", "staged.yml"),
+    untracked = unname(untracked), ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )
@@ -144,8 +144,8 @@ staged <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = "staged.tsv", unstaged = list(), untracked = unname(untracked),
-    ignored = unname(ignored)
+    staged = c("staged.tsv", "staged.yml"), unstaged = list(),
+    untracked = unname(untracked), ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )

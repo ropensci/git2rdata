@@ -95,9 +95,10 @@ Use write_vc() instead.")
       msg = sprintf("relabeling '%s' leads to duplicated labels", id)
     )
   }
-  meta_data[["..generic"]][["hash"]] <- NULL
-  meta_data[["..generic"]] <- c(meta_data[["..generic"]],
-                                hash = hash(as.yaml(meta_data)))
+  old_meta <- meta_data
+  old_meta[["..generic"]][["hash"]] <- NULL
+  old_meta[["..generic"]][["data_hash"]] <- NULL
+  meta_data[["..generic"]][["hash"]] <- hash(as.yaml(old_meta))
   write_yaml(meta_data, file["meta_file"])
   return(invisible(NULL))
 }

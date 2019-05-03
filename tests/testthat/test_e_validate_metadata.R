@@ -25,6 +25,13 @@ test_that("read_vc() checks hash", {
     read_vc(file = file, root = root),
     "Corrupt metadata, no hash found."
   )
+  junk_yaml <- correct_yaml
+  junk_yaml[["..generic"]][["data_hash"]] <- NULL
+  write_yaml(junk_yaml, file.path(root, junk[2]))
+  expect_warning(
+    read_vc(file = file, root = root),
+    "Data hash missing."
+  )
 })
 
 test_that("read_vc() handles changes in rawdata", {
@@ -38,6 +45,11 @@ test_that("read_vc() handles changes in rawdata", {
   expect_error(
     read_vc(file = file, root = root),
     "Corrupt data, incorrect header."
+  )
+  writeLines(correct_data[1:2], file.path(root, junk[1]))
+  expect_warning(
+    read_vc(file = file, root = root),
+    "Data hash mismatch."
   )
 })
 

@@ -75,19 +75,19 @@ write_vc.character <- function(
       if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
         sorting <- old[["..generic"]][["sorting"]]
       }
-      write_yaml(attr(raw_data, "meta"), file["meta_file"],
-                 fileEncoding = "UTF-8")
     }
   } else {
     raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
-    write_yaml(attr(raw_data, "meta"), file["meta_file"],
-               fileEncoding = "UTF-8")
   }
   write.table(
     x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
     sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
     col.names = TRUE, fileEncoding = "UTF-8"
   )
+  meta_data <- attr(raw_data, "meta")
+  meta_data[["..generic"]][["data_hash"]] <- hashfile(file["raw_file"])
+  write_yaml(meta_data, file["meta_file"],
+             fileEncoding = "UTF-8")
 
   hashes <- gsub(paste0("^", root, "/"), "", file)
   names(hashes) <- hashfile(file)
@@ -122,6 +122,8 @@ write_vc.git_repository <- function(
 }
 
 compare_meta <- function(new, old) {
+  new[["..generic"]][["data_hash"]] <- NULL
+  old[["..generic"]][["data_hash"]] <- NULL
   problems <- character(0)
   if (isTRUE(all.equal(new, old))) {
     return(problems)
