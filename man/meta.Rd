@@ -74,4 +74,7 @@ meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"), optimize = FALSE)
 meta(as.Date("2019-02-01"))
 meta(as.Date("2019-02-01"), optimize = FALSE)
 }
+\seealso{
+Other internal: \code{\link{upgrade_data}}
+}
 \concept{internal}

@@ -10,14 +10,14 @@
   "codeRepository": "https://github.com/inbo/git2rdata",
   "issueTracker": "https://github.com/inbo/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.2",
+    "version": "3.6.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.2 (2018-12-20)",
+  "runtimePlatform": "R version 3.6.0 (2019-04-26)",
   "author": [
     {
       "@type": "Person",
@@ -163,7 +163,7 @@
     }
   ],
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "336.015KB",
+  "fileSize": "339.96KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",

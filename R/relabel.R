@@ -52,6 +52,7 @@ relabel.default <- function(file, root, change) {
 #' @importFrom git2r workdir hash
 #' @importFrom assertthat assert_that is.string has_name
 #' @importFrom yaml read_yaml write_yaml
+#' @importFrom utils packageVersion
 relabel.list <- function(file, root = ".", change) {
   if (inherits(root, "git_repository")) {
     return(relabel(file = file, root = workdir(root), change = change))
@@ -66,6 +67,13 @@ relabel.list <- function(file, root = ".", change) {
   )
   meta_data <- read_yaml(file["meta_file"])
   assert_that(has_name(meta_data, "..generic"))
+  if (!has_name(meta_data[["..generic"]], "git2rdata") ||
+        package_version(meta_data[["..generic"]][["git2rdata"]]) <
+        packageVersion("git2rdata")
+      ) {
+    stop("Data stored using an older version of `git2rdata`.
+See `?upgrade_data()`.")
+  }
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (!optimize) {
     stop("relabeling factors on verbose data leads to large diffs.
@@ -100,6 +108,8 @@ Use write_vc() instead.")
   old_meta[["..generic"]][["hash"]] <- NULL
   old_meta[["..generic"]][["data_hash"]] <- NULL
   meta_data[["..generic"]][["hash"]] <- hash(as.yaml(old_meta))
+  meta_data[["..generic"]][["git2rdata"]] <-
+    as.character(packageVersion("git2rdata"))
   write_yaml(meta_data, file["meta_file"])
   return(invisible(NULL))
 }

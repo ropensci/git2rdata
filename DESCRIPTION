@@ -1,6 +1,6 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
@@ -44,4 +44,5 @@ Collate:
     'recent_commit.R'
     'reexport.R'
     'relabel.R'
+    'upgrade_data.R'
 VignetteBuilder: knitr

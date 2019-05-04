@@ -41,6 +41,13 @@ read_vc.character <- function(file, root = ".") {
     has_name(meta_data[["..generic"]], "hash"),
     msg = "Corrupt metadata, no hash found."
   )
+  if (!has_name(meta_data[["..generic"]], "git2rdata") ||
+        package_version(meta_data[["..generic"]][["git2rdata"]]) <
+        packageVersion("git2rdata")
+      ) {
+    stop("Data stored using an older version of `git2rdata`.
+See `?upgrade_data()`.")
+  }
   check_meta_data <- meta_data
   check_meta_data[["..generic"]][["git2rdata"]] <- NULL
   check_meta_data[["..generic"]][["hash"]] <- NULL
