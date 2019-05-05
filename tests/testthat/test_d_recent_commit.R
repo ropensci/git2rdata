@@ -60,23 +60,18 @@ expect_identical(
   )
 )
 
-write_vc(
-  test_data[11, ], file = "subsecond", root = root, stage = TRUE,
-  sorting = "test_Date"
-)
+target <- file.path(git2r::workdir(root), "subsecond.txt")
+write.table(test_data[11, ], file = target)
+git2r::add(root, target)
 commit_6 <- commit(root, "first subsecond")
-write_vc(
-  test_data[13, ], file = "subsecond", root = root, stage = TRUE,
-  sorting = "test_Date"
-)
+write.table(test_data[12, ], file = target)
+git2r::add(root, target)
 commit_7 <- commit(root, "second subsecond")
-write_vc(
-  test_data[15, ], file = "subsecond", root = root, stage = TRUE,
-  sorting = "test_Date"
-)
+write.table(test_data[13, ], file = target)
+git2r::add(root, target)
 commit_8 <- commit(root, "third subsecond")
 expect_warning(
-  output <- recent_commit(file = "subsecond", root, data = TRUE),
+  output <- recent_commit(file = "subsecond.txt", root),
   "Multiple commits within the same second"
 )
 expect_true(all(output$commit %in% c(commit_6$sha, commit_7$sha, commit_8$sha)))
