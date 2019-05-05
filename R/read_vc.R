@@ -94,7 +94,7 @@ See `?upgrade_data()`.")
     file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
     dec = ".", numerals = "warn.loss", na.strings = na_string,
     colClasses = setNames(col_type[col_classes], col_names), comment.char = "",
-    stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
+    stringsAsFactors = FALSE, fileEncoding = "UTF-8"
   )
 
   # reinstate factors
