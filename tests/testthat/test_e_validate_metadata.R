@@ -1,5 +1,5 @@
 context("validate metadata when reading")
-root <- tempfile("git2rdata-check-meta")
+root <- tempfile("git2rdata-check-meta(.*)")
 dir.create(root)
 test_that("read_vc() checks hash", {
   file <- basename(tempfile(tmpdir = root))

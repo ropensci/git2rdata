@@ -1,5 +1,5 @@
 context("relabel")
-root <- tempfile("git2rdata-relabel")
+root <- tempfile("git2rdata-relabel(.*)")
 dir.create(root)
 ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"))
 write_vc(ds, "relabel", root, sorting = "b")

@@ -89,7 +89,7 @@ write_vc.character <- function(
   write_yaml(meta_data, file["meta_file"],
              fileEncoding = "UTF-8")
 
-  hashes <- gsub(paste0("^", root, "/"), "", file)
+  hashes <- remove_root(file = file, root = root)
   names(hashes) <- hashfile(file)
 
   return(hashes)
@@ -219,4 +219,14 @@ compare_meta <- function(new, old) {
   }
 
   return(problems)
+}
+
+#' @noRd
+#' @param file the file including the path
+#' @param root the path of the root
+remove_root <- function(file, root) {
+  n_root <- nchar(root) + 1
+  has_root <- substr(file, 1, n_root) == paste0(root, "/")
+  file[has_root] <- substr(file[has_root], n_root + 1, nchar(file[has_root]))
+  return(file)
 }

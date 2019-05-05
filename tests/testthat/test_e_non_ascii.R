@@ -1,5 +1,5 @@
 context("check writing non ASCII characters")
-root <- tempfile("git2rdata-empty-label")
+root <- tempfile("git2rdata-empty-label(.*)")
 dir.create(root)
 characters <- data.frame(a = c("€$£ @&#§µ^ ()[]{}|²³<>/\\*+- ,;:.?!~",
                                "äàáâã ëèéê ïìíî öòóô üùúû ÿ ç ñ",

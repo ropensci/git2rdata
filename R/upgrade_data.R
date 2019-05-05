@@ -50,7 +50,7 @@ upgrade_data.character <- function(file, root = ".", verbose = TRUE, ...) {
       if (verbose) {
         message(file["meta_file"], " already up to date")
       }
-      file <- gsub(paste0("^", root, "/"), "", file)
+      file <- remove_root(file = file, root = root)
       return(file)
     }
   }
@@ -71,7 +71,7 @@ upgrade_data.character <- function(file, root = ".", verbose = TRUE, ...) {
   if (verbose) {
     message(file["meta_file"], " updated")
   }
-  file <- gsub(paste0("^", root, "/"), "", file)
+  file <- remove_root(file = file, root = root)
   return(file)
 }
 

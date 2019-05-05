@@ -191,7 +191,7 @@ prune_meta.git_repository <- function(
     }
   }
   file.remove(to_do)
-  to_do <- gsub(sprintf("^%s/(.*)$", root_wd), "\\1", to_do)
+  to_do <- remove_root(file = to_do, root = root_wd)
 
   if (stage) {
     add(repo = root, path = to_do)

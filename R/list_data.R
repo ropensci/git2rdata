@@ -29,7 +29,7 @@ list_data.character <- function(root = ".", path = ".", recursive = TRUE) {
   data_files <- gsub("\\.tsv$", "", data_files)
   meta_files <- gsub("\\.yml$", "", meta_files)
   data_files <- data_files[data_files %in% meta_files]
-  gsub(paste0("^", root, "/"), "", data_files)
+  remove_root(file = data_files, root = root)
 }
 
 #' @export

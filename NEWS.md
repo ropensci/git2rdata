@@ -14,13 +14,15 @@ git2rdata 0.0.4 (2019-05-03)
 
   * `write_vc()` and `relabel()` handle empty strings (`''`) in characters and factors (#24).
   * `read_vc()` no longer treats `#` as a comment character.
-  
+  * `read_vc()` handles non ASCII characters on Windows.
+
 ### Other changes
   
   * Use a faster algorithm to detect duplicates (suggestion by @brodieG). 
   * Improve documentation.
   * Fix typo's in documentation, vignettes and README.
   * Add a ROpenSci review badge to the README.
+  * The functions handle `root` containing regex expressions.
 
 git2rdata 0.0.3 (2019-03-12)
 ============================
