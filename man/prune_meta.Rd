@@ -27,7 +27,16 @@ returns invisibily a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
-Removes all metadata (\code{.yml} files) from the \code{path} when they don't have accompanying data (\code{.tsv} file). See the \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette (\code{vignette("workflow", package = "git2rdata")}) for some examples on how to use this.
+Removes all \strong{valid} metadata (\code{.yml} files) from the \code{path} when they don't
+have accompanying data (\code{.tsv} file). \strong{Invalid} metadata triggers a warning
+without removing the file.
+
+Use this function with caution since it will remove all valid metadata files
+without asking for confirmation. We strongly recommend to only use this
+function on files under version control. See the
+\href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette
+(\code{vignette("workflow", package = "git2rdata")}) for some examples on
+how to use this.
 }
 \examples{
 ## on file system

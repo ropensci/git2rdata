@@ -50,10 +50,21 @@ expect_warning(
   list_data(root = root, path = ".", recursive = TRUE),
   "Invalid metadata files found.*:\na/test2\ntest2"
 )
+current <- list.files(root, recursive = TRUE)
 expect_warning(
   rm_data(root = root, path = "."),
   "Invalid metadata files found.*:\na/test2\ntest2"
 )
+expect_identical(current[current != "test1.tsv"],
+                 list.files(root, recursive = TRUE))
+file.remove(file.path(root, "test2.tsv"))
+current <- list.files(root, recursive = TRUE)
+expect_warning(
+  prune_meta(root = root, path = "."),
+  "Invalid metadata files found.*:\ntest2"
+)
+expect_identical(current[current != "test1.yml"],
+                 list.files(root, recursive = TRUE))
 
 file.remove(
   list.files(root, recursive = TRUE, full.names = TRUE)

@@ -1,11 +1,15 @@
 #' Remove data files
 #'
+#' @description
 #' Removes all data (`.tsv` files) from the `path` when they have accompanying
 #' **valid** metadata (`.yml` file). The metadata remains untouched. **Invalid**
 #' metadata results in a warning.
 #'
-#' See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html)
-#' vignette (`vignette("workflow", package = "git2rdata")`) for some examples on
+#' Use this function with caution since it will remove all valid data files
+#' without asking for confirmation. We strongly recommend to only use this
+#' function on files under version control. See the
+#' [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette
+#' (`vignette("workflow", package = "git2rdata")`) for some examples on
 #' how to use this.
 #' @param path the directory in which to clean all the data files
 #' @param recursive remove files in subdirectories too
@@ -92,7 +96,17 @@ rm_data.git_repository <- function(
 
 #' Prune metadata files
 #'
-#' Removes all metadata (`.yml` files) from the `path` when they don't have accompanying data (`.tsv` file). See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette (`vignette("workflow", package = "git2rdata")`) for some examples on how to use this.
+#' @description
+#' Removes all **valid** metadata (`.yml` files) from the `path` when they don't
+#' have accompanying data (`.tsv` file). **Invalid** metadata triggers a warning
+#' without removing the file.
+#'
+#' Use this function with caution since it will remove all valid metadata files
+#' without asking for confirmation. We strongly recommend to only use this
+#' function on files under version control. See the
+#' [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette
+#' (`vignette("workflow", package = "git2rdata")`) for some examples on
+#' how to use this.
 #' @inheritParams rm_data
 #' @return returns invisibily a vector of removed files names. The paths are
 #' relative to `root`.
@@ -114,7 +128,7 @@ prune_meta.default <- function(
 }
 
 #' @export
-#' @importFrom assertthat assert_that is.flag
+#' @importFrom assertthat assert_that is.flag noNA
 prune_meta.character <- function(
   root = ".", path = NULL, recursive = TRUE, ...
 ){
@@ -126,24 +140,25 @@ prune_meta.character <- function(
   if (!dir.exists(path)) {
     return(invisible(NULL))
   }
-  assert_that(is.flag(recursive))
+  assert_that(is.flag(recursive), noNA(recursive))
 
-  to_do <- list.files(
-    path = path,
-    pattern = "\\.yml$",
-    recursive = recursive,
-    full.names = TRUE
-  )
-  keep <- list.files(
-    path = path,
-    pattern = "\\.tsv$",
-    recursive = recursive,
-    full.names = TRUE
-  )
+  to_do <- list.files(path = path, pattern = "\\.yml$", recursive = recursive,
+                      full.names = TRUE)
+  keep <- list.files(path = path, pattern = "\\.tsv$", recursive = recursive,
+                     full.names = TRUE)
   keep <- gsub("\\.tsv$", ".yml", keep)
   to_do <- to_do[!to_do %in% keep]
+  to_do_base <- remove_root(file = to_do, root = root)
+  check <- vapply(X = gsub(".yml$", "", to_do_base), FUN = is_git2rmeta,
+                  FUN.VALUE = NA, root = root, validate = FALSE)
+  if (any(!check)) {
+    warning("Invalid metadata files found. See ?is_git2rmeta():\n",
+            paste(to_do_base[!check], collapse = "\n"))
+  }
+  to_do <- to_do[check]
+
   file.remove(to_do)
-  to_do <- gsub(paste0("^", root, "/"), "", to_do)
+  to_do <- remove_root(file = to_do, root = root)
 
   return(invisible(to_do))
 }

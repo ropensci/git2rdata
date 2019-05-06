@@ -39,10 +39,12 @@ relative to \code{root}.
 Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying
 \strong{valid} metadata (\code{.yml} file). The metadata remains untouched. \strong{Invalid}
 metadata results in a warning.
-}
-\details{
-See the \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow}
-vignette (\code{vignette("workflow", package = "git2rdata")}) for some examples on
+
+Use this function with caution since it will remove all valid data files
+without asking for confirmation. We strongly recommend to only use this
+function on files under version control. See the
+\href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette
+(\code{vignette("workflow", package = "git2rdata")}) for some examples on
 how to use this.
 }
 \examples{
