@@ -181,7 +181,7 @@ expect_identical(
 )
 expect_error(
   prune_meta(root = root, path = ".", stage = TRUE),
-  "cannot remove and stage metadata when data is removed but unstaged"
+"cannot remove and stage metadata in combination with removed but unstaged data"
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],

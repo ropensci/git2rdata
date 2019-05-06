@@ -1,6 +1,12 @@
 #' Remove data files
 #'
-#' Removes all data (`.tsv` files) from the `path` when they have accompanying metadata (`.yml` file). The metadata remains untouched. See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette (`vignette("workflow", package = "git2rdata")`) for some examples on how to use this.
+#' Removes all data (`.tsv` files) from the `path` when they have accompanying
+#' **valid** metadata (`.yml` file). The metadata remains untouched. **Invalid**
+#' metadata results in a warning.
+#'
+#' See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html)
+#' vignette (`vignette("workflow", package = "git2rdata")`) for some examples on
+#' how to use this.
 #' @param path the directory in which to clean all the data files
 #' @param recursive remove files in subdirectories too
 #' @return returns invisibily a vector of removed files names. The paths are
@@ -41,7 +47,13 @@ rm_data.character <- function(
 #' @importFrom git2r workdir add
 #' @include write_vc.R
 #' @param stage stage the changes after removing the files. Defaults to FALSE.
-#' @param type which classes of files should be removed. `unmodified` are files in the git history and unchanged since the last commit. `modified` are files in the git history and changed since the last commit. `ignored` refers to file listed in a `.gitignore` file. Selecting `modified` will remove both `unmodified` and `modified` data files. Selecting `ìgnored` will remove `unmodified`, `modified` and `ignored` data files. `all` refers to all visible data files, inclusing `untracked` files. The argument can be abbreviated to the first letter.
+#' @param type Defines the classes of files to remove. `unmodified` are files in
+#' the git history and unchanged since the last commit. `modified` are files in
+#' the git history and changed since the last commit. `ignored` refers to file
+#' listed in a `.gitignore` file. Selecting `modified` will remove both
+#' `unmodified` and `modified` data files. Selecting `ìgnored` will remove
+#' `unmodified`, `modified` and `ignored` data files. `all` refers to all
+#' visible data files, inclusing `untracked` files.
 #' @rdname rm_data
 rm_data.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE,
@@ -179,7 +191,9 @@ prune_meta.git_repository <- function(
     ))
     changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
     if (any(to_do %in% changed)) {
-      stop("cannot remove and stage metadata when data is removed but unstaged")
+      stop(
+"cannot remove and stage metadata in combination with removed but unstaged data"
+      )
     }
   } else {
     changed <- unlist(status(

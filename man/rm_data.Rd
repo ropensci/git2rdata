@@ -23,14 +23,27 @@ Defaults to the current working directory (".").}
 
 \item{stage}{stage the changes after removing the files. Defaults to FALSE.}
 
-\item{type}{which classes of files should be removed. \code{unmodified} are files in the git history and unchanged since the last commit. \code{modified} are files in the git history and changed since the last commit. \code{ignored} refers to file listed in a \code{.gitignore} file. Selecting \code{modified} will remove both \code{unmodified} and \code{modified} data files. Selecting \code{ìgnored} will remove \code{unmodified}, \code{modified} and \code{ignored} data files. \code{all} refers to all visible data files, inclusing \code{untracked} files. The argument can be abbreviated to the first letter.}
+\item{type}{Defines the classes of files to remove. \code{unmodified} are files in
+the git history and unchanged since the last commit. \code{modified} are files in
+the git history and changed since the last commit. \code{ignored} refers to file
+listed in a \code{.gitignore} file. Selecting \code{modified} will remove both
+\code{unmodified} and \code{modified} data files. Selecting \code{ìgnored} will remove
+\code{unmodified}, \code{modified} and \code{ignored} data files. \code{all} refers to all
+visible data files, inclusing \code{untracked} files.}
 }
 \value{
 returns invisibily a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
-Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying metadata (\code{.yml} file). The metadata remains untouched. See the \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette (\code{vignette("workflow", package = "git2rdata")}) for some examples on how to use this.
+Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying
+\strong{valid} metadata (\code{.yml} file). The metadata remains untouched. \strong{Invalid}
+metadata results in a warning.
+}
+\details{
+See the \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow}
+vignette (\code{vignette("workflow", package = "git2rdata")}) for some examples on
+how to use this.
 }
 \examples{
 ## on file system

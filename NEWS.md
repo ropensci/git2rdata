@@ -10,6 +10,8 @@ git2rdata 0.0.4 (2019-05-03)
   * `read_vc()` checks the meta data hash. A mismatch results in an error.
   * The meta data gains a data hash. A mismatch throws a warning. This allows the data to up updated by other software.
   * `is_git2rmeta()` validates metadata
+  * `list_data()` lists files with valid metadata. Files with invalid metadata result in a warning.
+  * `rm_data()` removes data files with valid metadata.
   
 ### Bugfixes
 

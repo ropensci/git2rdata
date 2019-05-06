@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_data.R
 \name{list_data}
 \alias{list_data}
-\title{List available data files}
+\title{List available git2rdata files containing data}
 \usage{
 list_data(root = ".", path = ".", recursive = TRUE)
 }
@@ -17,7 +17,8 @@ list_data(root = ".", path = ".", recursive = TRUE)
 a character vector of dataframe names, including their relative path
 }
 \description{
-List available data files
+The selection lists all \code{.tsv} files with a matching \strong{valid} metadata file.
+\strong{invalid} metadata files result in a warning.
 }
 \examples{
 ## on file system

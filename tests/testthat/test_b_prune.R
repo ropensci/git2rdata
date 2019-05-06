@@ -34,4 +34,30 @@ file.remove(file.path(root, "test.yml"))
 current <- list.files(root, recursive = TRUE)
 expect_identical(rm_data(root, path = "."), character(0))
 expect_identical(list.files(root, recursive = TRUE), current)
-file.remove(file.path(root, "test.tsv"))
+
+write_vc(test_data, file = "test1", root = root, sorting = "test_Date")
+junk <- write_vc(test_data, file = "test2", root = root, sorting = "test_Date")
+write_vc(test_data, file = "a/test2", root = root, sorting = "test_Date")
+meta_data <- yaml::read_yaml(file.path(root, junk[2]))
+meta_data[["..generic"]] <- NULL
+yaml::write_yaml(meta_data, file = file.path(root, junk[2]))
+yaml::write_yaml(meta_data, file = file.path(root, "a", junk[2]))
+expect_warning(
+  list_data(root = root, path = ".", recursive = FALSE),
+  "Invalid metadata files found.*:\ntest2"
+)
+expect_warning(
+  list_data(root = root, path = ".", recursive = TRUE),
+  "Invalid metadata files found.*:\na/test2\ntest2"
+)
+expect_warning(
+  rm_data(root = root, path = "."),
+  "Invalid metadata files found.*:\na/test2\ntest2"
+)
+
+file.remove(
+  list.files(root, recursive = TRUE, full.names = TRUE)
+)
+file.remove(
+  list.files(root, recursive = TRUE, include.dirs = TRUE, full.names = TRUE)
+)
