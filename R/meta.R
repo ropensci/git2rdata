@@ -161,7 +161,7 @@ meta.Date <- function(x, optimize = TRUE, ...){
     z <- as.integer(x)
     m <- list(class = "Date", optimize = TRUE, origin = "1970-01-01")
   } else {
-    z <- format(x, format = "%Y-%m-%d", tz = "UTC")
+    z <- format(x, format = "%Y-%m-%d")
     m <- list(class = "Date", optimize = FALSE, format = "%Y-%m-%d")
   }
   class(m) <- "meta_detail"
