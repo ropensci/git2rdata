@@ -60,20 +60,13 @@ relabel.list <- function(file, root = ".", change) {
   assert_that(is.string(root), is.string(file))
   assert_that(!is.null(names(change)), msg = "'change' has no names")
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
+  is_git2rmeta(file = file, root = root, validate = TRUE)
   file <- clean_data_path(root = root, file = file)
   assert_that(
     all(file.exists(file)),
     msg = "raw file and/or meta file missing"
   )
   meta_data <- read_yaml(file["meta_file"])
-  assert_that(has_name(meta_data, "..generic"))
-  if (!has_name(meta_data[["..generic"]], "git2rdata") ||
-        package_version(meta_data[["..generic"]][["git2rdata"]]) <
-        packageVersion("git2rdata")
-      ) {
-    stop("Data stored using an older version of `git2rdata`.
-See `?upgrade_data()`.")
-  }
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (!optimize) {
     stop("relabeling factors on verbose data leads to large diffs.

@@ -75,6 +75,7 @@ meta(as.Date("2019-02-01"))
 meta(as.Date("2019-02-01"), optimize = FALSE)
 }
 \seealso{
-Other internal: \code{\link{upgrade_data}}
+Other internal: \code{\link{is_git2rmeta}},
+  \code{\link{upgrade_data}}
 }
 \concept{internal}

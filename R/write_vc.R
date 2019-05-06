@@ -58,6 +58,13 @@ write_vc.character <- function(
   }
 
   if (file.exists(file["meta_file"])) {
+    tryCatch(
+      is_git2rmeta(file = remove_root(file = file["meta_file"], root = root),
+                   root = root, validate = TRUE),
+      error = function(e) {
+        stop(paste("Existing metadata file is invalid.", e$message, sep = "\n"))
+      }
+    )
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
     raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting,

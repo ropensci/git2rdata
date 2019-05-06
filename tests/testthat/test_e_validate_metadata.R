@@ -4,34 +4,32 @@ dir.create(root)
 test_that("read_vc() checks hash", {
   file <- basename(tempfile(tmpdir = root))
   junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
-  correct_yaml <- read_yaml(file.path(root, junk[2]))
+  correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
   junk_yaml <- correct_yaml
   junk_yaml[["test_Date"]] <- NULL
-  write_yaml(junk_yaml, file.path(root, junk[2]))
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
   expect_error(
     read_vc(file = file, root = root),
     "Corrupt metadata, mismatching hash."
   )
   junk_yaml <- correct_yaml
   junk_yaml[["..generic"]][["hash"]] <- "zzz"
-  write_yaml(junk_yaml, file.path(root, junk[2]))
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
   expect_error(
     read_vc(file = file, root = root),
     "Corrupt metadata, mismatching hash."
   )
   junk_yaml[["..generic"]][["hash"]] <- NULL
-  write_yaml(junk_yaml, file.path(root, junk[2]))
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
   expect_error(
     read_vc(file = file, root = root),
     "Corrupt metadata, no hash found."
   )
   junk_yaml <- correct_yaml
   junk_yaml[["..generic"]][["data_hash"]] <- NULL
-  write_yaml(junk_yaml, file.path(root, junk[2]))
-  expect_warning(
-    read_vc(file = file, root = root),
-    "Data hash missing."
-  )
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
+  expect_error(read_vc(file = file, root = root),
+               "Corrupt metadata, no data hash found.")
 })
 
 test_that("read_vc() handles changes in rawdata", {
@@ -42,14 +40,22 @@ test_that("read_vc() handles changes in rawdata", {
   junk_data <- correct_data
   junk_data[1] <- paste(correct_header[-1], collapse = "\t")
   writeLines(junk_data, file.path(root, junk[1]))
-  expect_error(
-    read_vc(file = file, root = root),
-    "Corrupt data, incorrect header."
-  )
+  expect_error(read_vc(file = file, root = root),
+               "Corrupt data, incorrect header.")
   writeLines(correct_data[1:2], file.path(root, junk[1]))
-  expect_warning(
-    read_vc(file = file, root = root),
-    "Data hash mismatch."
+  expect_warning(read_vc(file = file, root = root), "Data hash mismatch.")
+})
+
+test_that("write_vc() checks existing metadata", {
+  file <- basename(tempfile(tmpdir = root))
+  junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
+  correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
+  junk_yaml <- correct_yaml
+  junk_yaml[["test_Date"]] <- NULL
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
+  expect_error(
+    write_vc(test_data, file = file, root = root, sorting = "test_Date"),
+    "Existing metadata file is invalid"
   )
 })
 

@@ -28,6 +28,7 @@ read_vc.character <- function(file, root = ".") {
   assert_that(is.string(file), is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
 
+  is_git2rmeta(file = file, root = root, validate = TRUE)
   file <- clean_data_path(root = root, file = file)
   assert_that(
     all(file.exists(file)),
@@ -36,26 +37,6 @@ read_vc.character <- function(file, root = ".") {
 
   # read the metadata
   meta_data <- read_yaml(file["meta_file"])
-  assert_that(has_name(meta_data, "..generic"))
-  assert_that(
-    has_name(meta_data[["..generic"]], "hash"),
-    msg = "Corrupt metadata, no hash found."
-  )
-  if (!has_name(meta_data[["..generic"]], "git2rdata") ||
-        package_version(meta_data[["..generic"]][["git2rdata"]]) <
-        packageVersion("git2rdata")
-      ) {
-    stop("Data stored using an older version of `git2rdata`.
-See `?upgrade_data()`.")
-  }
-  check_meta_data <- meta_data
-  check_meta_data[["..generic"]][["git2rdata"]] <- NULL
-  check_meta_data[["..generic"]][["hash"]] <- NULL
-  check_meta_data[["..generic"]][["data_hash"]] <- NULL
-  assert_that(
-    meta_data[["..generic"]][["hash"]] == hash(as.yaml(check_meta_data)),
-    msg = "Corrupt metadata, mismatching hash."
-  )
   correct <- names(meta_data)
   correct <- paste(correct[correct != "..generic"], collapse = "\t")
   header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
@@ -63,12 +44,8 @@ See `?upgrade_data()`.")
     correct == header,
     msg = paste("Corrupt data, incorrect header. Expecting:", correct)
   )
-  if (!has_name(meta_data[["..generic"]], "data_hash")) {
-    warning("Data hash missing. Was the data stored by git2rdata <= 0.0.3?")
-  } else {
-    if (meta_data[["..generic"]][["data_hash"]] != hashfile(file["raw_file"])) {
-      warning("Data hash mismatch. Was the data changed by other software?")
-    }
+  if (meta_data[["..generic"]][["data_hash"]] != hashfile(file["raw_file"])) {
+    warning("Data hash mismatch. Was the data changed by other software?")
   }
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (optimize) {

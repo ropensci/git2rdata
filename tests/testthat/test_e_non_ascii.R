@@ -5,7 +5,7 @@ characters <- data.frame(a = c("€$£ @&#§µ^ ()[]{}|²³<>/\\*+- ,;:.?!~",
                                "äàáâã ëèéê ïìíî öòóô üùúû ÿ ç ñ",
                                "ÄÀÁÂ ËÈÉÊ ÏÌÍÎ ÖÒÓÔ ÜÙÚÛ Ñ"),
                          stringsAsFactors = FALSE)
-characters <- characters[order(characters$a), , drop = FALSE]
+characters <- characters[order(characters$a), , drop = FALSE] # nolint
 
 test_that("special character are written properly as character", {
   file <- basename(tempfile(tmpdir = root))

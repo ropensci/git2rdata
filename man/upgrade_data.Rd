@@ -44,6 +44,7 @@ write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
 upgrade_data(file = "iris", root = root)
 }
 \seealso{
-Other internal: \code{\link{meta}}
+Other internal: \code{\link{is_git2rmeta}},
+  \code{\link{meta}}
 }
 \concept{internal}
