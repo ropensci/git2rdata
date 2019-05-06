@@ -24,6 +24,8 @@
 #' @export
 #' @family storage
 #' @template example-io
+#' @note `..generic` is a reserved name for the metadata and cannot be used as
+#' column name in a `data.frame`
 write_vc <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA",
   ...

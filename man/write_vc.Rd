@@ -51,6 +51,10 @@ contain the hashes of the files.
 This will create two files. The \code{".tsv"} file contains the raw data.
 The \code{".yml"} contains the meta data on the columns in YAML format.
 }
+\note{
+\code{..generic} is a reserved name for the metadata and cannot be used as
+column name in a \code{data.frame}
+}
 \examples{
 ## on file system
 
