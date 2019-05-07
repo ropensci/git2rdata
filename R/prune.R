@@ -150,7 +150,7 @@ prune_meta.character <- function(
   to_do <- to_do[!to_do %in% keep]
   to_do_base <- remove_root(file = to_do, root = root)
   check <- vapply(X = gsub(".yml$", "", to_do_base), FUN = is_git2rmeta,
-                  FUN.VALUE = NA, root = root, validate = FALSE)
+                  FUN.VALUE = NA, root = root, message = "none")
   if (any(!check)) {
     warning("Invalid metadata files found. See ?is_git2rmeta():\n",
             paste(to_do_base[!check], collapse = "\n"))

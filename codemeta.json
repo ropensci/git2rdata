@@ -1,13 +1,11 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
   "@type": "SoftwareSourceCode",
   "identifier": "git2rdata",
   "description": "Make versioning of data.frame easy and efficient using git repositories.",
   "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
   "codeRepository": "https://github.com/inbo/git2rdata",
+  "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
   "issueTracker": "https://github.com/inbo/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "version": "0.0.4",
@@ -25,6 +23,15 @@
       "familyName": "Onkelinx",
       "email": "thierry.onkelinx@inbo.be",
       "@id": "https://orcid.org/0000-0001-8804-4216"
+    }
+  ],
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Floris",
+      "familyName": "Vanderhaeghe",
+      "email": "floris.vanderhaeghe@inbo.be",
+      "@id": "https://orcid.org/0000-0002-6378-6229"
     }
   ],
   "copyrightHolder": [
@@ -162,30 +169,10 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "341.488KB",
-  "contIntegration": [
-    "https://travis-ci.org/inbo/git2rdata",
-    "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
-    "https://codecov.io/gh/inbo/git2rdata"
-  ],
-  "developmentStatus": "https://www.repostatus.org/#wip",
   "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
-  "keywords": [
-    "r",
-    "rstats",
-    "r-package",
-    "version-control",
-    "reproducible-research"
-  ],
-  "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
-  "contributor": [
-    {
-      "@type": "Person",
-      "givenName": "Floris",
-      "familyName": "Vanderhaeghe",
-      "email": "floris.vanderhaeghe@inbo.be",
-      "@id": "https://orcid.org/0000-0002-6378-6229"
-    }
-  ]
+  "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
+  "fileSize": "343.284KB",
+  "contIntegration": ["https://travis-ci.org/inbo/git2rdata", "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master", "https://codecov.io/gh/inbo/git2rdata"],
+  "developmentStatus": ["https://www.repostatus.org/#wip", "https://www.tidyverse.org/lifecycle/#experimental"],
+  "keywords": ["r", "rstats", "r-package", "version-control", "reproducible-research"]
 }

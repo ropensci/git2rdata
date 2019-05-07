@@ -28,8 +28,18 @@ read_vc.character <- function(file, root = ".") {
   assert_that(is.string(file), is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
 
-  is_git2rmeta(file = file, root = root, validate = TRUE)
   file <- clean_data_path(root = root, file = file)
+  tryCatch(
+    is_git2rdata(file = remove_root(file = file["meta_file"], root = root),
+                 root = root, message = "error"),
+    error = function(e) {
+      if (e$message == "Corrupt data, mismatching data hash.") {
+        warning("Mismatching data hash. Data altered outside of git2rdata.")
+      } else {
+        stop(e$message)
+      }
+    }
+  )
   assert_that(
     all(file.exists(file)),
     msg = "raw file and/or meta file missing"
@@ -37,16 +47,6 @@ read_vc.character <- function(file, root = ".") {
 
   # read the metadata
   meta_data <- read_yaml(file["meta_file"])
-  correct <- names(meta_data)
-  correct <- paste(correct[correct != "..generic"], collapse = "\t")
-  header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
-  assert_that(
-    correct == header,
-    msg = paste("Corrupt data, incorrect header. Expecting:", correct)
-  )
-  if (meta_data[["..generic"]][["data_hash"]] != hashfile(file["raw_file"])) {
-    warning("Data hash mismatch. Was the data changed by other software?")
-  }
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (optimize) {
     col_type <- c(

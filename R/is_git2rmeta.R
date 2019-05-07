@@ -5,73 +5,73 @@
 #' hash on the metadata) and `data_hash` (a hash on the data file). The version
 #' number must be the current version.
 #' @inheritParams write_vc
-#' @param validate Should invalid metadata result in an error. Defaults to
-#' `FALSE`.
+#' @param message a single value indicating the type of output. `"none"`: no
+#' messages, `"warning"`: issue a warning in case of an invalid metadata file.
+#' `"error"`: an invalid metadata file results in an error. Defaults to
+#' `"none"`.
 #' @return A logical value. `TRUE` in case of a valid metadata file. Otherwise
-#' `FALSE` or an error depending on `validate`
+#' `FALSE`.
 #' @rdname is_git2rmeta
 #' @export
 #' @family internal
-is_git2rmeta <- function(file, root = ".", validate) {
+#' @template example-isgit2r
+is_git2rmeta <- function(file, root = ".",
+                         message = c("none", "warning", "error")) {
   UseMethod("is_git2rmeta", root)
 }
 
 #' @export
-is_git2rmeta.default <- function(file, root, validate) {
+is_git2rmeta.default <- function(file, root,
+                                 message = c("none", "warning", "error")) {
   stop("a 'root' of class ", class(root), " is not supported")
 }
 
 #' @export
-#' @importFrom assertthat assert_that is.string is.flag noNA
+#' @importFrom assertthat assert_that is.string
 #' @importFrom yaml read_yaml as.yaml
 #' @importFrom utils packageVersion
 #' @importFrom git2r hash
-is_git2rmeta.character <- function(file, root = ".", validate = FALSE) {
-  assert_that(is.string(file), is.string(root), is.flag(validate),
-              noNA(validate))
+is_git2rmeta.character <- function(file, root = ".",
+                                   message = c("none", "warning", "error")) {
+  assert_that(is.string(file), is.string(root))
+  message <- match.arg(message)
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
-    file <- clean_data_path(root = root, file = file)
+  file <- clean_data_path(root = root, file = file)
 
   if (!file.exists(file["meta_file"])) {
-    if (validate) {
-      stop("Metadata file missing.")
-    }
+    msg <- "Metadata file missing."
+    switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
 
   # read the metadata
   meta_data <- read_yaml(file["meta_file"])
   if (!has_name(meta_data, "..generic")) {
-    if (validate) {
-      stop("No '..generic' element.")
-    }
+    msg <- "No '..generic' element."
+    switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
   if (!has_name(meta_data[["..generic"]], "hash")) {
-    if (validate) {
-      stop("Corrupt metadata, no hash found.")
-    }
+    msg <- "Corrupt metadata, no hash found."
+    switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
   if (!has_name(meta_data[["..generic"]], "git2rdata")) {
-    if (validate) {
-      stop("Data stored using an older version of `git2rdata`.
-See `?upgrade_data()`.")
-    }
+    msg <- "Data stored using an older version of `git2rdata`.
+See `?upgrade_data()`."
+    switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
   if (package_version(meta_data[["..generic"]][["git2rdata"]]) <
         packageVersion("git2rdata")) {
-    if (validate) {
-      stop("Data stored using an older version of `git2rdata`.
-See `?upgrade_data()`.")
-    }
+    msg <- "Data stored using an older version of `git2rdata`.
+See `?upgrade_data()`."
+    switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
   if (!has_name(meta_data[["..generic"]], "data_hash")) {
-    if (validate) {
-      stop("Corrupt metadata, no data hash found.")
-    }
+    msg <- "Corrupt metadata, no data hash found."
+    switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
   meta_data[["..generic"]][["git2rdata"]] <- NULL
@@ -79,17 +79,18 @@ See `?upgrade_data()`.")
   meta_data[["..generic"]][["hash"]] <- NULL
   meta_data[["..generic"]][["data_hash"]] <- NULL
   if (current_hash != hash(as.yaml(meta_data))) {
-    if (validate) {
-      stop("Corrupt metadata, mismatching hash.")
-    }
+    msg <- "Corrupt metadata, mismatching hash."
+    switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
+
   return(TRUE)
 }
 
 #' @export
 #' @importFrom git2r workdir
 #' @include write_vc.R
-is_git2rmeta.git_repository <- function(file, root, validate = FALSE) {
-  is_git2rmeta(file = file, root = workdir(root), validate = validate)
+is_git2rmeta.git_repository <- function(
+  file, root, message = c("none", "warning", "error")) {
+  is_git2rmeta(file = file, root = workdir(root), message = message)
 }

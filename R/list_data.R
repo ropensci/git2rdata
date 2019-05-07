@@ -34,7 +34,7 @@ list_data.character <- function(root = ".", path = ".", recursive = TRUE) {
   meta_files <- meta_files[meta_files %in% data_files]
   meta_files_base <- remove_root(file = meta_files, root = root)
   check <- vapply(X = meta_files_base, FUN = is_git2rmeta,
-                  FUN.VALUE = NA, root = root, validate = FALSE)
+                  FUN.VALUE = NA, root = root, message = "none")
   if (any(!check)) {
     warning("Invalid metadata files found. See ?is_git2rmeta():\n",
             paste(meta_files_base[!check], collapse = "\n"))

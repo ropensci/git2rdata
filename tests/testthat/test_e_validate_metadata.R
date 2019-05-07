@@ -43,7 +43,10 @@ test_that("read_vc() handles changes in rawdata", {
   expect_error(read_vc(file = file, root = root),
                "Corrupt data, incorrect header.")
   writeLines(correct_data[1:2], file.path(root, junk[1]))
-  expect_warning(read_vc(file = file, root = root), "Data hash mismatch.")
+  expect_warning(
+    read_vc(file = file, root = root),
+    "Mismatching data hash. Data altered outside of git2rdata."
+  )
 })
 
 test_that("write_vc() checks existing metadata", {

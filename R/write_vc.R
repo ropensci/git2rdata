@@ -62,7 +62,7 @@ write_vc.character <- function(
   if (file.exists(file["meta_file"])) {
     tryCatch(
       is_git2rmeta(file = remove_root(file = file["meta_file"], root = root),
-                   root = root, validate = TRUE),
+                   root = root, message = "error"),
       error = function(e) {
         stop(paste("Existing metadata file is invalid.", e$message, sep = "\n"))
       }

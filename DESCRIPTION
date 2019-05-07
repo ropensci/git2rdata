@@ -37,6 +37,7 @@ Collate:
     'clean_data_path.R'
     'git2rdata-package.R'
     'write_vc.R'
+    'is_git2rdata.R'
     'is_git2rmeta.R'
     'list_data.R'
     'meta.R'

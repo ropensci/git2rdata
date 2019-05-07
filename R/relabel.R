@@ -60,7 +60,7 @@ relabel.list <- function(file, root = ".", change) {
   assert_that(is.string(root), is.string(file))
   assert_that(!is.null(names(change)), msg = "'change' has no names")
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
-  is_git2rmeta(file = file, root = root, validate = TRUE)
+  is_git2rmeta(file = file, root = root, message = "error")
   file <- clean_data_path(root = root, file = file)
   assert_that(
     all(file.exists(file)),
