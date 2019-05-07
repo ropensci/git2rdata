@@ -39,18 +39,18 @@ is_git2rmeta("iris", root)
 is_git2rdata("iris", root)
 
 # missing metadata
-file.remove(file.path(root, "iris.yml"))
+junk <- file.remove(file.path(root, "iris.yml"))
 is_git2rmeta("iris", root)
 is_git2rdata("iris", root)
 
 # missing data
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
-file.remove(file.path(root, "iris.tsv"))
+junk <- file.remove(file.path(root, "iris.tsv"))
 is_git2rmeta("iris", root)
 is_git2rdata("iris", root)
 
 # clean up
-file.remove(list.files(root, full.names = TRUE), root)
+junk <- file.remove(list.files(root, full.names = TRUE), root)
 }
 \seealso{
 Other internal: \code{\link{is_git2rdata}},

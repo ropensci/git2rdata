@@ -38,6 +38,9 @@
 #'   new = c("c2", "c1", "b3")
 #' )
 #' relabel("relabel", root, change)
+#'
+#' # clean up
+#' junk <- file.remove(list.files(root, full.names = TRUE), root)
 #' @family storage
 relabel <- function(file, root = ".", change) {
   UseMethod("relabel", change)

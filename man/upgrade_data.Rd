@@ -42,6 +42,9 @@ dir.create(root)
 write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
 # upgrade the file
 upgrade_data(file = "iris", root = root)
+
+# clean up
+junk <- file.remove(list.files(root, full.names = TRUE), root)
 }
 \seealso{
 Other internal: \code{\link{is_git2rdata}},

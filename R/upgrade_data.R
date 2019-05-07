@@ -16,6 +16,9 @@
 #' write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
 #' # upgrade the file
 #' upgrade_data(file = "iris", root = root)
+#'
+#' # clean up
+#' junk <- file.remove(list.files(root, full.names = TRUE), root)
 upgrade_data <- function(
   file, root = ".", verbose, ...
 ) {
@@ -48,7 +51,8 @@ upgrade_data.character <- function(file, root = ".", verbose = TRUE, ...) {
         packageVersion("git2rdata")
         ) {
       if (verbose) {
-        message(file["meta_file"], " already up to date")
+        message(remove_root(file = file["meta_file"], root = root),
+                " already up to date")
       }
       file <- remove_root(file = file, root = root)
       return(file)

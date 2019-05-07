@@ -48,6 +48,9 @@ change <- data.frame(
   new = c("c2", "c1", "b3")
 )
 relabel("relabel", root, change)
+
+# clean up
+junk <- file.remove(list.files(root, full.names = TRUE), root)
 }
 \seealso{
 Other storage: \code{\link{list_data}},
