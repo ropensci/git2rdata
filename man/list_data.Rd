@@ -18,7 +18,7 @@ a character vector of dataframe names, including their relative path
 }
 \description{
 The selection lists all \code{.tsv} files with a matching \strong{valid} metadata file.
-\strong{invalid} metadata files result in a warning.
+\strong{Invalid} metadata files result in a warning.
 }
 \examples{
 ## on file system
