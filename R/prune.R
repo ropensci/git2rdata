@@ -1,10 +1,10 @@
-#' Remove data files
+#' Remove data files from git2rdata objects
 #'
 #' @description
-#' Removes all data (`.tsv` files) from the `path` when they have accompanying
-#' **valid** metadata (`.yml` file). The metadata remains untouched. A warning
-#' lists any **invalid** metadata. The function keeps any `.tsv` file with
-#' invalid metadata or no metadata.
+#' Remove the data (`.tsv`) file from all valid git2rdata objects at the `path`.
+#' The metadata remains untouched. A warning lists any git2rdata object with
+#' **invalid** metadata. The function keeps any `.tsv` file with
+#' invalid metadata or from non-git2rdata objects.
 #'
 #' Use this function with caution since it will remove all valid data files
 #' without asking for confirmation. We strongly recommend to use this
@@ -12,7 +12,8 @@
 #' [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette
 #' (`vignette("workflow", package = "git2rdata")`) for some examples on
 #' how to use this.
-#' @param path the directory in which to clean all the data files
+#' @param path the directory in which to clean all the data files. The directory
+#' is relative to `root`.
 #' @param recursive remove files in subdirectories too
 #' @return returns invisibily a vector of removed files names. The paths are
 #' relative to `root`.

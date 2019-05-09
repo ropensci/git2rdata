@@ -14,7 +14,8 @@ prune_meta(root = ".", path = NULL, recursive = TRUE, ...)
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (\code{"."}).}
 
-\item{path}{the directory in which to clean all the data files}
+\item{path}{the directory in which to clean all the data files. The directory
+is relative to \code{root}.}
 
 \item{recursive}{remove files in subdirectories too}
 
@@ -45,19 +46,30 @@ how to use this.
 root <- tempfile("git2rdata-")
 dir.create(root)
 
-# store a dataframe
-write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
-# list the available data and the files
+# store a dataframe as git2rdata object. Capture the result to minimise
+# screen output
+junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+# write a standard tab separate file (non git2rdata object)
+write.table(iris, file = file.path(root, "standard.tsv"), sep = "\\t")
+# write a YAML file
+yml <- list(
+  authors = list(
+   "Research Institute for Nature and Forest" = list(
+       href = "https://www.inbo.be/en")))
+yaml::write_yaml(yml, file = file.path(root, "_pkgdown.yml"))
+
+# list the git2rdata objects
 list_data(root)
+# list the files
 list.files(root, recursive = TRUE)
 
-# remove all .tsv files with an associated .yml file
+# remove all .tsv files from valid git2rdata objects
 rm_data(root, path = ".")
-# check the removal of the data
+# check the removal of the .tsv file
 list.files(root, recursive = TRUE)
 list_data(root)
 
-# remove dangling metadata files
+# remove dangling git2rdata metadata files
 prune_meta(root, path = ".")
 # check the removal of the metadata
 list.files(root, recursive = TRUE)

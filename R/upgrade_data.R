@@ -7,7 +7,8 @@
 #' @inheritParams write_vc
 #' @param verbose display a message with the update status. Defaults to `TRUE`.
 #' @param path specify `path` instead of `file` to update all git2rdata objects
-#' in this directory and it's subdirectories. `path` is relative to `root`.
+#' in this directory and it's subdirectories. `path` is relative to `root`. Use
+#' `path = "."` to upgrade all git2rdata objects under `root`.
 #' @export
 #' @return the file names
 #' @family internal
@@ -16,10 +17,14 @@
 #' root <- tempfile("git2rdata-")
 #' dir.create(root)
 #'
-#' # write a dataframe to the directory
+#' # write dataframes to the root
 #' write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
-#' # upgrade the file
+#' write_vc(iris[5:10, ], file = "subdir/iris", root = root,
+#'          sorting = "Sepal.Length")
+#' # upgrade a single git2rdata object
 #' upgrade_data(file = "iris", root = root)
+#' # use path = "." to upgrade all git2rdata objects under root
+#' upgrade_data(path = ".", root = root)
 #'
 #' # clean up
 #' junk <- file.remove(list.files(root, full.names = TRUE), root)

@@ -2,7 +2,7 @@
 #'
 #' `read_vc()` handles git2rdata objects stored by `write_vc()`. It reads and
 #' verifies the metadata file (`.yml`). Then it reads and verifies the raw data.
-#' The last step is backtranforming any transformation done by `meta()` to
+#' The last step is backtransforming any transformation done by `meta()` to
 #' return the `data.frame` as stored by `write_vc()`.
 #'
 #' @inheritParams write_vc

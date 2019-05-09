@@ -7,14 +7,20 @@
 relabel(file, root = ".", change)
 }
 \arguments{
-\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
-dots in their name. The name may include a relative path. \code{file} is a path
-relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata objects cannot
+have dots in their name. The name may include a relative path. \code{file} is a
+path relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (\code{"."}).}
 
-\item{change}{either a \code{list} or a \code{data.frame}. In case of a \code{list`` is a named }list\code{with named}vectors\code{. The names of list elements must match the names of the variables. The names of the vector elements must match the existing factor labels. The values represent the new factor labels. In case of a }data.frame\code{it needs to have the variables}factor\code{(name of the factor),}old\code{(the old) factor label and}new\code{(the new factor label).}relabel()` ignores all other columns.}
+\item{change}{either a \code{list} or a \code{data.frame}. In case of a \code{list} is a
+named \code{list} with named \code{vectors}. The names of list elements must match the
+names of the variables. The names of the vector elements must match the
+existing factor labels. The values represent the new factor labels. In case
+of a \code{data.frame} it needs to have the variables \code{factor} (name of the
+factor), \code{old} (the old) factor label and \code{new} (the new factor label).
+\code{relabel()} ignores all other columns.}
 }
 \value{
 invisible \code{NULL}
@@ -30,30 +36,49 @@ fast and lightweight by updating the metadata.
 }
 \examples{
 
-# setup a directory
-root <- tempfile("git2rdata-relabel")
-dir.create(root)
+# initialise a git repo using git2r
+repo_path <- tempfile("git2rdata-repo-")
+dir.create(repo_path)
+repo <- git2r::init(repo_path)
+git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 
-# create a dataframe and store it
+# Create a dataframe and store it as a, optimized git2rdata object.
+# Note that write_vc() used optimization by default.
+# stage and commit the git2rdata object
 ds <- ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"))
-write_vc(ds, "relabel", root, sorting = "b")
+junk <- write_vc(ds, "relabel", repo, sorting = "b", stage = TRUE)
+cm <- commit(repo, "initial commit")
+# check that the workspace is clean
+status(repo)
 
-# define new labels as a list and apply them
+# Define new labels as a list and apply them to the git2rdata object.
 new_labels <- list(
   a = list(a2 = "a3")
 )
-relabel("relabel", root, new_labels)
+relabel("relabel", repo, new_labels)
+# check the changes
+read_vc("relabel", repo)
+# relabel() changed the metadata, not the raw data
+status(repo)
+cm <- commit(repo, "relabel using a list")
 
-# define new labels as a dataframe and apply them
+# Define new labels as a dataframe and apply them to the git2rdata object
 change <- data.frame(
   factor = c("a", "a", "b"),
   old = c("a3", "a1", "b2"),
   new = c("c2", "c1", "b3")
 )
-relabel("relabel", root, change)
+relabel("relabel", repo, change)
+# check the changes
+read_vc("relabel", repo)
+# relabel() changed the metadata, not the raw data
+status(repo)
 
 # clean up
-junk <- file.remove(list.files(root, full.names = TRUE), root)
+junk <- file.remove(
+  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
+                 include.dirs = TRUE, all.files = TRUE)),
+  repo_path)
 }
 \seealso{
 Other storage: \code{\link{list_data}},

@@ -72,6 +72,6 @@ git2r::add(root, target)
 commit_8 <- commit(root, "third subsecond")
 expect_warning(
   output <- recent_commit(file = "subsecond.txt", root),
-  "Multiple commits within the same second"
+  "More than one commit within the same second"
 )
 expect_true(all(output$commit %in% c(commit_6$sha, commit_7$sha, commit_8$sha)))

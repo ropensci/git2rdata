@@ -1,7 +1,7 @@
 #' Optimize an object for storage as plain text and add metadata
 #'
 #' \code{\link{write_vc}} applies this function automatically on your
-#' data.frame.
+#' data.frame to optimize the data.frame and generate the metadata.
 #' @param x the vector
 #' @param ... further arguments to the methods
 #' @return the optimized vector `x` with `meta` attribute
@@ -67,9 +67,11 @@ meta.numeric <- function(x, ...) {
 
 #' @export
 #' @rdname meta
-#' @param optimize recode and re-order the data to get smaller text files.
-#'   Defaults to TRUE
-#' @param index an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from `x` will get new indices.
+#' @param optimize If `TRUE`, recode the data to get smaller text files. If
+#' `FALSE`, `meta()` converts the data to character. Defaults to `TRUE`.
+#' @param index an optional named vector with existing factor indices. The names
+#' must match the existing factor levels. Unmatched levels from `x` will get new
+#' indices.
 #' @inheritParams utils::write.table
 #' @importFrom assertthat assert_that is.flag noNA
 meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
@@ -173,8 +175,8 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #' @importFrom assertthat assert_that
 #' @importFrom git2r hash
 #' @importFrom utils packageVersion
-#' @note `..generic` is a reserved name for the metadata and cannot be used as
-#' column name in a `data.frame`
+#' @note `..generic` is a reserved name for the metadata and therefore not
+#' allowed column name in a `data.frame`.
 #' @rdname meta
 #' @inheritParams write_vc
 meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {

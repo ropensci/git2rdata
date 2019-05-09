@@ -2,47 +2,50 @@
 % Please edit documentation in R/is_git2rdata.R
 \name{is_git2rdata}
 \alias{is_git2rdata}
-\title{Check whether a git2rdata file is valid.}
+\title{Check whether a git2rdata object is valid.}
 \usage{
 is_git2rdata(file, root = ".", message = c("none", "warning", "error"))
 }
 \arguments{
-\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
-dots in their name. The name may include a relative path. \code{file} is a path
-relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata objects cannot
+have dots in their name. The name may include a relative path. \code{file} is a
+path relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (\code{"."}).}
 
-\item{message}{a single value indicating the type of output. \code{"none"}: no
-messages, \code{"warning"}: issue a warning in case of an invalid metadata file.
-\code{"error"}: an invalid metadata file results in an error. Defaults to
-\code{"none"}.}
+\item{message}{a single value indicating the type of messages on top of the
+logical value. \code{"none"}: no messages, \code{"warning"}: issue a warning in case of
+an invalid metadata file. \code{"error"}: an invalid metadata file results in an
+error. Defaults to \code{"none"}.}
 }
 \value{
-A logical value. \code{TRUE} in case of a valid data file. Otherwise
-\code{FALSE}.
+A logical value. \code{TRUE} in case of a valid git2rdata object.
+Otherwise \code{FALSE}.
 }
 \description{
-A valid git2rdata file has valid metadata. The data hash must match the data
-hash stored in the metadata.
+A valid git2rdata object has valid metadata. The data hash must match the
+data hash stored in the metadata.
 }
 \examples{
 # create a directory
 root <- tempfile("git2rdata-")
 dir.create(root)
 
-# everthing file
+# store a file
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+# check the stored file
 is_git2rmeta("iris", root)
 is_git2rdata("iris", root)
 
-# missing metadata
+# Remove the metadata from the existing git2rdata object. Then it stops
+# being a git2rdata object.
 junk <- file.remove(file.path(root, "iris.yml"))
 is_git2rmeta("iris", root)
 is_git2rdata("iris", root)
 
-# missing data
+# recreate the file and remove the data and keep the metadata. It stops being
+# a git2rdata object, but the metadata remains valid.
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
 junk <- file.remove(file.path(root, "iris.tsv"))
 is_git2rmeta("iris", root)

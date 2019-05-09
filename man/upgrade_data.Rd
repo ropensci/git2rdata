@@ -11,9 +11,9 @@ upgrade_data(file, root = ".", verbose, ..., path)
   ..., path, stage = FALSE, force = FALSE)
 }
 \arguments{
-\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
-dots in their name. The name may include a relative path. \code{file} is a path
-relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata objects cannot
+have dots in their name. The name may include a relative path. \code{file} is a
+path relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (\code{"."}).}
@@ -23,10 +23,11 @@ Defaults to the current working directory (\code{"."}).}
 \item{...}{parameters used in some methods}
 
 \item{path}{specify \code{path} instead of \code{file} to update all git2rdata objects
-in this directory and it's subdirectories. \code{path} is relative to \code{root}.}
+in this directory and it's subdirectories. \code{path} is relative to \code{root}. Use
+\code{path = "."} to upgrade all git2rdata objects under \code{root}.}
 
 \item{stage}{Logical value indicating whether to stage the changes after
-writing the data. Defaults to FALSE}
+writing the data. Defaults to \code{FALSE}.}
 
 \item{force}{Add ignored files. Default is FALSE.}
 }
@@ -44,10 +45,14 @@ all other files.
 root <- tempfile("git2rdata-")
 dir.create(root)
 
-# write a dataframe to the directory
+# write dataframes to the root
 write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
-# upgrade the file
+write_vc(iris[5:10, ], file = "subdir/iris", root = root,
+         sorting = "Sepal.Length")
+# upgrade a single git2rdata object
 upgrade_data(file = "iris", root = root)
+# use path = "." to upgrade all git2rdata objects under root
+upgrade_data(path = ".", root = root)
 
 # clean up
 junk <- file.remove(list.files(root, full.names = TRUE), root)

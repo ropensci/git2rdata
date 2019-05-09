@@ -1,14 +1,14 @@
-#' Check whether a git2rdata file has valid metadata.
+#' Check whether a git2rdata object has valid metadata.
 #'
 #' Valid metadata is a file with `.yml` extension. It has a top level item
 #' `..generic`. This item contains `git2rdata` (the version number), `hash` (a
 #' hash on the metadata) and `data_hash` (a hash on the data file). The version
 #' number must be the current version.
 #' @inheritParams write_vc
-#' @param message a single value indicating the type of output. `"none"`: no
-#' messages, `"warning"`: issue a warning in case of an invalid metadata file.
-#' `"error"`: an invalid metadata file results in an error. Defaults to
-#' `"none"`.
+#' @param message a single value indicating the type of messages on top of the
+#' logical value. `"none"`: no messages, `"warning"`: issue a warning in case of
+#' an invalid metadata file. `"error"`: an invalid metadata file results in an
+#' error. Defaults to `"none"`.
 #' @return A logical value. `TRUE` in case of a valid metadata file. Otherwise
 #' `FALSE`.
 #' @rdname is_git2rmeta

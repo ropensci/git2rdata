@@ -32,10 +32,12 @@ meta(x, ...)
 
 \item{na}{the string to use for missing values in the data.}
 
-\item{optimize}{recode and re-order the data to get smaller text files.
-Defaults to TRUE}
+\item{optimize}{If \code{TRUE}, recode the data to get smaller text files. If
+\code{FALSE}, \code{meta()} converts the data to character. Defaults to \code{TRUE}.}
 
-\item{index}{an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from \code{x} will get new indices.}
+\item{index}{an optional named vector with existing factor indices. The names
+must match the existing factor levels. Unmatched levels from \code{x} will get new
+indices.}
 
 \item{sorting}{an optional vector of column names defining which columns to
 use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
@@ -50,11 +52,11 @@ the optimized vector \code{x} with \code{meta} attribute
 }
 \description{
 \code{\link{write_vc}} applies this function automatically on your
-data.frame.
+data.frame to optimize the data.frame and generate the metadata.
 }
 \note{
-\code{..generic} is a reserved name for the metadata and cannot be used as
-column name in a \code{data.frame}
+\code{..generic} is a reserved name for the metadata and therefore not
+allowed column name in a \code{data.frame}.
 }
 \examples{
 meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))

@@ -3,7 +3,7 @@
 \name{rm_data}
 \alias{rm_data}
 \alias{rm_data.git_repository}
-\title{Remove data files}
+\title{Remove data files from git2rdata objects}
 \usage{
 rm_data(root = ".", path = NULL, recursive = TRUE, ...)
 
@@ -15,7 +15,8 @@ rm_data(root = ".", path = NULL, recursive = TRUE, ...)
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (\code{"."}).}
 
-\item{path}{the directory in which to clean all the data files}
+\item{path}{the directory in which to clean all the data files. The directory
+is relative to \code{root}.}
 
 \item{recursive}{remove files in subdirectories too}
 
@@ -36,10 +37,10 @@ returns invisibily a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
-Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying
-\strong{valid} metadata (\code{.yml} file). The metadata remains untouched. A warning
-lists any \strong{invalid} metadata. The function keeps any \code{.tsv} file with
-invalid metadata or no metadata.
+Remove the data (\code{.tsv}) file from all valid git2rdata objects at the \code{path}.
+The metadata remains untouched. A warning lists any git2rdata object with
+\strong{invalid} metadata. The function keeps any \code{.tsv} file with
+invalid metadata or from non-git2rdata objects.
 
 Use this function with caution since it will remove all valid data files
 without asking for confirmation. We strongly recommend to use this
@@ -55,19 +56,30 @@ how to use this.
 root <- tempfile("git2rdata-")
 dir.create(root)
 
-# store a dataframe
-write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
-# list the available data and the files
+# store a dataframe as git2rdata object. Capture the result to minimise
+# screen output
+junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+# write a standard tab separate file (non git2rdata object)
+write.table(iris, file = file.path(root, "standard.tsv"), sep = "\\t")
+# write a YAML file
+yml <- list(
+  authors = list(
+   "Research Institute for Nature and Forest" = list(
+       href = "https://www.inbo.be/en")))
+yaml::write_yaml(yml, file = file.path(root, "_pkgdown.yml"))
+
+# list the git2rdata objects
 list_data(root)
+# list the files
 list.files(root, recursive = TRUE)
 
-# remove all .tsv files with an associated .yml file
+# remove all .tsv files from valid git2rdata objects
 rm_data(root, path = ".")
-# check the removal of the data
+# check the removal of the .tsv file
 list.files(root, recursive = TRUE)
 list_data(root)
 
-# remove dangling metadata files
+# remove dangling git2rdata metadata files
 prune_meta(root, path = ".")
 # check the removal of the metadata
 list.files(root, recursive = TRUE)

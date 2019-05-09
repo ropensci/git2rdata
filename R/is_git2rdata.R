@@ -1,11 +1,11 @@
-#' Check whether a git2rdata file is valid.
+#' Check whether a git2rdata object is valid.
 #'
-#' A valid git2rdata file has valid metadata. The data hash must match the data
-#' hash stored in the metadata.
+#' A valid git2rdata object has valid metadata. The data hash must match the
+#' data hash stored in the metadata.
 #' @inheritParams write_vc
 #' @inheritParams is_git2rmeta
-#' @return A logical value. `TRUE` in case of a valid data file. Otherwise
-#' `FALSE`.
+#' @return A logical value. `TRUE` in case of a valid git2rdata object.
+#' Otherwise `FALSE`.
 #' @rdname is_git2rdata
 #' @export
 #' @family internal

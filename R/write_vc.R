@@ -1,11 +1,12 @@
 #' Store a data.frame as a git2rdata object on disk
 #'
-#' This will create two files. The `".tsv"` file contains the raw data.
-#' The `".yml"` contains the metadata on the columns in YAML format.
+#' A git2rdata object consists of two files. The `".tsv"` file contains the raw
+#' data as a plain text tab separated file. The `".yml"` contains the metadata
+#' on the columns in plain text YAML format.
 #' @param x the `data.frame`
-#' @param file the name of the git2rdata object. Git2rdata object cannot contain
-#' dots in their name. The name may include a relative path. `file` is a path
-#' relative to the `root`.
+#' @param file the name of the git2rdata object. Git2rdata objects cannot
+#' have dots in their name. The name may include a relative path. `file` is a
+#' path relative to the `root`.
 #' @param root The root of a project. Can be a file path or a `git-repository`.
 #' Defaults to the current working directory (`"."`).
 #' @param sorting an optional vector of column names defining which columns to
@@ -112,7 +113,7 @@ setOldClass("git_repository")
 
 #' @rdname write_vc
 #' @param stage Logical value indicating whether to stage the changes after
-#' writing the data. Defaults to FALSE
+#' writing the data. Defaults to `FALSE`.
 #' @inheritParams git2r::add
 #' @export
 #' @importFrom git2r workdir add

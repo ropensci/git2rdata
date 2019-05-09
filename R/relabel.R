@@ -8,7 +8,7 @@
 #' (`vignette("version_control", package = "git2rdata")`) In such a case, relabeling a factor can be
 #' fast and lightweight by updating the metadata.
 #' @inheritParams write_vc
-#' @param change either a `list` or a `data.frame`. In case of a `list`` is a
+#' @param change either a `list` or a `data.frame`. In case of a `list` is a
 #' named `list` with named `vectors`. The names of list elements must match the
 #' names of the variables. The names of the vector elements must match the
 #' existing factor labels. The values represent the new factor labels. In case
@@ -19,30 +19,49 @@
 #' @export
 #' @examples
 #'
-#' # setup a directory
-#' root <- tempfile("git2rdata-relabel")
-#' dir.create(root)
+#' # initialise a git repo using git2r
+#' repo_path <- tempfile("git2rdata-repo-")
+#' dir.create(repo_path)
+#' repo <- git2r::init(repo_path)
+#' git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 #'
-#' # create a dataframe and store it
+#' # Create a dataframe and store it as an optimized git2rdata object.
+#' # Note that write_vc() uses optimization by default.
+#' # Stage and commit the git2rdata object.
 #' ds <- ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"))
-#' write_vc(ds, "relabel", root, sorting = "b")
+#' junk <- write_vc(ds, "relabel", repo, sorting = "b", stage = TRUE)
+#' cm <- commit(repo, "initial commit")
+#' # check that the workspace is clean
+#' status(repo)
 #'
-#' # define new labels as a list and apply them
+#' # Define new labels as a list and apply them to the git2rdata object.
 #' new_labels <- list(
 #'   a = list(a2 = "a3")
 #' )
-#' relabel("relabel", root, new_labels)
+#' relabel("relabel", repo, new_labels)
+#' # check the changes
+#' read_vc("relabel", repo)
+#' # relabel() changed the  metadata, not the raw data
+#' status(repo)
+#' cm <- commit(repo, "relabel using a list", all = TRUE)
 #'
-#' # define new labels as a dataframe and apply them
+#' # Define new labels as a dataframe and apply them to the git2rdata object
 #' change <- data.frame(
 #'   factor = c("a", "a", "b"),
 #'   old = c("a3", "a1", "b2"),
 #'   new = c("c2", "c1", "b3")
 #' )
-#' relabel("relabel", root, change)
+#' relabel("relabel", repo, change)
+#' # check the changes
+#' read_vc("relabel", repo)
+#' # relabel() changed the metadata, not the raw data
+#' status(repo)
 #'
 #' # clean up
-#' junk <- file.remove(list.files(root, full.names = TRUE), root)
+#' junk <- file.remove(
+#'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
+#'                  include.dirs = TRUE, all.files = TRUE)),
+#'   repo_path)
 #' @family storage
 relabel <- function(file, root = ".", change) {
   UseMethod("relabel", change)
