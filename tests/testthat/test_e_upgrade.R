@@ -73,6 +73,13 @@ test_that("upgrade_data() validates metadata", {
     upgrade_data(file = file, root = root),
     "corrupt metadata, no hash found."
   )
+  junk_yaml[["..generic"]] <- NULL
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
+  expect_message(
+    junk <- upgrade_data(file = file, root = root),
+    "is not a git2rdata object"
+  )
+  expect_equivalent(file, junk)
 })
 
 file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
@@ -106,9 +113,8 @@ test_that("upgrade_data() works from 0.0.3 to 0.0.4", {
   )
   expect_equal(
     status(root),
-    list(
-      staged = list(), unstaged = list(files), untracked = list()
-    ),
+    list(staged = list(), unstaged = list(paste0(files, ".yml")),
+      untracked = list()),
     check.attributes = FALSE
   )
   expect_message(
@@ -119,10 +125,21 @@ test_that("upgrade_data() works from 0.0.3 to 0.0.4", {
   expect_equal(
     status(root),
     list(
-      staged = list(files), unstaged = list(),
+      staged = list(paste0(files, ".yml")), unstaged = list(),
       untracked = list()
     ),
     check.attributes = FALSE
+  )
+
+  file <- basename(tempfile(tmpdir = git2r::workdir(root)))
+  junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
+  expect_error(
+    upgrade_data(file = file, path = ".", root = root, verbose = TRUE),
+    "specify either 'file' or 'path'"
+  )
+  expect_is(
+    upgrade_data(path = ".", root = root, verbose = TRUE),
+    "character"
   )
 })
 

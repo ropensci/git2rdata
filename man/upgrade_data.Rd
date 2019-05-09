@@ -5,10 +5,10 @@
 \alias{upgrade_data.git_repository}
 \title{Upgrade files to the new version}
 \usage{
-upgrade_data(file, root = ".", verbose, ...)
+upgrade_data(file, root = ".", verbose, ..., path)
 
 \method{upgrade_data}{git_repository}(file, root = ".", verbose = TRUE,
-  ..., stage = FALSE, force = FALSE)
+  ..., path, stage = FALSE, force = FALSE)
 }
 \arguments{
 \item{file}{the name of the git2rdata object. Git2rdata object cannot contain
@@ -22,6 +22,9 @@ Defaults to the current working directory (\code{"."}).}
 
 \item{...}{parameters used in some methods}
 
+\item{path}{specify \code{path} instead of \code{file} to update all git2rdata objects
+in this directory and it's subdirectories. \code{path} is relative to \code{root}.}
+
 \item{stage}{Logical value indicating whether to stage the changes after
 writing the data. Defaults to FALSE}
 
@@ -32,7 +35,9 @@ the file names
 }
 \description{
 Updates the data written by older versions to the current data format
-standard.
+standard. Works both on a single file and (recursively) on a path. The
+\code{".yml"} file must contain a \code{"..generic"} element. \code{upgrade_data()} ignores
+all other files.
 }
 \examples{
 # create a directory

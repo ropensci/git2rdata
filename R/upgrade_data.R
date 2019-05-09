@@ -1,9 +1,13 @@
 #' Upgrade files to the new version
 #'
 #' Updates the data written by older versions to the current data format
-#' standard.
+#' standard. Works both on a single file and (recursively) on a path. The
+#' `".yml"` file must contain a `"..generic"` element. `upgrade_data()` ignores
+#' all other files.
 #' @inheritParams write_vc
 #' @param verbose display a message with the update status. Defaults to `TRUE`.
+#' @param path specify `path` instead of `file` to update all git2rdata objects
+#' in this directory and it's subdirectories. `path` is relative to `root`.
 #' @export
 #' @return the file names
 #' @family internal
@@ -19,14 +23,12 @@
 #'
 #' # clean up
 #' junk <- file.remove(list.files(root, full.names = TRUE), root)
-upgrade_data <- function(
-  file, root = ".", verbose, ...
-) {
+upgrade_data <- function(file, root = ".", verbose, ..., path) {
   UseMethod("upgrade_data", root)
 }
 
 #' @export
-upgrade_data.default <- function(file, root, verbose, ...) {
+upgrade_data.default <- function(file, root, verbose, path, ...) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
@@ -34,28 +36,44 @@ upgrade_data.default <- function(file, root, verbose, ...) {
 #' @importFrom yaml read_yaml write_yaml
 #' @importFrom utils packageVersion
 #' @export
-upgrade_data.character <- function(file, root = ".", verbose = TRUE, ...) {
-  assert_that(is.string(root), is.string(file), is.flag(verbose), noNA(verbose))
+upgrade_data.character <- function(
+  file, root = ".", verbose = TRUE, ..., path) {
+  assert_that(is.string(root), is.flag(verbose), noNA(verbose))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
+  if (missing(file)) {
+    assert_that(missing(file),
+                msg = "specify either 'file' or 'path'")
+    assert_that(is.string(path))
+    full_path <- normalizePath(file.path(root, path), winslash = "/",
+                               mustWork = TRUE)
+    ymls <- list.files(path = full_path, pattern = "\\.yml$", recursive = TRUE)
+    files <- vapply(file.path(path, ymls), upgrade_data, root = root,
+                    verbose = verbose, FUN.VALUE = "")
+    return(files)
+  }
+  assert_that(missing(path), msg = "specify either 'file' or 'path'")
+  assert_that(is.string(file))
   file <- clean_data_path(root = root, file = file)
 
   meta_data <- read_yaml(file["meta_file"])
-  assert_that(has_name(meta_data, "..generic"),
-              msg = "Corrupt metadata")
+  target <- remove_root(file = file["meta_file"], root = root)
+  target <- gsub(".yml", "", target)
+  if (!has_name(meta_data, "..generic")) {
+    message(target, "is not a git2rdata object")
+    return(target)
+  }
   assert_that(
     has_name(meta_data[["..generic"]], "hash"),
-    msg = "Corrupt metadata, no hash found."
+    msg = paste(target, "has corrupt metadata, no hash found.")
   )
   if (has_name(meta_data[["..generic"]], "git2rdata")) {
     if (package_version(meta_data[["..generic"]][["git2rdata"]]) ==
         packageVersion("git2rdata")
         ) {
       if (verbose) {
-        message(remove_root(file = file["meta_file"], root = root),
-                " already up to date")
+        message(target, " already up to date")
       }
-      file <- remove_root(file = file, root = root)
-      return(file)
+      return(target)
     }
   }
   check_meta_data <- meta_data
@@ -64,7 +82,7 @@ upgrade_data.character <- function(file, root = ".", verbose = TRUE, ...) {
   check_meta_data[["..generic"]][["data_hash"]] <- NULL
   assert_that(
     meta_data[["..generic"]][["hash"]] == hash(as.yaml(check_meta_data)),
-    msg = "Corrupt metadata, mismatching hash."
+    msg = paste(target, "has corrupt metadata: mismatching hash.")
   )
   meta_data[["..generic"]][["git2rdata"]] <-
     as.character(packageVersion("git2rdata"))
@@ -75,8 +93,7 @@ upgrade_data.character <- function(file, root = ".", verbose = TRUE, ...) {
   if (verbose) {
     message(file["meta_file"], " updated")
   }
-  file <- remove_root(file = file, root = root)
-  return(file)
+  return(target)
 }
 
 #' @rdname upgrade_data
@@ -87,14 +104,14 @@ upgrade_data.character <- function(file, root = ".", verbose = TRUE, ...) {
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom git2r workdir add
 upgrade_data.git_repository <- function(
-  file, root = ".", verbose = TRUE, ..., stage = FALSE, force = FALSE
+  file, root = ".", verbose = TRUE, ..., path, stage = FALSE, force = FALSE
 ) {
   assert_that(is.flag(stage), noNA(stage), is.flag(force), noNA(force))
   file <- upgrade_data(file = file, root = workdir(root), verbose = verbose,
-                       ...)
+                       path = path, ...)
   if (!stage) {
     return(file)
   }
-  add(root, path = file, force = force)
+  add(root, path = paste0(file, ".yml"), force = force)
   return(file)
 }
