@@ -14,11 +14,14 @@ list_data(root = ".", path = ".", recursive = TRUE)
 \item{recursive}{logical.  Should the listing recurse into directories?}
 }
 \value{
-a character vector of dataframe names, including their relative path
+a character vector of git2rdata object names, including their
+relative path
 }
 \description{
-The selection lists all \code{.tsv} files with a matching \strong{valid} metadata file.
-\strong{Invalid} metadata files result in a warning.
+The function returns the names of all valid git2rdata objects. This implies
+\code{.tsv} files with a matching \strong{valid} metadata file (\code{.yml}). \strong{Invalid}
+metadata files result in a warning. The function ignores \strong{valid} metadata
+files without matching raw data (\code{.tsv}).
 }
 \examples{
 ## on file system
@@ -39,9 +42,9 @@ rm_data(root, path = ".")
 list.files(root, recursive = TRUE)
 list_data(root)
 
-# remove dangling meta data files
+# remove dangling metadata files
 prune_meta(root, path = ".")
-# check the removal of the meta data
+# check the removal of the metadata
 list.files(root, recursive = TRUE)
 list_data(root)
 
@@ -70,7 +73,7 @@ rm_data(repo, path = ".")
 list_data(repo)
 status(repo)
 
-# remove dangling meta data
+# remove dangling metadata
 prune_meta(repo, path = ".")
 # check the removal
 list_data(repo)

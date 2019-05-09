@@ -7,11 +7,12 @@
 relabel(file, root = ".", change)
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a
-relative path. \code{file} is a path relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
+dots in their name. The name may include a relative path. \code{file} is a path
+relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
 \item{change}{either a \code{list} or a \code{data.frame}. In case of a \code{list`` is a named }list\code{with named}vectors\code{. The names of list elements must match the names of the variables. The names of the vector elements must match the existing factor labels. The values represent the new factor labels. In case of a }data.frame\code{it needs to have the variables}factor\code{(name of the factor),}old\code{(the old) factor label and}new\code{(the new factor label).}relabel()` ignores all other columns.}
 }
@@ -22,7 +23,9 @@ invisible \code{NULL}
 Imagine the situation where we have a dataframe with a factor variable and we
 have stored it with \code{write_vc(optimize = TRUE)}. The raw data file contains
 the factor indices and the metadata contains the link between the factor
-index and the corresponding label. In such a case, relabeling a factor can be
+index and the corresponding label. See the vignette on
+\href{https://inbo.github.io/git2rdata/articles/version_control.html#handling-factors-optimized}{version contol}
+(\code{vignette("version_control", package = "git2rdata")}) In such a case, relabeling a factor can be
 fast and lightweight by updating the metadata.
 }
 \examples{

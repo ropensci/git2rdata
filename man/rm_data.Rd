@@ -13,7 +13,7 @@ rm_data(root = ".", path = NULL, recursive = TRUE, ...)
 }
 \arguments{
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
 \item{path}{the directory in which to clean all the data files}
 
@@ -37,11 +37,12 @@ relative to \code{root}.
 }
 \description{
 Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying
-\strong{valid} metadata (\code{.yml} file). The metadata remains untouched. \strong{Invalid}
-metadata results in a warning.
+\strong{valid} metadata (\code{.yml} file). The metadata remains untouched. A warning
+lists any \strong{invalid} metadata. The function keeps any \code{.tsv} file with
+invalid metadata or no metadata.
 
 Use this function with caution since it will remove all valid data files
-without asking for confirmation. We strongly recommend to only use this
+without asking for confirmation. We strongly recommend to use this
 function on files under version control. See the
 \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette
 (\code{vignette("workflow", package = "git2rdata")}) for some examples on
@@ -66,9 +67,9 @@ rm_data(root, path = ".")
 list.files(root, recursive = TRUE)
 list_data(root)
 
-# remove dangling meta data files
+# remove dangling metadata files
 prune_meta(root, path = ".")
-# check the removal of the meta data
+# check the removal of the metadata
 list.files(root, recursive = TRUE)
 list_data(root)
 
@@ -97,7 +98,7 @@ rm_data(repo, path = ".")
 list_data(repo)
 status(repo)
 
-# remove dangling meta data
+# remove dangling metadata
 prune_meta(repo, path = ".")
 # check the removal
 list_data(repo)

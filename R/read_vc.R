@@ -1,7 +1,9 @@
-#' Read a `data.frame` stored by `write_vc()`
+#' Read a git2rdata object from disk
 #'
-#' `read_vc()` reads and checks the meta data. Then it reads the raw data and
-#' applies the meta data. It returns the `data.frame` as stored by `write_vc()`.
+#' `read_vc()` handles git2rdata objects stored by `write_vc()`. It reads and
+#' verifies the metadata file (`.yml`). Then it reads and verifies the raw data.
+#' The last step is backtranforming any transformation done by `meta()` to
+#' return the `data.frame` as stored by `write_vc()`.
 #'
 #' @inheritParams write_vc
 #' @return The `data.frame` with the file names and hashes as attributes

@@ -2,11 +2,12 @@
 #'
 #' @description
 #' Removes all data (`.tsv` files) from the `path` when they have accompanying
-#' **valid** metadata (`.yml` file). The metadata remains untouched. **Invalid**
-#' metadata results in a warning.
+#' **valid** metadata (`.yml` file). The metadata remains untouched. A warning
+#' lists any **invalid** metadata. The function keeps any `.tsv` file with
+#' invalid metadata or no metadata.
 #'
 #' Use this function with caution since it will remove all valid data files
-#' without asking for confirmation. We strongly recommend to only use this
+#' without asking for confirmation. We strongly recommend to use this
 #' function on files under version control. See the
 #' [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette
 #' (`vignette("workflow", package = "git2rdata")`) for some examples on
@@ -99,10 +100,10 @@ rm_data.git_repository <- function(
 #' @description
 #' Removes all **valid** metadata (`.yml` files) from the `path` when they don't
 #' have accompanying data (`.tsv` file). **Invalid** metadata triggers a warning
-#' without removing the file.
+#' without removing the metadata file.
 #'
 #' Use this function with caution since it will remove all valid metadata files
-#' without asking for confirmation. We strongly recommend to only use this
+#' without asking for confirmation. We strongly recommend to use this
 #' function on files under version control. See the
 #' [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette
 #' (`vignette("workflow", package = "git2rdata")`) for some examples on

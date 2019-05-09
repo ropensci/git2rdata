@@ -1,21 +1,24 @@
-#' Write a \code{data.frame}
+#' Store a data.frame as a git2rdata object on disk
 #'
 #' This will create two files. The `".tsv"` file contains the raw data.
-#' The `".yml"` contains the meta data on the columns in YAML format.
+#' The `".yml"` contains the metadata on the columns in YAML format.
 #' @param x the `data.frame`
-#' @param file the name of the file without file extension. Can include a
-#' relative path. `file` is a path relative to the `root`.
+#' @param file the name of the git2rdata object. Git2rdata object cannot contain
+#' dots in their name. The name may include a relative path. `file` is a path
+#' relative to the `root`.
 #' @param root The root of a project. Can be a file path or a `git-repository`.
-#' Defaults to the current working directory (".").
+#' Defaults to the current working directory (`"."`).
 #' @param sorting an optional vector of column names defining which columns to
-#' use for sorting \code{x} and in what order to use them. Strongly recommended
+#' use for sorting `x` and in what order to use them. Omitting `sorting` yields
+#' a warning. Add `sorting` to avoid this warning. Strongly recommended
 #' in combination with version control. See the vignette on
 #' [efficiency](https://inbo.github.io/git2rdata/articles/efficiency.html) for
 #' an illustration of the importance of sorting.
 #' `vignette("efficiency", package = "git2rdata")`
-#' @param strict What to do when the metadata changes. `strict = FALSE` will
-#' overwrite the data with a warning listing the changes, `strict = TRUE` will
-#' return an error and leave the data as is. Default to `TRUE`
+#' @param strict What to do when the metadata changes. `strict = FALSE`
+#' overwrites the data and the metadata with a warning listing the changes,
+#' `strict = TRUE` returns an error and leaves the data and metadata as is.
+#' Defaults to `TRUE`.
 #' @param ... parameters used in some methods
 #' @inheritParams meta
 #' @inheritParams utils::write.table
@@ -25,7 +28,7 @@
 #' @family storage
 #' @template example-io
 #' @note `..generic` is a reserved name for the metadata and cannot be used as
-#' column name in a `data.frame`
+#' column name in a `data.frame`.
 write_vc <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA",
   ...

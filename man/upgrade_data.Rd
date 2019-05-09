@@ -11,11 +11,12 @@ upgrade_data(file, root = ".", verbose, ...)
   ..., stage = FALSE, force = FALSE)
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a
-relative path. \code{file} is a path relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
+dots in their name. The name may include a relative path. \code{file} is a path
+relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
 \item{verbose}{display a message with the update status. Defaults to \code{TRUE}.}
 

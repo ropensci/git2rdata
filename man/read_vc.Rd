@@ -2,23 +2,26 @@
 % Please edit documentation in R/read_vc.R
 \name{read_vc}
 \alias{read_vc}
-\title{Read a \code{data.frame} stored by \code{write_vc()}}
+\title{Read a git2rdata object from disk}
 \usage{
 read_vc(file, root = ".")
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a
-relative path. \code{file} is a path relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
+dots in their name. The name may include a relative path. \code{file} is a path
+relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 }
 \value{
 The \code{data.frame} with the file names and hashes as attributes
 }
 \description{
-\code{read_vc()} reads and checks the meta data. Then it reads the raw data and
-applies the meta data. It returns the \code{data.frame} as stored by \code{write_vc()}.
+\code{read_vc()} handles git2rdata objects stored by \code{write_vc()}. It reads and
+verifies the metadata file (\code{.yml}). Then it reads and verifies the raw data.
+The last step is backtranforming any transformation done by \code{meta()} to
+return the \code{data.frame} as stored by \code{write_vc()}.
 }
 \examples{
 ## on file system
@@ -29,7 +32,7 @@ dir.create(root)
 
 # write a dataframe to the directory
 write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
-# check that a data file (.tsv) and a meta data file (.yml) are created
+# check that a data file (.tsv) and a metadata file (.yml) are created
 list.files(root, recursive = TRUE)
 # read the data from the directory
 read_vc("iris", root)
@@ -37,12 +40,12 @@ read_vc("iris", root)
 # store a new version
 write_vc(iris[1:5, ], "iris", root)
 list.files(root, recursive = TRUE)
-# store a new version in case the meta data must change
+# store a new version in case the metamata must change
 write_vc(
   iris[1:6, -2], "iris", root, sorting = "Sepal.Length", strict = FALSE
 )
 list.files(root, recursive = TRUE)
-# storing the first version again required another update of the meta data
+# storing the first version again required another update of the metadata
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", strict = FALSE)
 list.files(root, recursive = TRUE)
 # storing the data in verbose format leads to larger files
@@ -71,7 +74,7 @@ read_vc("iris", repo)
 write_vc(iris[1:5, ], "iris", repo, stage = TRUE)
 status(repo)
 
-# store a version with altered meta data
+# store a version with altered metadata
 write_vc(
   iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", strict = FALSE
 )

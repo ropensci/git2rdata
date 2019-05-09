@@ -1,4 +1,4 @@
-#' Optimize an object for storage as plain text and add meta data
+#' Optimize an object for storage as plain text and add metadata
 #'
 #' \code{\link{write_vc}} applies this function automatically on your
 #' data.frame.

@@ -57,7 +57,7 @@ test_that("upgrade_data() validates metadata", {
   yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
   expect_error(
     upgrade_data(file = file, root = root),
-    "Corrupt metadata, mismatching hash."
+    "corrupt metadata: mismatching hash."
   )
   junk_yaml <- correct_yaml
   junk_yaml[["..generic"]][["git2rdata"]] <- NULL
@@ -65,13 +65,13 @@ test_that("upgrade_data() validates metadata", {
   yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
   expect_error(
     upgrade_data(file = file, root = root),
-    "Corrupt metadata, mismatching hash."
+    "corrupt metadata: mismatching hash."
   )
   junk_yaml[["..generic"]][["hash"]] <- NULL
   yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
   expect_error(
     upgrade_data(file = file, root = root),
-    "Corrupt metadata, no hash found."
+    "corrupt metadata, no hash found."
   )
 })
 
@@ -91,13 +91,13 @@ test_that("upgrade_data() works from 0.0.3 to 0.0.4", {
   )
   expect_message(
     files <- upgrade_data(file = file, root = root, verbose = TRUE),
-    paste0(file, ".yml already up to date")
+    paste(file, "already up to date")
   )
   expect_equivalent(read_vc(file = file, root = root), sorted_test_data)
 
   root <- git2r::init(root)
   git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
-  yaml::write_yaml(old_yaml, file.path(workdir(root), junk[2]))
+  yaml::write_yaml(old_yaml, file.path(git2r::workdir(root), junk[2]))
   git2r::add(root, paste0(file, c(".tsv", ".yml")))
   initial_commit <- commit(root, "initial commit", all = TRUE)
   expect_message(
@@ -107,22 +107,24 @@ test_that("upgrade_data() works from 0.0.3 to 0.0.4", {
   expect_equal(
     status(root),
     list(
-      staged = list(), unstaged = list(files[2]), untracked = list()
+      staged = list(), unstaged = list(files), untracked = list()
     ),
     check.attributes = FALSE
   )
   expect_message(
     files <- upgrade_data(file = file, root = root, verbose = TRUE,
                           stage = TRUE),
-    paste0(file, ".yml already up to date")
+    paste(file, "already up to date")
   )
   expect_equal(
     status(root),
     list(
-      staged = list(files[2]), unstaged = list(), untracked = list()
+      staged = list(files), unstaged = list(),
+      untracked = list()
     ),
     check.attributes = FALSE
   )
 })
 
-file.remove(list.files(workdir(root), recursive = TRUE, full.names = TRUE))
+file.remove(list.files(git2r::workdir(root), recursive = TRUE,
+                       full.names = TRUE))

@@ -1,13 +1,16 @@
 #' List available git2rdata files containing data
 #'
-#' The selection lists all `.tsv` files with a matching **valid** metadata file.
-#' **invalid** metadata files result in a warning.
+#' The function returns the names of all valid git2rdata objects. This implies
+#' `.tsv` files with a matching **valid** metadata file (`.yml`). **Invalid**
+#' metadata files result in a warning. The function ignores **valid** metadata
+#' files without matching raw data (`.tsv`).
 #' @param root the `root` of the repository. Either a path or a `git-repository`
 #' @param path relative `path` from the `root`. Defaults to the `root`
 #' @inheritParams base::list.files
 #' @export
 #' @template example-prune
-#' @return a character vector of dataframe names, including their relative path
+#' @return a character vector of git2rdata object names, including their
+#' relative path
 #' @family storage
 list_data <- function(root = ".", path = ".", recursive = TRUE) {
   UseMethod("list_data", root)

@@ -9,7 +9,7 @@
 \alias{meta.POSIXct}
 \alias{meta.Date}
 \alias{meta.data.frame}
-\title{Optimize an object for storage as plain text and add meta data}
+\title{Optimize an object for storage as plain text and add metadata}
 \usage{
 meta(x, ...)
 
@@ -38,7 +38,8 @@ Defaults to TRUE}
 \item{index}{an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from \code{x} will get new indices.}
 
 \item{sorting}{an optional vector of column names defining which columns to
-use for sorting \code{x} and in what order to use them. Strongly recommended
+use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
+a warning. Add \code{sorting} to avoid this warning. Strongly recommended
 in combination with version control. See the vignette on
 \href{https://inbo.github.io/git2rdata/articles/efficiency.html}{efficiency} for
 an illustration of the importance of sorting.

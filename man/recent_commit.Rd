@@ -7,8 +7,9 @@
 recent_commit(file, root, data = FALSE)
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a
-relative path. \code{file} is a path relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
+dots in their name. The name may include a relative path. \code{file} is a path
+relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}}
 

@@ -3,7 +3,7 @@
 \name{write_vc}
 \alias{write_vc}
 \alias{write_vc.git_repository}
-\title{Write a \code{data.frame}}
+\title{Store a data.frame as a git2rdata object on disk}
 \usage{
 write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ...)
@@ -14,22 +14,25 @@ write_vc(x, file, root = ".", sorting, strict = TRUE,
 \arguments{
 \item{x}{the \code{data.frame}}
 
-\item{file}{the name of the file without file extension. Can include a
-relative path. \code{file} is a path relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
+dots in their name. The name may include a relative path. \code{file} is a path
+relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
 \item{sorting}{an optional vector of column names defining which columns to
-use for sorting \code{x} and in what order to use them. Strongly recommended
+use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
+a warning. Add \code{sorting} to avoid this warning. Strongly recommended
 in combination with version control. See the vignette on
 \href{https://inbo.github.io/git2rdata/articles/efficiency.html}{efficiency} for
 an illustration of the importance of sorting.
 \code{vignette("efficiency", package = "git2rdata")}}
 
-\item{strict}{What to do when the metadata changes. \code{strict = FALSE} will
-overwrite the data with a warning listing the changes, \code{strict = TRUE} will
-return an error and leave the data as is. Default to \code{TRUE}}
+\item{strict}{What to do when the metadata changes. \code{strict = FALSE}
+overwrites the data and the metadata with a warning listing the changes,
+\code{strict = TRUE} returns an error and leaves the data and metadata as is.
+Defaults to \code{TRUE}.}
 
 \item{optimize}{recode and re-order the data to get smaller text files.
 Defaults to TRUE}
@@ -49,11 +52,11 @@ contain the hashes of the files.
 }
 \description{
 This will create two files. The \code{".tsv"} file contains the raw data.
-The \code{".yml"} contains the meta data on the columns in YAML format.
+The \code{".yml"} contains the metadata on the columns in YAML format.
 }
 \note{
 \code{..generic} is a reserved name for the metadata and cannot be used as
-column name in a \code{data.frame}
+column name in a \code{data.frame}.
 }
 \examples{
 ## on file system
@@ -64,7 +67,7 @@ dir.create(root)
 
 # write a dataframe to the directory
 write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
-# check that a data file (.tsv) and a meta data file (.yml) are created
+# check that a data file (.tsv) and a metadata file (.yml) are created
 list.files(root, recursive = TRUE)
 # read the data from the directory
 read_vc("iris", root)
@@ -72,12 +75,12 @@ read_vc("iris", root)
 # store a new version
 write_vc(iris[1:5, ], "iris", root)
 list.files(root, recursive = TRUE)
-# store a new version in case the meta data must change
+# store a new version in case the metamata must change
 write_vc(
   iris[1:6, -2], "iris", root, sorting = "Sepal.Length", strict = FALSE
 )
 list.files(root, recursive = TRUE)
-# storing the first version again required another update of the meta data
+# storing the first version again required another update of the metadata
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", strict = FALSE)
 list.files(root, recursive = TRUE)
 # storing the data in verbose format leads to larger files
@@ -106,7 +109,7 @@ read_vc("iris", repo)
 write_vc(iris[1:5, ], "iris", repo, stage = TRUE)
 status(repo)
 
-# store a version with altered meta data
+# store a version with altered metadata
 write_vc(
   iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", strict = FALSE
 )

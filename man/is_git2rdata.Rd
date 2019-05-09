@@ -7,11 +7,12 @@
 is_git2rdata(file, root = ".", message = c("none", "warning", "error"))
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a
-relative path. \code{file} is a path relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata object cannot contain
+dots in their name. The name may include a relative path. \code{file} is a path
+relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
 \item{message}{a single value indicating the type of output. \code{"none"}: no
 messages, \code{"warning"}: issue a warning in case of an invalid metadata file.

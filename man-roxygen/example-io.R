@@ -7,7 +7,7 @@
 #'
 #' # write a dataframe to the directory
 #' write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
-#' # check that a data file (.tsv) and a meta data file (.yml) are created
+#' # check that a data file (.tsv) and a metadata file (.yml) are created
 #' list.files(root, recursive = TRUE)
 #' # read the data from the directory
 #' read_vc("iris", root)
@@ -15,12 +15,12 @@
 #' # store a new version
 #' write_vc(iris[1:5, ], "iris", root)
 #' list.files(root, recursive = TRUE)
-#' # store a new version in case the meta data must change
+#' # store a new version in case the metamata must change
 #' write_vc(
 #'   iris[1:6, -2], "iris", root, sorting = "Sepal.Length", strict = FALSE
 #' )
 #' list.files(root, recursive = TRUE)
-#' # storing the first version again required another update of the meta data
+#' # storing the first version again required another update of the metadata
 #' write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", strict = FALSE)
 #' list.files(root, recursive = TRUE)
 #' # storing the data in verbose format leads to larger files
@@ -49,7 +49,7 @@
 #' write_vc(iris[1:5, ], "iris", repo, stage = TRUE)
 #' status(repo)
 #'
-#' # store a version with altered meta data
+#' # store a version with altered metadata
 #' write_vc(
 #'   iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", strict = FALSE
 #' )

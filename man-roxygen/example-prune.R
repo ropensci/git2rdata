@@ -17,9 +17,9 @@
 #' list.files(root, recursive = TRUE)
 #' list_data(root)
 #'
-#' # remove dangling meta data files
+#' # remove dangling metadata files
 #' prune_meta(root, path = ".")
-#' # check the removal of the meta data
+#' # check the removal of the metadata
 #' list.files(root, recursive = TRUE)
 #' list_data(root)
 #'
@@ -48,7 +48,7 @@
 #' list_data(repo)
 #' status(repo)
 #'
-#' # remove dangling meta data
+#' # remove dangling metadata
 #' prune_meta(repo, path = ".")
 #' # check the removal
 #' list_data(repo)
