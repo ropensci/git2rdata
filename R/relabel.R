@@ -41,9 +41,10 @@
 #' relabel("relabel", repo, new_labels)
 #' # check the changes
 #' read_vc("relabel", repo)
-#' # relabel() changed the  metadata, not the raw data
+#' # relabel() changed the metadata, not the raw data
 #' status(repo)
-#' cm <- commit(repo, "relabel using a list", all = TRUE)
+#' git2r::add(repo, "relabel.*")
+#' cm <- commit(repo, "relabel using a list")
 #'
 #' # Define new labels as a dataframe and apply them to the git2rdata object
 #' change <- data.frame(

@@ -42,9 +42,9 @@ dir.create(repo_path)
 repo <- git2r::init(repo_path)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 
-# Create a dataframe and store it as a, optimized git2rdata object.
-# Note that write_vc() used optimization by default.
-# stage and commit the git2rdata object
+# Create a dataframe and store it as an optimized git2rdata object.
+# Note that write_vc() uses optimization by default.
+# Stage and commit the git2rdata object.
 ds <- ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"))
 junk <- write_vc(ds, "relabel", repo, sorting = "b", stage = TRUE)
 cm <- commit(repo, "initial commit")
@@ -60,6 +60,7 @@ relabel("relabel", repo, new_labels)
 read_vc("relabel", repo)
 # relabel() changed the metadata, not the raw data
 status(repo)
+git2r::add(repo, "relabel.*")
 cm <- commit(repo, "relabel using a list")
 
 # Define new labels as a dataframe and apply them to the git2rdata object
