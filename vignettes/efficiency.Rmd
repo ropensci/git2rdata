@@ -188,7 +188,7 @@ kable(
 )
 ```
 
-The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounced when the factor has a large number of levels. The optimization fails only in extreme cases with very short factor labels and a high number of labels.
+The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounced when the factor has a large number of levels. The optimization fails only in extreme cases with very short factor labels and a high number of levels.
 
 ```{r factor_label_length, echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimized, assuming 1000 observations", warning = FALSE}
 ratio <- function(label_length = 1:20, n_levels = 9, n_obs = 1000) {
@@ -412,7 +412,15 @@ if (system.file("efficiency", "file_timings.rds", package = "git2rdata") == "") 
 }
 ```
 
-`write_vc()` takes 67% to 86% more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. When overwriting existing data, the new data is checked against the existing metadata. `saveRDS()` requires only 44% of the time that `write.table()` needs.
+```{r median_write, echo = FALSE}
+median_time <- aggregate(time ~ expr, data = mb, FUN = median)
+write_ratio <- 100 * median_time$time / 
+  median_time$time[median_time$expr == "write.table"]
+names(write_ratio) <- median_time$expr
+```
+
+
+`write_vc()` takes `r paste(sprintf("%.0f%%", -100 + write_ratio[grep("write_vc", names(write_ratio))]), collapse = " to ")` more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. When overwriting existing data, the new data is checked against the existing metadata. `saveRDS()` requires only `r sprintf("%.0f%%", write_ratio["saveRDS"])` of the time that `write.table()` needs.
 
 ```{r plot_file_timings, echo = FALSE, fig.cap = "Boxplot of the write timings for the different methods."}
 mb$expr <- reorder(mb$expr, mb$time, FUN = median)
@@ -446,7 +454,14 @@ if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") 
 }
 ```
 
-The timings on reading the data is another story. Reading the binary format takes about 8% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 65% (optimized) and 79% (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
+```{r median_read, echo = FALSE}
+median_time <- aggregate(time ~ expr, data = mb, FUN = median)
+read_ratio <- 100 * median_time$time / 
+  median_time$time[median_time$expr == "read.table"]
+names(read_ratio) <- median_time$expr
+```
+
+The timings on reading the data is another story. Reading the binary format takes about `r sprintf("%.0f%%", read_ratio["readRDS"])` of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about `r sprintf("%.0f%%", read_ratio["read_vc.optim"])` (optimized) and `r sprintf("%.0f%%", read_ratio["read_vc.verbose"])` (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
 
 ```{r plot_read_timings, echo = FALSE, fig.cap = "Boxplots for the read timings for the different methods."}
 mb$expr <- factor(
