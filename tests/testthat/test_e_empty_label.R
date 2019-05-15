@@ -1,5 +1,5 @@
 context("empty label")
-root <- tempfile("git2rdata-empty-label(.*)")
+root <- tempfile("git2rdata-empty-label")
 dir.create(root)
 
 test_that("write_vc handles empty labels", {

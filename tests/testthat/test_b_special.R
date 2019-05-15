@@ -1,5 +1,5 @@
 context("handle special characters")
-root <- tempfile(pattern = "git2rdata-special(.*)")
+root <- tempfile(pattern = "git2rdata-special")
 dir.create(root)
 ds <- data.frame(
   a = c(

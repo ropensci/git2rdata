@@ -1,5 +1,5 @@
 context("write_vc() and read_vc() on a git-repository")
-root <- tempfile(pattern = "git2rdata-git(.*)")
+root <- tempfile(pattern = "git2rdata-git")
 dir.create(root)
 root <- git2r::init(root)
 git2r::config(root, user.name = "Alice", user.email = "alice@example.org")

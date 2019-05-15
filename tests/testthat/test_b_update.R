@@ -1,5 +1,5 @@
 context("write_vc() updates correctly when strict = FALSE")
-root <- tempfile("git2rdata-update(.*)")
+root <- tempfile("git2rdata-update")
 setup({
   dir.create(root)
 })

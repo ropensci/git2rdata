@@ -9,7 +9,7 @@ expect_error(
 )
 expect_error(write_vc(root = 1), "a 'root' of class numeric is not supported")
 expect_error(read_vc(root = 1), "a 'root' of class numeric is not supported")
-root <- tempfile(pattern = "git2rdata-basic(.*)")
+root <- tempfile(pattern = "git2rdata-basic")
 dir.create(root)
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
 expect_is(

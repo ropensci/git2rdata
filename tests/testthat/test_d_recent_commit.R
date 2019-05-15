@@ -4,7 +4,7 @@ context("recent_commit")
 # therefore Sys.sleep(subsecond) is added before each commit
 subsecond <- 1.2
 
-root <- tempfile(pattern = "git2rdata-recent(.*)")
+root <- tempfile(pattern = "git2rdata-recent")
 dir.create(root)
 root <- git2r::init(root)
 git2r::config(root, user.name = "Alice", user.email = "alice@example.org")

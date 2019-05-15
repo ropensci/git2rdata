@@ -1,5 +1,5 @@
 context("upgrade to new version")
-root <- tempfile("git2rdata-upgrade(.*)")
+root <- tempfile("git2rdata-upgrade")
 dir.create(root)
 test_that("read_vc() checks version", {
   file <- basename(tempfile(tmpdir = root))

@@ -91,7 +91,7 @@ recent_commit.git_repository <- function(file, root, data = FALSE) {
   assert_that(is.string(file), is.flag(data), noNA(data))
 
   if (data) {
-    file <- clean_data_path(root = ".", file, normalize = FALSE)
+    file <- clean_data_path(root = root, file, normalize = FALSE)
   }
   name <- basename(file)
   path <- gsub("^\\./?", "", unique(dirname(file)))

@@ -1,5 +1,5 @@
 context("validate metadata")
-root <- tempfile("git2rdata-is_git2rmeta(.*)")
+root <- tempfile("git2rdata-is_git2rmeta")
 dir.create(root)
 test_that("is_git2rmeta checks root", {
   expect_error(is_git2rmeta(file = "junk", root = 1),
