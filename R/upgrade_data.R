@@ -81,12 +81,8 @@ upgrade_data.character <- function(
       return(target)
     }
   }
-  check_meta_data <- meta_data
-  check_meta_data[["..generic"]][["git2rdata"]] <- NULL
-  check_meta_data[["..generic"]][["hash"]] <- NULL
-  check_meta_data[["..generic"]][["data_hash"]] <- NULL
   assert_that(
-    meta_data[["..generic"]][["hash"]] == hash(as.yaml(check_meta_data)),
+    meta_data[["..generic"]][["hash"]] == metadata_hash(meta_data),
     msg = paste(target, "has corrupt metadata: mismatching hash.")
   )
   meta_data[["..generic"]][["git2rdata"]] <-

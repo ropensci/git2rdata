@@ -28,9 +28,8 @@ is_git2rmeta.default <- function(file, root,
 
 #' @export
 #' @importFrom assertthat assert_that is.string
-#' @importFrom yaml read_yaml as.yaml
+#' @importFrom yaml read_yaml
 #' @importFrom utils packageVersion
-#' @importFrom git2r hash
 is_git2rmeta.character <- function(file, root = ".",
                                    message = c("none", "warning", "error")) {
   assert_that(is.string(file), is.string(root))
@@ -74,11 +73,8 @@ See `?upgrade_data()`."
     switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
   }
-  meta_data[["..generic"]][["git2rdata"]] <- NULL
   current_hash <- meta_data[["..generic"]][["hash"]]
-  meta_data[["..generic"]][["hash"]] <- NULL
-  meta_data[["..generic"]][["data_hash"]] <- NULL
-  if (current_hash != hash(as.yaml(meta_data))) {
+  if (current_hash != metadata_hash(meta_data)) {
     msg <- "Corrupt metadata, mismatching hash."
     switch(message, error = stop(msg), warning = warning(msg))
     return(FALSE)
@@ -93,4 +89,13 @@ See `?upgrade_data()`."
 is_git2rmeta.git_repository <- function(
   file, root, message = c("none", "warning", "error")) {
   is_git2rmeta(file = file, root = workdir(root), message = message)
+}
+
+#' @importFrom yaml as.yaml
+#' @importFrom git2r hash
+metadata_hash <- function(meta_data) {
+  meta_data[["..generic"]][["git2rdata"]] <- NULL
+  meta_data[["..generic"]][["hash"]] <- NULL
+  meta_data[["..generic"]][["data_hash"]] <- NULL
+  hash(as.yaml(meta_data))
 }

@@ -120,11 +120,7 @@ Use write_vc() instead.")
       msg = sprintf("relabeling '%s' leads to duplicated labels", id)
     )
   }
-  old_meta <- meta_data
-  old_meta[["..generic"]][["git2rdata"]] <- NULL
-  old_meta[["..generic"]][["hash"]] <- NULL
-  old_meta[["..generic"]][["data_hash"]] <- NULL
-  meta_data[["..generic"]][["hash"]] <- hash(as.yaml(old_meta))
+  meta_data[["..generic"]][["hash"]] <- metadata_hash(meta_data)
   meta_data[["..generic"]][["git2rdata"]] <-
     as.character(packageVersion("git2rdata"))
   write_yaml(meta_data, file["meta_file"])
