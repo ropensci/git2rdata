@@ -8,10 +8,9 @@
 #'
 #' Use this function with caution since it will remove all valid data files
 #' without asking for confirmation. We strongly recommend to use this
-#' function on files under version control. See the
-#' [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette
-#' (`vignette("workflow", package = "git2rdata")`) for some examples on
-#' how to use this.
+#' function on files under version control. See
+#' `vignette("workflow", package = "git2rdata")` for some examples on how to use
+#' this.
 #' @param path the directory in which to clean all the data files. The directory
 #' is relative to `root`.
 #' @param recursive remove files in subdirectories too
@@ -105,10 +104,9 @@ rm_data.git_repository <- function(
 #'
 #' Use this function with caution since it will remove all valid metadata files
 #' without asking for confirmation. We strongly recommend to use this
-#' function on files under version control. See the
-#' [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette
-#' (`vignette("workflow", package = "git2rdata")`) for some examples on
-#' how to use this.
+#' function on files under version control. See
+#' `vignette("workflow", package = "git2rdata")` for some examples on how to use
+#' this.
 #' @inheritParams rm_data
 #' @return returns invisibily a vector of removed files names. The paths are
 #' relative to `root`.

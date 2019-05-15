@@ -42,10 +42,9 @@ indices.}
 \item{sorting}{an optional vector of column names defining which columns to
 use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
 a warning. Add \code{sorting} to avoid this warning. Strongly recommended
-in combination with version control. See the vignette on
-\href{https://inbo.github.io/git2rdata/articles/efficiency.html}{efficiency} for
-an illustration of the importance of sorting.
-\code{vignette("efficiency", package = "git2rdata")}}
+in combination with version control. See
+\code{vignette("efficiency", package = "git2rdata")} for an illustration of the
+importance of sorting.}
 }
 \value{
 the optimized vector \code{x} with \code{meta} attribute

@@ -1,4 +1,4 @@
-#' Reexported function from git2r
+#' Reexported function from `git2r``
 #'
 #' See \code{\link[git2r]{repository}} in `git2r`
 #' @name repository
@@ -34,7 +34,7 @@ NULL
 #' @export
 NULL
 
-#' Reexported function from git2r
+#' Reexported function from `git2r``
 #'
 #' See \code{\link[git2r]{push}}
 #' @name push

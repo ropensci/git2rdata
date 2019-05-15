@@ -29,7 +29,7 @@ Use this information to document the current version of file or git2rdata
 object in an analysis. Since it refers to the most recent change of this
 file, it remains unchanged by committing changes to other files. You can
 also use it to track if data got updated, requirering an analysis to
-be rerun.
+be rerun. See \code{vignette("workflow", package = "git2rdata")}.
 }
 \examples{
 # initialise a git repo using git2r

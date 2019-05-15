@@ -3,10 +3,9 @@
 #' Imagine the situation where we have a dataframe with a factor variable and we
 #' have stored it with `write_vc(optimize = TRUE)`. The raw data file contains
 #' the factor indices and the metadata contains the link between the factor
-#' index and the corresponding label. See the vignette on
-#' [version contol](https://inbo.github.io/git2rdata/articles/version_control.html#handling-factors-optimized)
-#' (`vignette("version_control", package = "git2rdata")`) In such a case, relabeling a factor can be
-#' fast and lightweight by updating the metadata.
+#' index and the corresponding label. See
+#' `vignette("version_control", package = "git2rdata")`. In such a case,
+#' relabeling a factor can be fast and lightweight by updating the metadata.
 #' @inheritParams write_vc
 #' @param change either a `list` or a `data.frame`. In case of a `list` is a
 #' named `list` with named `vectors`. The names of list elements must match the

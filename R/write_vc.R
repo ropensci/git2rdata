@@ -2,7 +2,7 @@
 #'
 #' A git2rdata object consists of two files. The `".tsv"` file contains the raw
 #' data as a plain text tab separated file. The `".yml"` contains the metadata
-#' on the columns in plain text YAML format.
+#' on the columns in plain text YAML format. See vignette("plain text", package = "git2rdata")` for more details on the implementation (`).
 #' @param x the `data.frame`
 #' @param file the name of the git2rdata object. Git2rdata objects cannot
 #' have dots in their name. The name may include a relative path. `file` is a
@@ -12,10 +12,9 @@
 #' @param sorting an optional vector of column names defining which columns to
 #' use for sorting `x` and in what order to use them. Omitting `sorting` yields
 #' a warning. Add `sorting` to avoid this warning. Strongly recommended
-#' in combination with version control. See the vignette on
-#' [efficiency](https://inbo.github.io/git2rdata/articles/efficiency.html) for
-#' an illustration of the importance of sorting.
-#' `vignette("efficiency", package = "git2rdata")`
+#' in combination with version control. See
+#' `vignette("efficiency", package = "git2rdata")` for an illustration of the
+#' importance of sorting.
 #' @param strict What to do when the metadata changes. `strict = FALSE`
 #' overwrites the data and the metadata with a warning listing the changes,
 #' `strict = TRUE` returns an error and leaves the data and metadata as is.

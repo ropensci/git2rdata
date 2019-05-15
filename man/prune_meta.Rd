@@ -34,10 +34,9 @@ without removing the metadata file.
 
 Use this function with caution since it will remove all valid metadata files
 without asking for confirmation. We strongly recommend to use this
-function on files under version control. See the
-\href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette
-(\code{vignette("workflow", package = "git2rdata")}) for some examples on
-how to use this.
+function on files under version control. See
+\code{vignette("workflow", package = "git2rdata")} for some examples on how to use
+this.
 }
 \examples{
 ## on file system

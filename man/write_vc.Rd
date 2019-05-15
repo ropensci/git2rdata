@@ -24,10 +24,9 @@ Defaults to the current working directory (\code{"."}).}
 \item{sorting}{an optional vector of column names defining which columns to
 use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
 a warning. Add \code{sorting} to avoid this warning. Strongly recommended
-in combination with version control. See the vignette on
-\href{https://inbo.github.io/git2rdata/articles/efficiency.html}{efficiency} for
-an illustration of the importance of sorting.
-\code{vignette("efficiency", package = "git2rdata")}}
+in combination with version control. See
+\code{vignette("efficiency", package = "git2rdata")} for an illustration of the
+importance of sorting.}
 
 \item{strict}{What to do when the metadata changes. \code{strict = FALSE}
 overwrites the data and the metadata with a warning listing the changes,
@@ -53,7 +52,7 @@ contain the hashes of the files.
 \description{
 A git2rdata object consists of two files. The \code{".tsv"} file contains the raw
 data as a plain text tab separated file. The \code{".yml"} contains the metadata
-on the columns in plain text YAML format.
+on the columns in plain text YAML format. See vignette("plain text", package = "git2rdata")\code{ for more details on the implementation (}).
 }
 \note{
 \code{..generic} is a reserved name for the metadata and cannot be used as
