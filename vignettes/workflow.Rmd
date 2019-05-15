@@ -38,11 +38,13 @@ We start by initializing a git repository. `git2rdata` assumes that is already d
 ```{r initialize}
 # initialize a bare git repo to be used as remote
 remote <- tempfile("git2rdata-workflow-remote")
+remote <- normalizePath(remote, winslash = "/")
 dir.create(remote)
 git2r::init(remote, bare = TRUE)
 
 # initialize a local git repo
 path <- tempfile("git2rdata-workflow")
+path <- normalizePath(path, winslash = "/")
 dir.create(path)
 init_repo <- git2r::clone(remote, path, progress = FALSE)
 git2r::config(init_repo, user.name = "me", user.email = "me@me.com")
