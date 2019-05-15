@@ -4,8 +4,12 @@ context("recent_commit")
 # therefore Sys.sleep(subsecond) is added before each commit
 subsecond <- 1.2
 
+expect_error(recent_commit(file = "junk", root = NULL),
+             "a 'root' of class NULL is not supported")
+
 root <- tempfile(pattern = "git2rdata-recent")
 dir.create(root)
+
 root <- git2r::init(root)
 git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
 

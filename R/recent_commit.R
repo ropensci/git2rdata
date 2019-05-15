@@ -82,8 +82,6 @@ recent_commit.default <- function(file, root, data = FALSE) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
-
-
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag noNA
 #' @importFrom git2r odb_blobs last_commit workdir
