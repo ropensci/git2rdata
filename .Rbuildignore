@@ -4,6 +4,7 @@
 ^_pkgdown.yml$
 ^appveyor\.yml$
 ^codemeta\.json$
+^.zenodo\.json$
 ^docs$
 ^man-roxygen$
 ^pkgdown$
