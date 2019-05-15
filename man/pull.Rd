@@ -4,7 +4,7 @@
 \alias{pull}
 \title{Reexported function from \code{git2r}}
 \description{
-See \code{\link[git2r]{pull}} in \code{git2r}
+See \code{\link[git2r]{pull}} in \code{git2r}.
 }
 \seealso{
 Other version_control: \code{\link{commit}},
