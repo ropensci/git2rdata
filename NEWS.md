@@ -30,6 +30,7 @@ git2rdata 0.0.4 (2019-05-14)
   * The functions handle `root` containing regex expressions.
   * Rework `vignette("workflow", package = "git2rdata")`.
   * Update timings in `vignette("efficiency", package = "git2rdata")`
+  * Minor tweaks in `vignette("plain_text", package = "git2rdata")`
 
 git2rdata 0.0.3 (2019-03-12)
 ============================

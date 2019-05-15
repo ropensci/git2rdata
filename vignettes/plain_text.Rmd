@@ -1,9 +1,9 @@
 ---
-title: "Getting started"
+title: "Getting started storing dataframes as plain text"
 author: "Thierry Onkelinx"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started}
+  %\VignetteIndexEntry{Getting started storing dataframes as plain text}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,7 +24,7 @@ This vignette motivates why we wrote `git2rdata` and illustrates how you can use
 
 ### Maintaining variable classes
 
-R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()` .Some other options are `readr::write_delim()`, `readr::write_csv()` and `readr::write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `readr::read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. These functions determine factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
+R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()`. Some other options are `data.table::fwrite()`, `readr::write_delim()`, `readr::write_csv()` and `readr::write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `readr::read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. These functions determine factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
 
 The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe. The `vc` suffix stands for **v**ersion **c**ontrol as these functions use their full capacity in combination with a version control system.
 
@@ -36,7 +36,7 @@ Since we store the class of each variable, further file size reductions can be a
 
 - `logical` is written as 0 (FALSE), 1 (TRUE) or NA to the data
 - `factor` is stored as its indices in the data. The index and labels of levels and their order are stored in the metadata.
-- `POSIXct` is written as an integer to the data. The class and the origin are stored in the metadata. Timestamps are always stored and returned as UTC.
+- `POSIXct` is written as a numeric to the data. The class and the origin are stored in the metadata. Timestamps are always stored and returned as UTC.
 - `Date` is written as an integer to the data. The class and the origin are stored in the metadata.
 
 Storing the factors, POSIXct and Date as their index, makes them less user readable. The user can turn off this optimization when user readability is more important than file size.

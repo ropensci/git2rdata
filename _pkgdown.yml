@@ -7,7 +7,7 @@ navbar:
   - text: Tutorials
     href: articles/index.html
     menu:
-    - text: Storing dataframes as plain text
+    - text: Getting started storing dataframes as plain text
       href: articles/plain_text.html
     - text: Storing dataframes under version control
       href: articles/version_control.html
