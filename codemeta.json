@@ -124,7 +124,7 @@
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
-      "version": ">= 3.4.0"
+      "version": ">= 3.5.0"
     },
     {
       "@type": "SoftwareApplication",
@@ -171,8 +171,8 @@
   ],
   "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "343.284KB",
+  "fileSize": "347.568KB",
   "contIntegration": ["https://travis-ci.org/inbo/git2rdata", "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master", "https://codecov.io/gh/inbo/git2rdata"],
-  "developmentStatus": ["https://www.repostatus.org/#wip", "https://www.tidyverse.org/lifecycle/#experimental"],
+  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
   "keywords": ["r", "rstats", "r-package", "version-control", "reproducible-research"]
 }
