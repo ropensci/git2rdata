@@ -1,9 +1,9 @@
-#' Store a data.frame as a git2rdata object on disk
+#' Store a Data.Frame as a Git2rdata Object on Disk
 #'
 #' A git2rdata object consists of two files. The `".tsv"` file contains the raw
 #' data as a plain text tab separated file. The `".yml"` contains the metadata
-#' on the columns in plain text YAML format. See vignette("plain text", package = "git2rdata")` for more details on the implementation (`).
-#' @param x the `data.frame`
+#' on the columns in plain text YAML format. See `vignette("plain text", package = "git2rdata")` for more details on the implementation.
+#' @param x the `data.frame`.
 #' @param file the name of the git2rdata object. Git2rdata objects cannot
 #' have dots in their name. The name may include a relative path. `file` is a
 #' path relative to the `root`.

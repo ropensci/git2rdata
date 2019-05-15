@@ -9,7 +9,7 @@
 \alias{meta.POSIXct}
 \alias{meta.Date}
 \alias{meta.data.frame}
-\title{Optimize an object for storage as plain text and add metadata}
+\title{Optimize an Object for Storage as Plain Text and Add Metadata}
 \usage{
 meta(x, ...)
 
@@ -26,9 +26,9 @@ meta(x, ...)
 \method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting, ...)
 }
 \arguments{
-\item{x}{the vector}
+\item{x}{the vector.}
 
-\item{...}{further arguments to the methods}
+\item{...}{further arguments to the methods.}
 
 \item{na}{the string to use for missing values in the data.}
 
@@ -47,7 +47,7 @@ in combination with version control. See
 importance of sorting.}
 }
 \value{
-the optimized vector \code{x} with \code{meta} attribute
+the optimized vector \code{x} with \code{meta} attribute.
 }
 \description{
 \code{\link{write_vc}} applies this function automatically on your

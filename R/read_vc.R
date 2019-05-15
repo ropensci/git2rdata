@@ -1,4 +1,4 @@
-#' Read a git2rdata object from disk
+#' Read a Git2rdata Object from Disk
 #'
 #' `read_vc()` handles git2rdata objects stored by `write_vc()`. It reads and
 #' verifies the metadata file (`.yml`). Then it reads and verifies the raw data.
@@ -6,7 +6,7 @@
 #' return the `data.frame` as stored by `write_vc()`.
 #'
 #' @inheritParams write_vc
-#' @return The `data.frame` with the file names and hashes as attributes
+#' @return The `data.frame` with the file names and hashes as attributes.
 #' @rdname read_vc
 #' @export
 #' @family storage

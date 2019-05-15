@@ -1,4 +1,4 @@
-#' Remove data files from git2rdata objects
+#' Remove Data Files From Git2rdata Objects
 #'
 #' @description
 #' Remove the data (`.tsv`) file from all valid git2rdata objects at the `path`.
@@ -13,7 +13,7 @@
 #' this.
 #' @param path the directory in which to clean all the data files. The directory
 #' is relative to `root`.
-#' @param recursive remove files in subdirectories too
+#' @param recursive remove files in subdirectories too.
 #' @return returns invisibily a vector of removed files names. The paths are
 #' relative to `root`.
 #' @inheritParams write_vc
@@ -95,7 +95,7 @@ rm_data.git_repository <- function(
   return(invisible(to_do))
 }
 
-#' Prune metadata files
+#' Prune Metadata Files
 #'
 #' @description
 #' Removes all **valid** metadata (`.yml` files) from the `path` when they don't
@@ -167,7 +167,7 @@ prune_meta.character <- function(
 #' @importFrom assertthat assert_that is.flag
 #' @importFrom git2r workdir add
 #' @include write_vc.R
-#' @param stage stage the changes after removing the files. Defaults to FALSE.
+#' @param stage stage the changes after removing the files. Defaults to `FALSE`.
 #' @rdname prune_meta
 prune_meta.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE

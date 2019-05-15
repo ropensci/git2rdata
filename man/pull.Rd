@@ -2,7 +2,7 @@
 % Please edit documentation in R/reexport.R
 \name{pull}
 \alias{pull}
-\title{Reexported function from \code{git2r}}
+\title{Reexported Function From \code{git2r}}
 \description{
 See \code{\link[git2r]{pull}} in \code{git2r}.
 }

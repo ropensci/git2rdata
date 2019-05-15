@@ -1,10 +1,10 @@
-#' Clean the data path
+#' Clean the Data Path
 #' Strips any file extension from the path and adds the `".tsv"` and `".yml"`
 #' file extensions
 #' @inheritParams write_vc
-#' @param normalize normalize the path? Defaults to TRUE
-#' @return a named vector with "raw_file" and "meta_file", refering to the
-#' `".tsv"` and `".yml"` files
+#' @param normalize Normalize the path? Defaults to TRUE
+#' @return A named vector with "raw_file" and "meta_file", refering to the
+#' `".tsv"` and `".yml"` files.
 #' @noRd
 #' @family internal
 #' @importFrom assertthat assert_that is.flag noNA

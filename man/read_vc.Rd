@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_vc.R
 \name{read_vc}
 \alias{read_vc}
-\title{Read a git2rdata object from disk}
+\title{Read a Git2rdata Object from Disk}
 \usage{
 read_vc(file, root = ".")
 }
@@ -15,7 +15,7 @@ path relative to the \code{root}.}
 Defaults to the current working directory (\code{"."}).}
 }
 \value{
-The \code{data.frame} with the file names and hashes as attributes
+The \code{data.frame} with the file names and hashes as attributes.
 }
 \description{
 \code{read_vc()} handles git2rdata objects stored by \code{write_vc()}. It reads and

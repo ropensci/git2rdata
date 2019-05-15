@@ -1,11 +1,11 @@
 ---
-title: "Efficiency in terms of storage and time"
+title: "Efficiency in Terms of Storage and Time"
 author: "Thierry Onkelinx"
 output: 
   rmarkdown::html_vignette:
         fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Efficiency in terms of storage and time}
+  %\VignetteIndexEntry{Efficiency in Terms of Storage and Time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{git2r}
@@ -147,9 +147,9 @@ if (system.file("efficiency", "airbag.rds", package = "git2rdata") == "") {
 str(airbag)
 ```
 
-## Data storage 
+## Data Storage 
 
-### On a file system
+### On a File System
 
 We start by writing the dataset as is with `write.table()`, `saveRDS()`, `write_vc()` and `write_vc()` without storage optimization. Note that `write_vc()` uses optimization by default. Since `write_vc()` creates two files for each data set, we take their combined file size into account.
 
@@ -270,7 +270,7 @@ ggplot(f_ratio, aes(x = observations, y = ratio, colour = levels)) +
   scale_colour_manual("number of \nlevels", values = inbo_colours)
 ```
 
-### In git repositories
+### In Git Repositories
 
 Here we will simulate how much space the data requires when the history is stored in a git repository. We will create a git repository for each method and store several subsets of the same data. Each commit contains a new version of the data. Each version is a random sample containing 90% of the observations of the `airbag` data. Two consecutive versions of the subset will have about 90% of the observations in common. 10% of the observations will be replaced by other observations. 
 
@@ -388,7 +388,7 @@ ggplot(rs, aes(x = commit, y = rel_size, colour = fun, linetype = optimized)) +
 
 The code below runs a microbenchmark on the four methods. A microbenchmark runs the code a hunderd times and yields a distribution of timings for each expression.
 
-### Writing data
+### Writing Data
 
 ```{r get_file_timings, eval = system.file("efficiency", "file_timings.rds", package = "git2rdata") == ""}
 library(microbenchmark)
@@ -431,7 +431,7 @@ ggplot(mb, aes(x = expr, y = time)) +
   theme(axis.title.x = element_blank())
 ```
 
-### Reading data
+### Reading Data
 
 ```{r get_read_timings, eval = system.file("efficiency", "read_timings.rds", package = "git2rdata") == ""}
 mb <- microbenchmark(

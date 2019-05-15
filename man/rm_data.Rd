@@ -3,7 +3,7 @@
 \name{rm_data}
 \alias{rm_data}
 \alias{rm_data.git_repository}
-\title{Remove data files from git2rdata objects}
+\title{Remove Data Files From Git2rdata Objects}
 \usage{
 rm_data(root = ".", path = NULL, recursive = TRUE, ...)
 
@@ -18,7 +18,7 @@ Defaults to the current working directory (\code{"."}).}
 \item{path}{the directory in which to clean all the data files. The directory
 is relative to \code{root}.}
 
-\item{recursive}{remove files in subdirectories too}
+\item{recursive}{remove files in subdirectories too.}
 
 \item{...}{parameters used in some methods}
 

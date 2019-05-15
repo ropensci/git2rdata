@@ -2,7 +2,7 @@
 % Please edit documentation in R/recent_commit.R
 \name{recent_commit}
 \alias{recent_commit}
-\title{Retrieve the most recent file change}
+\title{Retrieve the Most Recent File Change}
 \usage{
 recent_commit(file, root, data = FALSE)
 }
@@ -11,10 +11,10 @@ recent_commit(file, root, data = FALSE)
 have dots in their name. The name may include a relative path. \code{file} is a
 path relative to the \code{root}.}
 
-\item{root}{The root of a project. Can be a file path or a \code{git-repository}}
+\item{root}{The root of a project. Can be a file path or a \code{git-repository}.}
 
-\item{data}{does \code{file} refers to a data object (TRUE) or to a file (FALSE).
-Defaults to FALSE.}
+\item{data}{does \code{file} refers to a data object (\code{TRUE}) or to a file (\code{FALSE}).
+Defaults to \code{FALSE}.}
 }
 \value{
 a \code{data.frame} with \code{commit}, \code{author} and \code{when} for the most recent

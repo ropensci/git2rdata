@@ -2,7 +2,7 @@
 % Please edit documentation in R/is_git2rmeta.R
 \name{is_git2rmeta}
 \alias{is_git2rmeta}
-\title{Check whether a git2rdata object has valid metadata.}
+\title{Check Whether a Git2rdata Object Has Valid Metadata.}
 \usage{
 is_git2rmeta(file, root = ".", message = c("none", "warning", "error"))
 }

@@ -3,7 +3,7 @@
 \name{upgrade_data}
 \alias{upgrade_data}
 \alias{upgrade_data.git_repository}
-\title{Upgrade files to the new version}
+\title{Upgrade Files to the New Version}
 \usage{
 upgrade_data(file, root = ".", verbose, ..., path)
 
@@ -32,7 +32,7 @@ writing the data. Defaults to \code{FALSE}.}
 \item{force}{Add ignored files. Default is FALSE.}
 }
 \value{
-the file names
+the git2rdata object names.
 }
 \description{
 Updates the data written by older versions to the current data format

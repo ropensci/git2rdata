@@ -1,4 +1,4 @@
-#' Retrieve the most recent file change
+#' Retrieve the Most Recent File Change
 #'
 #' @description
 #' Retrieve the most recent commit that added or updated a file or git2rdata
@@ -11,9 +11,9 @@
 #' also use it to track if data got updated, requirering an analysis to
 #' be rerun. See `vignette("workflow", package = "git2rdata")`.
 #' @inheritParams write_vc
-#' @param root The root of a project. Can be a file path or a `git-repository`
-#' @param data does `file` refers to a data object (TRUE) or to a file (FALSE).
-#' Defaults to FALSE.
+#' @param root The root of a project. Can be a file path or a `git-repository`.
+#' @param data does `file` refers to a data object (`TRUE`) or to a file (`FALSE`).
+#' Defaults to `FALSE`.
 #' @return a `data.frame` with `commit`, `author` and `when` for the most recent
 #' commit that adds op updates the file.
 #' @export

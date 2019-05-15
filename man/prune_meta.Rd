@@ -3,7 +3,7 @@
 \name{prune_meta}
 \alias{prune_meta}
 \alias{prune_meta.git_repository}
-\title{Prune metadata files}
+\title{Prune Metadata Files}
 \usage{
 prune_meta(root = ".", path = NULL, recursive = TRUE, ...)
 
@@ -17,11 +17,11 @@ Defaults to the current working directory (\code{"."}).}
 \item{path}{the directory in which to clean all the data files. The directory
 is relative to \code{root}.}
 
-\item{recursive}{remove files in subdirectories too}
+\item{recursive}{remove files in subdirectories too.}
 
 \item{...}{parameters used in some methods}
 
-\item{stage}{stage the changes after removing the files. Defaults to FALSE.}
+\item{stage}{stage the changes after removing the files. Defaults to \code{FALSE}.}
 }
 \value{
 returns invisibily a vector of removed files names. The paths are

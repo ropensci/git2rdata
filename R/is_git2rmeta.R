@@ -1,4 +1,4 @@
-#' Check whether a git2rdata object has valid metadata.
+#' Check Whether a Git2rdata Object Has Valid Metadata.
 #'
 #' Valid metadata is a file with `.yml` extension. It has a top level item
 #' `..generic`. This item contains `git2rdata` (the version number), `hash` (a

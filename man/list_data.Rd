@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_data.R
 \name{list_data}
 \alias{list_data}
-\title{List available git2rdata files containing data}
+\title{List Available Git2rdata Files Containing Data}
 \usage{
 list_data(root = ".", path = ".", recursive = TRUE)
 }
@@ -14,8 +14,8 @@ list_data(root = ".", path = ".", recursive = TRUE)
 \item{recursive}{logical.  Should the listing recurse into directories?}
 }
 \value{
-a character vector of git2rdata object names, including their
-relative path
+A character vector of git2rdata object names, including their
+relative path.
 }
 \description{
 The function returns the names of all valid git2rdata objects. This implies

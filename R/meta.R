@@ -1,10 +1,10 @@
-#' Optimize an object for storage as plain text and add metadata
+#' Optimize an Object for Storage as Plain Text and Add Metadata
 #'
 #' \code{\link{write_vc}} applies this function automatically on your
 #' data.frame to optimize the data.frame and generate the metadata.
-#' @param x the vector
-#' @param ... further arguments to the methods
-#' @return the optimized vector `x` with `meta` attribute
+#' @param x the vector.
+#' @param ... further arguments to the methods.
+#' @return the optimized vector `x` with `meta` attribute.
 #' @export
 #' @docType methods
 #' @family internal

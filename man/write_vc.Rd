@@ -3,7 +3,7 @@
 \name{write_vc}
 \alias{write_vc}
 \alias{write_vc.git_repository}
-\title{Store a data.frame as a git2rdata object on disk}
+\title{Store a Data.Frame as a Git2rdata Object on Disk}
 \usage{
 write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ...)
@@ -12,7 +12,7 @@ write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ..., stage = FALSE, force = FALSE)
 }
 \arguments{
-\item{x}{the \code{data.frame}}
+\item{x}{the \code{data.frame}.}
 
 \item{file}{the name of the git2rdata object. Git2rdata objects cannot
 have dots in their name. The name may include a relative path. \code{file} is a
@@ -52,7 +52,7 @@ contain the hashes of the files.
 \description{
 A git2rdata object consists of two files. The \code{".tsv"} file contains the raw
 data as a plain text tab separated file. The \code{".yml"} contains the metadata
-on the columns in plain text YAML format. See vignette("plain text", package = "git2rdata")\code{ for more details on the implementation (}).
+on the columns in plain text YAML format. See \code{vignette("plain text", package = "git2rdata")} for more details on the implementation.
 }
 \note{
 \code{..generic} is a reserved name for the metadata and cannot be used as

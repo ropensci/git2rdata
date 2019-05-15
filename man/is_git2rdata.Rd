@@ -2,7 +2,7 @@
 % Please edit documentation in R/is_git2rdata.R
 \name{is_git2rdata}
 \alias{is_git2rdata}
-\title{Check whether a git2rdata object is valid.}
+\title{Check Whether a Git2rdata Object is Valid.}
 \usage{
 is_git2rdata(file, root = ".", message = c("none", "warning", "error"))
 }

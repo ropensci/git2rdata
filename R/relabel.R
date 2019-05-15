@@ -1,4 +1,4 @@
-#' Relabel factor levels by updating the metadata
+#' Relabel Factor Levels by Updating the Metadata
 #'
 #' Imagine the situation where we have a dataframe with a factor variable and we
 #' have stored it with `write_vc(optimize = TRUE)`. The raw data file contains
@@ -14,7 +14,7 @@
 #' of a `data.frame` it needs to have the variables `factor` (name of the
 #' factor), `old` (the old) factor label and `new` (the new factor label).
 #' `relabel()` ignores all other columns.
-#' @return invisible `NULL`
+#' @return invisible `NULL`.
 #' @export
 #' @examples
 #'

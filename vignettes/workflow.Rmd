@@ -1,9 +1,9 @@
 ---
-title: "Suggested workflow for storing a variable set of dataframes under version control"
+title: "Suggested Workflow for Storing a Variable Set of Dataframes under Version Control"
 author: "Thierry Onkelinx"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Suggested workflow for storing a variable set of dataframes under version control}
+  %\VignetteIndexEntry{Suggested Workflow for Storing a Variable Set of Dataframes under Version Control}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{git2r}
@@ -55,7 +55,7 @@ git2r::push(init_repo, "origin", "refs/heads/master")
 rm(init_repo)
 ```
 
-## Structuring git2rdata objects within a project
+## Structuring Git2rdata Objects Within a Project
 
 `git2rdata` imposes very little structure. Both the `.tsv` and the `.yml` file need to be in the same folder. That's it. For the sake of simplicity, in this vignette we dump all git2rdata objects at the root of the repository. 
 
@@ -63,9 +63,9 @@ However, this might not be good idea for real project. We recommend to use at le
 
 Your project might need a different directory structure. Feel free to implement the most relevant data structure for your project.
 
-## Storing dataframes _ad hoc_ into a git repository
+## Storing Dataframes _ad Hoc_ into a Git Repository
 
-### First commit
+### First Commit
 
 In the first commit we use `datasets::beaver1`. We connect to the git repository using `repository()`. Note that this assumes that `path` is an existing git repository. Now we can write the dataset as a git2rdata object in the repository. If the `root` argument of `write_vc()` is a `git_repository`, it gains two additional arguments: `stage` and `force`. Setting `stage = TRUE`, will automatically stage the files written by `write_vc()`.
 
@@ -88,7 +88,7 @@ cm1 <- commit(repo, message = "First commit")
 cat(cm1$message)
 ```
 
-### Second commit
+### Second Commit
 
 The second commit adds `beaver2`.
 
@@ -111,7 +111,7 @@ status(repo)
 cm2 <- commit(repo, message = "Second commit")
 ```
 
-### Third commit
+### Third Commit
 
 At this point in time we decide that a single git2rdata object containing the data of both beavers is more relevant. We add an ID variable for each of the animals. This requires updating the `sorting` to eliminate ties. And `strict = FALSE` to update the metadata. The "extra_beaver" git2rdata object is no longer needed so we remove it. We use `all = TRUE` to stage the removal of "extra_beaver" while committing the changes.
 
@@ -131,7 +131,7 @@ cm3 <- commit(repo, message = "Third commit", all = TRUE)
 status(repo)
 ```
 
-## Scripted workflow for storing dataframes
+## Scripted Workflow for Storing Dataframes
 
 We strongly recommend to add git2rdata object through an import script instead of adding them [_ad hoc_](#storing-dataframes-ad-hoc-into-a-git-repository). Store this script in the (analysis) repository. It documents the creation of the git2rdata objects. Rerun this script whenever updated data becomes available. 
 
@@ -174,7 +174,7 @@ cm <- commit(repo = repo, message = "import")
 push(repo = repo)
 ```
 
-## R package workflow for storing dataframes
+## R Package Workflow for Storing Dataframes
 
 We recommend a two repository set-up in case of recurring analyses. These are relative stable analyses which have to run with some frequency on updated data (e.g. once a month). Then it is worthwhile to convert the analyses into an R package. Long scripts can be converted into a set of shorter functions which are much easier to document and maintain. An R package offers lots of [functionality](http://r-pkgs.had.co.nz/check.html) out of the box to check the quality of your code.
 
@@ -211,7 +211,7 @@ import_body_temp <- function(path) {
 }
 ```
 
-## Analysis workflow with reproducible data
+## Analysis Workflow with Reproducible Data
 
 The example below is a small trivial example of a standardized analysis in which the source of the data is documented by describing the name of the data, the repository URL and the commit. We can use this information when reporting the results. This makes the data underlying the results traceable.
 

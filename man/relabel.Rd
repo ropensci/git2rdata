@@ -2,7 +2,7 @@
 % Please edit documentation in R/relabel.R
 \name{relabel}
 \alias{relabel}
-\title{Relabel factor levels by updating the metadata}
+\title{Relabel Factor Levels by Updating the Metadata}
 \usage{
 relabel(file, root = ".", change)
 }
@@ -23,7 +23,7 @@ factor), \code{old} (the old) factor label and \code{new} (the new factor label)
 \code{relabel()} ignores all other columns.}
 }
 \value{
-invisible \code{NULL}
+invisible \code{NULL}.
 }
 \description{
 Imagine the situation where we have a dataframe with a factor variable and we

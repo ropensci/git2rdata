@@ -1,4 +1,4 @@
-#' Upgrade files to the new version
+#' Upgrade Files to the New Version
 #'
 #' Updates the data written by older versions to the current data format
 #' standard. Works both on a single file and (recursively) on a path. The
@@ -10,7 +10,7 @@
 #' in this directory and it's subdirectories. `path` is relative to `root`. Use
 #' `path = "."` to upgrade all git2rdata objects under `root`.
 #' @export
-#' @return the file names
+#' @return the git2rdata object names.
 #' @family internal
 #' @examples
 #' # create a directory
