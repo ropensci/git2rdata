@@ -106,7 +106,7 @@ Please use a different NA string or use optimize = TRUE", call. = FALSE)
   }
 
   m <- list(class = "factor", na_string = na, optimize = optimize,
-            labels = names(index), index = unname(index),
+            labels = enc2utf8(names(index)), index = unname(index),
             ordered = is.ordered(x))
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -173,7 +173,6 @@ meta.Date <- function(x, optimize = TRUE, ...){
 
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom git2r hash
 #' @importFrom utils packageVersion
 #' @note `..generic` is a reserved name for the metadata and therefore not
 #' allowed column name in a `data.frame`.
@@ -256,7 +255,7 @@ Add extra sorting variables to ensure small diffs.", sorted)
   class(m) <- "meta_list"
   m[["..generic"]] <- c(
     list(git2rdata = as.character(packageVersion("git2rdata"))),
-    m[["..generic"]], hash = hash(as.yaml(m)))
+    m[["..generic"]], hash = metadata_hash(m))
   z <- lapply(z, `attr<-`, "meta", NULL)
 
   # convert z to dataframe and add metadata list
