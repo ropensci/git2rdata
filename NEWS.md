@@ -1,4 +1,4 @@
-git2rdata 0.0.4 (2019-05-14)
+git2rdata 0.0.4 (2019-05-15)
 ============================
 
 ### BREAKING FEATURES
@@ -27,6 +27,7 @@ git2rdata 0.0.4 (2019-05-14)
   * Fix typo's in documentation, vignettes and README.
   * Add a ROpenSci review badge to the README.
   * The README mentions on upper bound on the size of dataframes.
+  * Set lifecycle to "maturing" and repo status to "active".
   * The functions handle `root` containing regex expressions.
   * Rework `vignette("workflow", package = "git2rdata")`.
   * Update timings in `vignette("efficiency", package = "git2rdata")`
