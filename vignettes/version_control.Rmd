@@ -19,9 +19,9 @@ options(width = 83)
 
 ## Introduction
 
-This vignette focuses on what `git2rdata` does to make storing dataframes under version control more efficient and convenient. All details on the actual file format are described in the [plain text storage](plain_text.html) vignette. Hence we will not discuss the `optimize` and `na` arguments to the `write_vc()` function.
+This vignette focuses on what `git2rdata` does to make storing dataframes under version control more efficient and convenient. All details on the actual file format are described in `vignette("plain_text", package = "git2rdata")`. Hence we will not discuss the `optimize` and `na` arguments to the `write_vc()` function.
 
-We will not illustrate the efficiency of `write_vc()` and `read_vc()` since that is covered in the [efficiency](efficiency.html) vignette.
+We will not illustrate the efficiency of `write_vc()` and `read_vc()` since that is covered in `vignette("efficiency", package = "git2rdata")`.
 
 ## Setup
 
@@ -156,7 +156,7 @@ B,A
 13,3
 ```
 
-The resulting diff is maximal because every single row was updated. Yet none of the information was changed. Hence, it is crucial to maintain column order when storing dataframes as plain text files under version control. This is illustrated on a more realistic data set in the [efficiency](efficiency.html#in-git-repositories) vignette.
+The resulting diff is maximal because every single row was updated. Yet none of the information was changed. Hence, it is crucial to maintain column order when storing dataframes as plain text files under version control. This is illustrated on a more realistic data set in the `vignette("efficiency", package = "git2rdata")` vignette.
 
 ```diff
 -A,B
@@ -180,7 +180,7 @@ print_file("column_order.tsv", root, n = 5)
 
 ## Handling factors optimized
 
-The [plain text](plain_text.html#optimizing-file-storage) and [efficieny](efficiency.html#on-a-file-system) vignette illustrate how a factor can be stored more efficiently when storing their index in the data file and the indices and labels in the metadata. We take this even a bit further: what happens if new data arrives and an extra factor level is required? 
+`vignette("plain_text", package = "git2rdata")` and `vignette("efficiency", package = "git2rdata")` illustrate how a factor can be stored more efficiently when storing their index in the data file and the indices and labels in the metadata. We take this even a bit further: what happens if new data arrives and an extra factor level is required? 
 
 ```{r factor}
 old <- data.frame(color = c("red", "blue"))
