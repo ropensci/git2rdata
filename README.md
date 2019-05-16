@@ -12,22 +12,32 @@
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/a3idhi9f6ls9xu8r/branch/master?svg=true)](https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master)
 [![codecov](https://codecov.io/gh/inbo/git2rdata/branch/master/graph/badge.svg)](https://codecov.io/gh/inbo/git2rdata)
 
-<p id="github">Please visit the git2rdata website at https://inbo.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their helpfile.</p>
-
-<script>
-if (window.location.hostname != "github.com") {
-  document.getElementById("github").innerHTML = ""
-}
-</script>
+<p style="display:none">Please visit the git2rdata website at https://inbo.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their help file.</p>
 
 ## Rationale
 
 The `git2rdata` package is an R package for writing and reading dataframes as plain text files. Important information is stored in a metadata file.
 
-1. Storing metadata allows to maintain the classes of variables. By default, the data is optimized for file storage prior to writing. This makes the data less human readable and can be turned off. Details on the implementation are available in `vignette("plain_text", package = "git2rdata")`.
+1. Storing metadata allows to maintain the classes of variables. By default, the data is optimized for file storage prior to writing. The optimization is most effective on data containing factors. The optimization makes the data less human readable and can be turned off. Details on the implementation are available in `vignette("plain_text", package = "git2rdata")`.
 1. Storing metadata also allows to minimize row based [diffs](https://en.wikipedia.org/wiki/Diff) between two consecutive [commits](https://en.wikipedia.org/wiki/Commit_(version_control)). This is a useful feature when storing data as plain text files under version control. Details on this part of the implementation are available in `vignette("version_control", package = "git2rdata")`. Although `git2rdata` was envisioned with a [git](https://git-scm.com/) workflow in mind, it can also be used in combination with other version control systems like [subversion](https://subversion.apache.org/) or [mercurial](https://www.mercurial-scm.org/).
 1. `git2rdata` is intended to facilitate a reproducible and traceable workflow. A toy example is given in `vignette("workflow", package = "git2rdata")`.
 1. `vignette("efficiency", package = "git2rdata")` provides some insight into the efficiency in terms of file storage, git repository size and speed for writing and reading.
+
+## Why Use Git2rdata?
+
+- You can store dataframes as plain text files.
+- The dataframe you read has exactly the same information content as the one you wrote.
+    - No changes in data type.
+    - Factors keep their original levels, including their order.
+    - Date and date-time are stored in an unambiguous format, documented in the metadata.
+- The data and the metadata are stored in a standard and open format, making it readable by other software.
+- Data and metadata are checked during the reading. The user is informed if there is tampering with the data or metadata.
+- Git2rdata integrates with the [`git2r`](https://cran.r-project.org/package=git2r) package for working with git repository from R.
+    - Another option is using git2rdata solely for writing to disk and handle the plain text files with your favourite version control system outside of R.
+- The optimization reduces the required disk space by about 30% for both the working directory and the git history. 
+- Reading data from a HDD is 30% faster than `read.table()`, writing to a HDD takes about 70% more time than `write.table()`.
+- Git2rdata is useful as a tool in a reproducible and traceable workflow. See `vignette("workflow", package = "git2rdata")`.
+- You can detect when a file was last modified in the git history. Use this to check whether an existing analysis is obsolete due to new data. This allows to not rerun up to date analyses, saving resources.
 
 ## Installation
 
@@ -48,7 +58,7 @@ remotes::install_github(
 remotes::install_github("inbo/git2rdata"))
 ```
 
-## Usage in a nutshell
+## Usage in a Nutshell
 
 Dataframes are stored using `write_vc()` and retrieved with `read_vc()`. Both functions share the arguments `root` and `file`. `root` refers to a base location where the dataframe should be stored. It can either point to a local directory or a local git repository. `file` is the file name to use and can include a path relative to `root`. Make sure the relative path stays within `root`.
 
@@ -84,10 +94,11 @@ The recommendation for git repositories is to use files smaller than 100 MB, an 
 
 Please use the output of `citation("git2rdata")`
 
-## Folder structure
+## Folder Structure
 
 - `R`: The source scripts of the [R](https://cran.r-project.org/) functions with documentation in [Roxygen](https://github.com/klutometis/roxygen) format
 - `man`: The help files in [Rd](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Rd-format) format
+- `inst/efficiency`: pre-calculated data to speed up `vignette("efficiency", package = "git2rdata")`
 - `testthat`: R scripts with unit tests using the [testthat](http://testthat.r-lib.org/) framework
 - `vignettes`: source code for the vignettes describing the package
 - `man-roxygen`: templates for documentation in Roxygen format
@@ -98,6 +109,8 @@ Please use the output of `citation("git2rdata")`
 ```
 git2rdata
 ├── .github 
+├─┬ inst
+│ └── efficiency
 ├── man 
 ├── man-roxygen 
 ├── pkgdown
