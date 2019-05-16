@@ -50,12 +50,19 @@ importance of sorting.}
 the optimized vector \code{x} with \code{meta} attribute.
 }
 \description{
-\code{\link{write_vc}} applies this function automatically on your
-data.frame to optimize the data.frame and generate the metadata.
-}
-\note{
-\code{..generic} is a reserved name for the metadata and therefore not
-allowed column name in a \code{data.frame}.
+Prepares a vector for storage. When relevant, \code{meta()}optimizes the object
+for storage by changing the format to one which needs less characters. The
+metadata stored in the \code{meta} attribute, contains all required information to
+backtransform the optimized format into the original format.
+
+In case of a data.frame, \code{meta()} applies itself to each of the columns. The
+\code{meta} attribute becomes a named list containing the metadata for each column
+plus an additional \code{..generic} element. \code{..generic} is a reserved name for
+the metadata and not allowed as column name in a \code{data.frame}.
+
+\code{\link{write_vc}} uses this function to prepare a dataframe for storage.
+Existing metadata is passed through the optional \code{old} argument. This
+argument intendent for internal use.
 }
 \examples{
 meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))

@@ -1,7 +1,10 @@
 #' Optimize an Object for Storage as Plain Text and Add Metadata
 #'
-#' \code{\link{write_vc}} applies this function automatically on your
-#' data.frame to optimize the data.frame and generate the metadata.
+#' @description
+#' Prepares a vector for storage. When relevant, `meta()`optimizes the object
+#' for storage by changing the format to one which needs less characters. The
+#' metadata stored in the `meta` attribute, contains all required information to
+#' backtransform the optimized format into the original format.
 #' @param x the vector.
 #' @param ... further arguments to the methods.
 #' @return the optimized vector `x` with `meta` attribute.
@@ -174,8 +177,15 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #' @export
 #' @importFrom assertthat assert_that
 #' @importFrom utils packageVersion
-#' @note `..generic` is a reserved name for the metadata and therefore not
-#' allowed column name in a `data.frame`.
+#' @description
+#' In case of a data.frame, `meta()` applies itself to each of the columns. The
+#' `meta` attribute becomes a named list containing the metadata for each column
+#' plus an additional `..generic` element. `..generic` is a reserved name for
+#' the metadata and not allowed as column name in a `data.frame`.
+#'
+#' \code{\link{write_vc}} uses this function to prepare a dataframe for storage.
+#' Existing metadata is passed through the optional `old` argument. This
+#' argument intendent for internal use.
 #' @rdname meta
 #' @inheritParams write_vc
 meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
@@ -203,7 +213,7 @@ Sorting is strongly recommended in combination with version control.")
       all(sorting %in% colnames(x)),
       msg = "All sorting variables must be available in the data.frame")
     if (nrow(x) > 1) {
-      x <- x[do.call(order, x[sorting]), , drop = FALSE] # nolint
+      x <- x[do.call(order, unname(x[sorting])), , drop = FALSE] # nolint
       if (any_duplicated(x[sorting])) {
         sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
         sorted <- sprintf("Sorting on %s results in ties.
