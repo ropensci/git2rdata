@@ -1,4 +1,4 @@
-git2rdata 0.0.4 (2019-05-15)
+git2rdata 0.0.4 (2019-05-16)
 ============================
 
 ### BREAKING FEATURES
@@ -8,10 +8,10 @@ git2rdata 0.0.4 (2019-05-15)
 ### NEW FEATURES
 
   * `read_vc()` checks the meta data hash. A mismatch results in an error.
-  * The meta data gains a data hash. A mismatch throws a warning. This allows the data to up updated by other software.
+  * The meta data gains a data hash. A mismatch throws a warning when reading the object. This tolerates updating the data by other software, while informing the user that such change occurred.
   * `is_git2rmeta()` validates metadata.
   * `list_data()` lists files with valid metadata. 
-  * `rm_data()` and `prune_meta()` removes files with valid metadata.
+  * `rm_data()` and `prune_meta()` remove files with valid metadata. Other files are untouched.
   *  Files with invalid metadata yield a warning with `list_data()`, `rm_data()` and `prune_meta()`.
   
 ### Bugfixes
