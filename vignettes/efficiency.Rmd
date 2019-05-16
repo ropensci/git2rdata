@@ -1,11 +1,11 @@
 ---
-title: "Efficiency in terms of storage and time"
+title: "Efficiency in Terms of Storage and Time"
 author: "Thierry Onkelinx"
 output: 
   rmarkdown::html_vignette:
         fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Efficiency in terms of storage and time}
+  %\VignetteIndexEntry{Efficiency in Terms of Storage and Time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{git2r}
@@ -147,9 +147,9 @@ if (system.file("efficiency", "airbag.rds", package = "git2rdata") == "") {
 str(airbag)
 ```
 
-## Data storage 
+## Data Storage 
 
-### On a file system
+### On a File System
 
 We start by writing the dataset as is with `write.table()`, `saveRDS()`, `write_vc()` and `write_vc()` without storage optimization. Note that `write_vc()` uses optimization by default. Since `write_vc()` creates two files for each data set, we take their combined file size into account.
 
@@ -188,7 +188,7 @@ kable(
 )
 ```
 
-The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounced when the factor has a large number of levels. The optimization fails only in extreme cases with very short factor labels and a high number of labels.
+The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounced when the factor has a large number of levels. The optimization fails only in extreme cases with very short factor labels and a high number of levels.
 
 ```{r factor_label_length, echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimized, assuming 1000 observations", warning = FALSE}
 ratio <- function(label_length = 1:20, n_levels = 9, n_obs = 1000) {
@@ -270,7 +270,7 @@ ggplot(f_ratio, aes(x = observations, y = ratio, colour = levels)) +
   scale_colour_manual("number of \nlevels", values = inbo_colours)
 ```
 
-### In git repositories
+### In Git Repositories
 
 Here we will simulate how much space the data requires when the history is stored in a git repository. We will create a git repository for each method and store several subsets of the same data. Each commit contains a new version of the data. Each version is a random sample containing 90% of the observations of the `airbag` data. Two consecutive versions of the subset will have about 90% of the observations in common. 10% of the observations will be replaced by other observations. 
 
@@ -342,7 +342,7 @@ if (system.file("efficiency", "git_size.rds", package = "git2rdata") == "") {
 
 Each version of the data has on purpose a random order of observations and variables. This is what would happen in a worst case scenario as it would generate the largest posibble diff. We also test `write.table()` with a stable ordering of the observations and variables. 
 
-The randomised `write.table()` yields the largest git repository, converging to about 6.5 times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a 25% reduction in repostory size compared to the randomised `write.table()`, but still is almost 5 times larger than the sorted `write.table()`. Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because the git repository will be compressed too. The optimized `write_vc()` starts at 83% and converges toward 72%, the verbose version starts at 90% and converges towards 105%. There is a clear gain when using `write_vc()` with optimization in terms of storage size and the availability of metadata. The verbose option of `write_vc()` lacks the gain in terms of storage size but still has the metadata advantage.
+The randomised `write.table()` yields the largest git repository, converging to about `r sprintf("%.1f", repo_size["write.table", 100] / repo_size["write.table.sorted", 100])` times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a `r sprintf("%.0f%%", 100 - 100 * repo_size["saveRDS", 100] / repo_size["write.table", 100])` reduction in repostory size compared to the randomised `write.table()`, but still is `r sprintf("%.1f", repo_size["saveRDS", 100] / repo_size["write.table.sorted", 100])` times larger than the sorted `write.table()`. Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because the git repository will be compressed too. The optimized `write_vc()` starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 1] / repo_size["write.table.sorted", 1])` and converges toward `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 100] / repo_size["write.table.sorted", 100])`, the verbose version starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 1] / repo_size["write.table.sorted", 1])` and converges towards `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 100] / repo_size["write.table.sorted", 100])`. There is a clear gain when using `write_vc()` with optimization in terms of storage size and the availability of metadata. The verbose option of `write_vc()` lacks the gain in terms of storage size but still has the metadata advantage.
 
 ```{r plot_git_size, echo = FALSE, fig.cap = "Size of the git history using the different storage methods."}
 rs <- lapply(
@@ -388,7 +388,7 @@ ggplot(rs, aes(x = commit, y = rel_size, colour = fun, linetype = optimized)) +
 
 The code below runs a microbenchmark on the four methods. A microbenchmark runs the code a hunderd times and yields a distribution of timings for each expression.
 
-### Writing data
+### Writing Data
 
 ```{r get_file_timings, eval = system.file("efficiency", "file_timings.rds", package = "git2rdata") == ""}
 library(microbenchmark)
@@ -412,7 +412,15 @@ if (system.file("efficiency", "file_timings.rds", package = "git2rdata") == "") 
 }
 ```
 
-`write_vc()` takes 67% to 86% more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. When overwriting existing data, the new data is checked against the existing metadata. `saveRDS()` requires only 44% of the time that `write.table()` needs.
+```{r median_write, echo = FALSE}
+median_time <- aggregate(time ~ expr, data = mb, FUN = median)
+write_ratio <- 100 * median_time$time / 
+  median_time$time[median_time$expr == "write.table"]
+names(write_ratio) <- median_time$expr
+```
+
+
+`write_vc()` takes `r paste(sprintf("%.0f%%", -100 + write_ratio[grep("write_vc", names(write_ratio))]), collapse = " to ")` more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. When overwriting existing data, the new data is checked against the existing metadata. `saveRDS()` requires only `r sprintf("%.0f%%", write_ratio["saveRDS"])` of the time that `write.table()` needs.
 
 ```{r plot_file_timings, echo = FALSE, fig.cap = "Boxplot of the write timings for the different methods."}
 mb$expr <- reorder(mb$expr, mb$time, FUN = median)
@@ -423,7 +431,7 @@ ggplot(mb, aes(x = expr, y = time)) +
   theme(axis.title.x = element_blank())
 ```
 
-### Reading data
+### Reading Data
 
 ```{r get_read_timings, eval = system.file("efficiency", "read_timings.rds", package = "git2rdata") == ""}
 mb <- microbenchmark(
@@ -446,7 +454,14 @@ if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") 
 }
 ```
 
-The timings on reading the data is another story. Reading the binary format takes about 8% of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about 65% (optimized) and 79% (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
+```{r median_read, echo = FALSE}
+median_time <- aggregate(time ~ expr, data = mb, FUN = median)
+read_ratio <- 100 * median_time$time / 
+  median_time$time[median_time$expr == "read.table"]
+names(read_ratio) <- median_time$expr
+```
+
+The timings on reading the data is another story. Reading the binary format takes about `r sprintf("%.0f%%", read_ratio["readRDS"])` of the time needed to read the standard plain text format using `read.table()`. `read_vc()` takes about `r sprintf("%.0f%%", read_ratio["read_vc.optim"])` (optimized) and `r sprintf("%.0f%%", read_ratio["read_vc.verbose"])` (verbose) of the time needed by `read.table()`, which at first seems strange because `read_vc()` calls `read.table()` to read the files and has some extra work to convert the variables to the correct data type. The main difference is that `read_vc()` knows the required data type _a priori_ and passes this info to `read.table()`. Otherwise, `read.table()` has to guess the correct data type from the file.
 
 ```{r plot_read_timings, echo = FALSE, fig.cap = "Boxplots for the read timings for the different methods."}
 mb$expr <- factor(

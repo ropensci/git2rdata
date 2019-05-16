@@ -5,21 +5,32 @@
 #' root <- tempfile("git2rdata-")
 #' dir.create(root)
 #'
-#' # store a dataframe
-#' write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
-#' # list the available data and the files
+#' # store a dataframe as git2rdata object. Capture the result to minimise
+#' # screen output
+#' junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+#' # write a standard tab separate file (non git2rdata object)
+#' write.table(iris, file = file.path(root, "standard.tsv"), sep = "\t")
+#' # write a YAML file
+#' yml <- list(
+#'   authors = list(
+#'    "Research Institute for Nature and Forest" = list(
+#'        href = "https://www.inbo.be/en")))
+#' yaml::write_yaml(yml, file = file.path(root, "_pkgdown.yml"))
+#'
+#' # list the git2rdata objects
 #' list_data(root)
+#' # list the files
 #' list.files(root, recursive = TRUE)
 #'
-#' # remove all .tsv files with an associated .yml file
+#' # remove all .tsv files from valid git2rdata objects
 #' rm_data(root, path = ".")
-#' # check the removal of the data
+#' # check the removal of the .tsv file
 #' list.files(root, recursive = TRUE)
 #' list_data(root)
 #'
-#' # remove dangling meta data files
+#' # remove dangling git2rdata metadata files
 #' prune_meta(root, path = ".")
-#' # check the removal of the meta data
+#' # check the removal of the metadata
 #' list.files(root, recursive = TRUE)
 #' list_data(root)
 #'
@@ -48,8 +59,17 @@
 #' list_data(repo)
 #' status(repo)
 #'
-#' # remove dangling meta data
+#' # remove dangling metadata
 #' prune_meta(repo, path = ".")
 #' # check the removal
 #' list_data(repo)
 #' status(repo)
+#'
+#' # clean up
+#' junk <- file.remove(
+#'   list.files(root, full.names = TRUE, recursive = TRUE), root)
+#' junk <- file.remove(
+#'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
+#'                  include.dirs = TRUE, all.files = TRUE)),
+#'   repo_path)
+

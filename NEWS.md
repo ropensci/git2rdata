@@ -1,47 +1,86 @@
+git2rdata 0.0.4 (2019-05-16)
+============================
+
+### BREAKING FEATURES
+
+  * `write_vc()` stores the `git2rdata` version number to the metadata. Use `upgrade_data()` to update existing data.
+
+### NEW FEATURES
+
+  * `read_vc()` checks the meta data hash. A mismatch results in an error.
+  * The meta data gains a data hash. A mismatch throws a warning when reading the object. This tolerates updating the data by other software, while informing the user that such change occurred.
+  * `is_git2rmeta()` validates metadata.
+  * `list_data()` lists files with valid metadata. 
+  * `rm_data()` and `prune_meta()` remove files with valid metadata. Other files are untouched.
+  *  Files with invalid metadata yield a warning with `list_data()`, `rm_data()` and `prune_meta()`.
+  
+### Bugfixes
+
+  * `write_vc()` and `relabel()` handle empty strings (`''`) in characters and factors (#24).
+  * `read_vc()` no longer treats `#` as a comment character.
+  * `read_vc()` handles non ASCII characters on Windows.
+
+### Other changes
+  
+  * Use a faster algorithm to detect duplicates (suggestion by @brodieG). 
+  * Improve documentation.
+  * Fix typo's in documentation, vignettes and README.
+  * Add a ROpenSci review badge to the README.
+  * The README mentions on upper bound on the size of dataframes.
+  * Set lifecycle to "maturing" and repo status to "active".
+  * The functions handle `root` containing regex expressions.
+  * Rework `vignette("workflow", package = "git2rdata")`.
+  * Update timings in `vignette("efficiency", package = "git2rdata")`
+  * Minor tweaks in `vignette("plain_text", package = "git2rdata")`
+
+git2rdata 0.0.3 (2019-03-12)
+============================
+
+  * Fix typo's in documentation, vignettes and README.
+
 git2rdata 0.0.2 (2019-02-26)
 ============================
 
 ### BREAKING CHANGES
 
-  * metadata is added as a list to the objects rather than in YAML format.
-  * the [yaml](https://cran.r-project.org/package=yaml) package is used to store the metadata list in YAML format.
-  * `write_vc()` now uses the 'strict' argument instead of 'override'
-  * the functionality `rm_data()` is split into `rm_data()` and `prune_meta()` (#9)
+  * `meta()` appends the metadata as a list to the objects rather than in YAML format.
+  * `yaml::write_yaml()` writes the metadata list in YAML format.
+  * `write_vc()` now uses the 'strict' argument instead of 'override'.
+  * `rm_data()` removes the data files. Use `prune_meta()` to remove left-over metadata files (#9).
 
 ### NEW FEATURES
 
-  * vignette on [efficiency](../articles/efficiency.html) added (#2)
-  * existing vignette was split over three vignettes
-      * focus on the [plain text format](../articles/plain_text.html)
-      * focus on [version control](../articles/version_control.html)
-      * focus on [workflows](../articles/workflow.html)
-  * S4 methods are replaced by S3 methods (#8)
-  * optimized factors use stable indices, resulting in smaller diffs when levels are added or removed (#13)
-  * use `relabel()` to alter factor levels without changing their index (#13)
-  * the raw data is written and read by base R functions instead of `readr` functions (#7)
-  * `write_vc()` and `read_vc()` use the current working directory as default root (#6, @florisvdh)
-  * the user can specify a string to code missing values (default = `NA`). This allows the storage of the character string `"NA"`.
+  * Vignette on [efficiency](../articles/efficiency.html) added (#2).
+  * Three separate vignettes instead of one large vignette.
+      * Focus on the [plain text format](../arsticles/plain_text.html).
+      * Focus on [version control](../articles/version_control.html).
+      * Focus on [workflows](../articles/workflow.html).
+  * S3 methods replace the old S4 methods (#8).
+  * Optimized factors use stable indices. Adding or removing levels result in smaller diffs (#13).
+  * Use `relabel()` to alter factor levels without changing their index (#13).
+  * `write.table()` stores the raw data instead of `readr::write_tsv()` (#7). This avoids the `readr` dependency.
+  * `write_vc()` and `read_vc()` use the current working directory as default root (#6, @florisvdh).
+  * The user can specify a string to code missing values (default = `NA`). This allows the storage of the character string `"NA"`.
   * `write_vc()` returns a list of issues which potentially result in large diffs.
-  * `list_data()` returns a vector with dataframes in the repository
+  * `list_data()` returns a vector with dataframes in the repository.
 
 ### Other changes
 
-  * `write_vc()` allows to use a custom NA string
-  * each helpfile contains a working example (#11)
-  * README updated (#12)
-      * Updated the rationale with links to the vignettes
-      * `git2rdata` has a hexsticker logo
-      * A DOI is added
-      * The installation instructions use `remotes` and build the vignettes
-  * `auto_commit()` was removed because of limited extra functionality over `git2r::commit()`
-  * dataframes are read and written by base R functions instead of `readr` functions
+  * `write_vc()` allows to use a custom `NA` string.
+  * Each helpfile contains a working example (#11).
+  * README updated (#12).
+      * Updated the rationale with links to the vignettes.
+      * `git2rdata` has a hexsticker logo.
+      * Add the [![DOI](https://zenodo.org/badge/147685405.svg)](https://zenodo.org/badge/latestdoi/147685405).
+      * The installation instructions use `remotes` and build the vignettes.
+  * We removed `auto_commit()` because of limited extra functionality over `git2r::commit()`.
 
 git2rdata 0.0.1 (2018-11-12)
 ============================
 
 ### NEW FEATURES
 
-  * use readr to write and read plain text files
-  * allows storage of strings with "NA" or special characters
-  * handle ordered factors
-  * stop handling complex numbers
+  * Use `readr` to write and read plain text files.
+  * Allow storage of strings with "NA" or special characters.
+  * Handle ordered factors.
+  * Stop handling complex numbers.

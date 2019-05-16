@@ -8,7 +8,8 @@
 \alias{meta.logical}
 \alias{meta.POSIXct}
 \alias{meta.Date}
-\title{Optimize a vector for storage as plain text and add meta data}
+\alias{meta.data.frame}
+\title{Optimize an Object for Storage as Plain Text and Add Metadata}
 \usage{
 meta(x, ...)
 
@@ -21,24 +22,47 @@ meta(x, ...)
 \method{meta}{POSIXct}(x, optimize = TRUE, ...)
 
 \method{meta}{Date}(x, optimize = TRUE, ...)
+
+\method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting, ...)
 }
 \arguments{
-\item{x}{the vector}
+\item{x}{the vector.}
 
-\item{...}{further arguments to the methods}
+\item{...}{further arguments to the methods.}
 
 \item{na}{the string to use for missing values in the data.}
 
-\item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
+\item{optimize}{If \code{TRUE}, recode the data to get smaller text files. If
+\code{FALSE}, \code{meta()} converts the data to character. Defaults to \code{TRUE}.}
 
-\item{index}{an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from \code{x} will get new indices.}
+\item{index}{an optional named vector with existing factor indices. The names
+must match the existing factor levels. Unmatched levels from \code{x} will get new
+indices.}
+
+\item{sorting}{an optional vector of column names defining which columns to
+use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
+a warning. Add \code{sorting} to avoid this warning. Strongly recommended
+in combination with version control. See
+\code{vignette("efficiency", package = "git2rdata")} for an illustration of the
+importance of sorting.}
 }
 \value{
-the optimized vector \code{x} with \code{meta} attribute
+the optimized vector \code{x} with \code{meta} attribute.
 }
 \description{
-\code{\link{write_vc}} applies this function automatically on your
-data.frame.
+Prepares a vector for storage. When relevant, \code{meta()}optimizes the object
+for storage by changing the format to one which needs less characters. The
+metadata stored in the \code{meta} attribute, contains all required information to
+backtransform the optimized format into the original format.
+
+In case of a data.frame, \code{meta()} applies itself to each of the columns. The
+\code{meta} attribute becomes a named list containing the metadata for each column
+plus an additional \code{..generic} element. \code{..generic} is a reserved name for
+the metadata and not allowed as column name in a \code{data.frame}.
+
+\code{\link{write_vc}} uses this function to prepare a dataframe for storage.
+Existing metadata is passed through the optional \code{old} argument. This
+argument intendent for internal use.
 }
 \examples{
 meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))
@@ -58,5 +82,9 @@ meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"))
 meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"), optimize = FALSE)
 meta(as.Date("2019-02-01"))
 meta(as.Date("2019-02-01"), optimize = FALSE)
+}
+\seealso{
+Other internal: \code{\link{is_git2rdata}},
+  \code{\link{is_git2rmeta}}, \code{\link{upgrade_data}}
 }
 \concept{internal}

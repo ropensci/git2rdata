@@ -3,7 +3,7 @@
 \name{rm_data}
 \alias{rm_data}
 \alias{rm_data.git_repository}
-\title{Remove data files}
+\title{Remove Data Files From Git2rdata Objects}
 \usage{
 rm_data(root = ".", path = NULL, recursive = TRUE, ...)
 
@@ -13,24 +13,40 @@ rm_data(root = ".", path = NULL, recursive = TRUE, ...)
 }
 \arguments{
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
-\item{path}{the directory in which to clean all the data files}
+\item{path}{the directory in which to clean all the data files. The directory
+is relative to \code{root}.}
 
-\item{recursive}{remove files in subdirectories too}
+\item{recursive}{remove files in subdirectories too.}
 
-\item{...}{additional parameters used in some methods}
+\item{...}{parameters used in some methods}
 
 \item{stage}{stage the changes after removing the files. Defaults to FALSE.}
 
-\item{type}{which classes of files should be removed. \code{unmodified} are files in the git history and unchanged since the last commit. \code{modified} are files in the git history and changed since the last commit. \code{ignored} refers to file listed in a \code{.gitignore} file. Selecting \code{modified} will remove both \code{unmodified} and \code{modified} data files. Selecting \code{ìgnored} will remove \code{unmodified}, \code{modified} and \code{ignored} data files. \code{all} refers to all visible data files, inclusing \code{untracked} files. The argument can be abbreviated to the first letter.}
+\item{type}{Defines the classes of files to remove. \code{unmodified} are files in
+the git history and unchanged since the last commit. \code{modified} are files in
+the git history and changed since the last commit. \code{ignored} refers to file
+listed in a \code{.gitignore} file. Selecting \code{modified} will remove both
+\code{unmodified} and \code{modified} data files. Selecting \code{ìgnored} will remove
+\code{unmodified}, \code{modified} and \code{ignored} data files. \code{all} refers to all
+visible data files, inclusing \code{untracked} files.}
 }
 \value{
 returns invisibily a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
-Removes all data (\code{.tsv} files) from the \code{path} when they have accompanying metadata (\code{.yml} file). The metadata remains untouched. See the \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette (\code{vignette("workflow", package = "git2rdata")}) for some examples on how to use this.
+Remove the data (\code{.tsv}) file from all valid git2rdata objects at the \code{path}.
+The metadata remains untouched. A warning lists any git2rdata object with
+\strong{invalid} metadata. The function keeps any \code{.tsv} file with
+invalid metadata or from non-git2rdata objects.
+
+Use this function with caution since it will remove all valid data files
+without asking for confirmation. We strongly recommend to use this
+function on files under version control. See
+\code{vignette("workflow", package = "git2rdata")} for some examples on how to use
+this.
 }
 \examples{
 ## on file system
@@ -39,21 +55,32 @@ Removes all data (\code{.tsv} files) from the \code{path} when they have accompa
 root <- tempfile("git2rdata-")
 dir.create(root)
 
-# store a dataframe
-write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
-# list the available data and the files
+# store a dataframe as git2rdata object. Capture the result to minimise
+# screen output
+junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+# write a standard tab separate file (non git2rdata object)
+write.table(iris, file = file.path(root, "standard.tsv"), sep = "\\t")
+# write a YAML file
+yml <- list(
+  authors = list(
+   "Research Institute for Nature and Forest" = list(
+       href = "https://www.inbo.be/en")))
+yaml::write_yaml(yml, file = file.path(root, "_pkgdown.yml"))
+
+# list the git2rdata objects
 list_data(root)
+# list the files
 list.files(root, recursive = TRUE)
 
-# remove all .tsv files with an associated .yml file
+# remove all .tsv files from valid git2rdata objects
 rm_data(root, path = ".")
-# check the removal of the data
+# check the removal of the .tsv file
 list.files(root, recursive = TRUE)
 list_data(root)
 
-# remove dangling meta data files
+# remove dangling git2rdata metadata files
 prune_meta(root, path = ".")
-# check the removal of the meta data
+# check the removal of the metadata
 list.files(root, recursive = TRUE)
 list_data(root)
 
@@ -82,11 +109,19 @@ rm_data(repo, path = ".")
 list_data(repo)
 status(repo)
 
-# remove dangling meta data
+# remove dangling metadata
 prune_meta(repo, path = ".")
 # check the removal
 list_data(repo)
 status(repo)
+
+# clean up
+junk <- file.remove(
+  list.files(root, full.names = TRUE, recursive = TRUE), root)
+junk <- file.remove(
+  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
+                 include.dirs = TRUE, all.files = TRUE)),
+  repo_path)
 }
 \seealso{
 Other storage: \code{\link{list_data}},

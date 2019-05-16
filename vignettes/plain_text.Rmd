@@ -1,9 +1,9 @@
 ---
-title: "Getting started"
+title: "Getting Started Storing Dataframes as Plain Text"
 author: "Thierry Onkelinx"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting started}
+  %\VignetteIndexEntry{Getting Started Storing Dataframes as Plain Text}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,10 +24,10 @@ This vignette motivates why we wrote `git2rdata` and illustrates how you can use
 
 ### Maintaining variable classes
 
-R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()` .Some other options are `readr::write_delim()`, `readr::write_csv()` and `readr::write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `readr::read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. These functions determine factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
+R has several options to store dataframes as plain text files from R. Base R has `write.table()` and its companions like `write.csv()`. Some other options are `data.table::fwrite()`, `readr::write_delim()`, `readr::write_csv()` and `readr::write_tsv()`. Each of them writes a dataframe as a plain text file by converting all variables into characters. After reading the file, the conversion is reversed. However, the distinction between `character` and `factor` is lost in translation. `read.table()` converts by default all strings to factors, `readr::read_csv()` keeps by default all strings as character. The factor levels are another thing which is lost. These functions determine factor levels based on the observed levels in the plain text file. Hence factor levels without observations will disappear. The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
 
 The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe. The `vc` suffix stands for **v**ersion **c**ontrol as these functions use their full capacity in combination with a version control system.
-
+Efficiency in terms of storage and time
 ### Optimizing file storage
 
 Plain text files require more disk space than binary files. This is the price we have to pay for a readable file format. The default option of `write_vc()` is to minimize file size as much as possible prior to writing. Since we use a tab delimited file format, we can omit quotes around character variables. This saves 2 bytes per row for each character variable. Quotes are added automatically in the exceptional cases when they are needed, e.g. to store a string that contains tab or newline characters. In such cases, quotes are only used in row-variable combinations where the exception occurs.
@@ -36,7 +36,7 @@ Since we store the class of each variable, further file size reductions can be a
 
 - `logical` is written as 0 (FALSE), 1 (TRUE) or NA to the data
 - `factor` is stored as its indices in the data. The index and labels of levels and their order are stored in the metadata.
-- `POSIXct` is written as an integer to the data. The class and the origin are stored in the metadata. Timestamps are always stored and returned as UTC.
+- `POSIXct` is written as a numeric to the data. The class and the origin are stored in the metadata. Timestamps are always stored and returned as UTC.
 - `Date` is written as an integer to the data. The class and the origin are stored in the metadata.
 
 Storing the factors, POSIXct and Date as their index, makes them less user readable. The user can turn off this optimization when user readability is more important than file size.
@@ -45,11 +45,11 @@ Storing the factors, POSIXct and Date as their index, makes them less user reada
 
 Another main goal of `git2rdata` is to optimise the storage of the plain text files under version control. `write_vc()` and `read_vc()` has methods for interacting with [git](https://git-scm.com/) repositories using the `git2r` framework. Users who want to use git without `git2r` or use a different version control system (e.g. [Subversion](https://subversion.apache.org/), [Mercurial](https://www.mercurial-scm.org/)), still can use `git2rdata` to write the files to disk and uses their preferred workflow on version control. 
 
-Hence, `write_vc()` will always perform checks to look for changes which potentially lead to large diffs. More details on this in the [version control](https://inbo.github.io/git2rdata/articles/version_control.html) vignette. Some problems will always yield a warning. Other problems will yield an error by default. The user can turn these errors into warnings by setting the `strict = FALSE` argument.
+Hence, `write_vc()` will always perform checks to look for changes which potentially lead to large diffs. More details on this in `vignette("version_control", package = "git2rdata")`. Some problems will always yield a warning. Other problems will yield an error by default. The user can turn these errors into warnings by setting the `strict = FALSE` argument.
 
 As this vignette ignores the part on version control, we will always use `write_vc(strict = FALSE)` and hide the warnings to improve the readability.
 
-## Basic usage
+## Basic Usage
 
 Let's start by setting up the environment. We need a directory to store the data and a dataframe to store.
 
@@ -78,7 +78,7 @@ x <- data.frame(
 str(x)
 ```
 
-## Storing optimized
+## Storing Optimized
 
 Use `write_vc()` to store the dataframe. The `root` argument refers to the base directory where the data is stored. The `file` argument is used as the base name of the files. The data file gets a `.tsv` extension, the metadata file a `.yml` extension. `file` can include a relative path starting from `root`.
 
@@ -100,7 +100,7 @@ print_file("first_test.yml", path)
 ```
 
 
-## Storing verbose
+## Storing Verbose
 
 Adding `optimize = FALSE` to `write_vc()` will keep the raw data in a human readable format. The metadata file is slightly different. The most obvious is the `optimize: no` tag and the different hash. Another difference is the metadata for POSIXct and Date classes. They will no longer have an origin tag but a format tag.
 
@@ -113,11 +113,11 @@ print_file("verbose.tsv", path, 10)
 print_file("verbose.yml", path)
 ```
 
-## Efficiency in terms of file storage
+## Efficiency in Terms of File Storage
 
 Storing dataframes optimized or verbose has an impact on the required file size. A comparison can be found in the [efficiency](efficiency.html#on-a-file-system) vignette.
 
-## Reading data
+## Reading Data
 
 The data can be retrieved with `read_vc()`. This function will reinstate the variables to their original state.
 
@@ -130,7 +130,7 @@ all.equal(x, y2, check.attributes = FALSE)
 
 As `read_vc()` requires the meta data, it can only read dataframes which were stored by `write_vc()`.
 
-## Missing values
+## Missing Values
 
 `write_vc()` has an `na` argument which specifies the string which is used to indicate missing values. Because we avoid using quotes, this string must be different from any character value in the data. This includes factor labels when the data is stored verbose. This is checked and will always return an error, even with `strict = FALSE`.
 

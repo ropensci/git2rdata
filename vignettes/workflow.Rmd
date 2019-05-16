@@ -1,9 +1,9 @@
 ---
-title: "Suggested workflow for storing a variable set of dataframes under version control"
+title: "Suggested Workflow for Storing a Variable Set of Dataframes under Version Control"
 author: "Thierry Onkelinx"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Suggested workflow for storing a variable set of dataframes under version control}
+  %\VignetteIndexEntry{Suggested Workflow for Storing a Variable Set of Dataframes under Version Control}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{git2r}
@@ -20,179 +20,200 @@ set.seed(20120225)
 
 ## Introduction
 
-This vignette describes a suggested workflow for storing dataframes. This time we use a `git2r::repository()` object as the root. This adds git functionality to `write_vc()` and `read_vc()`, provided by the [`git2r`](https://cran.r-project.org/package=git2r) package. This allows to pull, stage, commit and push from within R.
+This vignette describes a suggested workflow for storing a snapshot of dataframes as git2rdata objects under version control. The workflow comes in two flavours: 
 
-The rationale behind this workflow is that we have read-only access to a database containing the raw data. The database is beyond our control. Observations in the database can be added, removed or updated without our knowledge. These changes cannot be traced in the database.
+  1. A single repository holding both the data and the analysis code. The single repository set-up is simple. A single reference (e.g. commit) points to both the data and the code. 
+  1. One repository holding the data and a second repository holding the code. The data and the code have an independent history under a two repository set-up. Documenting the analysis requires one reference to each repository. Such a set-up is useful for repeating the same analysis (stable code) on updated data.
 
-The database defines a variable number of dataframe (e.g. species can be added or removed). We have defined a standard analysis which should run for each group. We want to repeat the analyses with some predefined frequency (e.g. once every year). In order to make the analyses reproducible, we want to store the relevant data in a git repository.
+In this vignette we use a `git2r::repository()` object as the root. This adds git functionality to `write_vc()` and `read_vc()`, provided by the [`git2r`](https://cran.r-project.org/package=git2r) package. This allows to pull, stage, commit and push from within R.
+
+Each commit in the data git repository describes a complete snapshot of the data at the time of the commit. The difference between two commits can consist of changes in existing git2rdata object (updated observations, new observations, deleted observations or updated metadata). Besides updating the existing git2rdata objects, we can also add new git2rdata objects or remove existing ones. Such higher level addition and deletions need to be tracked as well.
+
+We illustrate the workflow with a mock analysis on the `datasets::beaver1` and `datasets::beaver2` datasets.
 
 ## Setup
 
-We start by initializing a git repository. `git2rdata` assumes that is already done. Therefore we'll use the `git2r` functions to to so.
+We start by initializing a git repository. `git2rdata` assumes that is already done. Therefore we'll use the `git2r` functions to do so. We start by creating a local bare repository. In practice we will use a remote on an external server (GitHub, Gitlab, Bitbucket, ...). The example below creates a local git repository with an upstream git repository. Any other workflow to create a similar structure is fine.
 
 ```{r initialize}
 # initialize a bare git repo to be used as remote
 remote <- tempfile("git2rdata-workflow-remote")
+remote <- normalizePath(remote, winslash = "/")
 dir.create(remote)
 git2r::init(remote, bare = TRUE)
 
 # initialize a local git repo
 path <- tempfile("git2rdata-workflow")
+path <- normalizePath(path, winslash = "/")
 dir.create(path)
 init_repo <- git2r::clone(remote, path, progress = FALSE)
 git2r::config(init_repo, user.name = "me", user.email = "me@me.com")
 # add an initial commit with .gitignore file
-writeLines("C.*", file.path(path, ".gitignore"))
-git2r::add(init_repo, ".gitignore")
+writeLines("*extra*", file.path(path, ".gitignore"))
+git2r::add(init_repo, ".gitignore", force = TRUE)
 git2r::commit(init_repo, message = "Initial commit")
 # push initial commit to remote
 git2r::push(init_repo, "origin", "refs/heads/master")
+rm(init_repo)
 ```
 
-Next we need a function to mimic the data selection from the database.
+## Structuring Git2rdata Objects Within a Project
 
-```{r dummy_data}
-generate_data <- function(x, n = rpois(1, 10)) {
-  if (missing(x)) {
-    coef <- runif(2)
-    sigma <- rchisq(1, 10) / 10
-    covariate <- runif(n)
-    old_covariate <- numeric(0)
-    old_response <- numeric(0)
-  } else {
-    coef <- attr(x, "coef")
-    sigma <- attr(x, "sigma")
-    x <- x[rbinom(nrow(x), size = 1, prob = 0.9) == 1, ]
-    update <- rbinom(nrow(x), size = 1, prob = 0.1) == 1
-    covariate <- c(x$covariate[update], runif(n))
-    old_covariate <- x$covariate[!update]
-    old_response <- x$response[!update] 
-  }
-  response <- coef[1] + covariate * coef[2] + 
-    rnorm(length(covariate), sd = sigma)
-  x <- data.frame(
-    covariate = c(old_covariate, covariate), 
-    response = c(old_response, response)
-  )
-  attr(x, "coef") <- coef
-  attr(x, "sigma") <- sigma
-  return(x)
-}
-```
+`git2rdata` imposes very little structure. Both the `.tsv` and the `.yml` file need to be in the same folder. That's it. For the sake of simplicity, in this vignette we dump all git2rdata objects at the root of the repository. 
 
-## Storing dataframes into a git repository
+However, this might not be good idea for real project. We recommend to use at least a different directory tree for each import script. This directory can go into the root of a data only repository. It goes in the `data` directory in case of a data and code repository. Or the `inst` directory is case of an R package.
 
-### First commit
+Your project might need a different directory structure. Feel free to implement the most relevant data structure for your project.
 
-Suppose that we have two groups at the first point in time. We read the data for these groups from the database. We also store them in a list called `content` to be reused in the [next section](#automated-workflow-for-storing-dataframes).
+## Storing Dataframes _ad Hoc_ into a Git Repository
 
-Then we connect to the git repository using `repository()`. Note that this assumes that `path` is an existing git repository. Now we can write each group to a dedicated data file in the repository. If the `root` argument of `write_vc()` is a `git_repository`, it gains two additional arguments: `stage` and `force`. Setting `stage = TRUE`, will automatically stage the files written by `write_vc()`.
+### First Commit
+
+In the first commit we use `datasets::beaver1`. We connect to the git repository using `repository()`. Note that this assumes that `path` is an existing git repository. Now we can write the dataset as a git2rdata object in the repository. If the `root` argument of `write_vc()` is a `git_repository`, it gains two additional arguments: `stage` and `force`. Setting `stage = TRUE`, will automatically stage the files written by `write_vc()`.
 
 ```{r store_data_1}
-A <- generate_data()
-B <- generate_data()
-content <- list(list(A = A, B = B))
-
 library(git2rdata)
 repo <- repository(path)
-fn <- write_vc(A, "A", repo, sorting = "covariate", stage = TRUE)
-fn <- write_vc(B, "B", repo, sorting = "covariate", stage = TRUE)
+fn <- write_vc(beaver1, "beaver", repo, sorting = "time", stage = TRUE)
 ```
 
 We can use `status()` to check that the required files are written and staged. Then we `commit()` the changes.
 
+```{r avoid_subsecond_commit, echo = FALSE}
+Sys.sleep(1.2)
+```
+
+
 ```{r commit_data_1}
 status(repo)
-cm <- commit(repo, message = "First commit")
-cat(cm$message)
+cm1 <- commit(repo, message = "First commit")
+cat(cm1$message)
 ```
 
-### Second commit
+### Second Commit
 
-Let's assume that at a second point in time group A has updated data, group B remains unchanged and a new group C emerges. We write all three data sets to the repo. `status()` indicated that only the data of group A has changed.
+The second commit adds `beaver2`.
 
 ```{r store_data_2}
-A <- generate_data(A)
-C <- generate_data()
-content <- c(content, list(list(A = A, B = B, C = C)))
-
-fn <- write_vc(A, "A", repo, sorting = "covariate", stage = TRUE)
-fn <- write_vc(B, "B", repo, sorting = "covariate", stage = TRUE)
-fn <- write_vc(C, "C", repo, sorting = "covariate", stage = TRUE)
+fn <- write_vc(beaver2, "extra_beaver", repo, sorting = "time", stage = TRUE)
 status(repo)
 ```
 
-Notice that group C is not listed in the `status()`, although it was written to the repository. The reason is that we set a `.gitignore` which contains `"C\.*`, so group C is ignored. We can force it to be staged by setting `force = TRUE`
+Notice that `extra_beaver` is not listed in the `status()`, although it was written to the repository. The reason is that we set a `.gitignore` which contains `"*extra*`, so any git2rdata object with a name containing "extra" is ignored. We can force it to be staged by setting `force = TRUE`.
+
+```{r avoid_subsecond_commit2, echo = FALSE}
+Sys.sleep(1.2)
+```
 
 ```{r}
-list.files(path)
-fn <- write_vc(C, "C", repo, sorting = "covariate", stage = TRUE, force = TRUE)
+status(repo, ignored = TRUE)
+fn <- write_vc(beaver2, "extra_beaver", repo, sorting = "time", stage = TRUE, 
+               force = TRUE)
 status(repo)
-cm <- commit(repo, message = "Second commit")
+cm2 <- commit(repo, message = "Second commit")
 ```
 
-### Third commit
+### Third Commit
 
-During the third point in time, group A is removed, group B unchanged and group C updated. So we remove group A and write the two other groups. We use `all = TRUE` to stage the unstaged removal of group A. Since group C was force into the history, `.gitignore` is overruled for these two files.
+At this point in time we decide that a single git2rdata object containing the data of both beavers is more relevant. We add an ID variable for each of the animals. This requires updating the `sorting` to eliminate ties. And `strict = FALSE` to update the metadata. The "extra_beaver" git2rdata object is no longer needed so we remove it. We use `all = TRUE` to stage the removal of "extra_beaver" while committing the changes.
+
+```{r avoid_subsecond_commit3, echo = FALSE}
+Sys.sleep(1.2)
+```
 
 ```{r store_data_3}
-C <- generate_data(C)
-content <- c(content, list(list(B = B, C = C)))
-
-file.remove(file.path(path, c("A.tsv", "A.yml")))
-fn <- write_vc(B, "B", repo, sorting = "covariate", stage = TRUE)
-fn <- write_vc(C, "C", repo, sorting = "covariate", stage = TRUE)
+beaver1$beaver <- 1
+beaver2$beaver <- 2
+beaver <- rbind(beaver1, beaver2)
+fn <- write_vc(beaver, "beaver", repo, sorting = c("beaver", "time"), 
+               strict = FALSE, stage = TRUE)
+file.remove(list.files(path, "extra", full.names = TRUE))
 status(repo)
-cm <- commit(repo, message = "Third commit", all = TRUE)
+cm3 <- commit(repo, message = "Third commit", all = TRUE)
 status(repo)
 ```
 
-## Automated workflow for storing dataframes
+## Scripted Workflow for Storing Dataframes
 
-To mimic a changing dataset we reuse the list `content` created above. This contains the relevant data at the different points in time. We create a custom function to store the data in an automated way. In pratice we will run this function each time we want to make a snapshot of the data. In this example we emulate that by applying it to each element of `content`.
+We strongly recommend to add git2rdata object through an import script instead of adding them [_ad hoc_](#storing-dataframes-ad-hoc-into-a-git-repository). Store this script in the (analysis) repository. It documents the creation of the git2rdata objects. Rerun this script whenever updated data becomes available. 
 
-We start by pulling the remote repository to make sure that our local repository has the latest version. Then we want to write the dataframe for each group. But how do we detect which groups are no longer present? A straightforward workaround for this problem is to first remove all data files. Then write all currently existing dataframes to the repository. Since we only removed the data files, any preexisting metadata is still available. After writing all existing dataframes we only are left with cleaning dangling metadata files. To make this process more convenient we created `rm_data()` and `prune_meta()`. `prune_meta()` will remove any `.yml` file without matching `.tsv` file. `rm_data()` removes by default all `.tsv` files with associated `.yml` file. When applied on a `git_repository` object, there is an extra fail-safe because then it will only remove unmodified files. _Caveat_: when applied on a path, it will remove _all_ data files, without warning. Even when the path points to a git repository. So use `rm_data()` and `prune_meta()` with care.
+Old versions of the import script and the associated git2rdata remain available through the version control history. Remove obsolete git2rdata objects from the import script. This keeps both the import script and the working directory tidy and minimal.
 
-The last steps in the function consist of committing the changes and push them to the remote repository. We had to add a `Sys.sleep(2)` to avoid commits within the same second. This should not be needed in a real-life situation. 
+Basically, the import script should create all git2rdata objects within a given directory tree. This gives the advantage that we start the import script by clearing any existing git2rdata object in this directory. Any git2rdata object which no longer is created by the import script gets removed without the need to track what git2rdata objects existed in the previous version.
 
-Please note that the function below is intended as a template. In practice, step 3 would contain user defined functions to create the relevant dataframes and store them using `write_vc()`. 
+The brute force method of removing all files or all `.tsv` / `.yml` pairs is not a good idea. This removes the existing metadata which we need for efficient storage (see `vignette("efficiency", package = "git2rdata")`). A better solution is to use `rm_data()` on the directory at the start of the import script. This removes all `.tsv` files which have valid metadata. The existing metadata remains untouched at this point.
 
-```{r automated_flow}
-store_data <- function(df, repo) {
-  # step 1: update the local repository
-  pull(repo)
-  # step 2: remove all exisiting data files
-  rm_data(repo, path = ".", type = "all", stage = TRUE)
-  # step 3: create and write all relevant dataframe
-  lapply(
-    names(df), 
-    function(i) {
-      write_vc(df[[i]], i, root = repo, sorting = "covariate", 
-               stage = TRUE, force = TRUE)
-    }
-  )
-  # step 4: remove dangling metadata
-  prune_meta(repo, path = ".", stage = TRUE)
+Then write all git2rdata objects and stage them. Unchanged objects will not lead to a diff, even if we first deleted and then recreated them. The script won't recreate the `.tsv` file of obsolete git2rdata objects. Use `prune_meta()` to remove any leftover metadata files.
+
+Commit and push the changes at the end of the script.
+
+Below is an example script recreating the "beaver" git2rdata object from the [third commit](#third-commit).
+
+```{r eval = FALSE}
+# load package
+library(git2rdata)
+# step 1: setup the repository and data path
+repo <- repository(".")
+data_path <- "data/beaver"
+# step 1b: sync the repository with the remote
+pull(repo = repo)
+# step 2: remove all existing data files
+rm_data(root = repo, path = data_path, stage = TRUE)
+
+# step 3: write all relevant git2rdata objects to the data path
+beaver1$beaver <- 1
+beaver2$beaver <- 2
+body_temp <- rbind(beaver1, beaver2)
+fn <- write_vc(x = body_temp, file = file.path(data_path, "body_temperature"), 
+               root = repo, sorting = c("beaver", "time"), stage = TRUE)
+
+# step 4: remove any dangling metadata files
+prune_meta(root = repo, path = data_path, stage = TRUE)
+
+# step 5: commit the changes
+cm <- commit(repo = repo, message = "import")
+# step 5b: sync the repository with the remote
+push(repo = repo)
+```
+
+## R Package Workflow for Storing Dataframes
+
+We recommend a two repository set-up in case of recurring analyses. These are relative stable analyses which have to run with some frequency on updated data (e.g. once a month). Then it is worthwhile to convert the analyses into an R package. Long scripts can be converted into a set of shorter functions which are much easier to document and maintain. An R package offers lots of [functionality](http://r-pkgs.had.co.nz/check.html) out of the box to check the quality of your code.
+
+The example below converts the import script above into a function. We illustrate how you can use Roxygen2 (see `vignette("roxygen2", package = "roxygen2")`) tags to document the function and to list its dependencies. Note that we added `session = TRUE` to `commit()`. This will append the `sessionInfo()` at the time of the commit to the commit message. Thus documenting all loaded R packages and their version. This documents to code used to create the git2rdatad object since your analysis code resides in a dedicated package with its own version number. We strongly recommend to run the import from a fresh R session. Then the `sessionInfo()` at commit time is limited to those packages with are strictly required for the import. Consider running the import from the command line. e.g. `Rscript -e 'mypackage::import_body_temp("path/to/root")'`.
+
+```{r eval = FALSE}
+#' Import the beaver body temperature data
+#' @param path the root of the git repository
+#' @importFrom git2rdata repository pull rm_data write_vc prune_meta commit push
+#' @export
+import_body_temp <- function(path) {
+  # step 1: setup the repository and data path
+  repo <- repository(path)
+  data_path <- "data/beaver"
+  # step 1b: sync the repository with the remote
+  pull(repo = repo)
+  # step 2: remove all existing data files
+  rm_data(root = repo, path = data_path, stage = TRUE)
+  
+  # step 3: write all relevant git2rdata objects to the data path
+  beaver1$beaver <- 1
+  beaver2$beaver <- 2
+  body_temp <- rbind(beaver1, beaver2)
+  fn <- write_vc(x = body_temp, file = file.path(data_path, "body_temperature"), 
+                 root = repo, sorting = c("beaver", "time"), stage = TRUE)
+  
+  # step 4: remove any dangling metadata files
+  prune_meta(root = repo, path = data_path, stage = TRUE)
+  
   # step 5: commit the changes
-  commit(repo, "Scripted commit from git2rdata", session = TRUE)
-  # step 6: update the remote repository
-  push(repo)
-  # avoid subsecond commits, only needed in this toy example
-  Sys.sleep(2)
+  cm <- commit(repo = repo, message = "import", session = TRUE)
+  # step 5b: sync the repository with the remote
+  push(repo = repo)
 }
 ```
 
-Make a new clone on the remote repo and store `content` in it.
-
-```{r run_automated}
-path2 <- tempfile("git2rdata-workflow")
-dir.create(path2)
-init_repo2 <- git2r::clone(remote, path2, progress = FALSE)
-git2r::config(init_repo2, user.name = "me", user.email = "me@me.com")
-done <- lapply(content, store_data, repo = repository(path2))
-```
-
-## Analysis workflow with reproducible data
+## Analysis Workflow with Reproducible Data
 
 The example below is a small trivial example of a standardized analysis in which the source of the data is documented by describing the name of the data, the repository URL and the commit. We can use this information when reporting the results. This makes the data underlying the results traceable.
 
@@ -203,44 +224,49 @@ analysis <- function(ds_name, repo) {
     dataset = ds_name,
     repository = git2r::remote_url(repo),
     commit = recent_commit(ds_name, repo, data = TRUE),
-    model = lm(response ~ covariate, data = ds)
+    model = lm(temp ~ activ, data = ds)
   )
 }
 report <- function(x) {
   knitr::kable(
     coef(summary(x$model)),
-    caption = sprintf("Datasource: repository: %s commit: %s dataset: %s", 
-                      x$repository, x$commit$commit, x$dataset)
+    caption = sprintf("**dataset:** %s  \n**commit:** %s  \n**repository:** %s", 
+                      x$dataset, x$commit$commit, x$repository)
   )
 }
 ```
 
 In this case we can run every analysis by looping over the list of datasets in the repository.
 
-```{r run_current_analyses}
-repo <- repository(path2)
+```{r run_current_analyses, results = "asis"}
+repo <- repository(path)
 current <- lapply(list_data(repo), analysis, repo = repo)
 names(current) <- list_data(repo)
-report(current$B)
-report(current$C)
+result <- lapply(current, report)
+junk <- lapply(result, print)
 ```
 
-The example below does exactly the same thing for the previous commit. 
+The example below does exactly the same thing for the first and second commit. 
 
-```{r run_previous_analyses}
-# checkout previous commit
-current_commit <- git2r::last_commit(repo)
-previous_commit <- git2r::parents(current_commit)[[1]]
-git2r::checkout(previous_commit)
+```{r run_previous_analyses, results = "asis"}
+# checkout first commit
+git2r::checkout(cm1)
 # do analysis
 previous <- lapply(list_data(repo), analysis, repo = repo)
 names(previous) <- list_data(repo)
-report(previous$B)
-report(previous$C)
+result <- lapply(previous, report)
+junk <- lapply(result, print)
+# checkout second commit
+git2r::checkout(cm2)
+# do analysis
+previous <- lapply(list_data(repo), analysis, repo = repo)
+names(previous) <- list_data(repo)
+result <- lapply(previous, report)
+junk <- lapply(result, print)
 ```
 
-If you inspect the reported results carefully you'll notice that the output for dataset "B" is identical. This makes sense since dataset B didn't change during the last commit. Dataset "C" did change, which results in different estimates _and_ a different commit hash.
+If you inspect the reported results carefully you'll notice that all the output (coefficients and commit hash) for "beaver" object is identical for the first and second commit. This makes sense since the "beaver" object didn't change during the second commit. The output for the current (third) commit is different because the dataset changed.
 
 ### Long running analysis
 
-Imagine the case where an individual analysis takes quite a while to run. We store the most recent version of each analysis and add the information from `recent_commit()`. When preparing the analysis, you can run `recent_commit()` again on the dataset and compare the commit hash with that one of the currently available analysis. If the commit hashes match, then the data hasn't changed. So there is no need to rerun the analysis^[assuming the code for running the analysis didn't change.], saving valuable computing resources. 
+Imagine the case where an individual analysis takes quite a while to run. We store the most recent version of each analysis and add the information from `recent_commit()`. When preparing the analysis, you can run `recent_commit()` again on the dataset and compare the commit hash with that one of the currently available analysis. If the commit hashes match, then the data hasn't changed. So there is no need to rerun the analysis^[assuming the code for running the analysis didn't change.], saving valuable computing resources and time. 

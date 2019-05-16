@@ -3,7 +3,7 @@
 \name{write_vc}
 \alias{write_vc}
 \alias{write_vc.git_repository}
-\title{Write a \code{data.frame}}
+\title{Store a Data.Frame as a Git2rdata Object on Disk}
 \usage{
 write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ...)
@@ -12,29 +12,36 @@ write_vc(x, file, root = ".", sorting, strict = TRUE,
   optimize = TRUE, na = "NA", ..., stage = FALSE, force = FALSE)
 }
 \arguments{
-\item{x}{the `data.frame}
+\item{x}{the \code{data.frame}.}
 
-\item{file}{the name of the file without file extension. Can include a
-relative path. It is relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata objects cannot
+have dots in their name. The name may include a relative path. \code{file} is a
+path relative to the \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
-\item{sorting}{a vector of column names defining which columns to use for
-sorting \code{x} and in what order to use them. Only required when writing
-new metadata.}
+\item{sorting}{an optional vector of column names defining which columns to
+use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
+a warning. Add \code{sorting} to avoid this warning. Strongly recommended
+in combination with version control. See
+\code{vignette("efficiency", package = "git2rdata")} for an illustration of the
+importance of sorting.}
 
-\item{strict}{What to do when the metadata changes. \code{strict = FALSE} will
-overwrite the data with a warning listing the changes, \code{strict = TRUE} will
-return an error and leave the data as is. Default to \code{TRUE}}
+\item{strict}{What to do when the metadata changes. \code{strict = FALSE}
+overwrites the data and the metadata with a warning listing the changes,
+\code{strict = TRUE} returns an error and leaves the data and metadata as is.
+Defaults to \code{TRUE}.}
 
-\item{optimize}{recode the data to get smaller text files. Defaults to TRUE}
+\item{optimize}{If \code{TRUE}, recode the data to get smaller text files. If
+\code{FALSE}, \code{meta()} converts the data to character. Defaults to \code{TRUE}.}
 
 \item{na}{the string to use for missing values in the data.}
 
-\item{...}{additional parameters used in some methods}
+\item{...}{parameters used in some methods}
 
-\item{stage}{stage the changes after writing the data. Defaults to FALSE}
+\item{stage}{Logical value indicating whether to stage the changes after
+writing the data. Defaults to \code{FALSE}.}
 
 \item{force}{Add ignored files. Default is FALSE.}
 }
@@ -43,8 +50,13 @@ a named vector with the file paths relative to \code{root}. The names
 contain the hashes of the files.
 }
 \description{
-This will create two files. The \code{".tsv"} file contains the raw data.
-The \code{".yml"} contains the meta data on the columns in YAML format.
+A git2rdata object consists of two files. The \code{".tsv"} file contains the raw
+data as a plain text tab separated file. The \code{".yml"} contains the metadata
+on the columns in plain text YAML format. See \code{vignette("plain text", package = "git2rdata")} for more details on the implementation.
+}
+\note{
+\code{..generic} is a reserved name for the metadata and cannot be used as
+column name in a \code{data.frame}.
 }
 \examples{
 ## on file system
@@ -55,23 +67,24 @@ dir.create(root)
 
 # write a dataframe to the directory
 write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
-# check that a data file (.tsv) and a meta data file (.yml) are created
+# check that a data file (.tsv) and a metadata file (.yml) exist.
 list.files(root, recursive = TRUE)
-# read the data from the directory
+# read the git2rdata object from the directory
 read_vc("iris", root)
 
-# store a new version
+# store a new version with different observations but the same metadata
 write_vc(iris[1:5, ], "iris", root)
 list.files(root, recursive = TRUE)
-# store a new version in case the meta data must change
+# Removing a column requires version requires new metadata.
+# Add strict = FALSE to override the existing metadata.
 write_vc(
   iris[1:6, -2], "iris", root, sorting = "Sepal.Length", strict = FALSE
 )
 list.files(root, recursive = TRUE)
-# storing the first version again required another update of the meta data
+# storing the orignal version again requires another update of the metadata
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", strict = FALSE)
 list.files(root, recursive = TRUE)
-# storing the data in verbose format leads to larger files
+# optimize = FALSE stores the data more verbose. This requires larger files.
 write_vc(
   iris[1:6, ], "iris2", root, sorting = "Sepal.Width", optimize = FALSE
 )
@@ -79,7 +92,7 @@ list.files(root, recursive = TRUE)
 
 
 
-## on git repo
+## on git repo using a git2r::git-repository
 
 # initialise a git repo using the git2r package
 repo_path <- tempfile("git2rdata-repo-")
@@ -87,34 +100,30 @@ dir.create(repo_path)
 repo <- git2r::init(repo_path)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 
-# store a dataframe in git repo
+# store a dataframe in git repo.
 write_vc(iris[1:6, ], file = "iris", root = repo, sorting = "Sepal.Length")
+# This git2rdata object is not staged by default.
 status(repo)
 # read a dataframe from a git repo
 read_vc("iris", repo)
 
-# store a new version of in the git repo
+# store a new version in the git repo and stage it in one go
 write_vc(iris[1:5, ], "iris", repo, stage = TRUE)
 status(repo)
 
-# store a version with altered meta data
-write_vc(
-  iris[1:6, -2], "iris", repo, sorting = "Sepal.Length", strict = FALSE
-)
-status(repo)
-
-# store the original version again
-write_vc(
-  iris[1:6, ], "iris", repo, sorting = "Sepal.Width", strict = FALSE,
-  stage = TRUE
-)
-status(repo)
-
-# store a verbose version in separate files
+# store a verbose version in a different gir2data object
 write_vc(
   iris[1:6, ], "iris2", repo, sorting = "Sepal.Width", optimize = FALSE
 )
 status(repo)
+
+# clean up
+junk <- file.remove(
+  list.files(root, full.names = TRUE, recursive = TRUE), root)
+junk <- file.remove(
+  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
+                 include.dirs = TRUE, all.files = TRUE)),
+  repo_path)
 }
 \seealso{
 Other storage: \code{\link{list_data}},

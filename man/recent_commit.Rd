@@ -2,25 +2,34 @@
 % Please edit documentation in R/recent_commit.R
 \name{recent_commit}
 \alias{recent_commit}
-\title{Most recent file change}
+\title{Retrieve the Most Recent File Change}
 \usage{
 recent_commit(file, root, data = FALSE)
 }
 \arguments{
-\item{file}{the name of the file without file extension. Can include a
-relative path. It is relative to the \code{root}.}
+\item{file}{the name of the git2rdata object. Git2rdata objects cannot
+have dots in their name. The name may include a relative path. \code{file} is a
+path relative to the \code{root}.}
 
-\item{root}{The root of a project. Can be a file path or a \code{git-repository}}
+\item{root}{The root of a project. Can be a file path or a \code{git-repository}.}
 
-\item{data}{does \code{file} refers to a data object (TRUE) or to a file (FALSE).
-Defaults to FALSE.}
+\item{data}{does \code{file} refers to a data object (\code{TRUE}) or to a file (\code{FALSE}).
+Defaults to \code{FALSE}.}
 }
 \value{
 a \code{data.frame} with \code{commit}, \code{author} and \code{when} for the most recent
-commit in which the file was altered
+commit that adds op updates the file.
 }
 \description{
-Retrieve the most recent commit in which a file or data object was added or updated.
+Retrieve the most recent commit that added or updated a file or git2rdata
+object. This does not imply that file still exists at the current HEAD as it
+ignores the deletion of files.
+
+Use this information to document the current version of file or git2rdata
+object in an analysis. Since it refers to the most recent change of this
+file, it remains unchanged by committing changes to other files. You can
+also use it to track if data got updated, requirering an analysis to
+be rerun. See \code{vignette("workflow", package = "git2rdata")}.
 }
 \examples{
 # initialise a git repo using git2r
@@ -30,21 +39,26 @@ repo <- git2r::init(repo_path)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 
 # write and commit a first dataframe
-write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
+# store the output of write_vc() minimize screen output
+junk <- write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length",
+                 stage = TRUE)
 commit(repo, "important analysis", session = TRUE)
 list.files(repo_path)
 Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 
 # write and commit a second dataframe
-write_vc(iris[7:12, ], "iris2", repo, sorting = "Sepal.Length", stage = TRUE)
+junk <- write_vc(iris[7:12, ], "iris2", repo, sorting = "Sepal.Length",
+                 stage = TRUE)
 commit(repo, "important analysis", session = TRUE)
 list.files(repo_path)
 Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 
 # write and commit a new version of the first dataframe
-write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
+junk <- write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
 list.files(repo_path)
 commit(repo, "important analysis", session = TRUE)
+
+
 
 # find out in which commit a file was last changed
 
@@ -54,17 +68,24 @@ recent_commit("iris.tsv", repo)
 recent_commit("iris.yml", repo)
 # "iris2.yml" was last updated in the second commit
 recent_commit("iris2.yml", repo)
-# the data object "iris" was last updated in the third commit
+# the git2rdata object "iris" was last updated in the third commit
 recent_commit("iris", repo, data = TRUE)
 
-# remove a dataframe and commit it
+# remove a dataframe and commit it to see what happens with deleted files
 file.remove(file.path(repo_path, "iris.tsv"))
 prune_meta(repo, ".")
 commit(repo, message = "remove iris", all = TRUE, session = TRUE)
+list.files(repo_path)
 
-# still points to the third commit as it is the latest commit in which the
+# still points to the third commit as this is the latest commit in which the
 # data was present
 recent_commit("iris", repo, data = TRUE)
+
+#' clean up
+junk <- file.remove(
+  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
+                 include.dirs = TRUE, all.files = TRUE)),
+  repo_path)
 }
 \seealso{
 Other version_control: \code{\link{commit}},

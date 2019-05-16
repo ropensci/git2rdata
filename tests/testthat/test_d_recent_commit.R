@@ -4,8 +4,12 @@ context("recent_commit")
 # therefore Sys.sleep(subsecond) is added before each commit
 subsecond <- 1.2
 
+expect_error(recent_commit(file = "junk", root = NULL),
+             "a 'root' of class NULL is not supported")
+
 root <- tempfile(pattern = "git2rdata-recent")
 dir.create(root)
+
 root <- git2r::init(root)
 git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
 
@@ -60,23 +64,18 @@ expect_identical(
   )
 )
 
-write_vc(
-  test_data[11:12, ], file = "subsecond", root = root, stage = TRUE,
-  sorting = "test_Date"
-)
+target <- file.path(git2r::workdir(root), "subsecond.txt")
+write.table(test_data[11, ], file = target)
+git2r::add(root, target)
 commit_6 <- commit(root, "first subsecond")
-write_vc(
-  test_data[13:14, ], file = "subsecond", root = root, stage = TRUE,
-  sorting = "test_Date"
-)
+write.table(test_data[12, ], file = target)
+git2r::add(root, target)
 commit_7 <- commit(root, "second subsecond")
-write_vc(
-  test_data[15:16, ], file = "subsecond", root = root, stage = TRUE,
-  sorting = "test_Date"
-)
+write.table(test_data[13, ], file = target)
+git2r::add(root, target)
 commit_8 <- commit(root, "third subsecond")
 expect_warning(
-  output <- recent_commit(file = "subsecond", root, data = TRUE),
-  "Multiple commits within the same second"
+  output <- recent_commit(file = "subsecond.txt", root),
+  "More than one commit within the same second"
 )
 expect_true(all(output$commit %in% c(commit_6$sha, commit_7$sha, commit_8$sha)))

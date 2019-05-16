@@ -3,7 +3,7 @@
 \name{prune_meta}
 \alias{prune_meta}
 \alias{prune_meta.git_repository}
-\title{Prune metadata files}
+\title{Prune Metadata Files}
 \usage{
 prune_meta(root = ".", path = NULL, recursive = TRUE, ...)
 
@@ -12,22 +12,31 @@ prune_meta(root = ".", path = NULL, recursive = TRUE, ...)
 }
 \arguments{
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
-Defaults to the current working directory (".").}
+Defaults to the current working directory (\code{"."}).}
 
-\item{path}{the directory in which to clean all the data files}
+\item{path}{the directory in which to clean all the data files. The directory
+is relative to \code{root}.}
 
-\item{recursive}{remove files in subdirectories too}
+\item{recursive}{remove files in subdirectories too.}
 
-\item{...}{additional parameters used in some methods}
+\item{...}{parameters used in some methods}
 
-\item{stage}{stage the changes after removing the files. Defaults to FALSE.}
+\item{stage}{stage the changes after removing the files. Defaults to \code{FALSE}.}
 }
 \value{
 returns invisibily a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
-Removes all metadata (\code{.yml} files) from the \code{path} when they don't have accompanying data (\code{.tsv} file). See the \href{https://inbo.github.io/git2rdata/articles/workflow.html}{workflow} vignette (\code{vignette("workflow", package = "git2rdata")}) for some examples on how to use this.
+Removes all \strong{valid} metadata (\code{.yml} files) from the \code{path} when they don't
+have accompanying data (\code{.tsv} file). \strong{Invalid} metadata triggers a warning
+without removing the metadata file.
+
+Use this function with caution since it will remove all valid metadata files
+without asking for confirmation. We strongly recommend to use this
+function on files under version control. See
+\code{vignette("workflow", package = "git2rdata")} for some examples on how to use
+this.
 }
 \examples{
 ## on file system
@@ -36,21 +45,32 @@ Removes all metadata (\code{.yml} files) from the \code{path} when they don't ha
 root <- tempfile("git2rdata-")
 dir.create(root)
 
-# store a dataframe
-write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
-# list the available data and the files
+# store a dataframe as git2rdata object. Capture the result to minimise
+# screen output
+junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+# write a standard tab separate file (non git2rdata object)
+write.table(iris, file = file.path(root, "standard.tsv"), sep = "\\t")
+# write a YAML file
+yml <- list(
+  authors = list(
+   "Research Institute for Nature and Forest" = list(
+       href = "https://www.inbo.be/en")))
+yaml::write_yaml(yml, file = file.path(root, "_pkgdown.yml"))
+
+# list the git2rdata objects
 list_data(root)
+# list the files
 list.files(root, recursive = TRUE)
 
-# remove all .tsv files with an associated .yml file
+# remove all .tsv files from valid git2rdata objects
 rm_data(root, path = ".")
-# check the removal of the data
+# check the removal of the .tsv file
 list.files(root, recursive = TRUE)
 list_data(root)
 
-# remove dangling meta data files
+# remove dangling git2rdata metadata files
 prune_meta(root, path = ".")
-# check the removal of the meta data
+# check the removal of the metadata
 list.files(root, recursive = TRUE)
 list_data(root)
 
@@ -79,11 +99,19 @@ rm_data(repo, path = ".")
 list_data(repo)
 status(repo)
 
-# remove dangling meta data
+# remove dangling metadata
 prune_meta(repo, path = ".")
 # check the removal
 list_data(repo)
 status(repo)
+
+# clean up
+junk <- file.remove(
+  list.files(root, full.names = TRUE, recursive = TRUE), root)
+junk <- file.remove(
+  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
+                 include.dirs = TRUE, all.files = TRUE)),
+  repo_path)
 }
 \seealso{
 Other storage: \code{\link{list_data}},

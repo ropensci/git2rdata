@@ -1,8 +1,19 @@
-#' Remove data files
+#' Remove Data Files From Git2rdata Objects
 #'
-#' Removes all data (`.tsv` files) from the `path` when they have accompanying metadata (`.yml` file). The metadata remains untouched. See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette (`vignette("workflow", package = "git2rdata")`) for some examples on how to use this.
-#' @param path the directory in which to clean all the data files
-#' @param recursive remove files in subdirectories too
+#' @description
+#' Remove the data (`.tsv`) file from all valid git2rdata objects at the `path`.
+#' The metadata remains untouched. A warning lists any git2rdata object with
+#' **invalid** metadata. The function keeps any `.tsv` file with
+#' invalid metadata or from non-git2rdata objects.
+#'
+#' Use this function with caution since it will remove all valid data files
+#' without asking for confirmation. We strongly recommend to use this
+#' function on files under version control. See
+#' `vignette("workflow", package = "git2rdata")` for some examples on how to use
+#' this.
+#' @param path the directory in which to clean all the data files. The directory
+#' is relative to `root`.
+#' @param recursive remove files in subdirectories too.
 #' @return returns invisibily a vector of removed files names. The paths are
 #' relative to `root`.
 #' @inheritParams write_vc
@@ -41,7 +52,13 @@ rm_data.character <- function(
 #' @importFrom git2r workdir add
 #' @include write_vc.R
 #' @param stage stage the changes after removing the files. Defaults to FALSE.
-#' @param type which classes of files should be removed. `unmodified` are files in the git history and unchanged since the last commit. `modified` are files in the git history and changed since the last commit. `ignored` refers to file listed in a `.gitignore` file. Selecting `modified` will remove both `unmodified` and `modified` data files. Selecting `ìgnored` will remove `unmodified`, `modified` and `ignored` data files. `all` refers to all visible data files, inclusing `untracked` files. The argument can be abbreviated to the first letter.
+#' @param type Defines the classes of files to remove. `unmodified` are files in
+#' the git history and unchanged since the last commit. `modified` are files in
+#' the git history and changed since the last commit. `ignored` refers to file
+#' listed in a `.gitignore` file. Selecting `modified` will remove both
+#' `unmodified` and `modified` data files. Selecting `ìgnored` will remove
+#' `unmodified`, `modified` and `ignored` data files. `all` refers to all
+#' visible data files, inclusing `untracked` files.
 #' @rdname rm_data
 rm_data.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE,
@@ -78,9 +95,18 @@ rm_data.git_repository <- function(
   return(invisible(to_do))
 }
 
-#' Prune metadata files
+#' Prune Metadata Files
 #'
-#' Removes all metadata (`.yml` files) from the `path` when they don't have accompanying data (`.tsv` file). See the [workflow](https://inbo.github.io/git2rdata/articles/workflow.html) vignette (`vignette("workflow", package = "git2rdata")`) for some examples on how to use this.
+#' @description
+#' Removes all **valid** metadata (`.yml` files) from the `path` when they don't
+#' have accompanying data (`.tsv` file). **Invalid** metadata triggers a warning
+#' without removing the metadata file.
+#'
+#' Use this function with caution since it will remove all valid metadata files
+#' without asking for confirmation. We strongly recommend to use this
+#' function on files under version control. See
+#' `vignette("workflow", package = "git2rdata")` for some examples on how to use
+#' this.
 #' @inheritParams rm_data
 #' @return returns invisibily a vector of removed files names. The paths are
 #' relative to `root`.
@@ -102,7 +128,7 @@ prune_meta.default <- function(
 }
 
 #' @export
-#' @importFrom assertthat assert_that is.flag
+#' @importFrom assertthat assert_that is.flag noNA
 prune_meta.character <- function(
   root = ".", path = NULL, recursive = TRUE, ...
 ){
@@ -114,24 +140,25 @@ prune_meta.character <- function(
   if (!dir.exists(path)) {
     return(invisible(NULL))
   }
-  assert_that(is.flag(recursive))
+  assert_that(is.flag(recursive), noNA(recursive))
 
-  to_do <- list.files(
-    path = path,
-    pattern = "\\.yml$",
-    recursive = recursive,
-    full.names = TRUE
-  )
-  keep <- list.files(
-    path = path,
-    pattern = "\\.tsv$",
-    recursive = recursive,
-    full.names = TRUE
-  )
+  to_do <- list.files(path = path, pattern = "\\.yml$", recursive = recursive,
+                      full.names = TRUE)
+  keep <- list.files(path = path, pattern = "\\.tsv$", recursive = recursive,
+                     full.names = TRUE)
   keep <- gsub("\\.tsv$", ".yml", keep)
   to_do <- to_do[!to_do %in% keep]
+  to_do_base <- remove_root(file = to_do, root = root)
+  check <- vapply(X = gsub(".yml$", "", to_do_base), FUN = is_git2rmeta,
+                  FUN.VALUE = NA, root = root, message = "none")
+  if (any(!check)) {
+    warning("Invalid metadata files found. See ?is_git2rmeta():\n",
+            paste(to_do_base[!check], collapse = "\n"))
+  }
+  to_do <- to_do[check]
+
   file.remove(to_do)
-  to_do <- gsub(paste0("^", root, "/"), "", to_do)
+  to_do <- remove_root(file = to_do, root = root)
 
   return(invisible(to_do))
 }
@@ -140,7 +167,7 @@ prune_meta.character <- function(
 #' @importFrom assertthat assert_that is.flag
 #' @importFrom git2r workdir add
 #' @include write_vc.R
-#' @param stage stage the changes after removing the files. Defaults to FALSE.
+#' @param stage stage the changes after removing the files. Defaults to `FALSE`.
 #' @rdname prune_meta
 prune_meta.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE
@@ -179,7 +206,9 @@ prune_meta.git_repository <- function(
     ))
     changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
     if (any(to_do %in% changed)) {
-      stop("cannot remove and stage metadata when data is removed but unstaged")
+      stop(
+"cannot remove and stage metadata in combination with removed but unstaged data"
+      )
     }
   } else {
     changed <- unlist(status(
@@ -191,7 +220,7 @@ prune_meta.git_repository <- function(
     }
   }
   file.remove(to_do)
-  to_do <- gsub(sprintf("^%s/(.*)$", root_wd), "\\1", to_do)
+  to_do <- remove_root(file = to_do, root = root_wd)
 
   if (stage) {
     add(repo = root, path = to_do)

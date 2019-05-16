@@ -1,10 +1,13 @@
-#' Optimize a vector for storage as plain text and add meta data
+#' Optimize an Object for Storage as Plain Text and Add Metadata
 #'
-#' \code{\link{write_vc}} applies this function automatically on your
-#' data.frame.
-#' @param x the vector
-#' @param ... further arguments to the methods
-#' @return the optimized vector `x` with `meta` attribute
+#' @description
+#' Prepares a vector for storage. When relevant, `meta()`optimizes the object
+#' for storage by changing the format to one which needs less characters. The
+#' metadata stored in the `meta` attribute, contains all required information to
+#' backtransform the optimized format into the original format.
+#' @param x the vector.
+#' @param ... further arguments to the methods.
+#' @return the optimized vector `x` with `meta` attribute.
 #' @export
 #' @docType methods
 #' @family internal
@@ -67,10 +70,15 @@ meta.numeric <- function(x, ...) {
 
 #' @export
 #' @rdname meta
-#' @param optimize recode the data to get smaller text files. Defaults to TRUE
-#' @param index an optional named vector with existing factor indices. The names must match the existing factor levels. Unmatched levels from `x` will get new indices.
+#' @param optimize If `TRUE`, recode the data to get smaller text files. If
+#' `FALSE`, `meta()` converts the data to character. Defaults to `TRUE`.
+#' @param index an optional named vector with existing factor indices. The names
+#' must match the existing factor levels. Unmatched levels from `x` will get new
+#' indices.
 #' @inheritParams utils::write.table
+#' @importFrom assertthat assert_that is.flag noNA
 meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
+  assert_that(is.flag(optimize), noNA(optimize))
   if (missing(index) || is.null(index)) {
     index <- seq_along(levels(x))
     names(index) <- levels(x)
@@ -82,10 +90,14 @@ meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
     candidate_index <- candidate_index[!candidate_index %in% index]
     extra_index <- candidate_index[seq_along(new_levels)]
     names(extra_index) <- levels(x)[new_levels]
-    index <- c(index, extra_index)[levels(x)]
+    new_index <- c(index, extra_index)
+    index <- new_index[levels(x)]
+    empty <- levels(x) == ""
+    index[empty] <- new_index[names(new_index) == ""]
+    names(index)[empty] <- ""
   }
 
-  if (isTRUE(optimize)) {
+  if (optimize) {
     z <- index[x]
   } else {
     assert_that(is.string(na), noNA(na), no_whitespace(na))
@@ -96,8 +108,8 @@ Please use a different NA string or use optimize = TRUE", call. = FALSE)
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
 
-  m <- list(class = "factor", na_string = na, optimize = isTRUE(optimize),
-            labels = names(index), index = unname(index),
+  m <- list(class = "factor", na_string = na, optimize = optimize,
+            labels = enc2utf8(names(index)), index = unname(index),
             ordered = is.ordered(x))
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -106,11 +118,13 @@ Please use a different NA string or use optimize = TRUE", call. = FALSE)
 
 #' @export
 #' @rdname meta
+#' @importFrom assertthat assert_that is.flag noNA
 meta.logical <- function(x, optimize = TRUE, ...){
-  if (isTRUE(optimize)) {
+  assert_that(is.flag(optimize), noNA(optimize))
+  if (optimize) {
     x <- as.integer(x)
   }
-  m <- list(class = "logical", optimize = isTRUE(optimize))
+  m <- list(class = "logical", optimize = optimize)
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -126,8 +140,10 @@ meta.complex <- function(x, ...) {
 
 #' @export
 #' @rdname meta
+#' @importFrom assertthat assert_that is.flag noNA
 meta.POSIXct <- function(x, optimize = TRUE, ...) {
-  if (isTRUE(optimize)) {
+  assert_that(is.flag(optimize), noNA(optimize))
+  if (optimize) {
     z <- unclass(x)
     m <- list(class = "POSIXct", optimize = TRUE,
               origin = "1970-01-01 00:00:00", timezone = "UTC")
@@ -143,12 +159,14 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
 
 #' @export
 #' @rdname meta
+#' @importFrom assertthat assert_that is.flag noNA
 meta.Date <- function(x, optimize = TRUE, ...){
-  if (isTRUE(optimize)) {
+  assert_that(is.flag(optimize), noNA(optimize))
+  if (optimize) {
     z <- as.integer(x)
     m <- list(class = "Date", optimize = TRUE, origin = "1970-01-01")
   } else {
-    z <- format(x, format = "%Y-%m-%d", tz = "UTC")
+    z <- format(x, format = "%Y-%m-%d")
     m <- list(class = "Date", optimize = FALSE, format = "%Y-%m-%d")
   }
   class(m) <- "meta_detail"
@@ -158,9 +176,22 @@ meta.Date <- function(x, optimize = TRUE, ...){
 
 #' @export
 #' @importFrom assertthat assert_that
-#' @importFrom git2r hash
+#' @importFrom utils packageVersion
+#' @description
+#' In case of a data.frame, `meta()` applies itself to each of the columns. The
+#' `meta` attribute becomes a named list containing the metadata for each column
+#' plus an additional `..generic` element. `..generic` is a reserved name for
+#' the metadata and not allowed as column name in a `data.frame`.
+#'
+#' \code{\link{write_vc}} uses this function to prepare a dataframe for storage.
+#' Existing metadata is passed through the optional `old` argument. This
+#' argument intendent for internal use.
+#' @rdname meta
+#' @inheritParams write_vc
 meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
-  assert_that(!has_name(x, "..generic"), msg = "'..generic' is a reserved name")
+  assert_that(
+    !has_name(x, "..generic"),
+    msg = "'..generic' is a reserved name and not allowed as column name")
   generic <- list(optimize = optimize, "NA string" = na)
 
   dots <- list(...)
@@ -173,18 +204,23 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
   }
 
   # apply sorting
-  if (missing(sorting) || is.null(sorting)) {
-    warning("no sorting applied")
+  if (missing(sorting) || is.null(sorting) || !length(sorting)) {
+    warning("No sorting applied.
+Sorting is strongly recommended in combination with version control.")
   } else {
     assert_that(is.character(sorting))
-    assert_that(all(sorting %in% colnames(x)),
-                msg = "all sorting variables must be available")
-    if (anyDuplicated(x[sorting])) {
-      warning(
-"sorting results in ties. Add extra sorting variables to ensure small diffs."
-      )
+    assert_that(
+      all(sorting %in% colnames(x)),
+      msg = "All sorting variables must be available in the data.frame")
+    if (nrow(x) > 1) {
+      x <- x[do.call(order, unname(x[sorting])), , drop = FALSE] # nolint
+      if (any_duplicated(x[sorting])) {
+        sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
+        sorted <- sprintf("Sorting on %s results in ties.
+Add extra sorting variables to ensure small diffs.", sorted)
+        warning(sorted)
+      }
     }
-    x <- x[do.call(order, x[sorting]), , drop = FALSE] # nolint
     generic <- c(generic, sorting = list(sorting))
   }
   # calculate meta for each column
@@ -227,7 +263,9 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
   )
   m <- c(..generic = list(generic), m)
   class(m) <- "meta_list"
-  m[["..generic"]] <- c(m[["..generic"]], hash = hash(as.yaml(m)))
+  m[["..generic"]] <- c(
+    list(git2rdata = as.character(packageVersion("git2rdata"))),
+    m[["..generic"]], hash = metadata_hash(m))
   z <- lapply(z, `attr<-`, "meta", NULL)
 
   # convert z to dataframe and add metadata list
@@ -265,4 +303,26 @@ print.meta_list <- function(x, ...) {
 #' @export
 print.meta_detail <- function(x, ...) {
   cat(format(x), sep = "\n")
+}
+
+delta <- function(a, b) {
+  ifelse(
+    is.na(a),
+    is.na(b),
+    ifelse(is.na(b), FALSE, a == b)
+  )
+}
+
+any_duplicated <- function(x) {
+  y <- vapply(
+    x,
+    function(z) {
+      delta(z[-1], z[-length(z)])
+    },
+    logical(nrow(x) - 1)
+  )
+  if (inherits(y, "matrix")) {
+    y <- rowSums(y)
+  }
+  sum(y == ncol(x)) > 0
 }

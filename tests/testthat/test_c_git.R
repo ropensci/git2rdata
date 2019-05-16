@@ -1,5 +1,5 @@
 context("write_vc() and read_vc() on a git-repository")
-root <- tempfile(pattern = "git2rdata-")
+root <- tempfile(pattern = "git2rdata-git")
 dir.create(root)
 root <- git2r::init(root)
 git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
@@ -118,8 +118,8 @@ staged <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = list(), unstaged = "staged.tsv", untracked = unname(untracked),
-    ignored = unname(ignored)
+    staged = list(), unstaged = c("staged.tsv", "staged.yml"),
+    untracked = unname(untracked), ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )
@@ -144,8 +144,8 @@ staged <- write_vc(
 expect_equal(
   status(root, ignored = TRUE),
   list(
-    staged = "staged.tsv", unstaged = list(), untracked = unname(untracked),
-    ignored = unname(ignored)
+    staged = c("staged.tsv", "staged.yml"), unstaged = list(),
+    untracked = unname(untracked), ignored = unname(ignored)
   ),
   check.attributes = FALSE
 )
@@ -181,7 +181,7 @@ expect_identical(
 )
 expect_error(
   prune_meta(root = root, path = ".", stage = TRUE),
-  "cannot remove and stage metadata when data is removed but unstaged"
+"cannot remove and stage metadata in combination with removed but unstaged data"
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],

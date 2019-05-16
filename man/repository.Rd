@@ -2,9 +2,9 @@
 % Please edit documentation in R/reexport.R
 \name{repository}
 \alias{repository}
-\title{Reexported function from git2r}
+\title{Reexported Function From \code{git2r}}
 \description{
-See \code{\link[git2r]{repository}}
+See \code{\link[git2r]{repository}} in \code{git2r}.
 }
 \seealso{
 Other version_control: \code{\link{commit}},

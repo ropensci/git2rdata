@@ -1,23 +1,21 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
   "@type": "SoftwareSourceCode",
   "identifier": "git2rdata",
   "description": "Make versioning of data.frame easy and efficient using git repositories.",
   "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
   "codeRepository": "https://github.com/inbo/git2rdata",
+  "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
   "issueTracker": "https://github.com/inbo/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.2",
+    "version": "3.6.0",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.2 (2018-12-20)",
+  "runtimePlatform": "R version 3.6.0 (2019-04-26)",
   "author": [
     {
       "@type": "Person",
@@ -25,6 +23,15 @@
       "familyName": "Onkelinx",
       "email": "thierry.onkelinx@inbo.be",
       "@id": "https://orcid.org/0000-0001-8804-4216"
+    }
+  ],
+  "contributor": [
+    {
+      "@type": "Person",
+      "givenName": "Floris",
+      "familyName": "Vanderhaeghe",
+      "email": "floris.vanderhaeghe@inbo.be",
+      "@id": "https://orcid.org/0000-0002-6378-6229"
     }
   ],
   "copyrightHolder": [
@@ -117,7 +124,7 @@
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
-      "version": ">= 3.4.0"
+      "version": ">= 3.5.0"
     },
     {
       "@type": "SoftwareApplication",
@@ -162,30 +169,10 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "336.015KB",
-  "contIntegration": [
-    "https://travis-ci.org/inbo/git2rdata",
-    "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
-    "https://codecov.io/gh/inbo/git2rdata"
-  ],
-  "developmentStatus": "https://www.repostatus.org/#wip",
   "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
-  "keywords": [
-    "r",
-    "rstats",
-    "r-package",
-    "version-control",
-    "reproducible-research"
-  ],
-  "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
-  "contributor": [
-    {
-      "@type": "Person",
-      "givenName": "Floris",
-      "familyName": "Vanderhaeghe",
-      "email": "floris.vanderhaeghe@inbo.be",
-      "@id": "https://orcid.org/0000-0002-6378-6229"
-    }
-  ]
+  "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
+  "fileSize": "347.568KB",
+  "contIntegration": ["https://travis-ci.org/inbo/git2rdata", "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master", "https://codecov.io/gh/inbo/git2rdata"],
+  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
+  "keywords": ["r", "rstats", "r-package", "version-control", "reproducible-research"]
 }

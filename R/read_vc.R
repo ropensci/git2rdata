@@ -1,8 +1,17 @@
-#' Read a \code{data.frame}
+#' Read a Git2rdata Object from Disk
 #'
-#' Note that the dataframe has to be written with `write_vc()` before it can be read with `read_vc()`.
+#' @description
+#' `read_vc()` handles git2rdata objects stored by `write_vc()`. It reads and
+#' verifies the metadata file (`.yml`). Then it reads and verifies the raw data.
+#' The last step is backtransforming any transformation done by `meta()` to
+#' return the `data.frame` as stored by `write_vc()`.
+#'
+#' `read_vc()` is an S3 generic on `root` which currently handles `"character"`
+#' (a path) and `"git-repository"` (from `git2r`). S3 methods for other version
+#' control system could be added.
+#'
 #' @inheritParams write_vc
-#' @return The \code{data.frame} with the file names and hashes as attributes
+#' @return The `data.frame` with the file names and hashes as attributes.
 #' @rdname read_vc
 #' @export
 #' @family storage
@@ -27,6 +36,17 @@ read_vc.character <- function(file, root = ".") {
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
 
   file <- clean_data_path(root = root, file = file)
+  tryCatch(
+    is_git2rdata(file = remove_root(file = file["meta_file"], root = root),
+                 root = root, message = "error"),
+    error = function(e) {
+      if (e$message == "Corrupt data, mismatching data hash.") {
+        warning("Mismatching data hash. Data altered outside of git2rdata.")
+      } else {
+        stop(e$message)
+      }
+    }
+  )
   assert_that(
     all(file.exists(file)),
     msg = "raw file and/or meta file missing"
@@ -34,7 +54,6 @@ read_vc.character <- function(file, root = ".") {
 
   # read the metadata
   meta_data <- read_yaml(file["meta_file"])
-  assert_that(has_name(meta_data, "..generic"))
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (optimize) {
     col_type <- c(
@@ -58,8 +77,8 @@ read_vc.character <- function(file, root = ".") {
   raw_data <- read.table(
     file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
     dec = ".", numerals = "warn.loss", na.strings = na_string,
-    colClasses = setNames(col_type[col_classes], col_names),
-    stringsAsFactors = FALSE, fileEncoding = "UTF-8", encoding = "UTF-8"
+    colClasses = setNames(col_type[col_classes], col_names), comment.char = "",
+    stringsAsFactors = FALSE, fileEncoding = "UTF-8"
   )
 
   # reinstate factors
