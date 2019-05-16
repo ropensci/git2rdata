@@ -1,9 +1,14 @@
 #' Read a Git2rdata Object from Disk
 #'
+#' @description
 #' `read_vc()` handles git2rdata objects stored by `write_vc()`. It reads and
 #' verifies the metadata file (`.yml`). Then it reads and verifies the raw data.
 #' The last step is backtransforming any transformation done by `meta()` to
 #' return the `data.frame` as stored by `write_vc()`.
+#'
+#' `read_vc()` is an S3 generic on `root` which currently handles `"character"`
+#' (a path) and `"git-repository"` (from `git2r`). S3 methods for other version
+#' control system could be added.
 #'
 #' @inheritParams write_vc
 #' @return The `data.frame` with the file names and hashes as attributes.

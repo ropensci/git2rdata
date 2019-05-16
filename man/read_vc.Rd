@@ -22,6 +22,10 @@ The \code{data.frame} with the file names and hashes as attributes.
 verifies the metadata file (\code{.yml}). Then it reads and verifies the raw data.
 The last step is backtransforming any transformation done by \code{meta()} to
 return the \code{data.frame} as stored by \code{write_vc()}.
+
+\code{read_vc()} is an S3 generic on \code{root} which currently handles \code{"character"}
+(a path) and \code{"git-repository"} (from \code{git2r}). S3 methods for other version
+control system could be added.
 }
 \examples{
 ## on file system
