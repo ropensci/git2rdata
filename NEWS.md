@@ -1,3 +1,8 @@
+git2rdata 0.0.5 (2019-05-21)
+============================
+
+  * `upgrade_data()` uses the same order of the metadata as `write_vc()`.
+
 git2rdata 0.0.4 (2019-05-16)
 ============================
 
