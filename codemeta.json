@@ -1,5 +1,8 @@
 {
-  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "git2rdata",
   "description": "Make versioning of data.frame easy and efficient using git repositories.",
@@ -8,7 +11,7 @@
   "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
   "issueTracker": "https://github.com/inbo/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -171,8 +174,21 @@
   ],
   "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "347.568KB",
-  "contIntegration": ["https://travis-ci.org/inbo/git2rdata", "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master", "https://codecov.io/gh/inbo/git2rdata"],
-  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
-  "keywords": ["r", "rstats", "r-package", "version-control", "reproducible-research"]
+  "fileSize": "348.673KB",
+  "contIntegration": [
+    "https://travis-ci.org/inbo/git2rdata",
+    "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
+    "https://codecov.io/gh/inbo/git2rdata"
+  ],
+  "developmentStatus": [
+    "https://www.repostatus.org/#active",
+    "https://www.tidyverse.org/lifecycle/#maturing"
+  ],
+  "keywords": [
+    "r",
+    "rstats",
+    "r-package",
+    "version-control",
+    "reproducible-research"
+  ]
 }
