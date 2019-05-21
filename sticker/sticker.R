@@ -1,5 +1,11 @@
 library(tidyverse)
+library(magick)
 library(cowplot)
+transparent <- TRUE
+image_read("../man/figures/logo_en.png") %>%
+  image_rotate(30) %>%
+  image_transparent(color = ifelse(transparent, "white", "black")) %>%
+  image_write("inbo.png")
 scale <- 1
 dx <- 1
 dy <- sqrt(2)
@@ -58,7 +64,7 @@ hexagon <- tibble(
     y = range * sin(angle)
   ) %>%
   ggplot(aes(x = x, y = y)) +
-  geom_polygon(fill = NA, colour = git_colour, size = 3) +
+  geom_polygon(fill = NA, colour = git_colour, size = 3 * scale) +
   coord_fixed() +
   theme_void()
 
@@ -79,6 +85,7 @@ df <- crossing(
   coord_fixed(1/2) +
   theme_void()
 sticker <- ggdraw() +
+  draw_image("inbo.png", x = -0.2, y = -0.28, scale = 0.45) +
   draw_plot(hexagon) +
   draw_label(
     "git2rdata", x = 0.5, y = 0.8,
@@ -102,5 +109,6 @@ save_plot(
   base_height = scale * 278 / 72,
   base_width = scale * 240 / 72,
   dpi = 72,
-  bg = NA
+  bg = ifelse(transparent, NA, "white")
 )
+file.remove("inbo.png")
