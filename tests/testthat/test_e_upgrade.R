@@ -52,6 +52,13 @@ test_that("upgrade_data() validates metadata", {
 
   correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
   junk_yaml <- correct_yaml
+  junk_yaml[["..generic"]][["git2rdata"]] <- "0.0.4"
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
+  expect_identical(
+    unname(upgrade_data(file = file, root = root)),
+    file
+  )
+  junk_yaml <- correct_yaml
   junk_yaml[["..generic"]][["git2rdata"]] <- NULL
   junk_yaml[["test_Date"]] <- NULL
   yaml::write_yaml(junk_yaml, file.path(root, junk[2]))

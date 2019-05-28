@@ -80,13 +80,16 @@ upgrade_data.character <- function(
       }
       return(target)
     }
+    meta_data[["..generic"]][["git2rdata"]] <- NULL
   }
   assert_that(
     meta_data[["..generic"]][["hash"]] == metadata_hash(meta_data),
     msg = paste(target, "has corrupt metadata: mismatching hash.")
   )
-  meta_data[["..generic"]][["git2rdata"]] <-
-    as.character(packageVersion("git2rdata"))
+  meta_data[["..generic"]] <- c(
+    git2rdata = as.character(packageVersion("git2rdata")),
+    meta_data[["..generic"]]
+  )
   if (!has_name(meta_data[["..generic"]], "data_hash")) {
     meta_data[["..generic"]][["data_hash"]] <- hashfile(file["raw_file"])
   }
