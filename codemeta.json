@@ -7,9 +7,9 @@
   "identifier": "git2rdata",
   "description": "Make versioning of data.frame easy and efficient using git repositories.",
   "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
-  "codeRepository": "https://github.com/inbo/git2rdata",
+  "codeRepository": "https://github.com/ropensci/git2rdata",
   "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
-  "issueTracker": "https://github.com/inbo/git2rdata/issues",
+  "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "version": "0.0.5",
   "programmingLanguage": {
@@ -179,9 +179,9 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
-  "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "363.299KB",
+  "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
+  "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
+  "fileSize": "363.36KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
