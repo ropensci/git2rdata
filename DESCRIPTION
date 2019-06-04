@@ -11,6 +11,10 @@ Authors@R: c(
     email = "floris.vanderhaeghe@inbo.be", 
     comment = c(ORCID = "0000-0002-6378-6229")),
   person(
+    "Peter", "Desmet", role = "ctb", 
+    email = "peter.desmet@inbo.be", 
+    comment = c(ORCID = "0000-0002-8442-8025")),
+  person(
     "Research Institute for Nature and Forest",
     role = c("cph", "fnd"), email = "info@inbo.be"))
 Description: Make versioning of data.frame easy and efficient using git repositories.

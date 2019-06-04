@@ -35,6 +35,13 @@
       "familyName": "Vanderhaeghe",
       "email": "floris.vanderhaeghe@inbo.be",
       "@id": "https://orcid.org/0000-0002-6378-6229"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Peter",
+      "familyName": "Desmet",
+      "email": "peter.desmet@inbo.be",
+      "@id": "https://orcid.org/0000-0002-8442-8025"
     }
   ],
   "copyrightHolder": [
@@ -174,7 +181,7 @@
   ],
   "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "348.673KB",
+  "fileSize": "363.299KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
