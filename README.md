@@ -109,7 +109,6 @@ Please use the output of `citation("git2rdata")`
 - `man-roxygen`: templates for documentation in Roxygen format
 - `pkgdown`: additional source files for the `git2rdata` [website](https://inbo.github.io/git2rdata/)
 - `.github`: guidelines and templates for contributors
-- `sticker`: source code for the `git2rdata` hex sticker
 
 ```
 git2rdata
@@ -120,7 +119,6 @@ git2rdata
 ├── man-roxygen 
 ├── pkgdown
 ├── R
-├── sticker
 ├─┬ tests
 │ └── testthat
 └── vignettes
