@@ -1,7 +1,9 @@
 git2rdata 0.1 (2019-06-04)
 ============================
 
+  * Transfer to rOpenSci.
   * Use new logo (@peterdesmet, #37).
+  * Add estimate of upper bound of the number of commits.
 
 git2rdata 0.0.5 (2019-05-21)
 ============================
