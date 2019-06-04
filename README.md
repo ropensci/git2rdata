@@ -93,7 +93,11 @@ Please read `vignette("version_control", package = "git2rdata")` for more detail
 
 ## What data sizes can `git2rdata` handle?
 
-The recommendation for git repositories is to use files smaller than 100 MB, an overall repository size less than 1 GB and less than 25k files. The individual file size is the limiting factor. Storing the airbag dataset ([`DAAG::nassCDS`](https://cran.r-project.org/package=DAAG)) with `write_vc()` requires on average 68 (optimized) or 97 (verbose) byte per record. The 100 MB file limit for this data is reached after about 1.5 million (optimize) or 1 million (verbose) observations. Your mileage might vary.
+The recommendation for git repositories is to use files smaller than 100 MiB, an overall repository size less than 1 GiB and less than 25k files. The individual file size is the limiting factor. Storing the airbag dataset ([`DAAG::nassCDS`](https://cran.r-project.org/package=DAAG)) with `write_vc()` requires on average 68 (optimized) or 97 (verbose) byte per record. The 100 MiB file limit for this data is reached after about 1.5 million (optimize) or 1 million (verbose) observations. 
+
+Storing a 90% random subset of the airbag dataset requires 370 kiB (optimized) or 400 kiB (verbose) storage in the git history. Updating the dataset with other 90% random subsets requires on average 60 kiB (optimized) to 100 kiB (verbose) per commit. The git history limit of 1 GiB will be reached after 17k (optimized) to 10k (verbose) commits.
+
+Your mileage might vary.
 
 ## Citation
 
