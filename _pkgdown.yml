@@ -21,7 +21,7 @@ navbar:
     href: CONTRIBUTING.html
   right:
   - icon: fa-github fa-lg
-    href: https://github.com/inbo/git2rdata
+    href: https://github.com/ropensci/git2rdata
   - icon: fa-twitter fa-lg
     href: https://twitter.com/INBOVlaanderen
   - icon: fa-facebook fg-lg

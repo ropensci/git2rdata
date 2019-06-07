@@ -31,8 +31,8 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
-URL: https://github.com/inbo/git2rdata, https://doi.org/10.5281/zenodo.1485309
-BugReports: https://github.com/inbo/git2rdata/issues
+URL: https://github.com/ropensci/git2rdata, https://doi.org/10.5281/zenodo.1485309
+BugReports: https://github.com/ropensci/git2rdata/issues
 Collate:
     'clean_data_path.R'
     'git2rdata-package.R'

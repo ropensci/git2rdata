@@ -54,13 +54,13 @@ Install the development version
 
 # install with vignettes (recommended)
 remotes::install_github(
-  "inbo/git2rdata", 
+  "ropensci/git2rdata", 
   build = TRUE, 
   dependencies = TRUE, 
   build_opts = c("--no-resave-data", "--no-manual")
 )
 # install without vignettes
-remotes::install_github("inbo/git2rdata"))
+remotes::install_github("ropensci/git2rdata"))
 ```
 
 ## Usage in a Nutshell
