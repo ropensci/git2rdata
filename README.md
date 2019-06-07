@@ -17,7 +17,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/inbo/git2rdata.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/inbo/git2rdata.svg)
 
-<p style="display:none">Please visit the git2rdata website at https://inbo.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their help file.</p>
+<p style="display:none">Please visit the git2rdata website at https://ropensci.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their help file.</p>
 
 ## Rationale
 
@@ -107,7 +107,7 @@ Please use the output of `citation("git2rdata")`
 - `testthat`: R scripts with unit tests using the [testthat](http://testthat.r-lib.org/) framework
 - `vignettes`: source code for the vignettes describing the package
 - `man-roxygen`: templates for documentation in Roxygen format
-- `pkgdown`: additional source files for the `git2rdata` [website](https://inbo.github.io/git2rdata/)
+- `pkgdown`: additional source files for the `git2rdata` [website](https://ropensci.github.io/git2rdata/)
 - `.github`: guidelines and templates for contributors
 - `sticker`: source code for the `git2rdata` hex sticker
 
