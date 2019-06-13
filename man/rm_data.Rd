@@ -30,7 +30,7 @@ the git history and changed since the last commit. \code{ignored} refers to file
 listed in a \code{.gitignore} file. Selecting \code{modified} will remove both
 \code{unmodified} and \code{modified} data files. Selecting \code{ìgnored} will remove
 \code{unmodified}, \code{modified} and \code{ignored} data files. \code{all} refers to all
-visible data files, inclusing \code{untracked} files.}
+visible data files, including \code{untracked} files.}
 }
 \value{
 returns invisibily a vector of removed files names. The paths are

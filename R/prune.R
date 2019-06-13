@@ -58,7 +58,7 @@ rm_data.character <- function(
 #' listed in a `.gitignore` file. Selecting `modified` will remove both
 #' `unmodified` and `modified` data files. Selecting `ìgnored` will remove
 #' `unmodified`, `modified` and `ignored` data files. `all` refers to all
-#' visible data files, inclusing `untracked` files.
+#' visible data files, including `untracked` files.
 #' @rdname rm_data
 rm_data.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE,

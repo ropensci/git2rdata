@@ -7,11 +7,11 @@
   "identifier": "git2rdata",
   "description": "Make versioning of data.frame easy and efficient using git repositories.",
   "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
-  "codeRepository": "https://github.com/inbo/git2rdata",
+  "codeRepository": "https://github.com/ropensci/git2rdata",
   "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
-  "issueTracker": "https://github.com/inbo/git2rdata/issues",
+  "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.0.5",
+  "version": "0.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -35,6 +35,13 @@
       "familyName": "Vanderhaeghe",
       "email": "floris.vanderhaeghe@inbo.be",
       "@id": "https://orcid.org/0000-0002-6378-6229"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Peter",
+      "familyName": "Desmet",
+      "email": "peter.desmet@inbo.be",
+      "@id": "https://orcid.org/0000-0002-8442-8025"
     }
   ],
   "copyrightHolder": [
@@ -172,9 +179,9 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
-  "readme": "https://github.com/inbo/git2rdata/blob/master/README.md",
-  "fileSize": "348.673KB",
+  "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
+  "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
+  "fileSize": "363.46KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",

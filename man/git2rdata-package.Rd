@@ -13,9 +13,9 @@ Make versioning of data.frame easy and efficient using git repositories.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/inbo/git2rdata}
+  \item \url{https://github.com/ropensci/git2rdata}
   \item \url{https://doi.org/10.5281/zenodo.1485309}
-  \item Report bugs at \url{https://github.com/inbo/git2rdata/issues}
+  \item Report bugs at \url{https://github.com/ropensci/git2rdata/issues}
 }
 
 }
@@ -25,6 +25,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (0000-0002-6378-6229) [contributor]
+  \item Peter Desmet \email{peter.desmet@inbo.be} (0000-0002-8442-8025) [contributor]
   \item Research Institute for Nature and Forest \email{info@inbo.be} [copyright holder, funder]
 }
 

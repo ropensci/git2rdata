@@ -21,7 +21,7 @@ navbar:
     href: CONTRIBUTING.html
   right:
   - icon: fa-github fa-lg
-    href: https://github.com/inbo/git2rdata
+    href: https://github.com/ropensci/git2rdata
   - icon: fa-twitter fa-lg
     href: https://twitter.com/INBOVlaanderen
   - icon: fa-facebook fg-lg
@@ -43,4 +43,4 @@ authors:
     href: "https://www.muscardinus.be"
   Research Institute for Nature and Forest:
     href: "https://www.inbo.be/en"
-    html: "<img src='https://inbo.github.io/git2rdata/reference/figures/logo_en.png' height=24>"
+    html: "<img src='https://ropensci.github.io/git2rdata/reference/figures/logo_en.png' height=24>"

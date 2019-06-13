@@ -1,6 +1,6 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.0.5
+Version: 0.1
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
@@ -10,6 +10,10 @@ Authors@R: c(
     "Floris", "Vanderhaeghe", role = "ctb", 
     email = "floris.vanderhaeghe@inbo.be", 
     comment = c(ORCID = "0000-0002-6378-6229")),
+  person(
+    "Peter", "Desmet", role = "ctb", 
+    email = "peter.desmet@inbo.be", 
+    comment = c(ORCID = "0000-0002-8442-8025")),
   person(
     "Research Institute for Nature and Forest",
     role = c("cph", "fnd"), email = "info@inbo.be"))
@@ -31,8 +35,8 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
-URL: https://github.com/inbo/git2rdata, https://doi.org/10.5281/zenodo.1485309
-BugReports: https://github.com/inbo/git2rdata/issues
+URL: https://github.com/ropensci/git2rdata, https://doi.org/10.5281/zenodo.1485309
+BugReports: https://github.com/ropensci/git2rdata/issues
 Collate:
     'clean_data_path.R'
     'git2rdata-package.R'
