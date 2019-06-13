@@ -179,9 +179,9 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
+  "releaseNotes": "https://github.com/inbo/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
-  "fileSize": "363.46KB",
+  "fileSize": "363.585KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
