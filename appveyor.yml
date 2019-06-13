@@ -33,6 +33,7 @@ on_failure:
 environment:
   GITHUB_PAT:
     secure: VXO22OHLkl4YhVIomSMwCZyOTx03Xf2WICaVng9xH7gISlAg8a+qrt1DtFtk8sK5
+  PKGTYPE: 'win.binary'
 
 artifacts:
   - path: '*.Rcheck\**\*.log'
