@@ -17,7 +17,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ropensci/git2rdata.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ropensci/git2rdata.svg)
 
-<p style="display:none">**Please visit the git2rdata website at https://ropensci.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their help file.**</p>
+<p style="display:none">Please visit the git2rdata website at https://ropensci.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their help file.</p>
 
 ## Rationale
 
