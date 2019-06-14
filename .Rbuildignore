@@ -12,3 +12,4 @@
 ^tic\.R$
 ^.*\.Rproj$
 ^cran-comments\.md$
+^CRAN-RELEASE$
