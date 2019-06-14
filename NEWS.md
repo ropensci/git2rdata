@@ -62,11 +62,11 @@ git2rdata 0.0.2 (2019-02-26)
 
 ### NEW FEATURES
 
-  * Vignette on [efficiency](../articles/efficiency.html) added (#2).
+  * Vignette on [efficiency](https://ropensci.github.io/git2rdata/articles/efficiency.html) added (#2).
   * Three separate vignettes instead of one large vignette.
-      * Focus on the [plain text format](../arsticles/plain_text.html).
-      * Focus on [version control](../articles/version_control.html).
-      * Focus on [workflows](../articles/workflow.html).
+      * Focus on the [plain text format](https://ropensci.github.io/git2rdata/articles/plain_text.html).
+      * Focus on [version control](https://ropensci.github.io/git2rdata/articles/version_control.html).
+      * Focus on [workflows](https://ropensci.github.io/git2rdata/articles/workflow.html).
   * S3 methods replace the old S4 methods (#8).
   * Optimized factors use stable indices. Adding or removing levels result in smaller diffs (#13).
   * Use `relabel()` to alter factor levels without changing their index (#13).
