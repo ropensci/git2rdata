@@ -28,7 +28,7 @@ ignores the deletion of files.
 Use this information to document the current version of file or git2rdata
 object in an analysis. Since it refers to the most recent change of this
 file, it remains unchanged by committing changes to other files. You can
-also use it to track if data got updated, requirering an analysis to
+also use it to track if data got updated, requiring an analysis to
 be rerun. See \code{vignette("workflow", package = "git2rdata")}.
 }
 \examples{

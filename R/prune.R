@@ -14,7 +14,7 @@
 #' @param path the directory in which to clean all the data files. The directory
 #' is relative to `root`.
 #' @param recursive remove files in subdirectories too.
-#' @return returns invisibily a vector of removed files names. The paths are
+#' @return returns invisibly a vector of removed files names. The paths are
 #' relative to `root`.
 #' @inheritParams write_vc
 #' @export
@@ -108,7 +108,7 @@ rm_data.git_repository <- function(
 #' `vignette("workflow", package = "git2rdata")` for some examples on how to use
 #' this.
 #' @inheritParams rm_data
-#' @return returns invisibily a vector of removed files names. The paths are
+#' @return returns invisibly a vector of removed files names. The paths are
 #' relative to `root`.
 #' @inheritParams write_vc
 #' @export

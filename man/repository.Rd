@@ -2,7 +2,7 @@
 % Please edit documentation in R/reexport.R
 \name{repository}
 \alias{repository}
-\title{Reexported Function From \code{git2r}}
+\title{Re-exported Function From \code{git2r}}
 \description{
 See \code{\link[git2r]{repository}} in \code{git2r}.
 }

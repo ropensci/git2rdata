@@ -25,6 +25,7 @@ Imports:
   methods,
   yaml
 Suggests:
+  spelling,
   ggplot2,
   knitr,
   microbenchmark,
@@ -52,3 +53,4 @@ Collate:
     'relabel.R'
     'upgrade_data.R'
 VignetteBuilder: knitr
+Language: en-GB

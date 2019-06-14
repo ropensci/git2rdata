@@ -37,7 +37,7 @@ git2rdata 0.0.4 (2019-05-16)
   * Use a faster algorithm to detect duplicates (suggestion by @brodieG). 
   * Improve documentation.
   * Fix typo's in documentation, vignettes and README.
-  * Add a ROpenSci review badge to the README.
+  * Add a rOpenSci review badge to the README.
   * The README mentions on upper bound on the size of dataframes.
   * Set lifecycle to "maturing" and repo status to "active".
   * The functions handle `root` containing regex expressions.
@@ -82,7 +82,7 @@ git2rdata 0.0.2 (2019-02-26)
   * Each helpfile contains a working example (#11).
   * README updated (#12).
       * Updated the rationale with links to the vignettes.
-      * `git2rdata` has a hexsticker logo.
+      * `git2rdata` has a hexagon sticker logo.
       * Add the [![DOI](https://zenodo.org/badge/147685405.svg)](https://zenodo.org/badge/latestdoi/147685405).
       * The installation instructions use `remotes` and build the vignettes.
   * We removed `auto_commit()` because of limited extra functionality over `git2r::commit()`.
