@@ -1,4 +1,4 @@
-#' Reexported Function From `git2r`
+#' Re-exported Function From `git2r`
 #'
 #' See \code{\link[git2r]{repository}} in `git2r`.
 #' @name repository
@@ -7,7 +7,7 @@
 #' @export
 NULL
 
-#' Reexported Function From `git2r`
+#' Re-exported Function From `git2r`
 #'
 #' See \code{\link[git2r]{status}} in `git2r`.
 #' @name status
@@ -16,7 +16,7 @@ NULL
 #' @export
 NULL
 
-#' Reexported Function From `git2r`
+#' Re-exported Function From `git2r`
 #'
 #' See \code{\link[git2r]{commit}} in `git2r`.
 #' @name commit
@@ -25,7 +25,7 @@ NULL
 #' @export
 NULL
 
-#' Reexported Function From `git2r`
+#' Re-exported Function From `git2r`
 #'
 #' See \code{\link[git2r]{pull}} in `git2r`.
 #' @name pull
@@ -34,7 +34,7 @@ NULL
 #' @export
 NULL
 
-#' Reexported Function From `git2r`
+#' Re-exported Function From `git2r`
 #'
 #' See \code{\link[git2r]{push}} in  `git2r`.
 #' @name push

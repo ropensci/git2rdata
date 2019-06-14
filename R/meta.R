@@ -4,7 +4,7 @@
 #' Prepares a vector for storage. When relevant, `meta()`optimizes the object
 #' for storage by changing the format to one which needs less characters. The
 #' metadata stored in the `meta` attribute, contains all required information to
-#' backtransform the optimized format into the original format.
+#' back-transform the optimized format into the original format.
 #' @param x the vector.
 #' @param ... further arguments to the methods.
 #' @return the optimized vector `x` with `meta` attribute.
@@ -185,7 +185,7 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #'
 #' \code{\link{write_vc}} uses this function to prepare a dataframe for storage.
 #' Existing metadata is passed through the optional `old` argument. This
-#' argument intendent for internal use.
+#' argument intended for internal use.
 #' @rdname meta
 #' @inheritParams write_vc
 meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {

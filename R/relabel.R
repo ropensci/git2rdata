@@ -5,7 +5,7 @@
 #' the factor indices and the metadata contains the link between the factor
 #' index and the corresponding label. See
 #' `vignette("version_control", package = "git2rdata")`. In such a case,
-#' relabeling a factor can be fast and lightweight by updating the metadata.
+#' relabelling a factor can be fast and lightweight by updating the metadata.
 #' @inheritParams write_vc
 #' @param change either a `list` or a `data.frame`. In case of a `list` is a
 #' named `list` with named `vectors`. The names of list elements must match the
@@ -93,7 +93,7 @@ relabel.list <- function(file, root = ".", change) {
   meta_data <- read_yaml(file["meta_file"])
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (!optimize) {
-    stop("relabeling factors on verbose data leads to large diffs.
+    stop("relabelling factors on verbose data leads to large diffs.
 Use write_vc() instead.")
   }
   assert_that(
@@ -117,7 +117,7 @@ Use write_vc() instead.")
     meta_data[[id]][["labels"]] <- unname(meta_data[[id]][["labels"]])
     assert_that(
       anyDuplicated(meta_data[[id]][["labels"]]) == 0,
-      msg = sprintf("relabeling '%s' leads to duplicated labels", id)
+      msg = sprintf("relabelling '%s' leads to duplicated labels", id)
     )
   }
   meta_data[["..generic"]][["hash"]] <- metadata_hash(meta_data)

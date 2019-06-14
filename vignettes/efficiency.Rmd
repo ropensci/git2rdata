@@ -173,7 +173,7 @@ fn <- write_vc(airbag, "airbag_verbose", root, sorting = "X", optimize = FALSE)
 verbose_size <- sum(file.size(file.path(root, fn)))
 ```
 
-Since the data is highly compressable, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimized version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short labels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
+Since the data is highly compressible, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimized version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short labels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
 
 ```{r table_file_size, echo = FALSE}
 kable(
@@ -340,9 +340,9 @@ if (system.file("efficiency", "git_size.rds", package = "git2rdata") == "") {
 }
 ```
 
-Each version of the data has on purpose a random order of observations and variables. This is what would happen in a worst case scenario as it would generate the largest posibble diff. We also test `write.table()` with a stable ordering of the observations and variables. 
+Each version of the data has on purpose a random order of observations and variables. This is what would happen in a worst case scenario as it would generate the largest possible diff. We also test `write.table()` with a stable ordering of the observations and variables. 
 
-The randomised `write.table()` yields the largest git repository, converging to about `r sprintf("%.1f", repo_size["write.table", 100] / repo_size["write.table.sorted", 100])` times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a `r sprintf("%.0f%%", 100 - 100 * repo_size["saveRDS", 100] / repo_size["write.table", 100])` reduction in repostory size compared to the randomised `write.table()`, but still is `r sprintf("%.1f", repo_size["saveRDS", 100] / repo_size["write.table.sorted", 100])` times larger than the sorted `write.table()`. Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because the git repository will be compressed too. The optimized `write_vc()` starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 1] / repo_size["write.table.sorted", 1])` and converges toward `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 100] / repo_size["write.table.sorted", 100])`, the verbose version starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 1] / repo_size["write.table.sorted", 1])` and converges towards `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 100] / repo_size["write.table.sorted", 100])`. There is a clear gain when using `write_vc()` with optimization in terms of storage size and the availability of metadata. The verbose option of `write_vc()` lacks the gain in terms of storage size but still has the metadata advantage.
+The randomised `write.table()` yields the largest git repository, converging to about `r sprintf("%.1f", repo_size["write.table", 100] / repo_size["write.table.sorted", 100])` times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a `r sprintf("%.0f%%", 100 - 100 * repo_size["saveRDS", 100] / repo_size["write.table", 100])` reduction in repository size compared to the randomised `write.table()`, but still is `r sprintf("%.1f", repo_size["saveRDS", 100] / repo_size["write.table.sorted", 100])` times larger than the sorted `write.table()`. Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because the git repository will be compressed too. The optimized `write_vc()` starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 1] / repo_size["write.table.sorted", 1])` and converges toward `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 100] / repo_size["write.table.sorted", 100])`, the verbose version starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 1] / repo_size["write.table.sorted", 1])` and converges towards `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 100] / repo_size["write.table.sorted", 100])`. There is a clear gain when using `write_vc()` with optimization in terms of storage size and the availability of metadata. The verbose option of `write_vc()` lacks the gain in terms of storage size but still has the metadata advantage.
 
 ```{r plot_git_size, echo = FALSE, fig.cap = "Size of the git history using the different storage methods."}
 rs <- lapply(
@@ -386,7 +386,7 @@ ggplot(rs, aes(x = commit, y = rel_size, colour = fun, linetype = optimized)) +
 
 ## Timings
 
-The code below runs a microbenchmark on the four methods. A microbenchmark runs the code a hunderd times and yields a distribution of timings for each expression.
+The code below runs a microbenchmark on the four methods. A microbenchmark runs the code a hundred times and yields a distribution of timings for each expression.
 
 ### Writing Data
 

@@ -33,7 +33,7 @@ listed in a \code{.gitignore} file. Selecting \code{modified} will remove both
 visible data files, including \code{untracked} files.}
 }
 \value{
-returns invisibily a vector of removed files names. The paths are
+returns invisibly a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{

@@ -54,7 +54,7 @@ test_that("relabel handles a data.frame of changes", {
 test_that("relabel only works on optimized files", {
   write_vc(ds, "relabel_verbose", root, sorting = "b", optimize = FALSE)
   expect_error(relabel("relabel_verbose", root, new_labels),
-               "relabeling factors on verbose data leads to large diffs")
+               "relabelling factors on verbose data leads to large diffs")
 })
 
 test_that("relabel handles git repositories", {

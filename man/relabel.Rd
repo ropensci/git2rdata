@@ -31,7 +31,7 @@ have stored it with \code{write_vc(optimize = TRUE)}. The raw data file contains
 the factor indices and the metadata contains the link between the factor
 index and the corresponding label. See
 \code{vignette("version_control", package = "git2rdata")}. In such a case,
-relabeling a factor can be fast and lightweight by updating the metadata.
+relabelling a factor can be fast and lightweight by updating the metadata.
 }
 \examples{
 

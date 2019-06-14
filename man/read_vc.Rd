@@ -20,7 +20,7 @@ The \code{data.frame} with the file names and hashes as attributes.
 \description{
 \code{read_vc()} handles git2rdata objects stored by \code{write_vc()}. It reads and
 verifies the metadata file (\code{.yml}). Then it reads and verifies the raw data.
-The last step is backtransforming any transformation done by \code{meta()} to
+The last step is back-transforming any transformation done by \code{meta()} to
 return the \code{data.frame} as stored by \code{write_vc()}.
 
 \code{read_vc()} is an S3 generic on \code{root} which currently handles \code{"character"}

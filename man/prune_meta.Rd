@@ -24,7 +24,7 @@ is relative to \code{root}.}
 \item{stage}{stage the changes after removing the files. Defaults to \code{FALSE}.}
 }
 \value{
-returns invisibily a vector of removed files names. The paths are
+returns invisibly a vector of removed files names. The paths are
 relative to \code{root}.
 }
 \description{
