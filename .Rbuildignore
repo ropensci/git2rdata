@@ -11,3 +11,4 @@
 ^sticker$
 ^tic\.R$
 ^.*\.Rproj$
+^cran-comments\.md$
