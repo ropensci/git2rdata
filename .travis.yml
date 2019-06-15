@@ -16,6 +16,7 @@ deploy:
   script: R -q -e 'tic::deploy()'
   on:
     branch: master
+    dist: xenial
     condition:
       - $TRAVIS_PULL_REQUEST = false
       - $TRAVIS_EVENT_TYPE != cron
@@ -28,24 +29,43 @@ after_script: R -q -e 'tic::after_script()'
 
 # Header
 language: r
-r:
-  - oldrel
-  - release
-  - devel
-sudo: false
-dist: trusty
-cache: packages
-addons:
-  apt:
-    packages:
-      - libgit2-dev
 latex: false
+matrix:
+  include:
+    - dist: trusty
+      r: oldrel
+      addons:
+        apt:
+          packages:
+            - libgit2-dev
+    - dist: xenial
+      r: release
+      addons:
+        apt:
+          packages:
+            - libgit2-dev
+    - dist: xenial
+      r: devel
+      addons:
+        apt:
+          packages:
+            - libgit2-dev
+    - os: osx
+      r: release
+      brew_packages: openssl
+sudo: false
+cache: packages
 
 #env
 env:
   global:
   - _R_CHECK_FORCE_SUGGESTS_=false
   - MAKEFLAGS="-j 2"
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
 
 #services
 services:
