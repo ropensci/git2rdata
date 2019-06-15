@@ -65,17 +65,22 @@ expect_identical(
 )
 
 target <- file.path(git2r::workdir(root), "subsecond.txt")
-write.table(test_data[11, ], file = target)
-git2r::add(root, target)
-commit_6 <- commit(root, "first subsecond")
-write.table(test_data[12, ], file = target)
-git2r::add(root, target)
-commit_7 <- commit(root, "second subsecond")
-write.table(test_data[13, ], file = target)
-git2r::add(root, target)
-commit_8 <- commit(root, "third subsecond")
+while (TRUE) {
+  writeLines(sample(letters), con = target)
+  git2r::add(root, target)
+  cm_1 <- commit(root, "first subsecond")
+  writeLines(sample(letters), con = target)
+  git2r::add(root, target)
+  cm_2 <- commit(root, "second subsecond")
+  output <- suppressWarnings(
+    recent_commit(file = "subsecond.txt", root)
+  )
+  if (nrow(output) > 1) {
+    break
+  }
+}
+expect_true(all(output$commit %in% c(cm_1$sha, cm_2$sha)))
 expect_warning(
-  output <- recent_commit(file = "subsecond.txt", root),
+  recent_commit(file = "subsecond.txt", root),
   "More than one commit within the same second"
 )
-expect_true(all(output$commit %in% c(commit_6$sha, commit_7$sha, commit_8$sha)))
