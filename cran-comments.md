@@ -2,7 +2,9 @@
 * local
     * ubuntu 18.04, R 3.6.0
 * travis-ci
-    * ubuntu 14.04, oldrel, release and devel
+    * trusty, oldrel
+    * xenial, release and devel
+    * osx, release
 * AppVeyor 
     * Windows Server 2012, R 3.6.0 Patched
 * r-hub
