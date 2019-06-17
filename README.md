@@ -1,5 +1,8 @@
 # The `git2rdata` package <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
+[![CRAN status](https://www.r-pkg.org/badges/version/git2rdata)](https://cran.r-project.org/package=git2rdata)
+[![Rdoc](https://www.rdocumentation.org/badges/version/git2rdata)](https://www.rdocumentation.org/packages/git2rdata)
+
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![](https://badges.ropensci.org/263_status.svg)](https://github.com/ropensci/software-review/issues/263)
@@ -46,7 +49,13 @@ The `git2rdata` package is an R package for writing and reading dataframes as pl
 
 ## Installation
 
-Install the development version
+Install from CRAN
+
+```r
+install.packages("git2rdata")
+```
+
+Install the development version from GitHub
 
 ```r
 # installation requires the "remotes" package
@@ -91,7 +100,7 @@ read_vc(file = "rel_path/filename", root = repo)
 
 Please read `vignette("version_control", package = "git2rdata")` for more details on using git2rdata in combination with version control.
 
-## What data sizes can `git2rdata` handle?
+## What Data Sizes Can Git2rdata Handle?
 
 The recommendation for git repositories is to use files smaller than 100 MiB, an overall repository size less than 1 GiB and less than 25k files. The individual file size is the limiting factor. Storing the airbag dataset ([`DAAG::nassCDS`](https://cran.r-project.org/package=DAAG)) with `write_vc()` requires on average 68 (optimized) or 97 (verbose) byte per record. The 100 MiB file limit for this data is reached after about 1.5 million (optimize) or 1 million (verbose) observations. 
 
