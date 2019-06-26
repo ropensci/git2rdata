@@ -30,7 +30,7 @@ rm_data <- function(
 rm_data.default <- function(
   root, path = NULL, recursive = TRUE, ...
 ){
-  stop("a 'root' of class ", class(root), " is not supported")
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
@@ -124,7 +124,7 @@ prune_meta <- function(
 prune_meta.default <- function(
   root, path = NULL, recursive = TRUE, ...
 ){
-  stop("a 'root' of class ", class(root), " is not supported")
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
@@ -153,7 +153,7 @@ prune_meta.character <- function(
                   FUN.VALUE = NA, root = root, message = "none")
   if (any(!check)) {
     warning("Invalid metadata files found. See ?is_git2rmeta():\n",
-            paste(to_do_base[!check], collapse = "\n"))
+            paste(to_do_base[!check], collapse = "\n"), call. = FALSE)
   }
   to_do <- to_do[check]
 
@@ -207,6 +207,7 @@ prune_meta.git_repository <- function(
     changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
     if (any(to_do %in% changed)) {
       stop(
+        call. = FALSE,
 "cannot remove and stage metadata in combination with removed but unstaged data"
       )
     }
@@ -216,7 +217,8 @@ prune_meta.git_repository <- function(
     ))
     changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
     if (any(to_do %in% changed)) {
-      warning("data removed and staged, metadata removed but unstaged")
+      warning("data removed and staged, metadata removed but unstaged",
+              call. = FALSE)
     }
   }
   file.remove(to_do)

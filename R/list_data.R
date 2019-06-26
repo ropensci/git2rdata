@@ -40,7 +40,7 @@ list_data.character <- function(root = ".", path = ".", recursive = TRUE) {
                   FUN.VALUE = NA, root = root, message = "none")
   if (any(!check)) {
     warning("Invalid metadata files found. See ?is_git2rmeta():\n",
-            paste(meta_files_base[!check], collapse = "\n"))
+            paste(meta_files_base[!check], collapse = "\n"), call. = FALSE)
   }
   meta_files <- meta_files[check]
   data_files <- data_files[data_files %in% meta_files]

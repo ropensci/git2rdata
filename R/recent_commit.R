@@ -102,7 +102,7 @@ recent_commit.git_repository <- function(file, root, data = FALSE) {
   blobs <- blobs[blobs$when == max(blobs$when), c("commit", "author", "when")]
   blobs <- unique(blobs)
   if (nrow(blobs) > 1) {
-      warning("More than one commit within the same second")
+      warning("More than one commit within the same second", call. = FALSE)
   }
   rownames(blobs) <- NULL
   blobs
