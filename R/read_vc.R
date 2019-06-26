@@ -22,7 +22,7 @@ read_vc <- function(file, root = ".") {
 
 #' @export
 read_vc.default <- function(file, root) {
-  stop("a 'root' of class ", class(root), " is not supported")
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
@@ -41,9 +41,10 @@ read_vc.character <- function(file, root = ".") {
                  root = root, message = "error"),
     error = function(e) {
       if (e$message == "Corrupt data, mismatching data hash.") {
-        warning("Mismatching data hash. Data altered outside of git2rdata.")
+        warning("Mismatching data hash. Data altered outside of git2rdata.",
+                call. = FALSE)
       } else {
-        stop(e$message)
+        stop(e$message, call. = FALSE)
       }
     }
   )

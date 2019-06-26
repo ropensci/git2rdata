@@ -67,7 +67,8 @@ write_vc.character <- function(
       is_git2rmeta(file = remove_root(file = file["meta_file"], root = root),
                    root = root, message = "error"),
       error = function(e) {
-        stop(paste("Existing metadata file is invalid.", e$message, sep = "\n"))
+        stop(paste("Existing metadata file is invalid.", e$message, sep = "\n"),
+             call. = FALSE)
       }
     )
     old <- read_yaml(file["meta_file"])
@@ -83,7 +84,7 @@ write_vc.character <- function(
           "", problems)
         stop(paste(problems, collapse = "\n"), call. = FALSE)
       }
-      warning(paste(problems, collapse = "\n"))
+      warning(paste(problems, collapse = "\n"), call. = FALSE)
       if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
         sorting <- old[["..generic"]][["sorting"]]
       }

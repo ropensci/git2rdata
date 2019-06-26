@@ -17,7 +17,7 @@ is_git2rdata <- function(file, root = ".",
 
 #' @export
 is_git2rdata.default <- function(file, root, message) {
-  stop("a 'root' of class ", class(root), " is not supported")
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
@@ -38,7 +38,8 @@ is_git2rdata.character <- function(file, root = ".",
 
   if (!file.exists(file["raw_file"])) {
     msg <- "Data file missing."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
 
@@ -50,13 +51,15 @@ is_git2rdata.character <- function(file, root = ".",
   header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
   if (correct != header) {
     msg <- paste("Corrupt data, incorrect header. Expecting:", correct)
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
 
   if (meta_data[["..generic"]][["data_hash"]] != hashfile(file[["raw_file"]])) {
     msg <- "Corrupt data, mismatching data hash."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
 

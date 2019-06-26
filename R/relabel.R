@@ -69,7 +69,8 @@ relabel <- function(file, root = ".", change) {
 
 #' @export
 relabel.default <- function(file, root, change) {
-  stop("a 'change' of class ", class(change), " is not supported")
+  stop("a 'change' of class ", class(change), " is not supported",
+       call. = FALSE)
 }
 
 #' @export
@@ -94,7 +95,7 @@ relabel.list <- function(file, root = ".", change) {
   optimize <- meta_data[["..generic"]][["optimize"]]
   if (!optimize) {
     stop("relabelling factors on verbose data leads to large diffs.
-Use write_vc() instead.")
+Use write_vc() instead.", call. = FALSE)
   }
   assert_that(
     all(names(change) %in% names(meta_data)),

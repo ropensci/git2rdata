@@ -205,7 +205,7 @@ meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
 
   # apply sorting
   if (missing(sorting) || is.null(sorting) || !length(sorting)) {
-    warning("No sorting applied.
+    warning(call. = FALSE, "No sorting applied.
 Sorting is strongly recommended in combination with version control.")
   } else {
     assert_that(is.character(sorting))
@@ -218,7 +218,7 @@ Sorting is strongly recommended in combination with version control.")
         sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
         sorted <- sprintf("Sorting on %s results in ties.
 Add extra sorting variables to ensure small diffs.", sorted)
-        warning(sorted)
+        warning(sorted, call. = FALSE)
       }
     }
     generic <- c(generic, sorting = list(sorting))

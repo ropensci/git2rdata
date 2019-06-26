@@ -23,7 +23,7 @@ is_git2rmeta <- function(file, root = ".",
 #' @export
 is_git2rmeta.default <- function(file, root,
                                  message = c("none", "warning", "error")) {
-  stop("a 'root' of class ", class(root), " is not supported")
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
@@ -39,7 +39,8 @@ is_git2rmeta.character <- function(file, root = ".",
 
   if (!file.exists(file["meta_file"])) {
     msg <- "Metadata file missing."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
 
@@ -47,36 +48,42 @@ is_git2rmeta.character <- function(file, root = ".",
   meta_data <- read_yaml(file["meta_file"])
   if (!has_name(meta_data, "..generic")) {
     msg <- "No '..generic' element."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
   if (!has_name(meta_data[["..generic"]], "hash")) {
     msg <- "Corrupt metadata, no hash found."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
   if (!has_name(meta_data[["..generic"]], "git2rdata")) {
     msg <- "Data stored using an older version of `git2rdata`.
 See `?upgrade_data()`."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
   if (package_version(meta_data[["..generic"]][["git2rdata"]]) <
         packageVersion("git2rdata")) {
     msg <- "Data stored using an older version of `git2rdata`.
 See `?upgrade_data()`."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
   if (!has_name(meta_data[["..generic"]], "data_hash")) {
     msg <- "Corrupt metadata, no data hash found."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
   current_hash <- meta_data[["..generic"]][["hash"]]
   if (current_hash != metadata_hash(meta_data)) {
     msg <- "Corrupt metadata, mismatching hash."
-    switch(message, error = stop(msg), warning = warning(msg))
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
 
