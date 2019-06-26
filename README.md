@@ -1,5 +1,4 @@
-# The `git2rdata` package <img src="man/figures/logo.png" align="right" alt="" width="120" />
-
+# The `git2rdata` package <img src="https://ropensci.github.io/git2rdata/docs/reference/figures/logo.svg" align="right" alt="gitr2data logo" width="120" />
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/git2rdata)](https://cran.r-project.org/package=git2rdata)
