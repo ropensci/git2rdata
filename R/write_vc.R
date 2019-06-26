@@ -77,13 +77,17 @@ write_vc.character <- function(
                      old = old)
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
-      if (strict) {
-        problems <- c(
-          "The data was not overwritten because of the issues below.",
+      problems <- c(
 "See vignette('version_control', package = 'git2rdata') for more information.",
           "", problems)
+      if (strict) {
+        problems <- c(
+          "The data was not overwritten because of the issues below.", problems)
         stop(paste(problems, collapse = "\n"), call. = FALSE)
       }
+      problems <- c(
+        "Changes in the metadata may lead to unnecessarily large diffs.",
+        problems)
       warning(paste(problems, collapse = "\n"), call. = FALSE)
       if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
         sorting <- old[["..generic"]][["sorting"]]
