@@ -72,8 +72,8 @@ upgrade_data.character <- function(
     msg = paste(target, "has corrupt metadata, no hash found.")
   )
   if (has_name(meta_data[["..generic"]], "git2rdata")) {
-    if (package_version(meta_data[["..generic"]][["git2rdata"]]) ==
-        packageVersion("git2rdata")
+    if (package_version(meta_data[["..generic"]][["git2rdata"]]) >=
+        package_version("0.0.5")
         ) {
       if (verbose) {
         message(target, " already up to date")

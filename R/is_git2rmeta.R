@@ -66,7 +66,7 @@ See `?upgrade_data()`."
     return(FALSE)
   }
   if (package_version(meta_data[["..generic"]][["git2rdata"]]) <
-        packageVersion("git2rdata")) {
+      package_version("0.0.5")) {
     msg <- "Data stored using an older version of `git2rdata`.
 See `?upgrade_data()`."
     switch(message, error = stop(msg, call. = FALSE),

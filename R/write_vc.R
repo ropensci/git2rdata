@@ -102,6 +102,9 @@ write_vc.character <- function(
     col.names = TRUE, fileEncoding = "UTF-8"
   )
   meta_data <- attr(raw_data, "meta")
+  meta_data[["..generic"]][["git2rdata"]] <- as.character(
+    packageVersion("git2rdata")
+  )
   meta_data[["..generic"]][["data_hash"]] <- hashfile(file["raw_file"])
   write_yaml(meta_data, file["meta_file"],
              fileEncoding = "UTF-8")
