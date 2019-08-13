@@ -7,6 +7,7 @@
 #' @param file the name of the git2rdata object. Git2rdata objects cannot
 #' have dots in their name. The name may include a relative path. `file` is a
 #' path relative to the `root`.
+#' Note that `file` must point to a location within `root`.
 #' @param root The root of a project. Can be a file path or a `git-repository`.
 #' Defaults to the current working directory (`"."`).
 #' @param sorting an optional vector of column names defining which columns to
