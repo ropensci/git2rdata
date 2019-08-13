@@ -12,6 +12,14 @@ expect_error(read_vc(root = 1), "a 'root' of class numeric is not supported")
 root <- tempfile(pattern = "git2rdata-basic")
 dir.create(root)
 expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
+expect_error(
+  git2rdata:::clean_data_path(root, "../wrong_location"),
+  "file should not contain '..'"
+)
+expect_error(
+  git2rdata:::clean_data_path(root, "./../wrong_location"),
+  "file should not contain '..'"
+)
 expect_is(
   output <- write_vc(
     x = test_data, file = "test.txt", root = root, sorting = "test_Date"

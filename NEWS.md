@@ -1,9 +1,15 @@
-git2rdata 0.1.0.9000 (2019-07-03)
+git2rdata 0.1.0.9000 (2019-08-13)
 =================================
 
-  * Only require `upgrade_data()` for data written with versions prior to 0.0.5 (#44)
-  * Improve warnings() and error()
-  * Use vector version of logo
+### BREAKING FEATURES
+
+  * `write_vc()` and `read_vc()` fail when `file` is a location outside of `root` (#50).
+
+### NEW FEATURES
+
+  * Only require `upgrade_data()` for data written with versions prior to 0.0.5 (#44).
+  * Improve warnings() and error().
+  * Use vector version of logo.
 
 git2rdata 0.1 (2019-06-04)
 ============================

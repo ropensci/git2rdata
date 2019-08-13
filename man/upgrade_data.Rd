@@ -13,7 +13,8 @@ upgrade_data(file, root = ".", verbose, ..., path)
 \arguments{
 \item{file}{the name of the git2rdata object. Git2rdata objects cannot
 have dots in their name. The name may include a relative path. \code{file} is a
-path relative to the \code{root}.}
+path relative to the \code{root}.
+Note that \code{file} must point to a location within \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
 Defaults to the current working directory (\code{"."}).}
