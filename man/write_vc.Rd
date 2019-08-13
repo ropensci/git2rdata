@@ -56,7 +56,7 @@ data as a plain text tab separated file. The \code{".yml"} contains the metadata
 on the columns in plain text YAML format. See \code{vignette("plain text", package = "git2rdata")} for more details on the implementation.
 }
 \note{
-\code{..generic} is a reserved name for the metadata and cannot be used as
+\code{..generic} is a reserved name for the metadata and is a forbidden
 column name in a \code{data.frame}.
 }
 \examples{
