@@ -1,7 +1,6 @@
 #' Check Whether a Git2rdata Object is Valid.
 #'
-#' A valid git2rdata object has valid metadata. The data hash must match the
-#' data hash stored in the metadata.
+#' A valid git2rdata object has valid metadata.
 #' @inheritParams write_vc
 #' @inheritParams is_git2rmeta
 #' @return A logical value. `TRUE` in case of a valid git2rdata object.

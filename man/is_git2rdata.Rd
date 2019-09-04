@@ -25,8 +25,7 @@ A logical value. \code{TRUE} in case of a valid git2rdata object.
 Otherwise \code{FALSE}.
 }
 \description{
-A valid git2rdata object has valid metadata. The data hash must match the
-data hash stored in the metadata.
+A valid git2rdata object has valid metadata.
 }
 \examples{
 # create a directory
