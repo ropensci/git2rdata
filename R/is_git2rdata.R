@@ -24,7 +24,6 @@ is_git2rdata.default <- function(file, root, message) {
 #' @importFrom assertthat assert_that is.string
 #' @importFrom yaml read_yaml as.yaml
 #' @importFrom utils packageVersion
-#' @importFrom git2r hash
 is_git2rdata.character <- function(file, root = ".",
                                    message = c("none", "warning", "error")) {
   assert_that(is.string(file), is.string(root))
