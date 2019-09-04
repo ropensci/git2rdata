@@ -1,6 +1,9 @@
 test_n <- 100
 test_data <- data.frame(
-  test_character = sample(LETTERS, size = test_n, replace = TRUE),
+  test_character = c(
+    sample(LETTERS, size = test_n - 10, replace = TRUE),
+    c("é", "&", "à", "µ", "ç", "€", "|", "#", "@", "$")
+  ),
   test_factor = sample(
     factor(c("a", "b"), levels = c("a", "b", "c")),
     size = test_n, replace = TRUE
