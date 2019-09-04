@@ -55,13 +55,6 @@ is_git2rdata.character <- function(file, root = ".",
     return(FALSE)
   }
 
-  if (meta_data[["..generic"]][["data_hash"]] != hashfile(file[["raw_file"]])) {
-    msg <- "Corrupt data, mismatching data hash."
-    switch(message, error = stop(msg, call. = FALSE),
-           warning = warning(msg, call. = FALSE))
-    return(FALSE)
-  }
-
   return(TRUE)
 }
 

@@ -40,12 +40,7 @@ read_vc.character <- function(file, root = ".") {
     is_git2rdata(file = remove_root(file = file["meta_file"], root = root),
                  root = root, message = "error"),
     error = function(e) {
-      if (e$message == "Corrupt data, mismatching data hash.") {
-        warning("Mismatching data hash. Data altered outside of git2rdata.",
-                call. = FALSE)
-      } else {
-        stop(e$message, call. = FALSE)
-      }
+      stop(e$message, call. = FALSE)
     }
   )
   assert_that(
@@ -74,13 +69,18 @@ read_vc.character <- function(file, root = ".") {
   col_names <- names(details)
   col_classes <- vapply(details, "[[", character(1), "class")
 
-  # read the raw data
+  # read the raw data and check the data hash
   raw_data <- read.table(
     file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
     dec = ".", numerals = "warn.loss", na.strings = na_string,
     colClasses = setNames(col_type[col_classes], col_names), comment.char = "",
     stringsAsFactors = FALSE, fileEncoding = "UTF-8"
   )
+
+  if (meta_data[["..generic"]][["data_hash"]] != datahash(raw_data)) {
+    warning("Mismatching data hash. Data altered outside of git2rdata.",
+            call. = FALSE)
+  }
 
   # reinstate factors
   for (id in col_names[col_classes == "factor"]) {
