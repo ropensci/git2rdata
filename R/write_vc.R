@@ -106,12 +106,16 @@ write_vc.character <- function(
   meta_data[["..generic"]][["git2rdata"]] <- as.character(
     packageVersion("git2rdata")
   )
-  meta_data[["..generic"]][["data_hash"]] <- hashfile(file["raw_file"])
+  meta_data[["..generic"]][["data_hash"]] <- datahash(raw_data)
   write_yaml(meta_data, file["meta_file"],
              fileEncoding = "UTF-8")
 
   hashes <- remove_root(file = file, root = root)
-  names(hashes) <- hashfile(file)
+  names(hashes) <-
+    c(
+      meta_data[["..generic"]][["data_hash"]],
+      meta_data[["..generic"]][["hash"]]
+    )
 
   return(hashes)
 }
