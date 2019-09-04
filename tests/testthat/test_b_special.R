@@ -75,4 +75,10 @@ expect_equal(
   output_test_data_hash,
   test_data_fixed
 )
+yaml_file <- yaml::read_yaml(file.path(root, "test_data_hash.yml"))
+yaml_file[["..generic"]][["data_hash"]] <- "zzz"
+yaml::write_yaml(yaml_file, file.path(root, "test_data_hash.yml"))
+expect_warning(read_vc("test_data_hash", root = root),
+             "Mismatching data hash. Data altered outside of git2rdata.")
+
 file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
