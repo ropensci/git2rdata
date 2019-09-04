@@ -131,7 +131,11 @@ read_vc.character <- function(file, root = ".") {
     }
   }
 
-  names(file) <- hashfile(file)
+  names(file) <-
+    c(
+      meta_data[["..generic"]][["data_hash"]],
+      meta_data[["..generic"]][["hash"]]
+    )
   attr(raw_data, "source") <- file
   return(raw_data)
 }
