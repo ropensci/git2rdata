@@ -8,12 +8,7 @@
 #' @importFrom git2r hash
 datahash <- function(data) {
   assert_that(inherits(data, "data.frame"))
-  for (i in seq_len(ncol(data))) {
-    if (is.numeric(data[, i])) {
-      data[, i] <- as.character(data[, i])
-    }
-  }
-  datastring <- paste(data, sep = "\t", collapse = "\n")
+  datastring <- do.call(paste, c(data, sep = "\t", collapse = "\n"))
   datastring <- iconv(datastring, to = "UTF-8")
   hash(datastring)
 }
