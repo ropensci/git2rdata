@@ -78,6 +78,7 @@ read_vc.character <- function(file, root = ".") {
   )
 
   if (meta_data[["..generic"]][["data_hash"]] != datahash(raw_data)) {
+    meta_data[["..generic"]][["data_hash"]] <- datahash(raw_data)
     warning("Mismatching data hash. Data altered outside of git2rdata.",
             call. = FALSE)
   }
