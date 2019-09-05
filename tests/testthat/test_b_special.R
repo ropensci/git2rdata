@@ -55,20 +55,24 @@ expect_equal(
 test_data_fixed <-
   data.frame(
     characters = LETTERS[1:10],
-    spec_chars = c("é", "&", "à", "µ", "ç", "€", "|", "#", "@", "$"),
+    spec_chars = c("\U00E9", "&", "\U00E0", "\U00B5", "\U00E7", "?", "|", "#", "@", "$"),
     numbers = seq(4, 99, length.out = 10),
     stringsAsFactors = FALSE
   )
 expect_equal(
-  names(write_vc(test_data_fixed, "test_data_hash", root)[1]),
-  "6f84620cf2e355e0ebfa7a72a3b60325d36b3f27"
+  git2rdata:::datahash(test_data_fixed),
+  "204ad065cae20408a449e070b80801a2e7d38732"
+)
+expect_equal(
+  names(write_vc(test_data_fixed, "test_data_hash", root))[1],
+  "204ad065cae20408a449e070b80801a2e7d38732"
 )
 expect_silent(
   output_test_data_hash <- read_vc("test_data_hash", root)
 )
 expect_equal(
   names(attr(output_test_data_hash, "source")[1]),
-  "6f84620cf2e355e0ebfa7a72a3b60325d36b3f27"
+  "204ad065cae20408a449e070b80801a2e7d38732"
 )
 attr(output_test_data_hash, "source") <- NULL
 expect_equal(
