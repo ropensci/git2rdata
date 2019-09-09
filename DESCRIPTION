@@ -1,6 +1,6 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.1.0.9000
+Version: 0.1.0.9001
 Authors@R: c(
   person(
     "Thierry", "Onkelinx", role = c("aut", "cre"), 
@@ -14,6 +14,10 @@ Authors@R: c(
     "Peter", "Desmet", role = "ctb", 
     email = "peter.desmet@inbo.be", 
     comment = c(ORCID = "0000-0002-8442-8025")),
+  person(
+    "Els", "Lommelen", role = "ctb", 
+    email = "els.lommelen@inbo.be", 
+    comment = c(ORCID = "0000-0002-3481-5684")),
   person(
     "Research Institute for Nature and Forest",
     role = c("cph", "fnd"), email = "info@inbo.be"))
