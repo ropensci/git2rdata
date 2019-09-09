@@ -61,18 +61,18 @@ test_data_fixed <-
   )
 expect_equal(
   git2rdata:::datahash(test_data_fixed),
-  "204ad065cae20408a449e070b80801a2e7d38732"
+  "897bdfbaffedb702f39b37d0990c4ffffd6ae0d6"
 )
 expect_equal(
   names(write_vc(test_data_fixed, "test_data_hash", root))[1],
-  "204ad065cae20408a449e070b80801a2e7d38732"
+  "897bdfbaffedb702f39b37d0990c4ffffd6ae0d6"
 )
 expect_silent(
   output_test_data_hash <- read_vc("test_data_hash", root)
 )
 expect_equal(
   names(attr(output_test_data_hash, "source")[1]),
-  "204ad065cae20408a449e070b80801a2e7d38732"
+  "897bdfbaffedb702f39b37d0990c4ffffd6ae0d6"
 )
 attr(output_test_data_hash, "source") <- NULL
 expect_equal(
