@@ -1,4 +1,4 @@
-#' Calculate hash of dataframe
+#' Calculate Hash of Dataframe
 #' Calculates a hash based on the given data that is compatible with different operating systems
 #' @param data dataframe to calculate the hash
 #' @param convert convert characters in dataframe data to UTF-8?
