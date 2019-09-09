@@ -2,7 +2,7 @@
 #' Calculates a hash based on the given data that is compatible with different operating systems
 #' @param data dataframe to calculate the hash
 #' @param convert convert characters in dataframe data to UTF-8?
-#' @return A 40 digit unique code representind the dataframe
+#' @return A 40 digit unique code representing the dataframe
 #' @noRd
 #' @family internal
 #' @importFrom assertthat assert_that
