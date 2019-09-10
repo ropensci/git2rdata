@@ -58,22 +58,6 @@ test_that("upgrade_data() validates metadata", {
     unname(upgrade_data(file = file, root = root)),
     file
   )
-  junk_yaml <- correct_yaml
-  junk_yaml[["..generic"]][["git2rdata"]] <- NULL
-  junk_yaml[["test_Date"]] <- NULL
-  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
-  expect_error(
-    upgrade_data(file = file, root = root),
-    "corrupt metadata: mismatching hash."
-  )
-  junk_yaml <- correct_yaml
-  junk_yaml[["..generic"]][["git2rdata"]] <- NULL
-  junk_yaml[["..generic"]][["hash"]] <- "zzz"
-  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
-  expect_error(
-    upgrade_data(file = file, root = root),
-    "corrupt metadata: mismatching hash."
-  )
   junk_yaml[["..generic"]][["hash"]] <- NULL
   yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
   expect_error(
@@ -87,6 +71,18 @@ test_that("upgrade_data() validates metadata", {
     "is not a git2rdata object"
   )
   expect_equivalent(file, junk)
+
+  file <- basename(tempfile(tmpdir = root))
+  junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date",
+                   optimize = FALSE)
+  correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
+  junk_yaml <- correct_yaml
+  junk_yaml[["..generic"]][["git2rdata"]] <- "0.0.5"
+  yaml::write_yaml(junk_yaml, file.path(root, junk[2]))
+  expect_identical(
+    unname(upgrade_data(file = file, root = root)),
+    file
+  )
 })
 
 file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
