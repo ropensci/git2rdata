@@ -73,7 +73,7 @@ upgrade_data.character <- function(
   )
   if (has_name(meta_data[["..generic"]], "git2rdata")) {
     if (package_version(meta_data[["..generic"]][["git2rdata"]]) >=
-        package_version("0.0.5")
+        package_version("0.1.0.9001")
         ) {
       if (verbose) {
         message(target, " already up to date")
@@ -81,17 +81,41 @@ upgrade_data.character <- function(
       return(target)
     }
     meta_data[["..generic"]][["git2rdata"]] <- NULL
+    meta_data[["..generic"]][["data_hash"]] <- NULL
   }
-  assert_that(
-    meta_data[["..generic"]][["hash"]] == metadata_hash(meta_data),
-    msg = paste(target, "has corrupt metadata: mismatching hash.")
-  )
   meta_data[["..generic"]] <- c(
     git2rdata = as.character(packageVersion("git2rdata")),
     meta_data[["..generic"]]
   )
   if (!has_name(meta_data[["..generic"]], "data_hash")) {
-    meta_data[["..generic"]][["data_hash"]] <- hashfile(file["raw_file"])
+    optimize <- meta_data[["..generic"]][["optimize"]]
+    if (optimize) {
+      col_type <- c(
+        character = "character", factor = "integer", integer = "integer",
+        numeric = "numeric", logical = "integer", Date = "integer",
+        POSIXct = "numeric", complex = "complex"
+      )
+    } else {
+      col_type <- c(
+        character = "character", factor = "character", integer = "integer",
+        numeric = "numeric", logical = "logical", Date = "Date",
+        POSIXct = "character", complex = "complex"
+      )
+    }
+    na_string <- meta_data[["..generic"]][["NA string"]]
+    details <- meta_data[names(meta_data) != "..generic"]
+    col_names <- names(details)
+    col_classes <- vapply(details, "[[", character(1), "class")
+
+    # read the raw data and recalculate the data hash
+    raw_data <- read.table(
+      file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
+      dec = ".", numerals = "warn.loss", na.strings = na_string,
+      colClasses = setNames(col_type[col_classes], col_names),
+      comment.char = "", stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+    )
+    meta_data[["..generic"]][["data_hash"]] <-
+      datahash(raw_data, convert = TRUE)
   }
   write_yaml(meta_data, file["meta_file"], fileEncoding = "UTF-8")
   if (verbose) {
