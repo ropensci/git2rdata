@@ -24,6 +24,7 @@ Other contributors:
 \itemize{
   \item Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (0000-0002-6378-6229) [contributor]
   \item Peter Desmet \email{peter.desmet@inbo.be} (0000-0002-8442-8025) [contributor]
+  \item Els Lommelen \email{els.lommelen@inbo.be} (0000-0002-3481-5684) [contributor]
   \item Research Institute for Nature and Forest \email{info@inbo.be} [copyright holder, funder]
 }
 
