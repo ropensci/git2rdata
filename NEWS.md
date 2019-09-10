@@ -4,7 +4,8 @@ git2rdata 0.1.0.9001 (2019-09-09)
 ### BREAKING FEATURES
 
   * Calculation of data hash has changed, due to which `read_vc()` will once warn that data are altered outside git2rdata when reading a previously written git2rdata object (#53).
-  * `is_git2rdata()` does not test equality in data hashes anymore (but `read_vc()` still does).
+  * `read_vc()` only works with data stored with version >= 0.1.0.9001. Use `upgrade_data()` on data written with an earlier version.
+  * `is_git2rdata()` and `upgrade_data()` do not test equality in data hashes anymore (but `read_vc()` still does).
 
 ### Bugfixes
 
