@@ -41,6 +41,10 @@ expect_equal(
   z[order(z$a), , drop = FALSE], # nolint
   check.attributes = FALSE
 )
+expect_equal(
+  names(write_vc(ds, "hash_equality", root))[1],
+  names(attr(read_vc("hash_equality", root), "source"))[1]
+)
 ds$a <- factor(ds$a)
 expect_is(
   write_vc(ds, "factor2", root, sorting = "a", optimize = FALSE),
