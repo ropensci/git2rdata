@@ -1,17 +1,13 @@
 #' Calculate Hash of Dataframe
 #' Calculates a hash based on the given data that is compatible with different operating systems.
-#' @param data Dataframe to calculate the hash.
-#' @param convert convert characters in dataframe data to UTF-8?
+#' @param file The file to calculate the hash.
 #' @return A 40 hexadecimal character quasi-unique code representing the dataframe.
 #' @noRd
 #' @family internal
 #' @importFrom assertthat assert_that
 #' @importFrom git2r hash
-datahash <- function(data, convert = FALSE) {
-  assert_that(inherits(data, "data.frame"))
-  datastring <- do.call(paste, c(data, sep = "\t", collapse = "\n"))
-  if (convert) {
-    datastring <- iconv(datastring, to = "UTF-8")
-  }
+datahash <- function(file) {
+  datastring <- readLines(file, encoding = "UTF-8")
+  datastring <- paste(datastring, collapse = "\n")
   hash(datastring)
 }

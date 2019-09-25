@@ -8,7 +8,8 @@ ds <- data.frame(
     "a\nb", "a\nb\nc", "\na", "a\n",
     "a\"b", "a\"b\"c", "\"b", "a\"", "\"b\"",
     "a'b", "a'b'c", "'b", "a'", "'b'",
-    "a b c", "\"NA\"", "'NA'", NA
+    "a b c", "\"NA\"", "'NA'", NA,
+    "\U00E9", "&", "\U00E0", "\U00B5", "\U00E7", "€", "|", "#", "@", "$"
   ),
   stringsAsFactors = FALSE
 )
@@ -42,7 +43,7 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(
-  names(write_vc(ds, "hash_equality", root))[1],
+  names(suppressWarnings(write_vc(ds, "hash_equality", root)))[1],
   names(attr(read_vc("hash_equality", root), "source"))[1]
 )
 ds$a <- factor(ds$a)
@@ -56,32 +57,21 @@ expect_equal(
   check.attributes = FALSE
 )
 
-test_data_fixed <-
-  data.frame(
-    characters = LETTERS[1:10],
-    spec_chars = c("\U00E9", "&", "\U00E0", "\U00B5", "\U00E7", "€", "|", "#", "@", "$"),
-    numbers = seq(4, 99, length.out = 10),
-    stringsAsFactors = FALSE
-  )
 expect_equal(
-  git2rdata:::datahash(test_data_fixed),
-  "934d5472173bee881c30177eb2371367733585dc"
+  names(suppressWarnings(write_vc(ds, "test_data_hash", root)))[1],
+  "be6352bd3b0d1b3cd81739a5190c24a277ea16d5"
 )
-expect_equal(
-  names(write_vc(test_data_fixed, "test_data_hash", root))[1],
-  "934d5472173bee881c30177eb2371367733585dc"
-)
-expect_silent(
+expect_silent({
   output_test_data_hash <- read_vc("test_data_hash", root)
-)
+})
 expect_equal(
   names(attr(output_test_data_hash, "source")[1]),
-  "934d5472173bee881c30177eb2371367733585dc"
+  "be6352bd3b0d1b3cd81739a5190c24a277ea16d5"
 )
 attr(output_test_data_hash, "source") <- NULL
 expect_equal(
   output_test_data_hash,
-  test_data_fixed
+  ds
 )
 yaml_file <- yaml::read_yaml(file.path(root, "test_data_hash.yml"))
 yaml_file[["..generic"]][["data_hash"]] <- "zzz"
