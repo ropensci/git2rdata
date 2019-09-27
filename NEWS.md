@@ -1,3 +1,11 @@
+git2rdata 0.1.0.9002 (2019-09-27)
+=================================
+
+### BREAKING FEATURES
+
+  * sorting is based on the "C" locale
+  * the data hash is based on the plain text file
+
 git2rdata 0.1.0.9001 (2019-09-09)
 =================================
 

@@ -17,19 +17,18 @@ expect_is(
   write_vc(ds, "character", root, sorting = "a"),
   "character"
 )
+old_locale <- git2rdata:::set_c_locale()
+dso <- ds[order(ds$a), , drop = FALSE] # nolint
+git2rdata:::set_local_locale(old_locale)
 expect_equal(
-  junk <- read_vc("character", root),
-  ds[order(ds$a), , drop = FALSE], # nolint
-  check.attributes = FALSE
+  junk <- read_vc("character", root), dso, check.attributes = FALSE
 )
 expect_is(
   write_vc(ds, "character2", root, sorting = "a", optimize = FALSE),
   "character"
 )
 expect_equal(
-  junk <- read_vc("character2", root),
-  ds[order(ds$a), , drop = FALSE], # nolint
-  check.attributes = FALSE
+  junk <- read_vc("character2", root), dso, check.attributes = FALSE
 )
 z <- rbind(ds, "NA")
 z$a <- factor(z$a)
@@ -59,14 +58,14 @@ expect_equal(
 
 expect_equal(
   names(suppressWarnings(write_vc(ds, "test_data_hash", root)))[1],
-  "be6352bd3b0d1b3cd81739a5190c24a277ea16d5"
+  "2d5325687dcd6a2229b5851bca1c84df6b39da62"
 )
 expect_silent({
   output_test_data_hash <- read_vc("test_data_hash", root)
 })
 expect_equal(
   names(attr(output_test_data_hash, "source")[1]),
-  "be6352bd3b0d1b3cd81739a5190c24a277ea16d5"
+  "2d5325687dcd6a2229b5851bca1c84df6b39da62"
 )
 attr(output_test_data_hash, "source") <- NULL
 expect_equal(
