@@ -213,7 +213,9 @@ Sorting is strongly recommended in combination with version control.")
       all(sorting %in% colnames(x)),
       msg = "All sorting variables must be available in the data.frame")
     if (nrow(x) > 1) {
+      old_locale <- set_c_locale()
       x <- x[do.call(order, unname(x[sorting])), , drop = FALSE] # nolint
+      set_local_locale(old_locale)
       if (any_duplicated(x[sorting])) {
         sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
         sorted <- sprintf("Sorting on %s results in ties.

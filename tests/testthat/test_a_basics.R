@@ -247,11 +247,13 @@ test_that("user specified na strings work", {
     ),
     "character"
   )
+  old_locale <- git2rdata:::set_c_locale()
   expect_equal(
     read_vc(fn[1], root),
     x[order(x$a), ],
     check.attributes = FALSE
   )
+  git2rdata:::set_local_locale(old_locale)
   expect_identical(
     grep("junk", readLines(file.path(root, fn[1]))),
     2:4
@@ -269,11 +271,13 @@ test_that("user specified na strings work", {
     ),
     "character"
   )
+  old_locale <- git2rdata:::set_c_locale()
   expect_equal(
     read_vc(fn[1], root),
     x[order(x$a), ],
     check.attributes = FALSE
   )
+  git2rdata:::set_local_locale(old_locale)
   expect_identical(
     grep("junk", readLines(file.path(root, fn[1]))),
     2:4

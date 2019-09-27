@@ -14,14 +14,14 @@
   ],
   "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.1.0.9000",
+  "version": "0.1.0.9002",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.0",
+    "version": "3.6.1",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.0 (2019-04-26)",
+  "runtimePlatform": "R version 3.6.1 (2019-07-05)",
   "author": [
     {
       "@type": "Person",
@@ -45,6 +45,13 @@
       "familyName": "Desmet",
       "email": "peter.desmet@inbo.be",
       "@id": "https://orcid.org/0000-0002-8442-8025"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Els",
+      "familyName": "Lommelen",
+      "email": "els.lommelen@inbo.be",
+      "@id": "https://orcid.org/0000-0002-3481-5684"
     }
   ],
   "copyrightHolder": [
@@ -196,7 +203,7 @@
   ],
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
-  "fileSize": "338.973KB",
+  "fileSize": "362.855KB",
   "contIntegration": [
     "https://travis-ci.org/inbo/git2rdata",
     "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
