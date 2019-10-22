@@ -38,6 +38,7 @@ meta <- function(x, ...) {
 #' @importFrom assertthat assert_that is.string noNA
 meta.character <- function(x, na = "NA", ...) {
   assert_that(is.string(na), noNA(na), no_whitespace(na))
+  x <- iconv(x, to = "UTF-8")
   if (na %in% x) {
     stop("one of the strings matches the NA string ('", na, "')
 Please use a different NA string or consider using a factor.", call. = FALSE)
@@ -79,6 +80,7 @@ meta.numeric <- function(x, ...) {
 #' @importFrom assertthat assert_that is.flag noNA
 meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
   assert_that(is.flag(optimize), noNA(optimize))
+  levels(x) <- iconv(levels(x), to = "UTF-8")
   if (missing(index) || is.null(index)) {
     index <- seq_along(levels(x))
     names(index) <- levels(x)
@@ -109,7 +111,7 @@ Please use a different NA string or use optimize = TRUE", call. = FALSE)
   }
 
   m <- list(class = "factor", na_string = na, optimize = optimize,
-            labels = enc2utf8(names(index)), index = unname(index),
+            labels = names(index), index = unname(index),
             ordered = is.ordered(x))
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
