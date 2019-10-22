@@ -29,6 +29,9 @@ test_data <- data.frame(
 old_locale <- git2rdata:::set_c_locale()
 sorted_test_data <- test_data[order(test_data$test_Date), ]
 git2rdata:::set_local_locale(old_locale)
+sorted_test_data$test_character <- iconv(
+  sorted_test_data$test_character, from = "UTF-8", to = "UTF-8"
+)
 rownames(sorted_test_data) <- NULL
 attr(sorted_test_data$test_POSIXct, "tzone") <- "UTC"
 
