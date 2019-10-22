@@ -61,7 +61,7 @@ rm(init_repo)
 
 `git2rdata` imposes very little structure. Both the `.tsv` and the `.yml` file need to be in the same folder. That's it. For the sake of simplicity, in this vignette we dump all git2rdata objects at the root of the repository. 
 
-However, this might not be good idea for real project. We recommend to use at least a different directory tree for each import script. This directory can go into the root of a data only repository. It goes in the `data` directory in case of a data and code repository. Or the `inst` directory is case of an R package.
+However, this might not be good idea for real project. We recommend to use at least a different directory tree for each import script. This directory can go into the root of a data only repository. It goes in the `data` directory in case of a data and code repository. Or the `inst` directory in case of an R package.
 
 Your project might need a different directory structure. Feel free to implement the most relevant data structure for your project.
 
