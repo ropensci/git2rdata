@@ -255,7 +255,7 @@ test_that("user specified na strings work", {
   )
   git2rdata:::set_local_locale(old_locale)
   expect_identical(
-    grep("junk", readLines(file.path(root, fn[1]))),
+    grep("junk", readLines(file.path(root, fn[1]), encoding = "UTF-8")),
     2:4
   )
   expect_error(
@@ -279,7 +279,7 @@ test_that("user specified na strings work", {
   )
   git2rdata:::set_local_locale(old_locale)
   expect_identical(
-    grep("junk", readLines(file.path(root, fn[1]))),
+    grep("junk", readLines(file.path(root, fn[1]), encoding = "UTF-8")),
     2:4
   )
   file.remove(list.files(root, recursive = TRUE, full.names = TRUE))

@@ -122,7 +122,7 @@ test_that("is_git2rdata checks data", {
   junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
   correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
   yaml::write_yaml(correct_yaml, file.path(root, junk[2]))
-  correct_data <- readLines(file.path(root, junk[1]))
+  correct_data <- readLines(file.path(root, junk[1]), encoding = "UTF-8")
   junk_header <- correct_data
   junk_header[1] <- "junk"
   writeLines(junk_header, file.path(root, junk[1]))
