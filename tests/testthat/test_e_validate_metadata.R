@@ -35,7 +35,7 @@ test_that("read_vc() checks hash", {
 test_that("read_vc() handles changes in rawdata", {
   file <- basename(tempfile(tmpdir = root))
   junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
-  correct_data <- readLines(file.path(root, junk[1]))
+  correct_data <- readLines(file.path(root, junk[1]), encoding = "UTF-8")
   correct_header <- strsplit(correct_data[1], "\t")[[1]]
   junk_data <- correct_data
   junk_data[1] <- paste(correct_header[-1], collapse = "\t")
