@@ -14,7 +14,8 @@ Note that \code{file} must point to a location within \code{root}.}
 
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.}
 
-\item{data}{does \code{file} refers to a data object (\code{TRUE}) or to a file (\code{FALSE}).
+\item{data}{does \code{file} refers to a data object (\code{TRUE}) or to a file
+(\code{FALSE})?
 Defaults to \code{FALSE}.}
 }
 \value{

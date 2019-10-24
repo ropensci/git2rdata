@@ -12,7 +12,8 @@
 #' be rerun. See `vignette("workflow", package = "git2rdata")`.
 #' @inheritParams write_vc
 #' @param root The root of a project. Can be a file path or a `git-repository`.
-#' @param data does `file` refers to a data object (`TRUE`) or to a file (`FALSE`).
+#' @param data does `file` refers to a data object (`TRUE`) or to a file
+#' (`FALSE`)?
 #' Defaults to `FALSE`.
 #' @return a `data.frame` with `commit`, `author` and `when` for the most recent
 #' commit that adds op updates the file.
@@ -73,7 +74,7 @@
 #'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
 #'                  include.dirs = TRUE, all.files = TRUE)),
 #'   repo_path)
-recent_commit <- function(file, root, data = FALSE){
+recent_commit <- function(file, root, data = FALSE) {
   UseMethod("recent_commit", root)
 }
 

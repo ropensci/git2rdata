@@ -51,9 +51,11 @@ a named vector with the file paths relative to \code{root}. The names
 contain the hashes of the files.
 }
 \description{
-A git2rdata object consists of two files. The \code{".tsv"} file contains the raw
-data as a plain text tab separated file. The \code{".yml"} contains the metadata
-on the columns in plain text YAML format. See \code{vignette("plain text", package = "git2rdata")} for more details on the implementation.
+A git2rdata object consists of two files.
+The \code{".tsv"} file contains the raw data as a plain text tab separated file.
+The \code{".yml"} contains the metadata on the columns in plain text YAML format.
+See \code{vignette("plain text", package = "git2rdata")} for more details on the
+implementation.
 }
 \note{
 \code{..generic} is a reserved name for the metadata and is a forbidden

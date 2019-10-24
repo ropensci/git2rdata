@@ -22,14 +22,14 @@
 #' @template example-prune
 rm_data <- function(
   root = ".", path = NULL, recursive = TRUE, ...
-){
+) {
   UseMethod("rm_data", root)
 }
 
 #' @export
 rm_data.default <- function(
   root, path = NULL, recursive = TRUE, ...
-){
+) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
@@ -37,7 +37,7 @@ rm_data.default <- function(
 #' @importFrom assertthat assert_that is.flag
 rm_data.character <- function(
   root = ".", path = NULL, recursive = TRUE, ...
-){
+) {
   to_do <- list_data(root = root, path = path, recursive = recursive)
   if (length(to_do) == 0) {
     return(to_do)
@@ -63,7 +63,7 @@ rm_data.character <- function(
 rm_data.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE,
   type = c("unmodified", "modified", "ignored", "all")
-){
+) {
   type <- match.arg(type)
   to_do <- list_data(root = root, path = path, recursive = recursive)
   if (length(to_do) == 0) {
@@ -116,14 +116,14 @@ rm_data.git_repository <- function(
 #' @template example-prune
 prune_meta <- function(
   root = ".", path = NULL, recursive = TRUE, ...
-){
+) {
   UseMethod("prune_meta", root)
 }
 
 #' @export
 prune_meta.default <- function(
   root, path = NULL, recursive = TRUE, ...
-){
+) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
@@ -131,7 +131,7 @@ prune_meta.default <- function(
 #' @importFrom assertthat assert_that is.flag noNA
 prune_meta.character <- function(
   root = ".", path = NULL, recursive = TRUE, ...
-){
+) {
   assert_that(is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   assert_that(is.string(path))
@@ -171,7 +171,7 @@ prune_meta.character <- function(
 #' @rdname prune_meta
 prune_meta.git_repository <- function(
   root, path = NULL, recursive = TRUE, ..., stage = FALSE
-){
+) {
   root_wd <- normalizePath(workdir(root), winslash = "/")
   assert_that(is.string(path))
   path <- file.path(root_wd, path)

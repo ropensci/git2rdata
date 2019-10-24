@@ -1,8 +1,10 @@
 #' Store a Data.Frame as a Git2rdata Object on Disk
 #'
-#' A git2rdata object consists of two files. The `".tsv"` file contains the raw
-#' data as a plain text tab separated file. The `".yml"` contains the metadata
-#' on the columns in plain text YAML format. See `vignette("plain text", package = "git2rdata")` for more details on the implementation.
+#' A git2rdata object consists of two files.
+#' The `".tsv"` file contains the raw data as a plain text tab separated file.
+#' The `".yml"` contains the metadata on the columns in plain text YAML format.
+#' See `vignette("plain text", package = "git2rdata")` for more details on the
+#' implementation.
 #' @param x the `data.frame`.
 #' @param file the name of the git2rdata object. Git2rdata objects cannot
 #' have dots in their name. The name may include a relative path. `file` is a
@@ -52,7 +54,7 @@ write_vc.default <- function(
 write_vc.character <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA",
   ...
-){
+) {
   assert_that(
     inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
     noNA(na), no_whitespace(na), is.flag(strict), is.flag(optimize)
@@ -133,7 +135,7 @@ setOldClass("git_repository")
 write_vc.git_repository <- function(
   x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
   stage = FALSE, force = FALSE
-){
+) {
   assert_that(is.flag(stage), is.flag(force))
   hashes <- write_vc(
     x = x, file = file, root = workdir(root), sorting = sorting,
