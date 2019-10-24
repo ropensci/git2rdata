@@ -58,14 +58,14 @@ expect_equal(
 
 expect_equal(
   names(suppressWarnings(write_vc(ds, "test_data_hash", root)))[1],
-  "c9e802041a28f322c94ba590607786a6bf8e590f"
+  "9921bdcc46436f2695db60ecf0ba5dc254fb847c"
 )
 expect_silent({
   output_test_data_hash <- read_vc("test_data_hash", root)
 })
 expect_equal(
   names(attr(output_test_data_hash, "source")[1]),
-  "c9e802041a28f322c94ba590607786a6bf8e590f"
+  "9921bdcc46436f2695db60ecf0ba5dc254fb847c"
 )
 attr(output_test_data_hash, "source") <- NULL
 expect_equal(
