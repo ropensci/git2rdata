@@ -121,7 +121,7 @@ Please use a different NA string or use optimize = TRUE", call. = FALSE)
 #' @export
 #' @rdname meta
 #' @importFrom assertthat assert_that is.flag noNA
-meta.logical <- function(x, optimize = TRUE, ...){
+meta.logical <- function(x, optimize = TRUE, ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     x <- as.integer(x)
@@ -162,7 +162,7 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
 #' @export
 #' @rdname meta
 #' @importFrom assertthat assert_that is.flag noNA
-meta.Date <- function(x, optimize = TRUE, ...){
+meta.Date <- function(x, optimize = TRUE, ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     z <- as.integer(x)
@@ -190,7 +190,7 @@ meta.Date <- function(x, optimize = TRUE, ...){
 #' argument intended for internal use.
 #' @rdname meta
 #' @inheritParams write_vc
-meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) {
+meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) { #nolint
   assert_that(
     !has_name(x, "..generic"),
     msg = "'..generic' is a reserved name and not allowed as column name")

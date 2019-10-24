@@ -131,7 +131,7 @@ Use write_vc() instead.", call. = FALSE)
 #' @export
 #' @importFrom assertthat assert_that has_name
 #' @importFrom stats setNames
-relabel.data.frame <- function(file, root, change) {
+relabel.data.frame <- function(file, root, change) { #nolint
   assert_that(
     has_name(change, "factor"),
     has_name(change, "old"),
