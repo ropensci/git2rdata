@@ -9,9 +9,31 @@
 #' @importFrom assertthat assert_that
 #' @importFrom git2r hash
 datahash <- function(file) {
-  datastring <- readLines(file, encoding = "UTF-8")
-  datastring <- paste(datastring, collapse = "\n")
-  hash(datastring)
+  chunk_size <- 1e4
+  hashes <- character(chunk_size + 1)
+  i <- 0
+  rawdata <- scan(
+    file = file, what = character(), nmax = -1, sep = "\n", quote = "",
+    skip = i * chunk_size, nlines = chunk_size, na.strings = "",
+    flush = FALSE, fill = FALSE, strip.white = FALSE, quiet = TRUE,
+    blank.lines.skip = FALSE, comment.char = "", allowEscapes = FALSE,
+    encoding = "UTF-8", skipNul = FALSE
+  )
+  while (length(rawdata)) {
+    hashes[1 + i %% chunk_size] <- hash(paste(hash(rawdata), collapse = "\n"))
+    i <- i + 1
+    if (i  %% chunk_size == 0) {
+      hashes[chunk_size + 1] <- hash(paste(hashes, collapse = ""))
+    }
+    rawdata <- scan(
+      file = file, what = character(), nmax = -1, sep = "\n", quote = "",
+      skip = i * chunk_size, nlines = chunk_size, na.strings = "",
+      flush = FALSE, fill = FALSE, strip.white = FALSE, quiet = TRUE,
+      blank.lines.skip = FALSE, comment.char = "", allowEscapes = FALSE,
+      encoding = "UTF-8", skipNul = FALSE
+    )
+  }
+  hash(paste(hashes, collapse = ""))
 }
 
 #' Set the C locale for standardized sorting
