@@ -58,14 +58,14 @@ expect_equal(
 
 expect_equal(
   names(suppressWarnings(write_vc(ds, "test_data_hash", root)))[1],
-  "be6352bd3b0d1b3cd81739a5190c24a277ea16d5"
+  "dd99251ec3ad80ce137db113a8baee5801e73bc4"
 )
 expect_silent({
   output_test_data_hash <- read_vc("test_data_hash", root)
 })
 expect_equal(
   names(attr(output_test_data_hash, "source")[1]),
-  "be6352bd3b0d1b3cd81739a5190c24a277ea16d5"
+  "dd99251ec3ad80ce137db113a8baee5801e73bc4"
 )
 attr(output_test_data_hash, "source") <- NULL
 expect_equal(
@@ -97,11 +97,11 @@ expect_identical(
 )
 expect_equal(
   names(suppressWarnings(write_vc(ds, "test_1", root)))[1],
-  "10cc7a45d8d71a91eb88b3f13109b1ac2732d8a5"
+  "e4a5122d4f08b91769ef24b6d7ee364b164a8840"
 )
 expect_equal(
   git2rdata:::datahash(file.path(root, "test_1.tsv")),
-  "10cc7a45d8d71a91eb88b3f13109b1ac2732d8a5"
+  "e4a5122d4f08b91769ef24b6d7ee364b164a8840"
 )
 expect_equal(
   tail(readLines(file.path(root, "test_1.tsv"), encoding = "UTF-8"), -1),
@@ -127,11 +127,11 @@ expect_identical(
 )
 expect_equal(
   names(suppressWarnings(write_vc(ds, "test_2", root)))[1],
-  "a3fef7eed4b598173700f405b0e024e7fbbb2cfe"
+  "64315fabfdd8cbbf8a86dbf5679c6c94f9851cad"
 )
 expect_equal(
   git2rdata:::datahash(file.path(root, "test_2.tsv")),
-  "a3fef7eed4b598173700f405b0e024e7fbbb2cfe"
+  "64315fabfdd8cbbf8a86dbf5679c6c94f9851cad"
 )
 expect_equal(
   tail(readLines(file.path(root, "test_2.tsv"), encoding = "UTF-8"), -1),
@@ -177,11 +177,11 @@ expect_identical(
 )
 expect_equal(
   names(suppressWarnings(write_vc(ds, "test_3", root)))[1],
-  "c55e686867fd6ab13b8612942df6776660a79782"
+  "de2cd7bfb1a5f40395f8c3907a5a6f20e22a7cb1"
 )
 expect_equal(
   git2rdata:::datahash(file.path(root, "test_3.tsv")),
-  "c55e686867fd6ab13b8612942df6776660a79782"
+  "de2cd7bfb1a5f40395f8c3907a5a6f20e22a7cb1"
 )
 expect_equal(
   tail(readLines(file.path(root, "test_3.tsv"), encoding = "UTF-8"), -1),
@@ -205,11 +205,11 @@ expect_identical(
 )
 expect_equal(
   names(suppressWarnings(write_vc(ds, "test_4", root)))[1],
-  "21e1b61d9e6dbff1ee712643e6262fdd13777a90"
+  "a461dd81fb6b349de8df52e0c1124d4ab410b0c1"
 )
 expect_equal(
   git2rdata:::datahash(file.path(root, "test_4.tsv")),
-  "21e1b61d9e6dbff1ee712643e6262fdd13777a90"
+  "a461dd81fb6b349de8df52e0c1124d4ab410b0c1"
 )
 expect_equal(
   paste(
