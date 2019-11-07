@@ -1,7 +1,7 @@
 #' Optimize an Object for Storage as Plain Text and Add Metadata
 #'
 #' @description
-#' Prepares a vector for storage. When relevant, `meta()`optimizes the object
+#' Prepares a vector for storage. When relevant, `meta()` optimizes the object
 #' for storage by changing the format to one which needs less characters. The
 #' metadata stored in the `meta` attribute, contains all required information to
 #' back-transform the optimized format into the original format.
@@ -71,15 +71,23 @@ meta.numeric <- function(x, ...) {
 
 #' @export
 #' @rdname meta
-#' @param optimize If `TRUE`, recode the data to get smaller text files. If
-#' `FALSE`, `meta()` converts the data to character. Defaults to `TRUE`.
-#' @param index an optional named vector with existing factor indices. The names
-#' must match the existing factor levels. Unmatched levels from `x` will get new
-#' indices.
+#' @param optimize If `TRUE`, recode the data to get smaller text files.
+#' If `FALSE`, `meta()` converts the data to character.
+#' Defaults to `TRUE`.
+#' @param index An optional named vector with existing factor indices.
+#' The names must match the existing factor levels.
+#' Unmatched levels from `x` will get new indices.
 #' @inheritParams utils::write.table
 #' @importFrom assertthat assert_that is.flag noNA
-meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
-  assert_that(is.flag(optimize), noNA(optimize))
+#' @note The default order of factor levels depends on the current locale.
+#' See \code{\link{Comparison}} for more details on that.
+#' The same code on a different locale might result in a different sorting.
+#' `meta()` ignores, with a warning, any change in the order of factor levels.
+#' Add `strict = FALSE` to enforce the new order of factor levels.
+meta.factor <- function(
+  x, optimize = TRUE, na = "NA", index, strict = TRUE, ...
+) {
+  assert_that(is.flag(optimize), noNA(optimize), is.flag(strict), noNA(strict))
   levels(x) <- enc2utf8(levels(x))
   if (missing(index) || is.null(index)) {
     index <- seq_along(levels(x))
@@ -87,6 +95,17 @@ meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
   } else {
     assert_that(is.integer(index))
     assert_that(anyDuplicated(index) == 0, msg = "duplicate indices")
+
+    if (
+      strict &&
+      all(names(index) %in% levels(x)) &&
+      all(levels(x) %in% names(index)) &&
+      any(levels(x) != names(index))
+    ) {
+      warning("Same levels with a different order detected.
+This change is ignored. Use `strict = FALSE` to reorder the factor.")
+      x <- factor(x, levels = names(index))
+    }
     new_levels <- which(!levels(x) %in% names(index))
     candidate_index <- seq_len(length(new_levels) + length(index))
     candidate_index <- candidate_index[!candidate_index %in% index]
@@ -103,10 +122,11 @@ meta.factor <- function(x, optimize = TRUE, na = "NA", index, ...) {
     z <- index[x]
   } else {
     assert_that(is.string(na), noNA(na), no_whitespace(na))
-    if (na %in% levels(x)) {
-      stop("one of the levels matches the NA string ('", na, "').
-Please use a different NA string or use optimize = TRUE", call. = FALSE)
-    }
+    assert_that(
+      !na %in% levels(x),
+      msg = paste0("one of the levels matches the NA string ('", na, "').
+Please use a different NA string or use optimize = TRUE")
+    )
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
 
@@ -190,7 +210,9 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' argument intended for internal use.
 #' @rdname meta
 #' @inheritParams write_vc
-meta.data.frame <- function(x, optimize = TRUE, na = "NA", sorting, ...) { #nolint
+meta.data.frame <- function(# nolint
+  x, optimize = TRUE, na = "NA", sorting, strict = TRUE, ...
+) {
   assert_that(
     !has_name(x, "..generic"),
     msg = "'..generic' is a reserved name and not allowed as column name")
@@ -233,14 +255,16 @@ Add extra sorting variables to ensure small diffs.", sorted)
     if (length(common)) {
       z_common <- lapply(
         common,
-        function(id, optimize, na) {
+        function(id, optimize, na, strict) {
           meta(
             x[[id]], optimize = optimize, na = na,
-            index = setNames(old[[id]][["index"]], old[[id]][["labels"]])
+            index = setNames(old[[id]][["index"]], old[[id]][["labels"]]),
+            strict = strict
           )
         },
         optimize = old[["..generic"]][["optimize"]],
-        na = old[["..generic"]][["NA string"]]
+        na = old[["..generic"]][["NA string"]],
+        strict = strict
       )
       names(z_common) <- common
     } else {

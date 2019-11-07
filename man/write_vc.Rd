@@ -34,8 +34,9 @@ overwrites the data and the metadata with a warning listing the changes,
 \code{strict = TRUE} returns an error and leaves the data and metadata as is.
 Defaults to \code{TRUE}.}
 
-\item{optimize}{If \code{TRUE}, recode the data to get smaller text files. If
-\code{FALSE}, \code{meta()} converts the data to character. Defaults to \code{TRUE}.}
+\item{optimize}{If \code{TRUE}, recode the data to get smaller text files.
+If \code{FALSE}, \code{meta()} converts the data to character.
+Defaults to \code{TRUE}.}
 
 \item{na}{the string to use for missing values in the data.}
 
