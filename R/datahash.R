@@ -23,7 +23,7 @@ datahash <- function(file) {
     hashes[1 + i %% chunk_size] <- hash(paste(hash(rawdata), collapse = "\n"))
     i <- i + 1
     if (i  %% chunk_size == 0) {
-      hashes[chunk_size + 1] <- hash(paste(hashes, collapse = ""))
+      hashes[chunk_size + 1] <- hash(paste(hashes, collapse = "")) # nocov
     }
     rawdata <- scan(
       file = file, what = character(), nmax = -1, sep = "\n", quote = "",
