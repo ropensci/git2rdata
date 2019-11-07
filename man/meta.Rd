@@ -15,7 +15,8 @@ meta(x, ...)
 
 \method{meta}{character}(x, na = "NA", ...)
 
-\method{meta}{factor}(x, optimize = TRUE, na = "NA", index, ...)
+\method{meta}{factor}(x, optimize = TRUE, na = "NA", index,
+  strict = TRUE, ...)
 
 \method{meta}{logical}(x, optimize = TRUE, ...)
 
@@ -23,7 +24,8 @@ meta(x, ...)
 
 \method{meta}{Date}(x, optimize = TRUE, ...)
 
-\method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting, ...)
+\method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting,
+  strict = TRUE, ...)
 }
 \arguments{
 \item{x}{the vector.}
@@ -32,12 +34,18 @@ meta(x, ...)
 
 \item{na}{the string to use for missing values in the data.}
 
-\item{optimize}{If \code{TRUE}, recode the data to get smaller text files. If
-\code{FALSE}, \code{meta()} converts the data to character. Defaults to \code{TRUE}.}
+\item{optimize}{If \code{TRUE}, recode the data to get smaller text files.
+If \code{FALSE}, \code{meta()} converts the data to character.
+Defaults to \code{TRUE}.}
 
-\item{index}{an optional named vector with existing factor indices. The names
-must match the existing factor levels. Unmatched levels from \code{x} will get new
-indices.}
+\item{index}{An optional named vector with existing factor indices.
+The names must match the existing factor levels.
+Unmatched levels from \code{x} will get new indices.}
+
+\item{strict}{What to do when the metadata changes. \code{strict = FALSE}
+overwrites the data and the metadata with a warning listing the changes,
+\code{strict = TRUE} returns an error and leaves the data and metadata as is.
+Defaults to \code{TRUE}.}
 
 \item{sorting}{an optional vector of column names defining which columns to
 use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
@@ -50,7 +58,7 @@ importance of sorting.}
 the optimized vector \code{x} with \code{meta} attribute.
 }
 \description{
-Prepares a vector for storage. When relevant, \code{meta()}optimizes the object
+Prepares a vector for storage. When relevant, \code{meta()} optimizes the object
 for storage by changing the format to one which needs less characters. The
 metadata stored in the \code{meta} attribute, contains all required information to
 back-transform the optimized format into the original format.
@@ -63,6 +71,13 @@ the metadata and not allowed as column name in a \code{data.frame}.
 \code{\link{write_vc}} uses this function to prepare a dataframe for storage.
 Existing metadata is passed through the optional \code{old} argument. This
 argument intended for internal use.
+}
+\note{
+The default order of factor levels depends on the current locale.
+See \code{\link{Comparison}} for more details on that.
+The same code on a different locale might result in a different sorting.
+\code{meta()} ignores, with a warning, any change in the order of factor levels.
+Add \code{strict = FALSE} to enforce the new order of factor levels.
 }
 \examples{
 meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))

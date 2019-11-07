@@ -65,7 +65,9 @@ write_vc.character <- function(
     dir.create(dirname(file["raw_file"]), recursive = TRUE)
   }
 
-  if (file.exists(file["meta_file"])) {
+  if (!file.exists(file["meta_file"])) {
+    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
+  } else {
     tryCatch(
       is_git2rmeta(file = remove_root(file = file["meta_file"], root = root),
                    root = root, message = "error"),
@@ -77,7 +79,7 @@ write_vc.character <- function(
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
     raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting,
-                     old = old)
+                     old = old, strict = strict)
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       problems <- c(
@@ -96,8 +98,6 @@ write_vc.character <- function(
         sorting <- old[["..generic"]][["sorting"]]
       }
     }
-  } else {
-    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
   }
   write.table(
     x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,

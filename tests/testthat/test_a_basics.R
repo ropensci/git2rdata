@@ -296,6 +296,15 @@ test_that("write_vc() allows changes in factor levels", {
     fn <- write_vc(x, "factor_levels", root, sorting = "test_factor"),
     "character"
   )
+  x$test_factor <- factor(x$test_factor, levels = c("b", "a"))
+  expect_warning(
+    write_vc(x, "factor_levels", root),
+    "Same levels with a different order detected"
+  )
+  expect_warning(
+    write_vc(x, "factor_levels", root, strict = FALSE),
+    " New factor labels"
+  )
   x$test_factor <- factor(x$test_factor, levels = c("a", "b", "c"))
   expect_error(
     write_vc(x, "factor_levels", root),

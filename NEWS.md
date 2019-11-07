@@ -1,3 +1,10 @@
+git2rdata 0.1.0.9003 (2019-11-07)
+=================================
+
+### BREAKING FEATURES
+
+  * reordering factor levels requires `strict = TRUE`
+
 git2rdata 0.1.0.9002 (2019-09-27)
 =================================
 
