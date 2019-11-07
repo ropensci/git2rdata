@@ -224,8 +224,18 @@ compare_meta <- function(new, old) {
     )
   }
 
-  common_variables <- common_variables[old_class == new_class]
-  old_class <- old_class[old_class == new_class]
+  problems <- compare_factors(
+    problems = problems,
+    common_variables = common_variables[old_class == new_class],
+    old_class = old_class[old_class == new_class],
+    old = old,
+    new = new
+  )
+
+  return(problems)
+}
+
+compare_factors <- function(problems, common_variables, old_class, old, new) {
   for (id in common_variables[old_class == "factor"]) {
     if (old[[id]]$ordered != new[[id]]$ordered) {
       problems <- c(
@@ -244,10 +254,8 @@ compare_meta <- function(new, old) {
       problems <- c(problems, sprintf("- New indices for '%s'.", id))
     }
   }
-
   return(problems)
 }
-
 #' @noRd
 #' @param file the file including the path
 #' @param root the path of the root
