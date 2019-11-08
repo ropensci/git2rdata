@@ -1,42 +1,24 @@
-git2rdata 0.1.0.9003 (2019-11-07)
+git2rdata 0.2.0 (2019-11-08)
 =================================
 
 ### BREAKING FEATURES
 
-  * reordering factor levels requires `strict = TRUE`
-
-git2rdata 0.1.0.9002 (2019-09-27)
-=================================
-
-### BREAKING FEATURES
-
-  * sorting is based on the "C" locale
-  * the data hash is based on the plain text file
-
-git2rdata 0.1.0.9001 (2019-09-09)
-=================================
-
-### BREAKING FEATURES
-
-  * Calculation of data hash has changed, due to which `read_vc()` will once warn that data are altered outside git2rdata when reading a previously written git2rdata object (#53).
-  * `read_vc()` only works with data stored with version >= 0.1.0.9001. Use `upgrade_data()` on data written with an earlier version.
+  * Calculation of data hash has changed (#53). 
+    You must use `upgrade_data()` to read data stored by an older version.
   * `is_git2rdata()` and `upgrade_data()` do not test equality in data hashes anymore (but `read_vc()` still does).
+  * `write_vc()` and `read_vc()` fail when `file` is a location outside of `root` (#50).
+  * Reordering factor levels requires `strict = TRUE`.
 
 ### Bugfixes
 
-  * The same data hash is generated on Linux and Windows machines (#49).
-
-git2rdata 0.1.0.9000 (2019-08-13)
-=================================
-
-### BREAKING FEATURES
-
-  * `write_vc()` and `read_vc()` fail when `file` is a location outside of `root` (#50).
+  * Linux and Windows machines now generated the same data hash (#49).
 
 ### NEW FEATURES
 
-  * Only require `upgrade_data()` for data written with versions prior to 0.0.5 (#44).
-  * Improve warnings() and error().
+  * Internal sorting uses the "C" locale, regardless of the current locale.
+  * `read_vc()` reads older stored in an older version (#44). 
+    When the version is too old, it prompts to `upgrade_data()`.
+  * Improve `warnings()` and `error()` messages.
   * Use vector version of logo.
 
 git2rdata 0.1 (2019-06-04)
@@ -64,7 +46,8 @@ git2rdata 0.0.4 (2019-05-16)
   * The meta data gains a data hash. A mismatch throws a warning when reading the object. This tolerates updating the data by other software, while informing the user that such change occurred.
   * `is_git2rmeta()` validates metadata.
   * `list_data()` lists files with valid metadata. 
-  * `rm_data()` and `prune_meta()` remove files with valid metadata. Other files are untouched.
+  * `rm_data()` and `prune_meta()` remove files with valid metadata. 
+    They don't touch `tsv` file without metadata or `yml` files not assosiated with `git2rdata`.
   *  Files with invalid metadata yield a warning with `list_data()`, `rm_data()` and `prune_meta()`.
   
 ### Bugfixes
