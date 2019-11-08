@@ -45,6 +45,10 @@ The `git2rdata` package is an R package for writing and reading dataframes as pl
 - Git2rdata is useful as a tool in a reproducible and traceable workflow. See `vignette("workflow", package = "git2rdata")`.
 - You can detect when a file was last modified in the git history. Use this to check whether an existing analysis is obsolete due to new data. This allows to not rerun up to date analyses, saving resources.
 
+## Talk About `git2rdata` at useR!2019 in Toulouse, France
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/sbRPmakBFqo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Installation
 
 Install from CRAN
