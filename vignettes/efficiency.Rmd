@@ -1,11 +1,11 @@
 ---
-title: "Efficiency in Terms of Storage and Time"
+title: "Efficiency Relative to Storage and Time"
 author: "Thierry Onkelinx"
 output: 
   rmarkdown::html_vignette:
         fig_caption: yes
 vignette: >
-  %\VignetteIndexEntry{Efficiency in Terms of Storage and Time}
+  %\VignetteIndexEntry{Efficiency Relative to Storage and Time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\VignetteDepends{git2r}
@@ -79,7 +79,8 @@ theme_inbo <- function(base_size = 12, base_family = "") {
     legend.direction = NULL,
     legend.justification = "center",
     legend.box = NULL,
-    legend.box.margin = margin(half_line, half_line, half_line, half_line),
+    legend.box.margin = margin(t = half_line, r = half_line, b = half_line, 
+                               l = half_line),
     legend.box.background = element_rect(colour = NA, fill = legend.bg),
     legend.box.spacing = unit(0.2, "cm"),
     panel.background = element_rect(fill = panel.bg, colour = NA),
@@ -105,7 +106,8 @@ theme_inbo <- function(base_size = 12, base_family = "") {
                                  margin = margin(0, 0, half_line, 0)),
     plot.caption = element_text(size = rel(0.6),
                                 margin = margin(0, 0, half_line, 0)),
-    plot.margin = margin(half_line, half_line, half_line, half_line),
+    plot.margin = margin(t = half_line, r = half_line, b = half_line, 
+                         l = half_line),
     plot.tag = element_text(size = rel(1.2), hjust = 0.5, vjust = 0.5),
     plot.tag.position = "topleft",
     complete = TRUE
@@ -121,7 +123,8 @@ update_geom_defaults("boxplot", list(colour = "#356196"))
 
 This vignette compares storage and retrieval of data by `git2rdata` with other standard R functionality. We consider `write.table()` and `read.table()` for data stored in a plain text format. `saveRDS()` and `readRDS()` use a compressed binary format.
 
-In order to get some meaningful results, we will use the `nassCDS` dataset from the [DAAG](https://www.rdocumentation.org/packages/DAAG/versions/1.22/topics/nassCDS) package. We'll avoid the dependency on the package by directly downloading the data.
+To get some meaningful results, we will use the `nassCDS` dataset from the [DAAG](https://www.rdocumentation.org/packages/DAAG/versions/1.22/topics/nassCDS) package. 
+We'll avoid the dependency on the package by directly downloading the data.
 
 ```{r download_data, eval = system.file("efficiency", "airbag.rds", package = "git2rdata") == ""}
 airbag <- read.csv(
@@ -173,7 +176,12 @@ fn <- write_vc(airbag, "airbag_verbose", root, sorting = "X", optimize = FALSE)
 verbose_size <- sum(file.size(file.path(root, fn)))
 ```
 
-Since the data is highly compressible, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. Partly because `write_vc()` doesn't store row names and only uses quotes when needed. The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way factors are stored in the data (tsv) file. The optimized version stores the indices of the factor whereas the verbose version stores the levels. For example: `airbag$dvcat` has 5 levels with fairly short labels (on average 5 character), however storing the index requires only 1 character. Resulting in more compact files.
+Since the data is highly compressible, `saveRDS()` yields the smallest file at the cost of having a binary file format. Both `write_vc()` formats yield smaller files than `write.table()`. 
+Partly because `write_vc()` doesn't store row names and doesn't use quotes unless needed. 
+The difference between the optimized and verbose version of `write_vc()` is, in this case, solely due to the way `write_vc()` stores factors in the data (`tsv`) file. 
+The optimized version stores the indices of the factor whereas the verbose version stores the levels. 
+For example: `airbag$dvcat` has 5 levels with short labels (on average 5 character), storing the index requires 1 character. 
+This results in more compact files.
 
 ```{r table_file_size, echo = FALSE}
 kable(
@@ -188,7 +196,10 @@ kable(
 )
 ```
 
-The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. The figure below illustrates the huge gain as soon as the level labels contain a few characters. The gain is less pronounced when the factor has a large number of levels. The optimization fails only in extreme cases with very short factor labels and a high number of levels.
+The reduction in file size when storing in factors depends on the length of the labels, the number of levels and the number of observations. 
+The figure below illustrates the strong gain as soon as the level labels contain more than two characters. 
+The gain is less pronounced when the factor has a large number of levels. 
+The optimization fails in extreme cases with short factor labels and a high number of levels.
 
 ```{r factor_label_length, echo = FALSE, fig.cap = "Effect of the label length on the efficiency of storing factor optimized, assuming 1000 observations", warning = FALSE}
 ratio <- function(label_length = 1:20, n_levels = 9, n_obs = 1000) {
@@ -272,9 +283,12 @@ ggplot(f_ratio, aes(x = observations, y = ratio, colour = levels)) +
 
 ### In Git Repositories
 
-Here we will simulate how much space the data requires when the history is stored in a git repository. We will create a git repository for each method and store several subsets of the same data. Each commit contains a new version of the data. Each version is a random sample containing 90% of the observations of the `airbag` data. Two consecutive versions of the subset will have about 90% of the observations in common. 10% of the observations will be replaced by other observations. 
+Here we will simulate how much space the data requires to store the history in a git repository. 
+We will create a git repository for each method and store different subsets of the same data. 
+Each commit contains a new version of the data. Each version is a random sample containing 90% of the observations of the `airbag` data. 
+Two consecutive versions of the subset will have about 90% of the observations in common.
 
-After writing each version, we commit the file, perform garbage collection (`git gc`) on the git repository to minimize its size and then calculate the size of the git history (`git count-objects -v`). 
+After writing each version, we commit the file, perform garbage collection (`git gc`) on the git repository and then calculate the size of the git history (`git count-objects -v`). 
 
 ```{r git_size, eval = system.file("efficiency", "git_size.rds", package = "git2rdata") == ""}
 library(git2r)
@@ -342,7 +356,12 @@ if (system.file("efficiency", "git_size.rds", package = "git2rdata") == "") {
 
 Each version of the data has on purpose a random order of observations and variables. This is what would happen in a worst case scenario as it would generate the largest possible diff. We also test `write.table()` with a stable ordering of the observations and variables. 
 
-The randomised `write.table()` yields the largest git repository, converging to about `r sprintf("%.1f", repo_size["write.table", 100] / repo_size["write.table.sorted", 100])` times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a `r sprintf("%.0f%%", 100 - 100 * repo_size["saveRDS", 100] / repo_size["write.table", 100])` reduction in repository size compared to the randomised `write.table()`, but still is `r sprintf("%.1f", repo_size["saveRDS", 100] / repo_size["write.table.sorted", 100])` times larger than the sorted `write.table()`. Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because the git repository will be compressed too. The optimized `write_vc()` starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 1] / repo_size["write.table.sorted", 1])` and converges toward `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 100] / repo_size["write.table.sorted", 100])`, the verbose version starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 1] / repo_size["write.table.sorted", 1])` and converges towards `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 100] / repo_size["write.table.sorted", 100])`. There is a clear gain when using `write_vc()` with optimization in terms of storage size and the availability of metadata. The verbose option of `write_vc()` lacks the gain in terms of storage size but still has the metadata advantage.
+The randomised `write.table()` yields the largest git repository, converging to about `r sprintf("%.1f", repo_size["write.table", 100] / repo_size["write.table.sorted", 100])` times the size of a git repository based on the sorted `write.table()`. `saveRDS()` yields a `r sprintf("%.0f%%", 100 - 100 * repo_size["saveRDS", 100] / repo_size["write.table", 100])` reduction in repository size compared to the randomised `write.table()`, but still is `r sprintf("%.1f", repo_size["saveRDS", 100] / repo_size["write.table.sorted", 100])` times larger than the sorted `write.table()`. 
+Note that the gain of storing binary files in a git repository is much smaller than the gain in individual file size because git compresses its history. 
+The optimized `write_vc()` starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 1] / repo_size["write.table.sorted", 1])` and converges toward `r sprintf("%.0f%%", 100 * repo_size["write_vc.optimized", 100] / repo_size["write.table.sorted", 100])`, the verbose version starts at `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 1] / repo_size["write.table.sorted", 1])` and converges towards `r sprintf("%.0f%%", 100 * repo_size["write_vc.verbose", 100] / repo_size["write.table.sorted", 100])`. 
+Storage size is a lot smaller when using `write_vc()` with optimization. 
+The verbose option of `write_vc()` has little the gain in storage size.
+Another advantage is that `write_vc()` stores metadata.
 
 ```{r plot_git_size, echo = FALSE, fig.cap = "Size of the git history using the different storage methods."}
 rs <- lapply(
@@ -420,7 +439,9 @@ names(write_ratio) <- median_time$expr
 ```
 
 
-`write_vc()` takes `r paste(sprintf("%.0f%%", -100 + write_ratio[grep("write_vc", names(write_ratio))]), collapse = " to ")` more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. When overwriting existing data, the new data is checked against the existing metadata. `saveRDS()` requires only `r sprintf("%.0f%%", write_ratio["saveRDS"])` of the time that `write.table()` needs.
+`write_vc()` takes `r paste(sprintf("%.0f%%", -100 + write_ratio[grep("write_vc", names(write_ratio))]), collapse = " to ")` more time than `write.table()` because it needs to prepare the metadata and sort the observations and variables. 
+When overwriting existing data, `write_vc()` checks the new data against the existing metadata. 
+`saveRDS()` requires `r sprintf("%.0f%%", write_ratio["saveRDS"])` of the time that `write.table()` needs.
 
 ```{r plot_file_timings, echo = FALSE, fig.cap = "Boxplot of the write timings for the different methods."}
 mb$expr <- reorder(mb$expr, mb$time, FUN = median)
