@@ -5,7 +5,7 @@ git2rdata 0.2.0 (2019-11-08)
 
   * Calculation of data hash has changed (#53). 
     You must use `upgrade_data()` to read data stored by an older version.
-  * `is_git2rdata()` and `upgrade_data()` do not test equality in data hashes anymore (but `read_vc()` still does).
+  * `is_git2rdata()` and `upgrade_data()` do not test equality in data hashes any more (but `read_vc()` still does).
   * `write_vc()` and `read_vc()` fail when `file` is a location outside of `root` (#50).
   * Reordering factor levels requires `strict = TRUE`.
 
@@ -47,7 +47,7 @@ git2rdata 0.0.4 (2019-05-16)
   * `is_git2rmeta()` validates metadata.
   * `list_data()` lists files with valid metadata. 
   * `rm_data()` and `prune_meta()` remove files with valid metadata. 
-    They don't touch `tsv` file without metadata or `yml` files not assosiated with `git2rdata`.
+    They don't touch `tsv` file without metadata or `yml` files not associated with `git2rdata`.
   *  Files with invalid metadata yield a warning with `list_data()`, `rm_data()` and `prune_meta()`.
   
 ### Bugfixes
