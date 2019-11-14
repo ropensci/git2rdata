@@ -48,7 +48,7 @@ Although we envisioned `git2rdata` with a [git](https://git-scm.com/) workflow i
     - Date and date-time format are unambiguous, documented in the metadata.
 - The data and the metadata are in a standard and open format, making it readable by other software.
 - `git2rdata` checks the data and metadata during the reading. 
-`read_vc()` informes the user if there is tampering with the data or metadata.
+`read_vc()` informs the user if there is tampering with the data or metadata.
 - Git2rdata integrates with the [`git2r`](https://cran.r-project.org/package=git2r) package for working with git repository from R.
     - Another option is using git2rdata solely for writing to disk and handle the plain text files with your favourite version control system outside of R.
 - The optimization reduces the required disk space by about 30% for both the working directory and the git history. 
