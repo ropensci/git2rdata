@@ -27,13 +27,21 @@ This vignette describes a suggested workflow for storing a snapshot of dataframe
 
 In this vignette we use a `git2r::repository()` object as the root. This adds git functionality to `write_vc()` and `read_vc()`, provided by the [`git2r`](https://cran.r-project.org/package=git2r) package. This allows to pull, stage, commit and push from within R.
 
-Each commit in the data git repository describes a complete snapshot of the data at the time of the commit. The difference between two commits can consist of changes in existing git2rdata object (updated observations, new observations, deleted observations or updated metadata). Besides updating the existing git2rdata objects, we can also add new git2rdata objects or remove existing ones. Such higher level addition and deletions need to be tracked as well.
+Each commit in the data git repository describes a complete snapshot of the data at the time of the commit. 
+The difference between two commits can consist of changes in existing git2rdata object (updated observations, new observations, deleted observations or updated metadata). 
+Besides updating the existing git2rdata objects, we can also add new git2rdata objects or remove existing ones. 
+We need to track such higher level addition and deletions as well.
 
 We illustrate the workflow with a mock analysis on the `datasets::beaver1` and `datasets::beaver2` datasets.
 
 ## Setup
 
-We start by initializing a git repository. `git2rdata` assumes that is already done. Therefore we'll use the `git2r` functions to do so. We start by creating a local bare repository. In practice we will use a remote on an external server (GitHub, Gitlab, Bitbucket, ...). The example below creates a local git repository with an upstream git repository. Any other workflow to create a similar structure is fine.
+We start by initializing a git repository. `git2rdata` assumes that is already done. 
+We'll use the `git2r` functions to do so. 
+We start by creating a local bare repository. 
+In practice we will use a remote on an external server (GitHub, Gitlab, Bitbucket, ...). 
+The example below creates a local git repository with an upstream git repository. 
+Any other workflow to create a similar structure is fine.
 
 ```{r initialize}
 # initialize a bare git repo to be used as remote
@@ -59,17 +67,30 @@ rm(init_repo)
 
 ## Structuring Git2rdata Objects Within a Project
 
-`git2rdata` imposes very little structure. Both the `.tsv` and the `.yml` file need to be in the same folder. That's it. For the sake of simplicity, in this vignette we dump all git2rdata objects at the root of the repository. 
+`git2rdata` imposes a minimal structure. 
+Both the `.tsv` and the `.yml` file need to be in the same folder. 
+That's it. 
+For the sake of simplicity, in this vignette we dump all git2rdata objects at the root of the repository. 
 
-However, this might not be good idea for real project. We recommend to use at least a different directory tree for each import script. This directory can go into the root of a data only repository. It goes in the `data` directory in case of a data and code repository. Or the `inst` directory in case of an R package.
+This might not be good idea for real project. 
+We recommend to use at least a different directory tree for each import script. 
+This directory can go into the root of a data repository.
+It goes in the `data` directory in case of a data and code repository. 
+Or the `inst` directory in case of an R package.
 
-Your project might need a different directory structure. Feel free to implement the most relevant data structure for your project.
+Your project might need a different directory structure. 
+Feel free to choose the most relevant data structure for your project.
 
 ## Storing Dataframes _ad Hoc_ into a Git Repository
 
 ### First Commit
 
-In the first commit we use `datasets::beaver1`. We connect to the git repository using `repository()`. Note that this assumes that `path` is an existing git repository. Now we can write the dataset as a git2rdata object in the repository. If the `root` argument of `write_vc()` is a `git_repository`, it gains two additional arguments: `stage` and `force`. Setting `stage = TRUE`, will automatically stage the files written by `write_vc()`.
+In the first commit we use `datasets::beaver1`.
+We connect to the git repository using `repository()`.
+Note that this assumes that `path` is an existing git repository.
+Now we can write the dataset as a git2rdata object in the repository.
+If the `root` argument of `write_vc()` is a `git_repository`, it gains two extra arguments: `stage` and `force`.
+Setting `stage = TRUE`, will automatically stage the files written by `write_vc()`.
 
 ```{r store_data_1}
 library(git2rdata)
@@ -77,7 +98,8 @@ repo <- repository(path)
 fn <- write_vc(beaver1, "beaver", repo, sorting = "time", stage = TRUE)
 ```
 
-We can use `status()` to check that the required files are written and staged. Then we `commit()` the changes.
+We can use `status()` to check that `write_vc()` wrote and staged the required files.
+Then we `commit()` the changes.
 
 ```{r avoid_subsecond_commit, echo = FALSE}
 Sys.sleep(1.2)
@@ -99,7 +121,9 @@ fn <- write_vc(beaver2, "extra_beaver", repo, sorting = "time", stage = TRUE)
 status(repo)
 ```
 
-Notice that `extra_beaver` is not listed in the `status()`, although it was written to the repository. The reason is that we set a `.gitignore` which contains `"*extra*`, so any git2rdata object with a name containing "extra" is ignored. We can force it to be staged by setting `force = TRUE`.
+Notice that `extra_beaver` is not listed in the `status()`, although `write_vc()` wrote it to the repository. 
+The reason is that we set a `.gitignore` which contains `"*extra*`, so git ignores any git2rdata object with a name containing "extra". 
+We force git to stage it by setting `force = TRUE`.
 
 ```{r avoid_subsecond_commit2, echo = FALSE}
 Sys.sleep(1.2)
@@ -115,7 +139,12 @@ cm2 <- commit(repo, message = "Second commit")
 
 ### Third Commit
 
-At this point in time we decide that a single git2rdata object containing the data of both beavers is more relevant. We add an ID variable for each of the animals. This requires updating the `sorting` to eliminate ties. And `strict = FALSE` to update the metadata. The "extra_beaver" git2rdata object is no longer needed so we remove it. We use `all = TRUE` to stage the removal of "extra_beaver" while committing the changes.
+Now we decide that a single git2rdata object containing the data of both beavers is more relevant. 
+We add an ID variable for each of the animals. 
+This requires updating the `sorting` to avoid ties. 
+And `strict = FALSE` to update the metadata. 
+The "extra_beaver" git2rdata object is no longer needed so we remove it. 
+We use `all = TRUE` to stage the removal of "extra_beaver" while committing the changes.
 
 ```{r avoid_subsecond_commit3, echo = FALSE}
 Sys.sleep(1.2)
@@ -139,7 +168,9 @@ We strongly recommend to add git2rdata object through an import script instead o
 
 Old versions of the import script and the associated git2rdata remain available through the version control history. Remove obsolete git2rdata objects from the import script. This keeps both the import script and the working directory tidy and minimal.
 
-Basically, the import script should create all git2rdata objects within a given directory tree. This gives the advantage that we start the import script by clearing any existing git2rdata object in this directory. Any git2rdata object which no longer is created by the import script gets removed without the need to track what git2rdata objects existed in the previous version.
+Basically, the import script should create all git2rdata objects within a given directory tree. 
+This gives the advantage that we start the import script by clearing any existing git2rdata object in this directory. 
+If the import script no longer creates a git2rdata object, it gets removed without the need to track what git2rdata objects existed in the previous version.
 
 The brute force method of removing all files or all `.tsv` / `.yml` pairs is not a good idea. This removes the existing metadata which we need for efficient storage (see `vignette("efficiency", package = "git2rdata")`). A better solution is to use `rm_data()` on the directory at the start of the import script. This removes all `.tsv` files which have valid metadata. The existing metadata remains untouched at this point.
 
@@ -178,9 +209,21 @@ push(repo = repo)
 
 ## R Package Workflow for Storing Dataframes
 
-We recommend a two repository set-up in case of recurring analyses. These are relative stable analyses which have to run with some frequency on updated data (e.g. once a month). Then it is worthwhile to convert the analyses into an R package. Long scripts can be converted into a set of shorter functions which are much easier to document and maintain. An R package offers lots of [functionality](http://r-pkgs.had.co.nz/check.html) out of the box to check the quality of your code.
+We recommend a two repository set-up in case of recurring analyses. 
+These are relative stable analyses which have to run with some frequency on updated data (e.g. once a month). 
+That makes it worthwhile to convert the analyses into an R package. 
+Split long scripts into a set of shorter functions which are much easier to document and maintain. 
+An R package offers lots of [functionality](http://r-pkgs.had.co.nz/check.html) out of the box to check the quality of your code.
 
-The example below converts the import script above into a function. We illustrate how you can use Roxygen2 (see `vignette("roxygen2", package = "roxygen2")`) tags to document the function and to list its dependencies. Note that we added `session = TRUE` to `commit()`. This will append the `sessionInfo()` at the time of the commit to the commit message. Thus documenting all loaded R packages and their version. This documents to code used to create the git2rdata object since your analysis code resides in a dedicated package with its own version number. We strongly recommend to run the import from a fresh R session. Then the `sessionInfo()` at commit time is limited to those packages with are strictly required for the import. Consider running the import from the command line. e.g. `Rscript -e 'mypackage::import_body_temp("path/to/root")'`.
+The example below converts the import script above into a function. 
+We illustrate how you can use Roxygen2 (see `vignette("roxygen2", package = "roxygen2")`) tags to document the function and to list its dependencies.
+Note that we added `session = TRUE` to `commit()`. 
+This will append the `sessionInfo()` at the time of the commit to the commit message. 
+Thus documenting all loaded R packages and their version. 
+This documents to code used to create the git2rdata object since your analysis code resides in a dedicated package with its own version number. 
+We strongly recommend to run the import from a fresh R session. 
+Then the `sessionInfo()` at commit time contains those packages with are strictly required for the import.
+Consider running the import from the command line. e.g. `Rscript -e 'mypackage::import_body_temp("path/to/root")'`.
 
 ```{r eval = FALSE}
 #' Import the beaver body temperature data
@@ -215,7 +258,8 @@ import_body_temp <- function(path) {
 
 ## Analysis Workflow with Reproducible Data
 
-The example below is a small trivial example of a standardized analysis in which the source of the data is documented by describing the name of the data, the repository URL and the commit. We can use this information when reporting the results. This makes the data underlying the results traceable.
+The example below is a small trivial example of a standardized analysis in which documents the source of the data by describing the name of the data, the repository URL and the commit. 
+We can use this information when reporting the results. This makes the data underlying the results traceable.
 
 ```{r standardized_analysis}
 analysis <- function(ds_name, repo) {
@@ -246,7 +290,7 @@ result <- lapply(current, report)
 junk <- lapply(result, print)
 ```
 
-The example below does exactly the same thing for the first and second commit. 
+The example below does the same thing for the first and second commit. 
 
 ```{r run_previous_analyses, results = "asis"}
 # checkout first commit
@@ -265,8 +309,14 @@ result <- lapply(previous, report)
 junk <- lapply(result, print)
 ```
 
-If you inspect the reported results carefully you'll notice that all the output (coefficients and commit hash) for "beaver" object is identical for the first and second commit. This makes sense since the "beaver" object didn't change during the second commit. The output for the current (third) commit is different because the dataset changed.
+If you inspect the reported results you'll notice that all the output (coefficients and commit hash) for "beaver" object is identical for the first and second commit. 
+This makes sense since the "beaver" object didn't change during the second commit. 
+The output for the current (third) commit is different because the dataset changed.
 
 ### Long running analysis
 
-Imagine the case where an individual analysis takes quite a while to run. We store the most recent version of each analysis and add the information from `recent_commit()`. When preparing the analysis, you can run `recent_commit()` again on the dataset and compare the commit hash with that one of the currently available analysis. If the commit hashes match, then the data hasn't changed. So there is no need to rerun the analysis^[assuming the code for running the analysis didn't change.], saving valuable computing resources and time. 
+Imagine the case where an individual analysis takes a while to run. 
+We store the most recent version of each analysis and add the information from `recent_commit()`. 
+When preparing the analysis, you can run `recent_commit()` again on the dataset and compare the commit hash with that one of the available analysis. 
+If the commit hashes match, then the data hasn't changed. 
+Then there is no need to rerun the analysis^[assuming the code for running the analysis didn't change.], saving valuable computing resources and time. 
