@@ -19,9 +19,12 @@ options(width = 83)
 
 ## Introduction
 
-This vignette focuses on what `git2rdata` does to make storing dataframes under version control more efficient and convenient. All details on the actual file format are described in `vignette("plain_text", package = "git2rdata")`. Hence we will not discuss the `optimize` and `na` arguments to the `write_vc()` function.
+This vignette focuses on what `git2rdata` does to make storing dataframes under version control more efficient and convenient. 
+`vignette("plain_text", package = "git2rdata")` describes all details on the actual file format. 
+Hence we will not discuss the `optimize` and `na` arguments to the `write_vc()` function.
 
-We will not illustrate the efficiency of `write_vc()` and `read_vc()` since that is covered in `vignette("efficiency", package = "git2rdata")`.
+We will not illustrate the efficiency of `write_vc()` and `read_vc()`.
+`vignette("efficiency", package = "git2rdata")` covers those topics.
 
 ## Setup
 
@@ -52,13 +55,22 @@ str(x)
 
 ## Assumptions
 
-A critical assumption made by `git2rdata` is that all information is contained within the dataframe itself. Each row is an observation, each column is a variable and only the variables are named. This implies that two observations switching place does not alter the information content. Nor does switching two variables.
+A critical assumption made by `git2rdata` is that the dataframe itself contains all information. 
+Each row is an observation, each column is a variable. 
+The dataframe has `colnames` but no `rownames`. 
+This implies that two observations switching place does not alter the information content. 
+Nor does switching two variables.
 
-Version control systems like [git](https://git-scm.com/), [subversion](https://subversion.apache.org/) or [mercurial](https://www.mercurial-scm.org/) focus on accurately keeping track of _any_ change in the files. Two observations switching place in a plain text file _is_ a change, although the information content^[_sensu_ `git2rdata`] doesn't change. Therefore `git2rdata` helps the user to prepare the plain text files in such a way that any change in the version history is an actual change in the information content.
+Version control systems like [git](https://git-scm.com/), [subversion](https://subversion.apache.org/) or [mercurial](https://www.mercurial-scm.org/) focus on accurately keeping track of _any_ change in the files. 
+Two observations switching place in a plain text file _is_ a change, although the information content^[_sensu_ `git2rdata`] doesn't change.
+`git2rdata` helps the user to prepare the plain text files in such a way that any change in the version history is an actual change in the information content.
 
 ## Sorting Observations
 
-Version control systems often track changes in plain text files based on row based differences. In layman's terms they only record which lines in a file are removed and which lines are inserted at what location. Changing an existing line implies removing the old version and inserting the new one. This is illustrated in the minimal example below.
+Version control systems often track changes in plain text files based on row based differences. 
+In layman's terms they record lines removed from and inserted in the file at what location. 
+Changing an existing line implies removing the old version and inserting the new one. 
+The minimal example below illustrates this.
 
 Original version
 
@@ -69,7 +81,9 @@ A,B
 3,12
 ```
 
-Altered version. The row containing `1, 10` was moved to the last line. The row containing `3,12` was changed to `3,0`
+Altered version. 
+The row containing `1, 10` moves to the last line. 
+The row containing `3,12` changed to `3,0`.
 
 ```
 A,B
@@ -108,7 +122,12 @@ A,B
 +3,0
 ```
 
-This is where the `sorting` argument comes into play. If this argument is not provided when a file is written for the first time, it will yield a warning about the lack of sorting. The observations will be written in their current order. New versions of the file will not apply any sorting either, leaving this burden to the user. This is illustrated by the changed hash for the data file in the example below, whereas the metadata is not changed (no change in hash).
+This is where the `sorting` argument comes into play. 
+If this argument is not provided when writing a file for the first time, it will yield a warning about the lack of sorting. 
+`write_vc()` then writes the observations in their current order. 
+New versions of the file will not apply any sorting either, leaving this burden to the user. 
+The changed hash for the data file illustrates this in the example below. 
+The metadata hash remains the same.
 
 ```{r row_order}
 library(git2rdata)
@@ -116,9 +135,13 @@ write_vc(x, file = "row_order", root = root)
 write_vc(x[sample(nrow(x)), ], file = "row_order", root = root)
 ```
 
-`sorting` should contain a vector of variable names. The observations are automatically sorted along these variables prior to writing. However, we now get an error because the set of sorting variables has changed. The set of sorting variables is stored in the metadata. Changing the sorting can potentially lead to large diffs, which `git2rdata` tries to avoid as much as possible.
+`sorting` should contain a vector of variable names. 
+The observations are automatically sorted along these variables. 
+Now we get an error because the set of sorting variables has changed. 
+The metadata stores the set of sorting variables. 
+Changing the sorting can potentially lead to large diffs, which `git2rdata` tries to avoid as much as possible.
 
-From this moment on we will store the output of `write_vc()` in an object to minimize the output.
+From this moment on we will store the output of `write_vc()` in an object reduce output.
 
 ```{r apply_sorting, error = TRUE}
 fn <- write_vc(x, "row_order", root, sorting = "y")
@@ -131,7 +154,10 @@ fn <- write_vc(x, "row_order", root, sorting = "y", strict = FALSE)
 fn <- write_vc(x, "row_order", root, sorting = c("y", "x"), strict = FALSE)
 ```
 
-Once the sorting is defined we may omit the `sorting` argument when writing new versions. The sorting as defined in the existing metadata will be used to sort the observations. A check for potential ties will be performed and results in a warning when ties are found.
+Once we have defined the sorting, we may omit the `sorting` argument when writing new versions. 
+`write_vc` uses the sorting as defined in the existing metadata.
+It checks for potential ties.
+Ties results in a warning.
 
 ```{r update_sorted}
 print_file <- function(file, root, n = -1) {
@@ -156,7 +182,10 @@ B,A
 13,3
 ```
 
-The resulting diff is maximal because every single row was updated. Yet none of the information was changed. Hence, it is crucial to maintain column order when storing dataframes as plain text files under version control. This is illustrated on a more realistic data set in the `vignette("efficiency", package = "git2rdata")` vignette.
+The resulting diff is maximal because every single row changed. 
+Yet none of the information changed. 
+Hence, maintaining column order is crucial when storing dataframes as plain text files under version control. 
+The `vignette("efficiency", package = "git2rdata")` vignette illustrates this on a more realistic data set.
 
 ```diff
 -A,B
@@ -169,7 +198,11 @@ The resulting diff is maximal because every single row was updated. Yet none of 
 +13,3
 ```
 
-`git2rdata` tackles this problem by storing the order of the columns in the metadata. The order is defined by the order in the dataframe when it is written for the first time. From that moment on, the same order will be reused. The example below writes the same data set twice. The second version contains exactly the same information but randomizes the order of the observations and the columns. The sorting by the internals of `write_vc()` will undo this randomization, resulting in an unchanged file.
+When `write_vc()` writes a dataframe for the first time, it stores the original order of the columns in the metadata.
+From that moment on, `write_vc()` uses the order stored in the metadata. 
+The example below writes the same data set twice. 
+The second version contains identical information but randomizes the order of the observations and the columns. 
+The sorting by the internals of `write_vc()` will undo this randomization, resulting in an unchanged file.
 
 ```{r variable_order}
 write_vc(x, "column_order", root, sorting = c("x", "abc"))
@@ -180,7 +213,8 @@ print_file("column_order.tsv", root, n = 5)
 
 ## Handling Factors Optimized
 
-`vignette("plain_text", package = "git2rdata")` and `vignette("efficiency", package = "git2rdata")` illustrate how a factor can be stored more efficiently when storing their index in the data file and the indices and labels in the metadata. We take this even a bit further: what happens if new data arrives and an extra factor level is required? 
+`vignette("plain_text", package = "git2rdata")` and `vignette("efficiency", package = "git2rdata")` illustrate how we can store a factor more efficiently when storing their index in the data file and the indices and labels in the metadata. 
+We take this even a bit further: what happens if new data arrives and we need an extra factor level? 
 
 ```{r factor}
 old <- data.frame(color = c("red", "blue"))
@@ -204,7 +238,9 @@ fn <- write_vc(updated, "factor", root, strict = FALSE)
 print_file("factor.yml", root)
 ```
 
-The next example removes the `"blue"` level and switches the order of the remaining levels. Notice that again the existing indices are retained. The order of the labels and indices reflects their new ordering.
+The next example removes the `"blue"` level and switches the order of the remaining levels. 
+Notice that the medatadata retains the existing indices. 
+The order of the labels and indices reflects their new ordering.
 
 ```{r factor_deleted}
 deleted <- data.frame(
@@ -224,7 +260,9 @@ print_file("factor.yml", root)
 
 ## Relabelling a Factor
 
-The example below will store a dataframe, relabel the factor levels and store it again using `write_vc()`. Notice that both the labels and the indices are updated. Hence creating a large diff, where just updating the labels would be sufficient.
+The example below will store a dataframe, relabel the factor levels and store it again using `write_vc()`. 
+Notice the update of both the labels and the indices. 
+Hence creating a large diff, where updating the labels would do.
 
 ```{r}
 write_vc(old, "write_vc", root, sorting = "color")
@@ -236,7 +274,12 @@ write_vc(relabeled, "write_vc", root, strict = FALSE)
 print_file("write_vc.yml", root)
 ```
 
-Therefore we created `relabel()`, which changes only the labels in the metadata. It takes three arguments: the name of the data file, the root and the change. `change` accepts two formats, a list or a dataframe. The name of the list must match with the variable name of a factor in the data. Each element of the list must be a named vector, the name being the existing label and the value the new label. The dataframe format requires a `factor`, `old` and `new` variable with one row for each change in label. 
+We created `relabel()`, which changes the labels in the meta data while maintaining their indices. 
+It takes three arguments: the name of the data file, the root and the change. 
+`change` accepts two formats, a list or a dataframe. 
+The name of the list must match with the variable name of a factor in the data. 
+Each element of the list must be a named vector, the name being the existing label and the value the new label. 
+The dataframe format requires a `factor`, `old` and `new` variable with one row for each change in label. 
 
 ```{r}
 write_vc(old, "relabel", root, sorting = "color")
@@ -247,4 +290,6 @@ relabel("relabel", root,
 print_file("relabel.yml", root)
 ```
 
-A _caveat_: `relabel()` only makes sense when the data file uses optimized storage. The verbose mode stores the factor labels and not their indices, in which case relabelling a label will always yield a large diff. Therefore `relabel()` will only handle the optimized storage. 
+A _caveat_: `relabel()` does not make sense when the data file uses verbose storage.
+The verbose mode stores the factor labels and not their indices, in which case relabelling a label will always yield a large diff. 
+Hence, `relabel()` requires the optimized storage. 
