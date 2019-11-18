@@ -57,5 +57,6 @@ Collate:
     'reexport.R'
     'relabel.R'
     'upgrade_data.R'
+    'utils.R'
 VignetteBuilder: knitr
 Language: en-GB
