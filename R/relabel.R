@@ -27,7 +27,11 @@
 #' # Create a dataframe and store it as an optimized git2rdata object.
 #' # Note that write_vc() uses optimization by default.
 #' # Stage and commit the git2rdata object.
-#' ds <- ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"))
+#' ds <- data.frame(
+#'   a = c("a1", "a2"),
+#'   b = c("b2", "b1"),
+#'   stringsAsFactors = TRUE
+#' )
 #' junk <- write_vc(ds, "relabel", repo, sorting = "b", stage = TRUE)
 #' cm <- commit(repo, "initial commit")
 #' # check that the workspace is clean
@@ -49,7 +53,8 @@
 #' change <- data.frame(
 #'   factor = c("a", "a", "b"),
 #'   old = c("a3", "a1", "b2"),
-#'   new = c("c2", "c1", "b3")
+#'   new = c("c2", "c1", "b3"),
+#'   stringsAsFactors = TRUE
 #' )
 #' relabel("relabel", repo, change)
 #' # check the changes

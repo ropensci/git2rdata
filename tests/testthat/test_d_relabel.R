@@ -1,7 +1,7 @@
 context("relabel")
 root <- tempfile("git2rdata-relabel")
 dir.create(root)
-ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"))
+ds <- data.frame(a = c("a1", "a2"), b = c("b2", "b1"), stringsAsFactors = TRUE)
 write_vc(ds, "relabel", root, sorting = "b")
 new_labels <- list(a = list(a2 = "a3"))
 test_that("relabel handles a list of changes", {
