@@ -242,7 +242,7 @@ print_file("factor.yml", root)
 ```
 
 The next example removes the `"blue"` level and switches the order of the remaining levels. 
-Notice that the medatadata retains the existing indices. 
+Notice that the meta data retains the existing indices. 
 The order of the labels and indices reflects their new ordering.
 
 ```{r factor_deleted}
