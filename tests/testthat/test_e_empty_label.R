@@ -56,7 +56,9 @@ test_that("write_vc handles empty labels", {
 })
 
 test_that("relabel handles empty labels", {
-  change <- data.frame(factor = "var", old = "", new = "something")
+  change <- data.frame(
+    factor = "var", old = "", new = "something", stringsAsFactors = TRUE
+  )
 
   # "" is first level
   mydf <- data.frame(

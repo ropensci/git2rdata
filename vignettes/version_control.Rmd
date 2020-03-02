@@ -217,7 +217,7 @@ print_file("column_order.tsv", root, n = 5)
 We take this even a bit further: what happens if new data arrives and we need an extra factor level? 
 
 ```{r factor}
-old <- data.frame(color = c("red", "blue"))
+old <- data.frame(color = c("red", "blue"), stringsAsFactors = TRUE)
 write_vc(old, "factor", root, sorting = "color")
 print_file("factor.yml", root)
 ```
@@ -225,7 +225,10 @@ print_file("factor.yml", root)
 Let's add an observation with a new factor level. If we store the updated dataframe in a new file, we see that the indices are different. The factor level `"blue"` remains unchanged, but `"red"` becomes the third level and get index `3` instead of index `2`. This could lead to a large diff whereas the potential semantics (and thus the information content) are not changed.
 
 ```{r factor2}
-updated <- data.frame(color = c("red", "green", "blue"))
+updated <- data.frame(
+  color = c("red", "green", "blue"), 
+  stringsAsFactors = TRUE
+)
 write_vc(updated, "factor2", root, sorting = "color")
 print_file("factor2.yml", root)
 ```
@@ -244,7 +247,8 @@ The order of the labels and indices reflects their new ordering.
 
 ```{r factor_deleted}
 deleted <- data.frame(
-  color = factor(c("red", "green"), levels = c("red", "green")))
+  color = factor(c("red", "green"), levels = c("red", "green"))
+)
 write_vc(deleted, "factor", root, sorting = "color", strict = FALSE)
 print_file("factor.yml", root)
 ```
@@ -253,7 +257,8 @@ Changing a factor to an ordered factor or _vice versa_ will also keep existing l
 
 ```{r factor_ordered}
 ordered <- data.frame(
-  color = factor(c("red", "green"), levels = c("red", "green"), ordered = TRUE))
+  color = factor(c("red", "green"), levels = c("red", "green"), ordered = TRUE)
+)
 write_vc(ordered, "factor", root, sorting = "color", strict = FALSE)
 print_file("factor.yml", root)
 ```
@@ -285,8 +290,12 @@ The dataframe format requires a `factor`, `old` and `new` variable with one row 
 write_vc(old, "relabel", root, sorting = "color")
 relabel("relabel", root, change = list(color = c(red = "rood", blue = "blauw")))
 print_file("relabel.yml", root)
-relabel("relabel", root, 
-        change = data.frame(factor = "color", old = "blauw", new = "blue"))
+relabel(
+  "relabel", root, 
+  change = data.frame(
+    factor = "color", old = "blauw", new = "blue", stringsAsFactors = TRUE
+  )
+)
 print_file("relabel.yml", root)
 ```
 

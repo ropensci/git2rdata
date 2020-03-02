@@ -56,7 +56,7 @@ test_that("updates to numeric", {
 test_that("updates to character", {
   write_vc(original, "character", root, sorting = "test_logical")
   updated <- matrix("xyz", ncol = ncol(original), dimnames = dimnames(original))
-  updated <- as.data.frame(updated)
+  updated <- as.data.frame(updated, stringsAsFactor = FALSE)
   expect_is(
     suppressWarnings(
       fn <- write_vc(updated, "character", root, strict = FALSE)
