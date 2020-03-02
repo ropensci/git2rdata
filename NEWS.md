@@ -4,8 +4,8 @@ git2rdata 0.2.1 (2020-02-03)
 ### Bugfixes
 
   * Explicitly use the `stringsAsFactors` of `data.frame()` in the examples and
-  unit tests if the dataframe contains characters. This is required due to the
-  upcoming change in default value of `stringsAsFactors`. See
+  unit tests if the dataframe contains characters. The upcoming change in 
+  default value of `stringsAsFactors` requires this change. See
   https://developer.r-project.org/Blog/public/2020/02/16/stringsasfactors/index.html
 
 git2rdata 0.2.0 (2019-11-08)
