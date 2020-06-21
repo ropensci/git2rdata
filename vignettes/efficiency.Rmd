@@ -21,32 +21,27 @@ opts_chunk$set(
   comment = "#>"
 )
 library(ggplot2)
-inbo_colours <- c("#959B38", "#729BB7", "#E87837", "#BDDDD7", "#E4E517", 
+inbo_colours <- c("#959B38", "#729BB7", "#E87837", "#BDDDD7", "#E4E517",
                   "#843860", "#C04384", "#C2C444", "#685457")
 theme_inbo <- function(base_size = 12, base_family = "") {
-  rect.bg <- "white"
-  legend.bg <- "white"
-  panel.bg <- "#F3F3F3"
-  panel.grid <- "white"
-  plot.bg <- "white"
   half_line <- base_size / 2
   theme(
-    line = element_line(colour = "black", size = 0.5, linetype = 1, 
+    line = element_line(colour = "black", size = 0.5, linetype = 1,
                         lineend = "butt"),
-    rect = element_rect(fill = rect.bg, colour = "black", size = 0.5, 
+    rect = element_rect(fill = "white", colour = "black", size = 0.5,
                         linetype = 1),
-    text = element_text(family = base_family, face = "plain", 
-                        colour = "#843860", size = base_size, hjust = 0.5, 
-                        vjust = 0.5, angle = 0, lineheight = 0.9, 
+    text = element_text(family = base_family, face = "plain",
+                        colour = "#843860", size = base_size, hjust = 0.5,
+                        vjust = 0.5, angle = 0, lineheight = 0.9,
                         margin = margin(), debug = FALSE),
     axis.line = element_blank(),
     axis.line.x = element_blank(),
     axis.line.y = element_blank(),
     axis.text = element_text(size = rel(0.8)),
-    axis.text.x = element_text(margin = margin(t = 0.8 * half_line / 2), 
+    axis.text.x = element_text(margin = margin(t = 0.8 * half_line / 2),
                                vjust = 1),
     axis.text.x.top = NULL,
-    axis.text.y = element_text(margin = margin(r = 0.8 * half_line / 2), 
+    axis.text.y = element_text(margin = margin(r = 0.8 * half_line / 2),
                                hjust = 1),
     axis.text.y.right = NULL,
     axis.ticks = element_line(),
@@ -61,8 +56,8 @@ theme_inbo <- function(base_size = 12, base_family = "") {
       angle = 90
     ),
     axis.title.y.right = NULL,
-    legend.background = element_rect(colour = NA, fill = legend.bg),
-    legend.key = element_rect(fill = panel.bg, colour = NA),
+    legend.background = element_rect(colour = NA, fill = "white"),
+    legend.key = element_rect(fill = "#F3F3F3", colour = NA),
     legend.key.size = unit(1.2, "lines"),
     legend.key.height = NULL,
     legend.key.width = NULL,
@@ -72,21 +67,21 @@ theme_inbo <- function(base_size = 12, base_family = "") {
     legend.spacing.y = NULL,
     legend.text = element_text(size = rel(0.8)),
     legend.text.align = NULL,
-    legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0, 
+    legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0,
                                 colour = "black"),
     legend.title.align = NULL,
     legend.position = "right",
     legend.direction = NULL,
     legend.justification = "center",
     legend.box = NULL,
-    legend.box.margin = margin(t = half_line, r = half_line, b = half_line, 
+    legend.box.margin = margin(t = half_line, r = half_line, b = half_line,
                                l = half_line),
-    legend.box.background = element_rect(colour = NA, fill = legend.bg),
+    legend.box.background = element_rect(colour = NA, fill = "white"),
     legend.box.spacing = unit(0.2, "cm"),
-    panel.background = element_rect(fill = panel.bg, colour = NA),
+    panel.background = element_rect(fill = "#F3F3F3", colour = NA),
     panel.border = element_blank(),
-    panel.grid = element_line(colour = panel.grid),
-    panel.grid.minor = element_line(colour = panel.grid, size = 0.25),
+    panel.grid = element_line(colour = "white"),
+    panel.grid.minor = element_line(colour = "white", size = 0.25),
     panel.spacing = unit(half_line, "pt"),
     panel.spacing.x = NULL,
     panel.spacing.y = NULL,
@@ -99,14 +94,14 @@ theme_inbo <- function(base_size = 12, base_family = "") {
     strip.switch.pad.grid = unit(0.1, "cm"),
     strip.switch.pad.wrap = unit(0.1, "cm"),
     strip.placement = "outside",
-    plot.background = element_rect(colour = NA, fill = plot.bg),
-    plot.title = element_text(size = rel(1.2), 
+    plot.background = element_rect(colour = NA, fill = "white"),
+    plot.title = element_text(size = rel(1.2),
                               margin = margin(0, 0, half_line, 0)),
     plot.subtitle = element_text(size = rel(1),
                                  margin = margin(0, 0, half_line, 0)),
     plot.caption = element_text(size = rel(0.6),
                                 margin = margin(0, 0, half_line, 0)),
-    plot.margin = margin(t = half_line, r = half_line, b = half_line, 
+    plot.margin = margin(t = half_line, r = half_line, b = half_line,
                          l = half_line),
     plot.tag = element_text(size = rel(1.2), hjust = 0.5, vjust = 0.5),
     plot.tag.position = "topleft",
@@ -186,12 +181,15 @@ This results in more compact files.
 ```{r table_file_size, echo = FALSE}
 kable(
   data.frame(
-    method = c("saveRDS()", "write_vc(), optimized", "write_vc(), verbose", 
+    method = c("saveRDS()", "write_vc(), optimized", "write_vc(), verbose",
                "write.table()"),
     file_size = c(rds_size, optim_size, verbose_size, base_size) / 2 ^ 10,
     relative = c(rds_size, optim_size, verbose_size, base_size) / base_size
   ),
-  caption = "Resulting file sizes (in kB) and file sizes relative to the size of write.table().",
+  caption = paste(
+    "Resulting file sizes (in kB) and file sizes relative to the size of",
+    "write.table()."
+  ),
   digits = 2
 )
 ```
@@ -240,7 +238,7 @@ ggplot(f_ratio, aes(x = label_length, y = ratio, colour = levels)) +
   geom_hline(yintercept = 1, linetype = 2) +
   geom_line() +
   scale_x_continuous("label length (characters)") +
-  scale_y_continuous("optimized bytes / verbose bytes", 
+  scale_y_continuous("optimized bytes / verbose bytes",
                      breaks = seq(0, 1.25, by = 0.25)) +
   scale_colour_manual("number of \nlevels", values = inbo_colours)
 ```
@@ -276,7 +274,7 @@ ggplot(f_ratio, aes(x = observations, y = ratio, colour = levels)) +
   geom_hline(yintercept = 1, linetype = 2) +
   geom_line() +
   scale_x_log10() +
-  scale_y_continuous("optimized bytes / verbose bytes", 
+  scale_y_continuous("optimized bytes / verbose bytes",
                      breaks = seq(0, 1.25, by = 0.25)) +
   scale_colour_manual("number of \nlevels", values = inbo_colours)
 ```
@@ -295,15 +293,15 @@ library(git2r)
 tmp_repo <- function() {
   root <- tempfile("git2rdata-efficient-git")
   dir.create(root)
-  repo <- init(root)
-  config(repo, user.name = "me", user.email = "me@me.com")
+  repo <- init(root) # nolint
+  config(repo, user.name = "me", user.email = "me@me.com") # nolint
   return(repo)
 }
 commit_and_size <- function(repo, filename) {
   add(repo, filename)
   commit(repo, "test", session = TRUE)
   git_size <- system(
-    sprintf("cd %s\ngit gc\ngit count-objects -v", dirname(repo$path)), 
+    sprintf("cd %s\ngit gc\ngit count-objects -v", dirname(repo$path)),
     intern = TRUE
   )
   git_size <- git_size[grep("size-pack", git_size)]
@@ -320,7 +318,7 @@ repo_size <- replicate(
   100, {
     observed_subset <- rbinom(nrow(airbag), size = 1, prob = 0.9) == 1
     this <- airbag[
-      sample(which(observed_subset)), 
+      sample(which(observed_subset)),
       sample(ncol(airbag))
     ]
     this_sorted <- airbag[observed_subset, ]
@@ -337,8 +335,8 @@ repo_size <- replicate(
     c(
       write.table = commit_and_size(repo_wt, fn_wt),
       write.table.sorted = commit_and_size(repo_wts, fn_wts),
-      saveRDS = commit_and_size(repo_rds, fn_rds), 
-      write_vc.optimized = commit_and_size(repo_wvco, fn_wvco), 
+      saveRDS = commit_and_size(repo_rds, fn_rds),
+      write_vc.optimized = commit_and_size(repo_wvco, fn_wvco),
       write_vc.verbose = commit_and_size(repo_wvcv, fn_wvcv)
     )
 })
@@ -369,28 +367,31 @@ rs <- lapply(
   function(x) {
     if (x == "saveRDS") {
       fun <- "saveRDS"
-      optimized = "yes"
+      optimized <- "yes"
     } else if (x == "write_vc.optimized") {
       fun <- "write_vc"
-      optimized = "yes"
+      optimized <- "yes"
     } else if (x == "write_vc.verbose") {
       fun <- "write_vc"
-      optimized = "no"
+      optimized <- "no"
     } else if (x == "write.table") {
       fun <- "write.table"
-      optimized = "no"
+      optimized <- "no"
     } else if (x == "write.table.sorted") {
       fun <- "write.table"
-      optimized = "yes"
+      optimized <- "yes"
     }
-    data.frame(commit = seq_along(repo_size[x, ]), size = repo_size[x, ], 
+    data.frame(commit = seq_along(repo_size[x, ]), size = repo_size[x, ],
                rel_size = repo_size[x, ] / repo_size["write.table.sorted", ],
                fun = fun, optimized = optimized, stringsAsFactors = FALSE)
   }
 )
 rs <- do.call(rbind, rs)
 rs$optimized <- factor(rs$optimized, levels = c("yes", "no"))
-ggplot(rs, aes(x = commit, y = size / 2^10, colour = fun, linetype = optimized)) +
+ggplot(
+  rs,
+  aes(x = commit, y = size / 2^10, colour = fun, linetype = optimized)
+) +
   geom_line() +
   scale_y_continuous("repo size (in MiB)") +
   scale_colour_manual("function", values = inbo_colours)
@@ -399,7 +400,7 @@ ggplot(rs, aes(x = commit, y = size / 2^10, colour = fun, linetype = optimized))
 ```{r plot_rel_git_size, echo = FALSE, fig.cap = "Relative size of the git repository when compared to write.table()."}
 ggplot(rs, aes(x = commit, y = rel_size, colour = fun, linetype = optimized)) +
   geom_line() +
-  scale_y_continuous("size relative to sorted write.table()", breaks = 0:10) + 
+  scale_y_continuous("size relative to sorted write.table()", breaks = 0:10) +
   scale_colour_manual("function", values = inbo_colours)
 ```
 
@@ -415,14 +416,16 @@ mb <- microbenchmark(
   write.table = write.table(airbag, file.path(root, "base_R.tsv"), sep = "\t"),
   saveRDS = saveRDS(airbag, file.path(root, "base_R.rds")),
   write_vc.optim = write_vc(airbag, "airbag_optimize", root, sorting = "X"),
-  write_vc.verbose = write_vc(airbag, "airbag_verbose", root, sorting = "X", 
+  write_vc.verbose = write_vc(airbag, "airbag_verbose", root, sorting = "X",
                               optimize = FALSE)
 )
 mb$time <- mb$time / 1e6
 ```
 
 ```{r store_file_timings, echo = FALSE}
-if (system.file("efficiency", "file_timings.rds", package = "git2rdata") == "") {
+if (
+  system.file("efficiency", "file_timings.rds", package = "git2rdata") == ""
+) {
   saveRDS(mb, file.path("..", "inst", "efficiency", "file_timings.rds"))
 } else {
   mb <- readRDS(
@@ -433,7 +436,7 @@ if (system.file("efficiency", "file_timings.rds", package = "git2rdata") == "") 
 
 ```{r median_write, echo = FALSE}
 median_time <- aggregate(time ~ expr, data = mb, FUN = median)
-write_ratio <- 100 * median_time$time / 
+write_ratio <- 100 * median_time$time /
   median_time$time[median_time$expr == "write.table"]
 names(write_ratio) <- median_time$expr
 ```
@@ -456,7 +459,7 @@ ggplot(mb, aes(x = expr, y = time)) +
 
 ```{r get_read_timings, eval = system.file("efficiency", "read_timings.rds", package = "git2rdata") == ""}
 mb <- microbenchmark(
-  read.table = read.table(file.path(root, "base_R.tsv"), header = TRUE, 
+  read.table = read.table(file.path(root, "base_R.tsv"), header = TRUE,
                           sep = "\t"),
   readRDS = readRDS(file.path(root, "base_R.rds")),
   read_vc.optim = read_vc("airbag_optimize", root),
@@ -466,7 +469,9 @@ mb$time <- mb$time / 1e6
 ```
 
 ```{r store_read_timings, echo = FALSE}
-if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") {
+if (
+  system.file("efficiency", "read_timings.rds", package = "git2rdata") == ""
+) {
   saveRDS(mb, file.path("..", "inst", "efficiency", "read_timings.rds"))
 } else {
   mb <- readRDS(
@@ -477,7 +482,7 @@ if (system.file("efficiency", "read_timings.rds", package = "git2rdata") == "") 
 
 ```{r median_read, echo = FALSE}
 median_time <- aggregate(time ~ expr, data = mb, FUN = median)
-read_ratio <- 100 * median_time$time / 
+read_ratio <- 100 * median_time$time /
   median_time$time[median_time$expr == "read.table"]
 names(read_ratio) <- median_time$expr
 ```
@@ -486,7 +491,7 @@ The timings on reading the data is another story. Reading the binary format take
 
 ```{r plot_read_timings, echo = FALSE, fig.cap = "Boxplots for the read timings for the different methods."}
 mb$expr <- factor(
-  mb$expr, 
+  mb$expr,
   levels = c("readRDS", "read.table", "read_vc.optim", "read_vc.verbose")
 )
 levels(mb$expr) <- gsub("read_vc\\.", "read_vc\n", levels(mb$expr))

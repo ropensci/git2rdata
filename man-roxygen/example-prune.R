@@ -72,4 +72,3 @@
 #'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
 #'                  include.dirs = TRUE, all.files = TRUE)),
 #'   repo_path)
-
