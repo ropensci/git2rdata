@@ -7,8 +7,15 @@
 \usage{
 upgrade_data(file, root = ".", verbose, ..., path)
 
-\method{upgrade_data}{git_repository}(file, root = ".", verbose = TRUE,
-  ..., path, stage = FALSE, force = FALSE)
+\method{upgrade_data}{git_repository}(
+  file,
+  root = ".",
+  verbose = TRUE,
+  ...,
+  path,
+  stage = FALSE,
+  force = FALSE
+)
 }
 \arguments{
 \item{file}{the name of the git2rdata object. Git2rdata objects cannot
@@ -59,7 +66,9 @@ upgrade_data(path = ".", root = root)
 junk <- file.remove(list.files(root, full.names = TRUE), root)
 }
 \seealso{
-Other internal: \code{\link{is_git2rdata}},
-  \code{\link{is_git2rmeta}}, \code{\link{meta}}
+Other internal: 
+\code{\link{is_git2rdata}()},
+\code{\link{is_git2rmeta}()},
+\code{\link{meta}()}
 }
 \concept{internal}

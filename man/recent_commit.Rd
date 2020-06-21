@@ -90,8 +90,11 @@ junk <- file.remove(
   repo_path)
 }
 \seealso{
-Other version_control: \code{\link{commit}},
-  \code{\link{pull}}, \code{\link{push}},
-  \code{\link{repository}}, \code{\link{status}}
+Other version_control: 
+\code{\link{commit}()},
+\code{\link{pull}()},
+\code{\link{push}()},
+\code{\link{repository}()},
+\code{\link{status}()}
 }
 \concept{version_control}

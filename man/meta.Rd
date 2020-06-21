@@ -15,8 +15,7 @@ meta(x, ...)
 
 \method{meta}{character}(x, na = "NA", ...)
 
-\method{meta}{factor}(x, optimize = TRUE, na = "NA", index,
-  strict = TRUE, ...)
+\method{meta}{factor}(x, optimize = TRUE, na = "NA", index, strict = TRUE, ...)
 
 \method{meta}{logical}(x, optimize = TRUE, ...)
 
@@ -24,8 +23,7 @@ meta(x, ...)
 
 \method{meta}{Date}(x, optimize = TRUE, ...)
 
-\method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting,
-  strict = TRUE, ...)
+\method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting, strict = TRUE, ...)
 }
 \arguments{
 \item{x}{the vector.}
@@ -80,7 +78,7 @@ The same code on a different locale might result in a different sorting.
 Add \code{strict = FALSE} to enforce the new order of factor levels.
 }
 \examples{
-meta(c(NA, "'NA'", '"NA"', "abc\\tdef", "abc\\ndef"))
+meta(c(NA, "'NA'", '"NA"', "abc\tdef", "abc\ndef"))
 meta(1:3)
 meta(seq(1, 3, length = 4))
 meta(factor(c("b", NA, "NA"), levels = c("NA", "b", "c")))
@@ -99,7 +97,9 @@ meta(as.Date("2019-02-01"))
 meta(as.Date("2019-02-01"), optimize = FALSE)
 }
 \seealso{
-Other internal: \code{\link{is_git2rdata}},
-  \code{\link{is_git2rmeta}}, \code{\link{upgrade_data}}
+Other internal: 
+\code{\link{is_git2rdata}()},
+\code{\link{is_git2rmeta}()},
+\code{\link{upgrade_data}()}
 }
 \concept{internal}
