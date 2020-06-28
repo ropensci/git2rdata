@@ -1,0 +1,36 @@
+{
+  "title": "git2rdata: Store and Retrieve Data.frames in a Git Repository.",
+  "description": "Make versioning of data.frame easy and efficient using git repositories.",
+  "creators": [
+    {
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "name": "Thierry Onkelinx",
+      "orcid": "0000-0001-8804-4216"
+    },
+    {
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "name": "Floris Vanderhaeghe",
+      "orcid": "0000-0002-6378-6229"
+    },
+    {
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "name": "Peter Desmet",
+      "orcid": "0000-0002-8442-8025"
+    },
+    {
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "name": "Els Lommelen",
+      "orcid": "0000-0002-3481-5684"
+    }
+  ],
+  "upload_type": "software",
+  "license": "GPL-3",
+  "access_right": "open",
+  "keywords": [
+    "data-management",
+    "cyberinfrastructure",
+    "clowder",
+    "open-data",
+    "open-science"
+  ]
+}
