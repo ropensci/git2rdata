@@ -39,6 +39,7 @@ Imports:
     methods,
     yaml
 Suggests:
+    covr,
     ggplot2,
     knitr,
     microbenchmark,

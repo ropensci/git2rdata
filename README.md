@@ -9,13 +9,12 @@
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.5.0-6666ff.svg)](https://cran.r-project.org/)
 [![DOI](https://zenodo.org/badge/147685405.svg)](https://zenodo.org/badge/latestdoi/147685405)
-[![Travis-CI Build Status](https://travis-ci.org/ropensci/git2rdata.svg?branch=master)](https://travis-ci.org/ropensci/git2rdata)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/cfbjb835fqb3dc7m/branch/master?svg=true)](https://ci.appveyor.com/project/ThierryO/git2rdata-n60yg/branch/master)
-[![codecov](https://codecov.io/gh/ropensci/git2rdata/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/git2rdata)
 ![GitHub forks](https://img.shields.io/github/forks/ropensci/git2rdata.svg?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/ropensci/git2rdata.svg?style=social)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ropensci/git2rdata.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/ropensci/git2rdata.svg)
+[![Codecov test coverage](https://codecov.io/gh/ropensci/git2rdata/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/git2rdata?branch=master)
+[![R build status](https://github.com/ropensci/git2rdata/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/git2rdata/actions)
 <!-- badges: end -->
 
 <p style="display:none">Please visit the git2rdata website at https://ropensci.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their help file.</p>
