@@ -1,0 +1,10 @@
+on: [push]
+
+name: check-linters
+
+jobs:
+  check_linters:
+    runs-on: ubuntu-latest
+    name: Check for linters in the code
+    steps:
+      - uses: inbo/actions/lint_pkg@master
