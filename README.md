@@ -9,8 +9,6 @@
 [![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.5.0-6666ff.svg)](https://cran.r-project.org/)
 [![DOI](https://zenodo.org/badge/147685405.svg)](https://zenodo.org/badge/latestdoi/147685405)
-[![Travis-CI Build Status](https://travis-ci.org/ropensci/git2rdata.svg?branch=master)](https://travis-ci.org/ropensci/git2rdata)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/cfbjb835fqb3dc7m/branch/master?svg=true)](https://ci.appveyor.com/project/ThierryO/git2rdata-n60yg/branch/master)
 [![codecov](https://codecov.io/gh/ropensci/git2rdata/branch/master/graph/badge.svg)](https://codecov.io/gh/ropensci/git2rdata)
 ![GitHub forks](https://img.shields.io/github/forks/ropensci/git2rdata.svg?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/ropensci/git2rdata.svg?style=social)
