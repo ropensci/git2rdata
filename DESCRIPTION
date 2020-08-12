@@ -39,7 +39,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 URL: https://github.com/ropensci/git2rdata, https://doi.org/10.5281/zenodo.1485309
 BugReports: https://github.com/ropensci/git2rdata/issues
 Collate:

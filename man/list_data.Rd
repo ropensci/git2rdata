@@ -34,7 +34,7 @@ dir.create(root)
 # screen output
 junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
 # write a standard tab separate file (non git2rdata object)
-write.table(iris, file = file.path(root, "standard.tsv"), sep = "\\t")
+write.table(iris, file = file.path(root, "standard.tsv"), sep = "\t")
 # write a YAML file
 yml <- list(
   authors = list(
@@ -99,8 +99,11 @@ junk <- file.remove(
   repo_path)
 }
 \seealso{
-Other storage: \code{\link{prune_meta}},
-  \code{\link{read_vc}}, \code{\link{relabel}},
-  \code{\link{rm_data}}, \code{\link{write_vc}}
+Other storage: 
+\code{\link{prune_meta}()},
+\code{\link{read_vc}()},
+\code{\link{relabel}()},
+\code{\link{rm_data}()},
+\code{\link{write_vc}()}
 }
 \concept{storage}

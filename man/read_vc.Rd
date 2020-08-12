@@ -96,8 +96,11 @@ junk <- file.remove(
   repo_path)
 }
 \seealso{
-Other storage: \code{\link{list_data}},
-  \code{\link{prune_meta}}, \code{\link{relabel}},
-  \code{\link{rm_data}}, \code{\link{write_vc}}
+Other storage: 
+\code{\link{list_data}()},
+\code{\link{prune_meta}()},
+\code{\link{relabel}()},
+\code{\link{rm_data}()},
+\code{\link{write_vc}()}
 }
 \concept{storage}
