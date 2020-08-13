@@ -55,7 +55,7 @@ RoxygenNote: 7.1.1
 Collate:
     'clean_data_path.R'
     'datahash.R'
-    'git2rdata-package.R'
+    'git2rdata_package.R'
     'write_vc.R'
     'is_git2rdata.R'
     'is_git2rmeta.R'
