@@ -14,7 +14,7 @@
 #' @rdname is_git2rmeta
 #' @export
 #' @family internal
-#' @template example-isgit2r
+#' @template example_isgit2r
 is_git2rmeta <- function(file, root = ".",
                          message = c("none", "warning", "error")) {
   UseMethod("is_git2rmeta", root)

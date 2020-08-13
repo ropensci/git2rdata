@@ -29,7 +29,7 @@
 #' contain the hashes of the files.
 #' @export
 #' @family storage
-#' @template example-io
+#' @template example_io
 #' @note `..generic` is a reserved name for the metadata and is a forbidden
 #' column name in a `data.frame`.
 write_vc <- function(

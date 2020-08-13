@@ -19,7 +19,7 @@
 #' @inheritParams write_vc
 #' @export
 #' @family storage
-#' @template example-prune
+#' @template example_prune
 rm_data <- function(
   root = ".", path = NULL, recursive = TRUE, ...
 ) {
@@ -113,7 +113,7 @@ rm_data.git_repository <- function(
 #' @inheritParams write_vc
 #' @export
 #' @family storage
-#' @template example-prune
+#' @template example_prune
 prune_meta <- function(
   root = ".", path = NULL, recursive = TRUE, ...
 ) {
