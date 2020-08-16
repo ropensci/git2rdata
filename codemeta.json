@@ -202,7 +202,7 @@
   ],
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
-  "fileSize": "1762.61KB",
+  "fileSize": "578.382KB",
   "contIntegration": "https://codecov.io/gh/ropensci/git2rdata",
   "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
   "keywords": [
