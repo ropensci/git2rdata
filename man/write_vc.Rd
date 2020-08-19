@@ -5,11 +5,29 @@
 \alias{write_vc.git_repository}
 \title{Store a Data.Frame as a Git2rdata Object on Disk}
 \usage{
-write_vc(x, file, root = ".", sorting, strict = TRUE,
-  optimize = TRUE, na = "NA", ...)
+write_vc(
+  x,
+  file,
+  root = ".",
+  sorting,
+  strict = TRUE,
+  optimize = TRUE,
+  na = "NA",
+  ...
+)
 
-\method{write_vc}{git_repository}(x, file, root, sorting, strict = TRUE,
-  optimize = TRUE, na = "NA", ..., stage = FALSE, force = FALSE)
+\method{write_vc}{git_repository}(
+  x,
+  file,
+  root,
+  sorting,
+  strict = TRUE,
+  optimize = TRUE,
+  na = "NA",
+  ...,
+  stage = FALSE,
+  force = FALSE
+)
 }
 \arguments{
 \item{x}{the \code{data.frame}.}
@@ -130,8 +148,11 @@ junk <- file.remove(
   repo_path)
 }
 \seealso{
-Other storage: \code{\link{list_data}},
-  \code{\link{prune_meta}}, \code{\link{read_vc}},
-  \code{\link{relabel}}, \code{\link{rm_data}}
+Other storage: 
+\code{\link{list_data}()},
+\code{\link{prune_meta}()},
+\code{\link{read_vc}()},
+\code{\link{relabel}()},
+\code{\link{rm_data}()}
 }
 \concept{storage}

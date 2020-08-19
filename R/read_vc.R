@@ -15,7 +15,7 @@
 #' @rdname read_vc
 #' @export
 #' @family storage
-#' @template example-io
+#' @template example_io
 read_vc <- function(file, root = ".") {
   UseMethod("read_vc", root)
 }

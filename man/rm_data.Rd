@@ -7,9 +7,14 @@
 \usage{
 rm_data(root = ".", path = NULL, recursive = TRUE, ...)
 
-\method{rm_data}{git_repository}(root, path = NULL, recursive = TRUE,
-  ..., stage = FALSE, type = c("unmodified", "modified", "ignored",
-  "all"))
+\method{rm_data}{git_repository}(
+  root,
+  path = NULL,
+  recursive = TRUE,
+  ...,
+  stage = FALSE,
+  type = c("unmodified", "modified", "ignored", "all")
+)
 }
 \arguments{
 \item{root}{The root of a project. Can be a file path or a \code{git-repository}.
@@ -28,7 +33,7 @@ is relative to \code{root}.}
 the git history and unchanged since the last commit. \code{modified} are files in
 the git history and changed since the last commit. \code{ignored} refers to file
 listed in a \code{.gitignore} file. Selecting \code{modified} will remove both
-\code{unmodified} and \code{modified} data files. Selecting \code{ìgnored} will remove
+\code{unmodified} and \code{modified} data files. Selecting \verb{ìgnored} will remove
 \code{unmodified}, \code{modified} and \code{ignored} data files. \code{all} refers to all
 visible data files, including \code{untracked} files.}
 }
@@ -59,7 +64,7 @@ dir.create(root)
 # screen output
 junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
 # write a standard tab separate file (non git2rdata object)
-write.table(iris, file = file.path(root, "standard.tsv"), sep = "\\t")
+write.table(iris, file = file.path(root, "standard.tsv"), sep = "\t")
 # write a YAML file
 yml <- list(
   authors = list(
@@ -124,8 +129,11 @@ junk <- file.remove(
   repo_path)
 }
 \seealso{
-Other storage: \code{\link{list_data}},
-  \code{\link{prune_meta}}, \code{\link{read_vc}},
-  \code{\link{relabel}}, \code{\link{write_vc}}
+Other storage: 
+\code{\link{list_data}()},
+\code{\link{prune_meta}()},
+\code{\link{read_vc}()},
+\code{\link{relabel}()},
+\code{\link{write_vc}()}
 }
 \concept{storage}

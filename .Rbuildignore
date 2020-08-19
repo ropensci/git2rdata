@@ -1,16 +1,15 @@
-^\.github$
+^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
-^_pkgdown.yml$
-^appveyor\.yml$
+^\.github$
 ^codemeta\.json$
 ^.zenodo\.json$
-^docs$
 ^man-roxygen$
 ^pkgdown$
-^sticker$
-^tic\.R$
-^.*\.Rproj$
+^_pkgdown.yml$
+^docs$
 ^cran-comments\.md$
-^CRAN-RELEASE$
+# checklist
+^checklist.yml$
+^codecov.yml$
+^LICENSE.md$
 ^\.httr-oauth$

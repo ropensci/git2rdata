@@ -5,7 +5,7 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "git2rdata",
-  "description": "Make versioning of data.frame easy and efficient using git repositories.",
+  "description": "Make versioning of data.frame easy and efficient using git\n    repositories.",
   "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
   "codeRepository": "https://github.com/ropensci/git2rdata",
   "relatedLink": [
@@ -14,14 +14,13 @@
   ],
   "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.2",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.2 (2019-12-12)",
+  "runtimePlatform": "R version 4.0.2 (2020-06-22)",
   "author": [
     {
       "@type": "Person",
@@ -80,18 +79,6 @@
   "softwareSuggestions": [
     {
       "@type": "SoftwareApplication",
-      "identifier": "spelling",
-      "name": "spelling",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=spelling"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "ggplot2",
       "name": "ggplot2",
       "provider": {
@@ -137,6 +124,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "spelling",
+      "name": "spelling",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=spelling"
     },
     {
       "@type": "SoftwareApplication",
@@ -203,16 +202,9 @@
   ],
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
-  "fileSize": "341.883KB",
-  "contIntegration": [
-    "https://travis-ci.org/inbo/git2rdata",
-    "https://ci.appveyor.com/project/ThierryO/git2rdata/branch/master",
-    "https://codecov.io/gh/inbo/git2rdata"
-  ],
-  "developmentStatus": [
-    "https://www.repostatus.org/#active",
-    "https://www.tidyverse.org/lifecycle/#maturing"
-  ],
+  "fileSize": "578.382KB",
+  "contIntegration": "https://codecov.io/gh/ropensci/git2rdata",
+  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
   "keywords": [
     "r",
     "rstats",
@@ -225,5 +217,10 @@
     "@type": "Organization",
     "name": "Comprehensive R Archive Network (CRAN)",
     "url": "https://cran.r-project.org"
+  },
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/software-review/issues/263",
+    "provider": "https://ropensci.org"
   }
 }

@@ -8,7 +8,7 @@
 #' @param path relative `path` from the `root`. Defaults to the `root`
 #' @inheritParams base::list.files
 #' @export
-#' @template example-prune
+#' @template example_prune
 #' @return A character vector of git2rdata object names, including their
 #' relative path.
 #' @family storage

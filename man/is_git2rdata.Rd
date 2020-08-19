@@ -55,7 +55,9 @@ is_git2rdata("iris", root)
 junk <- file.remove(list.files(root, full.names = TRUE), root)
 }
 \seealso{
-Other internal: \code{\link{is_git2rmeta}},
-  \code{\link{meta}}, \code{\link{upgrade_data}}
+Other internal: 
+\code{\link{is_git2rmeta}()},
+\code{\link{meta}()},
+\code{\link{upgrade_data}()}
 }
 \concept{internal}

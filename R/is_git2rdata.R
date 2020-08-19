@@ -8,7 +8,7 @@
 #' @rdname is_git2rdata
 #' @export
 #' @family internal
-#' @template example-isgit2r
+#' @template example_isgit2r
 is_git2rdata <- function(file, root = ".",
                          message = c("none", "warning", "error")) {
   UseMethod("is_git2rdata", root)
