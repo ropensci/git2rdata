@@ -1,3 +1,5 @@
+# git2rdata 0.2.3
+
 # git2rdata 0.2.2
 
 * Use the [checklist](https://inbo.github.io/checklist) package for CI.
