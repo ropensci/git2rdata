@@ -21,8 +21,10 @@ expect_error(
   "file should not contain '..'"
 )
 expect_is(
-  output <- write_vc(
-    x = test_data, file = "test.txt", root = root, sorting = "test_Date"
+  suppressWarnings(
+    output <- write_vc(
+      x = test_data, file = "test.txt", root = root, sorting = "test_Date"
+    )
   ),
   "character"
 )
@@ -43,7 +45,7 @@ for (i in colnames(stored)) {
   )
 }
 expect_identical(
-  write_vc(x = test_data, file = "test.xls", root = root),
+  suppressWarnings(write_vc(x = test_data, file = "test.xls", root = root)),
   output
 )
 expect_error(
@@ -51,7 +53,9 @@ expect_error(
   "The data was not overwritten because of the issues below."
 )
 expect_error(
-  write_vc(x = test_data, file = "test", root = root, optimize = FALSE),
+  suppressWarnings(
+    write_vc(x = test_data, file = "test", root = root, optimize = FALSE)
+  ),
   "New data is verbose, whereas old data was optimized"
 )
 expect_warning(

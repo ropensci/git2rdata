@@ -33,7 +33,7 @@ is relative to \code{root}.}
 the git history and unchanged since the last commit. \code{modified} are files in
 the git history and changed since the last commit. \code{ignored} refers to file
 listed in a \code{.gitignore} file. Selecting \code{modified} will remove both
-\code{unmodified} and \code{modified} data files. Selecting \verb{ìgnored} will remove
+\code{unmodified} and \code{modified} data files. Selecting \code{ìgnored} will remove
 \code{unmodified}, \code{modified} and \code{ignored} data files. \code{all} refers to all
 visible data files, including \code{untracked} files.}
 }
