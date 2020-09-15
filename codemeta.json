@@ -1,11 +1,17 @@
 {
-  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "git2rdata",
   "description": "Make versioning of data.frame easy and efficient using git\n    repositories.",
   "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
   "codeRepository": "https://github.com/ropensci/git2rdata",
-  "relatedLink": "https://doi.org/10.5281/zenodo.1485309",
+  "relatedLink": [
+    "https://doi.org/10.5281/zenodo.1485309",
+    "https://CRAN.R-project.org/package=git2rdata"
+  ],
   "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "version": "0.2.3",
@@ -212,5 +218,21 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "fileSize": "1765.055KB"
+  "fileSize": "586.414KB",
+  "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
+  "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
+  "contIntegration": "https://codecov.io/gh/ropensci/git2rdata",
+  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/software-review/issues/263",
+    "provider": "https://ropensci.org"
+  },
+  "keywords": [
+    "r",
+    "rstats",
+    "r-package",
+    "version-control",
+    "reproducible-research"
+  ]
 }
