@@ -1,6 +1,8 @@
 # git2rdata 0.2.3
 
 * `write_vc()` gains an optional `split_by` argument.
+* `read_vc()`, `is_git2rdata()` and `is_git2rmeta()` now yield a better message
+  when both the data and metadata are missing.
 
 # git2rdata 0.2.2
 
