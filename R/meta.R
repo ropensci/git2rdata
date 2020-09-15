@@ -261,9 +261,9 @@ Add extra sorting variables to ensure small diffs.", sorted)
       }
     }
     generic <- c(generic, sorting = list(sorting))
-    if (length(split_by)) {
-      generic <- c(generic, split_by = list(split_by))
-    }
+  }
+  if (length(split_by)) {
+    generic <- c(generic, split_by = list(split_by))
   }
   # calculate meta for each column
   if (has_name(dots, "old")) {

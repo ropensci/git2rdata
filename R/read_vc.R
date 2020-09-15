@@ -69,14 +69,56 @@ read_vc.character <- function(file, root = ".") {
   col_classes <- vapply(details, "[[", character(1), "class")
 
   # read the raw data and check the data hash
-  raw_data <- read.table(
-    file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
-    dec = ".", numerals = "warn.loss", na.strings = na_string,
-    colClasses = setNames(col_type[col_classes], col_names), comment.char = "",
-    stringsAsFactors = FALSE, fileEncoding = "UTF-8"
-  )
+  if (has_name(meta_data[["..generic"]], "split_by")) {
+    split_by <- meta_data[["..generic"]][["split_by"]]
+    which_split_by <- col_names %in% split_by
+    index <- read.table(
+      file = file.path(file["raw_file"], "index.tsv"),
+      header = TRUE, sep = "\t", quote = "\"",
+      dec = ".", numerals = "warn.loss", na.strings = na_string,
+      colClasses = setNames(
+        col_type[col_classes[which_split_by]],
+        col_names[which_split_by]
+      ),
+      comment.char = "",
+      stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+    )
+    raw_data <- vapply(
+      seq_len(nrow(index)),
+      function(i) {
+        rf <- file.path(file["raw_file"], paste0(index[i, "..hash"], ".tsv"))
+        raw_data <- read.table(
+          file = rf, header = TRUE, sep = "\t", quote = "\"",
+          dec = ".", numerals = "warn.loss", na.strings = na_string,
+          colClasses = setNames(
+            col_type[col_classes[!which_split_by]],
+            col_names[!which_split_by]
+          ),
+          comment.char = "",
+          stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+        )
+        raw_data <- cbind(
+          index[rep(i, nrow(raw_data)), split_by, drop = FALSE],
+          raw_data
+        )
+        attr(raw_data, "hash") <- datahash(rf)
+        return(list(raw_data))
+      },
+      vector(mode = "list", length = 1)
+    )
+    dh <- sha1(vapply(raw_data, attr, character(1), "hash"))
+    raw_data <- do.call(rbind, raw_data)[, col_names]
+  } else {
+    raw_data <- read.table(
+      file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
+      dec = ".", numerals = "warn.loss", na.strings = na_string,
+      colClasses = setNames(col_type[col_classes], col_names),
+      comment.char = "",
+      stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+    )
+    dh <- datahash(file["raw_file"])
+  }
 
-  dh <- datahash(file["raw_file"])
   if (meta_data[["..generic"]][["data_hash"]] != dh) {
     meta_data[["..generic"]][["data_hash"]] <- dh
     warning("Mismatching data hash. Data altered outside of git2rdata.",
