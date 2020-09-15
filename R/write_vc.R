@@ -112,37 +112,45 @@ write_vc.character <- function(
       sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
       col.names = TRUE, fileEncoding = "UTF-8"
     )
+    data_hash <- datahash(file["raw_file"])
   } else {
     index <- unique(raw_data[split_by])
     index[["..hash"]] <- apply(index, 1, sha1)
-    dir.create(file["raw_file"], showWarnings = FALSE)
+    dir.create(file["raw_file"], showWarnings = FALSE, recursive = TRUE)
     write.table(
       x = index, file = file.path(file["raw_file"], "index.tsv"),
       append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na, dec = ".",
       row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
     )
     detail_names <- colnames(raw_data)[!colnames(raw_data) %in% split_by]
-    for (i in seq_len(nrow(index))) {
-      matching <- vapply(
-        split_by,
-        function(split) {
-          raw_data[[split]] == index[[split]][i]
-        },
-        logical(nrow(raw_data))
-      )
-      write.table(
-        x = raw_data[apply(matching, 1, all), detail_names, drop = FALSE],
-        file = file.path(file["raw_file"], paste0(index[i, "..hash"], ".tsv")),
-        append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na,
-        dec = ".", row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
-      )
-    }
+    data_hash <- vapply(
+      seq_len(nrow(index)),
+      function(i) {
+        matching <- vapply(
+          split_by,
+          function(split) {
+            raw_data[[split]] == index[[split]][i]
+          },
+          logical(nrow(raw_data))
+        )
+        rf <- file.path(file["raw_file"], paste0(index[i, "..hash"], ".tsv"))
+        write.table(
+          x = raw_data[apply(matching, 1, all), detail_names, drop = FALSE],
+          file = rf,
+          append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na,
+          dec = ".", row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
+        )
+        datahash(rf)
+      },
+      character(1)
+    )
+    data_hash <- sha1(data_hash)
   }
   meta_data <- attr(raw_data, "meta")
   meta_data[["..generic"]][["git2rdata"]] <- as.character(
     packageVersion("git2rdata")
   )
-  meta_data[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
+  meta_data[["..generic"]][["data_hash"]] <- data_hash
   write_yaml(meta_data, file["meta_file"],
              fileEncoding = "UTF-8")
 
