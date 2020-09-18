@@ -106,6 +106,10 @@ write_vc.character <- function(
       }
     }
   }
+  assert_that(
+    unlink(file["raw_file"], recursive = TRUE) == 0,
+    msg = "Failed to remove existing files."
+  )
   if (length(split_by) == 0) {
     write.table(
       x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
@@ -232,6 +236,19 @@ compare_meta <- function(new, old) {
     ) -> extra
     problems <- c(problems, extra)
   }
+  new_split_by <- new[["..generic"]][["split_by"]]
+  old_split_by <- old[["..generic"]][["split_by"]]
+  if (!isTRUE(all.equal(new_split_by, old_split_by))) {
+    sprintf(
+      "- The split_by variables changed.
+    - Split_by for the new data: %s.
+    - Split_by for the old data: %s.",
+      paste(sprintf("'%s'", new_split_by), collapse = ", "),
+      paste(sprintf("'%s'", old_split_by), collapse = ", ")
+    ) -> extra
+    problems <- c(problems, extra)
+  }
+
 
   new <- new[names(new) != "..generic"]
   old <- old[names(old) != "..generic"]

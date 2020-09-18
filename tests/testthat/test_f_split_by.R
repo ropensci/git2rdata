@@ -39,6 +39,33 @@ test_that("write_vc() handles the split_by argument", {
     check.attributes = FALSE
   )
 
+  expect_error(
+    write_vc(
+      test_data, file = "sorted", root = root, split_by = character(0)
+    ),
+    "The split_by variables changed."
+  )
+  expect_warning(
+    write_vc(
+      test_data, file = "sorted", root = root, split_by = character(0),
+      strict = FALSE
+    ),
+    "The split_by variables changed."
+  )
+  expect_error(
+    write_vc(
+      test_data, file = "sorted", root = root, split_by = "test_factor"
+    ),
+    "The split_by variables changed."
+  )
+  expect_warning(
+    write_vc(
+      test_data, file = "sorted", root = root, split_by = "test_factor",
+      strict = FALSE
+    ),
+    "The split_by variables changed."
+  )
+
   data_file <- list.files(
     file.path(root, sorted_file[1]), pattern = "[[:xdigit:]]{20}",
     full.names = TRUE
