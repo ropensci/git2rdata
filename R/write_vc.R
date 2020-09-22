@@ -116,7 +116,6 @@ write_vc.character <- function(
       sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
       col.names = TRUE, fileEncoding = "UTF-8"
     )
-    data_hash <- datahash(file["raw_file"])
   } else {
     index <- unique(raw_data[split_by])
     index[["..hash"]] <- apply(index, 1, sha1)
@@ -127,7 +126,7 @@ write_vc.character <- function(
       row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
     )
     detail_names <- colnames(raw_data)[!colnames(raw_data) %in% split_by]
-    data_hash <- vapply(
+    vapply(
       seq_len(nrow(index)),
       function(i) {
         matching <- vapply(
@@ -144,17 +143,16 @@ write_vc.character <- function(
           append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na,
           dec = ".", row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
         )
-        datahash(rf)
+        return(TRUE)
       },
-      character(1)
+      logical(1)
     )
-    data_hash <- sha1(data_hash)
   }
   meta_data <- attr(raw_data, "meta")
   meta_data[["..generic"]][["git2rdata"]] <- as.character(
     packageVersion("git2rdata")
   )
-  meta_data[["..generic"]][["data_hash"]] <- data_hash
+  meta_data[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
   write_yaml(meta_data, file["meta_file"],
              fileEncoding = "UTF-8")
 

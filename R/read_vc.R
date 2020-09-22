@@ -101,12 +101,10 @@ read_vc.character <- function(file, root = ".") {
           index[rep(i, nrow(raw_data)), split_by, drop = FALSE],
           raw_data
         )
-        attr(raw_data, "hash") <- datahash(rf)
         return(list(raw_data))
       },
       vector(mode = "list", length = 1)
     )
-    dh <- sha1(vapply(raw_data, attr, character(1), "hash"))
     raw_data <- do.call(rbind, raw_data)[, col_names]
   } else {
     raw_data <- read.table(
@@ -116,8 +114,8 @@ read_vc.character <- function(file, root = ".") {
       comment.char = "",
       stringsAsFactors = FALSE, fileEncoding = "UTF-8"
     )
-    dh <- datahash(file["raw_file"])
   }
+  dh <- datahash(file["raw_file"])
 
   if (meta_data[["..generic"]][["data_hash"]] != dh) {
     meta_data[["..generic"]][["data_hash"]] <- dh
