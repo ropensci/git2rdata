@@ -1,4 +1,4 @@
-# git2rdata 0.2.3
+# git2rdata 0.3.0
 
 ## New features
 
