@@ -12,7 +12,6 @@
 * `read_vc()`, `is_git2rdata()` and `is_git2rmeta()` now yield a better message
   when both the data and metadata are missing.
 
-
 # git2rdata 0.2.2
 
 * Use the [checklist](https://inbo.github.io/checklist) package for CI.

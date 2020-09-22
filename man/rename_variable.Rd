@@ -77,7 +77,6 @@ rename_variable(file = "rename", change = change, root = repo)
 # check the changes
 read_vc("rename", repo)
 status(repo)
-cm <- commit(repo, "relabel using a list")
 
 # clean up
 junk <- file.remove(
