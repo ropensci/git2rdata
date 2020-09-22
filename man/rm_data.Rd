@@ -134,6 +134,7 @@ Other storage:
 \code{\link{prune_meta}()},
 \code{\link{read_vc}()},
 \code{\link{relabel}()},
+\code{\link{rename_variable}()},
 \code{\link{write_vc}()}
 }
 \concept{storage}

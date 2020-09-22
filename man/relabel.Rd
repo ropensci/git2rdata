@@ -91,6 +91,7 @@ Other storage:
 \code{\link{list_data}()},
 \code{\link{prune_meta}()},
 \code{\link{read_vc}()},
+\code{\link{rename_variable}()},
 \code{\link{rm_data}()},
 \code{\link{write_vc}()}
 }

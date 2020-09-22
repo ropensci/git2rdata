@@ -67,5 +67,6 @@ Collate:
     'recent_commit.R'
     'reexport.R'
     'relabel.R'
+    'rename_variable.R'
     'upgrade_data.R'
     'utils.R'

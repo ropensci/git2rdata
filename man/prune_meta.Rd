@@ -117,6 +117,7 @@ Other storage:
 \code{\link{list_data}()},
 \code{\link{read_vc}()},
 \code{\link{relabel}()},
+\code{\link{rename_variable}()},
 \code{\link{rm_data}()},
 \code{\link{write_vc}()}
 }
