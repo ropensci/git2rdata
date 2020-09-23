@@ -66,10 +66,10 @@ expect_identical(
 
 target <- file.path(git2r::workdir(root), "subsecond.txt")
 while (TRUE) {
-  writeLines(sample(letters), con = target)
+  writeLines(letters, con = target)
   git2r::add(root, target)
   cm_1 <- commit(root, "first subsecond")
-  writeLines(sample(letters), con = target)
+  writeLines(LETTERS, con = target)
   git2r::add(root, target)
   cm_2 <- commit(root, "second subsecond")
   output <- suppressWarnings(

@@ -177,18 +177,6 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "digest",
-      "name": "digest",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=digest"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "git2r",
       "name": "git2r",
       "version": ">= 0.23.0",
@@ -218,7 +206,7 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "fileSize": "632.335KB",
+  "fileSize": "632.219KB",
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
   "contIntegration": "https://codecov.io/gh/ropensci/git2rdata",
