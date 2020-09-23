@@ -129,10 +129,9 @@ In such a case we can use the `split_by` argument of `write_vc()`.
 This will store the large dataframe over a set of tab separated files.
 One file for every combination of the variables defined by `split_by`.
 Every partial data file holds one combination of `split_by`.
-We add an `index.tsv` containing the combinations of the `split_by` variables and a unique hash.
-This hash becomes the base name of the partial data files.
-The combination of the hash in the `index.tsv` and the base name of the partial data files makes the information of `split_by` in the partial data file redundant.
 We remove the `split_by` variables from the partial data files, reducing their size.
+We add an `index.tsv` containing the combinations of the `split_by` variables and a unique hash for each combination.
+This hash becomes the base name of the partial data files.
 
 ## When to Split the Dataframe
 
@@ -151,14 +150,14 @@ Let's set the following variables:
 -   $N_s$: the number of unique combinations of the `split_by` variables.
 
 Storing the dataframe with `write_vc()` without `split_by` requires $h_s + h_r + 1$ bytes for the header and $s + r + 1$ bytes for every observation.
-The total number of bytes is `T_0 = h_s + h_r + 1 + N (s + r + 1)`.
-The `+ 1` originates from the tab character to separate the `split_by` variables from the remaining variables.
+The total number of bytes is $T_0 = h_s + h_r + 1 + N (s + r + 1)$.
+The $+ 1$ originates from the tab character to separate the `split_by` variables from the remaining variables.
 
 Storing the dataframe with `write_vc()` with `split_by` requires an index file to store the combinations of the `split_by` variables.
-`h_s` bytes for the header and `N_s s` for the data.
+It will use $h_s$ bytes for the header and $N_s s$ for the data.
 The headers of the partial data files require $N_s h_r$ bytes ($N_s$ files and $h_r$ byte per file).
 The data in the partial data files require $N r$ bytes.
-The total number of bytes is `T_s = h_s + N_s s + N_s h_r + N r`.
+The total number of bytes is $T_s = h_s + N_s s + N_s h_r + N r$.
 
 We can look at the ratio of $T_s$ over $T_0$.
 
@@ -197,13 +196,13 @@ ggplot(combinations, aes(x = b, y = ratio, colour = factor(a))) +
   geom_line() +
   facet_wrap(~ paste("r =", r)) +
   scale_x_continuous(
-    "b = N_s / N",
+    expression(b~{"="}~N[s]~{"/"}~N),
     labels = function(x) {
       paste0(100 * x, "%")
     }
   ) +
   scale_y_continuous(
-    "Relative amount of disc space",
+    "Relative amount of disk space",
     labels = function(x) {
       paste0(100 * x, "%")
     }
