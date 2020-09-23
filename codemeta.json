@@ -206,7 +206,7 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
-  "fileSize": "632.219KB",
+  "fileSize": "632.073KB",
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
   "contIntegration": "https://codecov.io/gh/ropensci/git2rdata",
