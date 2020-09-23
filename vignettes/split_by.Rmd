@@ -150,14 +150,14 @@ Let's set the following variables:
 -   $N_s$: the number of unique combinations of the `split_by` variables.
 
 Storing the dataframe with `write_vc()` without `split_by` requires $h_s + h_r + 1$ bytes for the header and $s + r + 1$ bytes for every observation.
-The total number of bytes is `T_0 = h_s + h_r + 1 + N (s + r + 1)`.
-The `+ 1` originates from the tab character to separate the `split_by` variables from the remaining variables.
+The total number of bytes is $T_0 = h_s + h_r + 1 + N (s + r + 1)$.
+The $+ 1$ originates from the tab character to separate the `split_by` variables from the remaining variables.
 
 Storing the dataframe with `write_vc()` with `split_by` requires an index file to store the combinations of the `split_by` variables.
-`h_s` bytes for the header and `N_s s` for the data.
+It will use $h_s$ bytes for the header and $N_s s$ for the data.
 The headers of the partial data files require $N_s h_r$ bytes ($N_s$ files and $h_r$ byte per file).
 The data in the partial data files require $N r$ bytes.
-The total number of bytes is `T_s = h_s + N_s s + N_s h_r + N r`.
+The total number of bytes is $T_s = h_s + N_s s + N_s h_r + N r$.
 
 We can look at the ratio of $T_s$ over $T_0$.
 
