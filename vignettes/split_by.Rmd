@@ -129,10 +129,9 @@ In such a case we can use the `split_by` argument of `write_vc()`.
 This will store the large dataframe over a set of tab separated files.
 One file for every combination of the variables defined by `split_by`.
 Every partial data file holds one combination of `split_by`.
-We add an `index.tsv` containing the combinations of the `split_by` variables and a unique hash.
-This hash becomes the base name of the partial data files.
-The combination of the hash in the `index.tsv` and the base name of the partial data files makes the information of `split_by` in the partial data file redundant.
 We remove the `split_by` variables from the partial data files, reducing their size.
+We add an `index.tsv` containing the combinations of the `split_by` variables and a unique hash for each combination.
+This hash becomes the base name of the partial data files.
 
 ## When to Split the Dataframe
 
