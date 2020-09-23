@@ -35,7 +35,6 @@ Depends:
     R (>= 3.5.0)
 Imports:
     assertthat,
-    digest,
     git2r (>= 0.23.0),
     methods,
     yaml

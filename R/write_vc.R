@@ -52,10 +52,9 @@ write_vc.default <- function(
 #' This creates a separate file for every combination.
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag
-#' @importFrom digest sha1
 #' @importFrom yaml read_yaml write_yaml
 #' @importFrom utils write.table
-#' @importFrom git2r hashfile
+#' @importFrom git2r hash
 write_vc.character <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE,
   na = "NA", ..., split_by = character(0)
@@ -118,7 +117,7 @@ write_vc.character <- function(
     )
   } else {
     index <- unique(raw_data[split_by])
-    index[["..hash"]] <- apply(index, 1, sha1)
+    index[["..hash"]] <- hash(apply(index, 1, paste, collapse = "\t"))
     dir.create(file["raw_file"], showWarnings = FALSE, recursive = TRUE)
     write.table(
       x = index, file = file.path(file["raw_file"], "index.tsv"),

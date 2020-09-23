@@ -30,7 +30,6 @@ read_vc.default <- function(file, root) {
 #' @importFrom yaml read_yaml
 #' @importFrom utils read.table
 #' @importFrom stats setNames
-#' @importFrom git2r hashfile
 read_vc.character <- function(file, root = ".") {
   assert_that(is.string(file), is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
