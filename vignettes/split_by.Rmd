@@ -196,7 +196,7 @@ ggplot(combinations, aes(x = b, y = ratio, colour = factor(a))) +
   geom_line() +
   facet_wrap(~ paste("r =", r)) +
   scale_x_continuous(
-    "b = N_s / N",
+    expression(b~{"="}~N[s]~{"/"}~N),
     labels = function(x) {
       paste0(100 * x, "%")
     }
