@@ -202,7 +202,7 @@ ggplot(combinations, aes(x = b, y = ratio, colour = factor(a))) +
     }
   ) +
   scale_y_continuous(
-    "Relative amount of disc space",
+    "Relative amount of disk space",
     labels = function(x) {
       paste0(100 * x, "%")
     }
