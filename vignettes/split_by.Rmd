@@ -123,15 +123,21 @@ update_geom_defaults("smooth", list(colour = "#356196"))
 ## Introduction
 
 Sometimes, a large dataframe has one or more variables with a small number of unique combinations.
-E.g. a dataframe with factor variables.
+E.g. a dataframe with one or more factor variables.
+Storing the entire dataframe as a single text file requires storing lots of replicated data.
+Each row stores the information for every variable, even if a subset of these variables remains constant over a subset of the data.
 
 In such a case we can use the `split_by` argument of `write_vc()`.
 This will store the large dataframe over a set of tab separated files.
 One file for every combination of the variables defined by `split_by`.
-Every partial data file holds one combination of `split_by`.
+Every partial data file holds the other variables for one combination of `split_by`.
 We remove the `split_by` variables from the partial data files, reducing their size.
 We add an `index.tsv` containing the combinations of the `split_by` variables and a unique hash for each combination.
 This hash becomes the base name of the partial data files.
+
+Splitting the dataframe into smaller files makes them easier to handle in version control system.
+The overall size depends on the amount of replication in the dataframe.
+More on that in the next section.
 
 ## When to Split the Dataframe
 
@@ -151,7 +157,7 @@ Let's set the following variables:
 
 Storing the dataframe with `write_vc()` without `split_by` requires $h_s + h_r + 1$ bytes for the header and $s + r + 1$ bytes for every observation.
 The total number of bytes is $T_0 = h_s + h_r + 1 + N (s + r + 1)$.
-The $+ 1$ originates from the tab character to separate the `split_by` variables from the remaining variables.
+Both $+ 1$ originate from the tab character to separate the `split_by` variables from the remaining variables.
 
 Storing the dataframe with `write_vc()` with `split_by` requires an index file to store the combinations of the `split_by` variables.
 It will use $h_s$ bytes for the header and $N_s s$ for the data.
