@@ -76,7 +76,8 @@ Defaults to \code{TRUE}.}
 \item{...}{parameters used in some methods}
 
 \item{split_by}{An optional vector of variables name to split the text files.
-This creates a separate file for every combination.}
+This creates a separate file for every combination.
+We prepend these variables to the vector of \code{sorting} variables.}
 
 \item{stage}{Logical value indicating whether to stage the changes after
 writing the data. Defaults to \code{FALSE}.}

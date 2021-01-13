@@ -62,7 +62,8 @@ See \code{vignette("efficiency", package = "git2rdata")} for an illustration of
 the importance of sorting.}
 
 \item{split_by}{An optional vector of variables name to split the text files.
-This creates a separate file for every combination.}
+This creates a separate file for every combination.
+We prepend these variables to the vector of \code{sorting} variables.}
 }
 \value{
 the optimized vector \code{x} with \code{meta} attribute.

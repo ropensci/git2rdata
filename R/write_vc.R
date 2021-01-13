@@ -50,6 +50,7 @@ write_vc.default <- function(
 #' @rdname write_vc
 #' @param split_by An optional vector of variables name to split the text files.
 #' This creates a separate file for every combination.
+#' We prepend these variables to the vector of `sorting` variables.
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag
 #' @importFrom yaml read_yaml write_yaml
