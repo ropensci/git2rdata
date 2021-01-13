@@ -1,0 +1,324 @@
+---
+title: "Storing Large Dataframes"
+author: "Thierry Onkelinx"
+output: 
+  rmarkdown::html_vignette:
+        fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Storing Large Dataframes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{git2r}
+  %\VignetteDepends{microbenchmark}
+  %\VignetteDepends{ggplot2}
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  fig.height = 4, fig.width = 6,
+  collapse = TRUE,
+  comment = "#>"
+)
+library(ggplot2)
+inbo_colours <- c("#959B38", "#729BB7", "#E87837", "#BDDDD7", "#E4E517",
+                  "#843860", "#C04384", "#C2C444", "#685457")
+theme_inbo <- function(base_size = 12, base_family = "") {
+  rect_bg <- "white"
+  legend_bg <- "white"
+  panel_bg <- "#F3F3F3"
+  panel_grid <- "white"
+  plot_bg <- "white"
+  half_line <- base_size / 2
+  theme(
+    line = element_line(colour = "black", size = 0.5, linetype = 1,
+                        lineend = "butt"),
+    rect = element_rect(fill = rect_bg, colour = "black", size = 0.5,
+                        linetype = 1),
+    text = element_text(family = base_family, face = "plain",
+                        colour = "#843860", size = base_size, hjust = 0.5,
+                        vjust = 0.5, angle = 0, lineheight = 0.9,
+                        margin = margin(), debug = FALSE),
+    axis.line = element_blank(),
+    axis.line.x = element_blank(),
+    axis.line.y = element_blank(),
+    axis.text = element_text(size = rel(0.8)),
+    axis.text.x = element_text(margin = margin(t = 0.8 * half_line / 2),
+                               vjust = 1),
+    axis.text.x.top = NULL,
+    axis.text.y = element_text(margin = margin(r = 0.8 * half_line / 2),
+                               hjust = 1),
+    axis.text.y.right = NULL,
+    axis.ticks = element_line(),
+    axis.ticks.length = unit(0.15, "cm"),
+    axis.title = element_text(colour = "black"),
+    axis.title.x = element_text(
+      margin = margin(t = 0.8 * half_line, b = 0.8 * half_line / 2)
+    ),
+    axis.title.x.top = NULL,
+    axis.title.y = element_text(
+      margin = margin(r = 0.8 * half_line, l = 0.8 * half_line / 2),
+      angle = 90
+    ),
+    axis.title.y.right = NULL,
+    legend.background = element_rect(colour = NA, fill = legend_bg),
+    legend.key = element_rect(fill = panel_bg, colour = NA),
+    legend.key.size = unit(1.2, "lines"),
+    legend.key.height = NULL,
+    legend.key.width = NULL,
+    legend.margin = NULL,
+    legend.spacing = unit(0.2, "cm"),
+    legend.spacing.x = NULL,
+    legend.spacing.y = NULL,
+    legend.text = element_text(size = rel(0.8)),
+    legend.text.align = NULL,
+    legend.title = element_text(size = rel(0.8), face = "bold", hjust = 0,
+                                colour = "black"),
+    legend.title.align = NULL,
+    legend.position = "right",
+    legend.direction = NULL,
+    legend.justification = "center",
+    legend.box = NULL,
+    legend.box.margin = margin(t = half_line, r = half_line, b = half_line,
+                               l = half_line),
+    legend.box.background = element_rect(colour = NA, fill = legend_bg),
+    legend.box.spacing = unit(0.2, "cm"),
+    panel.background = element_rect(fill = panel_bg, colour = NA),
+    panel.border = element_blank(),
+    panel.grid = element_line(colour = panel_grid),
+    panel.grid.minor = element_line(colour = panel_grid, size = 0.25),
+    panel.spacing = unit(half_line, "pt"),
+    panel.spacing.x = NULL,
+    panel.spacing.y = NULL,
+    panel.ontop = FALSE,
+    strip.background = element_rect(fill = "#8E9DA7", colour = NA),
+    strip.text = element_text(size = rel(0.8), colour = "#F3F3F3"),
+    strip.text.x = element_text(margin = margin(t = half_line, b = half_line)),
+    strip.text.y = element_text(margin = margin(r = half_line, l = half_line),
+                                angle = -90),
+    strip.switch.pad.grid = unit(0.1, "cm"),
+    strip.switch.pad.wrap = unit(0.1, "cm"),
+    strip.placement = "outside",
+    plot.background = element_rect(colour = NA, fill = plot_bg),
+    plot.title = element_text(size = rel(1.2),
+                              margin = margin(0, 0, half_line, 0)),
+    plot.subtitle = element_text(size = rel(1),
+                                 margin = margin(0, 0, half_line, 0)),
+    plot.caption = element_text(size = rel(0.6),
+                                margin = margin(0, 0, half_line, 0)),
+    plot.margin = margin(t = half_line, r = half_line, b = half_line,
+                         l = half_line),
+    plot.tag = element_text(size = rel(1.2), hjust = 0.5, vjust = 0.5),
+    plot.tag.position = "topleft",
+    complete = TRUE
+  )
+}
+theme_set(theme_inbo())
+update_geom_defaults("line", list(colour = "#356196"))
+update_geom_defaults("hline", list(colour = "#356196"))
+update_geom_defaults("boxplot", list(colour = "#356196"))
+update_geom_defaults("smooth", list(colour = "#356196"))
+```
+
+## Introduction
+
+Sometimes, a large dataframe has one or more variables with a small number of unique combinations.
+E.g. a dataframe with one or more factor variables.
+Storing the entire dataframe as a single text file requires storing lots of replicated data.
+Each row stores the information for every variable, even if a subset of these variables remains constant over a subset of the data.
+
+In such a case we can use the `split_by` argument of `write_vc()`.
+This will store the large dataframe over a set of tab separated files.
+One file for every combination of the variables defined by `split_by`.
+Every partial data file holds the other variables for one combination of `split_by`.
+We remove the `split_by` variables from the partial data files, reducing their size.
+We add an `index.tsv` containing the combinations of the `split_by` variables and a unique hash for each combination.
+This hash becomes the base name of the partial data files.
+
+Splitting the dataframe into smaller files makes them easier to handle in version control system.
+The overall size depends on the amount of replication in the dataframe.
+More on that in the next section.
+
+## When to Split the Dataframe
+
+Let's set the following variables:
+
+-   $s$: the average number of bytes to store a single line of the `split_by` variables.
+
+-   $r$: the average number of bytes to store a single line of the remaining variables.
+
+-   $h_s$: the number of bytes to store the header of the `split_by` variables.
+
+-   $h_r$: the number of bytes to store the header of the remaining variables.
+
+-   $N$: the number of rows in the dataframe.
+
+-   $N_s$: the number of unique combinations of the `split_by` variables.
+
+Storing the dataframe with `write_vc()` without `split_by` requires $h_s + h_r + 1$ bytes for the header and $s + r + 1$ bytes for every observation.
+The total number of bytes is $T_0 = h_s + h_r + 1 + N (s + r + 1)$.
+Both $+ 1$ originate from the tab character to separate the `split_by` variables from the remaining variables.
+
+Storing the dataframe with `write_vc()` with `split_by` requires an index file to store the combinations of the `split_by` variables.
+It will use $h_s$ bytes for the header and $N_s s$ for the data.
+The headers of the partial data files require $N_s h_r$ bytes ($N_s$ files and $h_r$ byte per file).
+The data in the partial data files require $N r$ bytes.
+The total number of bytes is $T_s = h_s + N_s s + N_s h_r + N r$.
+
+We can look at the ratio of $T_s$ over $T_0$.
+
+$$\frac{T_s}{T_0} = \frac{h_s + N_s s + N_s h_r + N r}{h_s + h_r + 1 + N (s + r + 1)}$$
+
+Let's simplify the equation by assuming that we need an equal amount of character for the headers and the data ($h_s = s$ and $h_r = r$).
+
+$$\frac{T_s}{T_0} = \frac{s + N_s s + N_s r + N r}{s + r + 1 + N (s + r + 1)}$$
+
+$$\frac{T_s}{T_0} = \frac{s + N_s s + N_s r + N r}{s + r + 1 + N s + N r + N}$$
+
+Let assume that $s = a r$ with $0 < a$ and $N_s = b N$ with $0 < b < 1$.
+
+$$\frac{T_s}{T_0} = \frac{a r + N a b r + N b r + N r}{a r + r + 1 + N a r + N r + N}$$
+
+$$\frac{T_s}{T_0} = \frac{(a + N a b + N b + N) r}{(N + 1) (a r + r + 1)}$$
+
+$$\frac{T_s}{T_0} = \frac{a + N a b + N b + N}{(N + 1) (a + 1 + 1 / r)}$$ $$\frac{T_s}{T_0} = \frac{a + (a b + b + 1) N }{(N + 1) (a + 1 + 1 / r)}$$
+
+When $N$ is large, we can state that $a \lll N$ and $N / (N + 1) \approx 1$.
+
+$$\frac{T_s}{T_0} \approx \frac{a b + b + 1}{a + 1 + 1 / r}$$
+
+```{r ratio, fig.cap = "Storage space required using `split_by` relative to storing a single file.", echo = FALSE}
+combinations <- expand.grid(
+  a = c(0.25, 0.5, 1, 2, 4),
+  b = seq(0, 1, length = 41),
+  r = c(10, 100, 1000)
+)
+combinations$ratio <- with(
+  combinations,
+  (a * b + b + 1) / (a + 1 + 1 / r)
+)
+ggplot(combinations, aes(x = b, y = ratio, colour = factor(a))) +
+  geom_hline(yintercept = 1, linetype = 2) +
+  geom_line() +
+  facet_wrap(~ paste("r =", r)) +
+  scale_x_continuous(
+    expression(b~{"="}~N[s]~{"/"}~N),
+    labels = function(x) {
+      paste0(100 * x, "%")
+    }
+  ) +
+  scale_y_continuous(
+    "Relative amount of disk space",
+    labels = function(x) {
+      paste0(100 * x, "%")
+    }
+  ) +
+  scale_colour_manual(
+    "a = s / r",
+    values = inbo_colours,
+    labels = c("1/4", "1/2", "1", "2", "4")
+  )
+```
+
+The figure illustrates that using `split_by` is more efficient when the number of unique combinations ($N_s$) of the `split_by` variables is much smaller than the number of rows in the dataframe ($N$).
+The efficiency also increases when the storage for a single combination of `split_by` variables ($s$) is larger than the storage needed for a single line of the remain variables ($r$).
+The storage needed for a single line of the remain variables ($r$) doesn't influence the efficiency.
+
+## Benchmarking
+
+```{r load_data, echo = FALSE}
+airbag <- readRDS(
+  system.file("efficiency", "airbag.rds", package = "git2rdata")
+)
+```
+
+```{r set_tmp_dir}
+library(git2rdata)
+root <- tempfile("git2rdata-split-by")
+dir.create(root)
+```
+
+```{r get_write_timings, eval = system.file("split_by", "write_timings.rds", package = "git2rdata") == ""}
+library(microbenchmark)
+mb <- microbenchmark(
+  part_1 = write_vc(airbag, "part_1", root, sorting = "X"),
+  part_2 = write_vc(airbag, "part_2", root, sorting = "X", split_by = "airbag"),
+  part_3 = write_vc(airbag, "part_3", root, sorting = "X", split_by = "abcat"),
+  part_4 = write_vc(
+    airbag, "part_4", root, sorting = "X", split_by = c("airbag", "sex")
+  ),
+  part_5 = write_vc(airbag, "part_5", root, sorting = "X", split_by = "dvcat"),
+  part_6 = write_vc(
+    airbag, "part_6", root, sorting = "X", split_by = "yearacc"
+  ),
+  part_15 = write_vc(
+    airbag, "part_15", root, sorting = "X", split_by = c("dvcat", "abcat")
+  ),
+  part_45 = write_vc(
+    airbag, "part_45", root, sorting = "X", split_by = "yearVeh"
+  ),
+  part_270 = write_vc(
+    airbag, "part_270", root, sorting = "X", split_by = c("yearacc", "yearVeh")
+  )
+)
+mb$time <- mb$time / 1e6
+```
+
+```{r store_write_timings, echo = FALSE}
+if (system.file("split_by", "write_timings.rds", package = "git2rdata") == "") {
+  dir.create(file.path("..", "inst", "split_by"), showWarnings = FALSE)
+  saveRDS(mb, file.path("..", "inst", "split_by", "write_timings.rds"))
+} else {
+  mb <- readRDS(
+    system.file("split_by", "write_timings.rds", package = "git2rdata")
+  )
+}
+```
+
+Splitting the dataframe over more than one file takes more time to write the data.
+The log time seems to increase quadratic with log number of parts.
+
+```{r plot_write_timings, echo = FALSE, fig.cap = "Boxplot of the write timings for different number of parts."}
+mb$combinations <- as.integer(gsub("part_", "", levels(mb$expr)))[mb$expr]
+ggplot(mb, aes(x = combinations, y = time)) +
+  geom_boxplot(aes(group = combinations)) +
+  scale_x_log10("Number of parts") +
+  scale_y_log10("Time (in milliseconds)")
+```
+
+```{r get_read_timings, eval = system.file("split_by", "read_timings.rds", package = "git2rdata") == ""}
+mb_r <- microbenchmark(
+  part_1 = read_vc("part_1", root),
+  part_2 = read_vc("part_2", root),
+  part_3 = read_vc("part_3", root),
+  part_4 = read_vc("part_4", root),
+  part_5 = read_vc("part_5", root),
+  part_6 = read_vc("part_6", root),
+  part_15 = read_vc("part_15", root),
+  part_45 = read_vc("part_45", root),
+  part_270 = read_vc("part_270", root)
+)
+mb_r$time <- mb_r$time / 1e6
+```
+
+```{r store_read_timings, echo = FALSE}
+if (system.file("split_by", "read_timings.rds", package = "git2rdata") == "") {
+  saveRDS(mb_r, file.path("..", "inst", "split_by", "read_timings.rds"))
+} else {
+  mb_r <- readRDS(
+    system.file("split_by", "read_timings.rds", package = "git2rdata")
+  )
+}
+```
+
+A small number of parts does not seem to affect the read timings much.
+Above ten parts, the required time for reading seems to increase.
+The log time seems to increase quadratic with log number of parts.
+
+```{r plot_read_timings, echo = FALSE, fig.cap = "Boxplot of the read timings for the different number of parts."}
+mb_r$combinations <- as.integer(gsub("part_", "", levels(mb_r$expr)))[mb_r$expr]
+ggplot(mb_r, aes(x = combinations, y = time)) +
+  geom_boxplot(aes(group = combinations)) +
+  scale_x_log10("Number of parts") +
+  scale_y_log10("Time (in milliseconds)")
+```

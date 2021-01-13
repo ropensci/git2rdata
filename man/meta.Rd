@@ -23,7 +23,15 @@ meta(x, ...)
 
 \method{meta}{Date}(x, optimize = TRUE, ...)
 
-\method{meta}{data.frame}(x, optimize = TRUE, na = "NA", sorting, strict = TRUE, ...)
+\method{meta}{data.frame}(
+  x,
+  optimize = TRUE,
+  na = "NA",
+  sorting,
+  strict = TRUE,
+  split_by = character(0),
+  ...
+)
 }
 \arguments{
 \item{x}{the vector.}
@@ -46,11 +54,16 @@ overwrites the data and the metadata with a warning listing the changes,
 Defaults to \code{TRUE}.}
 
 \item{sorting}{an optional vector of column names defining which columns to
-use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
-a warning. Add \code{sorting} to avoid this warning. Strongly recommended
-in combination with version control. See
-\code{vignette("efficiency", package = "git2rdata")} for an illustration of the
-importance of sorting.}
+use for sorting \code{x} and in what order to use them.
+The default empty \code{sorting} yields a warning.
+Add \code{sorting} to avoid this warning.
+Strongly recommended in combination with version control.
+See \code{vignette("efficiency", package = "git2rdata")} for an illustration of
+the importance of sorting.}
+
+\item{split_by}{An optional vector of variables name to split the text files.
+This creates a separate file for every combination.
+We prepend these variables to the vector of \code{sorting} variables.}
 }
 \value{
 the optimized vector \code{x} with \code{meta} attribute.

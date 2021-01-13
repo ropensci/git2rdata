@@ -13,3 +13,5 @@
 ^codecov.yml$
 ^LICENSE.md$
 ^\.httr-oauth$
+^doc$
+^Meta$

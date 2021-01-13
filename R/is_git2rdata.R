@@ -43,17 +43,51 @@ is_git2rdata.character <- function(file, root = ".",
 
   # read the metadata
   meta_data <- read_yaml(file["meta_file"])
-
-  correct <- names(meta_data)
-  correct <- paste(correct[correct != "..generic"], collapse = "\t")
-  header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
-  if (correct != header) {
-    msg <- paste("Corrupt data, incorrect header. Expecting:", correct)
-    switch(message, error = stop(msg, call. = FALSE),
-           warning = warning(msg, call. = FALSE))
-    return(FALSE)
+  if (has_name(meta_data[["..generic"]], "split_by")) {
+    header <- readLines(
+      file.path(file["raw_file"], "index.tsv"), n = 1, encoding = "UTF-8"
+    )
+    correct <- paste(
+      c(meta_data[["..generic"]][["split_by"]], "..hash"),
+      collapse = "\t"
+    )
+    if (correct != header) {
+      msg <- paste(
+        "Corrupt data, incorrect header in index.tsv. Expecting:", correct
+      )
+      switch(message, error = stop(msg, call. = FALSE),
+             warning = warning(msg, call. = FALSE))
+      return(FALSE)
+    }
+    correct <- names(meta_data)
+    keep <- !correct %in% c("..generic", meta_data[["..generic"]][["split_by"]])
+    correct <- paste(correct[keep], collapse = "\t")
+    header <- vapply(
+      list.files(file["raw_file"], pattern = "[[:xdigit:]]{20}\\.tsv"),
+      function(z) {
+        readLines(
+          file.path(file["raw_file"], z), n = 1, encoding = "UTF-8"
+        )
+      },
+      character(1)
+    )
+    if (any(header != correct)) {
+      msg <- paste("Corrupt data, incorrect header. Expecting:", correct)
+      switch(message, error = stop(msg, call. = FALSE),
+             warning = warning(msg, call. = FALSE))
+      return(FALSE)
+    }
+  } else {
+    correct <- names(meta_data)
+    correct <- paste(correct[correct != "..generic"], collapse = "\t")
+    header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
+    if (correct != header) {
+      msg <- paste("Corrupt data, incorrect header. Expecting:", correct)
+      switch(message, error = stop(msg, call. = FALSE),
+             warning = warning(msg, call. = FALSE))
+      return(FALSE)
+    }
   }
-
   return(TRUE)
 }
 

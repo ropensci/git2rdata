@@ -14,13 +14,19 @@
   ],
   "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
   "runtimePlatform": "R version 4.0.2 (2020-06-22)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
   "author": [
     {
       "@type": "Person",
@@ -200,27 +206,21 @@
       "sameAs": "https://CRAN.R-project.org/package=yaml"
     }
   ],
+  "fileSize": "762.31KB",
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
-  "fileSize": "578.382KB",
   "contIntegration": "https://codecov.io/gh/ropensci/git2rdata",
   "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/software-review/issues/263",
+    "provider": "https://ropensci.org"
+  },
   "keywords": [
     "r",
     "rstats",
     "r-package",
     "version-control",
     "reproducible-research"
-  ],
-  "provider": {
-    "@id": "https://cran.r-project.org",
-    "@type": "Organization",
-    "name": "Comprehensive R Archive Network (CRAN)",
-    "url": "https://cran.r-project.org"
-  },
-  "review": {
-    "@type": "Review",
-    "url": "https://github.com/ropensci/software-review/issues/263",
-    "provider": "https://ropensci.org"
-  }
+  ]
 }

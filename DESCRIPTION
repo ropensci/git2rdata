@@ -1,6 +1,6 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.2.2
+Version: 0.3.0
 Authors@R: 
     c(person(given = "Thierry",
              family = "Onkelinx",
@@ -66,5 +66,6 @@ Collate:
     'recent_commit.R'
     'reexport.R'
     'relabel.R'
+    'rename_variable.R'
     'upgrade_data.R'
     'utils.R'

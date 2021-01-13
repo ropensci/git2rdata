@@ -38,7 +38,11 @@ is_git2rmeta.character <- function(file, root = ".",
   file <- clean_data_path(root = root, file = file)
 
   if (!file.exists(file["meta_file"])) {
-    msg <- "Metadata file missing."
+    msg <- ifelse(
+      file.exists(file["raw_file"]),
+      "Metadata file missing.",
+      "`git2rdata` object not found."
+    )
     switch(message, error = stop(msg, call. = FALSE),
            warning = warning(msg, call. = FALSE))
     return(FALSE)

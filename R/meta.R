@@ -211,12 +211,24 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' @rdname meta
 #' @inheritParams write_vc
 meta.data.frame <- function(# nolint
-  x, optimize = TRUE, na = "NA", sorting, strict = TRUE, ...
+  x, optimize = TRUE, na = "NA", sorting, strict = TRUE,
+  split_by = character(0), ...
 ) {
   assert_that(
     !has_name(x, "..generic"),
     msg = "'..generic' is a reserved name and not allowed as column name")
+  assert_that(
+    !has_name(x, "..hash"),
+    msg = "'..hash' is a reserved name and not allowed as column name")
   generic <- list(optimize = optimize, "NA string" = na)
+  assert_that(is.character(split_by))
+  assert_that(
+    all(split_by %in% colnames(x)),
+    msg = "All split_by variables must be available in the data.frame")
+  assert_that(
+    any(!colnames(x) %in% split_by),
+    msg = "No remaining variables after splitting"
+  )
 
   dots <- list(...)
   if (has_name(dots, "old")) {
@@ -236,6 +248,7 @@ Sorting is strongly recommended in combination with version control.")
     assert_that(
       all(sorting %in% colnames(x)),
       msg = "All sorting variables must be available in the data.frame")
+    sorting <- unique(c(split_by, sorting))
     if (nrow(x) > 1) {
       old_locale <- set_c_locale()
       x <- x[do.call(order, unname(x[sorting])), , drop = FALSE] # nolint
@@ -248,6 +261,9 @@ Add extra sorting variables to ensure small diffs.", sorted)
       }
     }
     generic <- c(generic, sorting = list(sorting))
+  }
+  if (length(split_by) > 0) {
+    generic <- c(generic, split_by = list(split_by))
   }
   # calculate meta for each column
   if (has_name(dots, "old")) {

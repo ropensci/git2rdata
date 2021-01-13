@@ -2,6 +2,7 @@
 % Please edit documentation in R/write_vc.R
 \name{write_vc}
 \alias{write_vc}
+\alias{write_vc.character}
 \alias{write_vc.git_repository}
 \title{Store a Data.Frame as a Git2rdata Object on Disk}
 \usage{
@@ -13,7 +14,20 @@ write_vc(
   strict = TRUE,
   optimize = TRUE,
   na = "NA",
-  ...
+  ...,
+  split_by
+)
+
+\method{write_vc}{character}(
+  x,
+  file,
+  root = ".",
+  sorting,
+  strict = TRUE,
+  optimize = TRUE,
+  na = "NA",
+  ...,
+  split_by = character(0)
 )
 
 \method{write_vc}{git_repository}(
@@ -41,11 +55,12 @@ Note that \code{file} must point to a location within \code{root}.}
 Defaults to the current working directory (\code{"."}).}
 
 \item{sorting}{an optional vector of column names defining which columns to
-use for sorting \code{x} and in what order to use them. Omitting \code{sorting} yields
-a warning. Add \code{sorting} to avoid this warning. Strongly recommended
-in combination with version control. See
-\code{vignette("efficiency", package = "git2rdata")} for an illustration of the
-importance of sorting.}
+use for sorting \code{x} and in what order to use them.
+The default empty \code{sorting} yields a warning.
+Add \code{sorting} to avoid this warning.
+Strongly recommended in combination with version control.
+See \code{vignette("efficiency", package = "git2rdata")} for an illustration of
+the importance of sorting.}
 
 \item{strict}{What to do when the metadata changes. \code{strict = FALSE}
 overwrites the data and the metadata with a warning listing the changes,
@@ -59,6 +74,10 @@ Defaults to \code{TRUE}.}
 \item{na}{the string to use for missing values in the data.}
 
 \item{...}{parameters used in some methods}
+
+\item{split_by}{An optional vector of variables name to split the text files.
+This creates a separate file for every combination.
+We prepend these variables to the vector of \code{sorting} variables.}
 
 \item{stage}{Logical value indicating whether to stage the changes after
 writing the data. Defaults to \code{FALSE}.}
@@ -153,6 +172,7 @@ Other storage:
 \code{\link{prune_meta}()},
 \code{\link{read_vc}()},
 \code{\link{relabel}()},
+\code{\link{rename_variable}()},
 \code{\link{rm_data}()}
 }
 \concept{storage}

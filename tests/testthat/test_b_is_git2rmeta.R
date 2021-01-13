@@ -12,16 +12,16 @@ test_that("is_git2rmeta checks metadata", {
   expect_false(is_git2rmeta(file = "junk", root = root))
   expect_false(is_git2rdata(file = "junk", root = root))
   expect_error(is_git2rmeta(file = "junk", root = root, message = "error"),
-               "Metadata file missing.")
+               "`git2rdata` object not found.")
   expect_warning(is_git2rmeta(file = "junk", root = root, message = "warning"),
-               "Metadata file missing.")
+                 "`git2rdata` object not found.")
   expect_false(
     suppressWarnings(
       is_git2rmeta(file = "junk", root = root, message = "warning")
     )
   )
   expect_warning(is_git2rdata(file = "junk", root = root, message = "warning"),
-               "Metadata file missing.")
+                 "`git2rdata` object not found.")
   expect_false(
     suppressWarnings(
       is_git2rdata(file = "junk", root = root, message = "warning")
@@ -31,6 +31,14 @@ test_that("is_git2rmeta checks metadata", {
   file <- basename(tempfile(tmpdir = root))
   junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
   correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
+
+  file.remove(file.path(root, junk[2]))
+  expect_error(is_git2rmeta(file = file, root = root, message = "error"),
+               "Metadata file missing.")
+  expect_warning(is_git2rmeta(file = file, root = root, message = "warning"),
+                 "Metadata file missing.")
+  expect_false(is_git2rmeta(file = file, root = root))
+
 
   junk_yaml <- correct_yaml
   junk_yaml[["..generic"]] <- NULL

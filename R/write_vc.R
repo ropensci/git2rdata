@@ -13,11 +13,12 @@
 #' @param root The root of a project. Can be a file path or a `git-repository`.
 #' Defaults to the current working directory (`"."`).
 #' @param sorting an optional vector of column names defining which columns to
-#' use for sorting `x` and in what order to use them. Omitting `sorting` yields
-#' a warning. Add `sorting` to avoid this warning. Strongly recommended
-#' in combination with version control. See
-#' `vignette("efficiency", package = "git2rdata")` for an illustration of the
-#' importance of sorting.
+#' use for sorting `x` and in what order to use them.
+#' The default empty `sorting` yields a warning.
+#' Add `sorting` to avoid this warning.
+#' Strongly recommended in combination with version control.
+#' See `vignette("efficiency", package = "git2rdata")` for an illustration of
+#' the importance of sorting.
 #' @param strict What to do when the metadata changes. `strict = FALSE`
 #' overwrites the data and the metadata with a warning listing the changes,
 #' `strict = TRUE` returns an error and leaves the data and metadata as is.
@@ -33,8 +34,8 @@
 #' @note `..generic` is a reserved name for the metadata and is a forbidden
 #' column name in a `data.frame`.
 write_vc <- function(
-  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA",
-  ...
+  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
+  split_by
 ) {
   UseMethod("write_vc", root)
 }
@@ -46,14 +47,18 @@ write_vc.default <- function(
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
+#' @rdname write_vc
+#' @param split_by An optional vector of variables name to split the text files.
+#' This creates a separate file for every combination.
+#' We prepend these variables to the vector of `sorting` variables.
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag
 #' @importFrom yaml read_yaml write_yaml
 #' @importFrom utils write.table
-#' @importFrom git2r hashfile
+#' @importFrom git2r hash
 write_vc.character <- function(
-  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA",
-  ...
+  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE,
+  na = "NA", ..., split_by = character(0)
 ) {
   assert_that(
     inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
@@ -66,7 +71,9 @@ write_vc.character <- function(
   }
 
   if (!file.exists(file["meta_file"])) {
-    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting)
+    raw_data <- meta(
+      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by
+    )
   } else {
     tryCatch(
       is_git2rmeta(file = remove_root(file = file["meta_file"], root = root),
@@ -79,7 +86,7 @@ write_vc.character <- function(
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
     raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting,
-                     old = old, strict = strict)
+                     old = old, strict = strict, split_by = split_by)
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       problems <- c(
@@ -99,11 +106,48 @@ write_vc.character <- function(
       }
     }
   }
-  write.table(
-    x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
-    sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
-    col.names = TRUE, fileEncoding = "UTF-8"
+  assert_that(
+    unlink(file["raw_file"], recursive = TRUE) == 0,
+    msg = "Failed to remove existing files."
   )
+  if (length(split_by) == 0) {
+    write.table(
+      x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
+      sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
+      col.names = TRUE, fileEncoding = "UTF-8"
+    )
+  } else {
+    index <- unique(raw_data[split_by])
+    index[["..hash"]] <- hash(apply(index, 1, paste, collapse = "\t"))
+    dir.create(file["raw_file"], showWarnings = FALSE, recursive = TRUE)
+    write.table(
+      x = index, file = file.path(file["raw_file"], "index.tsv"),
+      append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na, dec = ".",
+      row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
+    )
+    detail_names <- colnames(raw_data)[!colnames(raw_data) %in% split_by]
+    vapply(
+      seq_len(nrow(index)),
+      function(i) {
+        matching <- vapply(
+          split_by,
+          function(split) {
+            raw_data[[split]] == index[[split]][i]
+          },
+          logical(nrow(raw_data))
+        )
+        rf <- file.path(file["raw_file"], paste0(index[i, "..hash"], ".tsv"))
+        write.table(
+          x = raw_data[apply(matching, 1, all), detail_names, drop = FALSE],
+          file = rf,
+          append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na,
+          dec = ".", row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
+        )
+        return(TRUE)
+      },
+      logical(1)
+    )
+  }
   meta_data <- attr(raw_data, "meta")
   meta_data[["..generic"]][["git2rdata"]] <- as.character(
     packageVersion("git2rdata")
@@ -190,6 +234,19 @@ compare_meta <- function(new, old) {
     ) -> extra
     problems <- c(problems, extra)
   }
+  new_split_by <- new[["..generic"]][["split_by"]]
+  old_split_by <- old[["..generic"]][["split_by"]]
+  if (!isTRUE(all.equal(new_split_by, old_split_by))) {
+    sprintf(
+      "- The split_by variables changed.
+    - Split_by for the new data: %s.
+    - Split_by for the old data: %s.",
+      paste(sprintf("'%s'", new_split_by), collapse = ", "),
+      paste(sprintf("'%s'", old_split_by), collapse = ", ")
+    ) -> extra
+    problems <- c(problems, extra)
+  }
+
 
   new <- new[names(new) != "..generic"]
   old <- old[names(old) != "..generic"]
