@@ -14,7 +14,7 @@
 
 # git2rdata 0.2.2
 
-* Use the [checklist](https://inbo.github.io/checklist) package for CI.
+* Use the [checklist](https://packages.inbo.be/checklist/) package for CI.
 
 # git2rdata 0.2.1
 
