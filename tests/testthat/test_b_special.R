@@ -19,7 +19,7 @@ expect_is(
 )
 expect_equal(
   names(output)[1],
-  "9e5edf55ceadd2c148d6d715ea5d12cc8e1538d8"
+  "1d135a85dc9beff3223d6c79f0d8975b559afca7"
 )
 old_locale <- git2rdata:::set_c_locale()
 dso <- ds[order(ds$a), , drop = FALSE] # nolint
@@ -64,7 +64,7 @@ expect_equal(
 )
 expect_equal(
   names(output)[1],
-  "9e5edf55ceadd2c148d6d715ea5d12cc8e1538d8"
+  "1d135a85dc9beff3223d6c79f0d8975b559afca7"
 )
 expect_identical(
   names(output),

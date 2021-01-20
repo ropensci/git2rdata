@@ -136,7 +136,7 @@ We add an `index.tsv` containing the combinations of the `split_by` variables an
 This hash becomes the base name of the partial data files.
 
 Splitting the dataframe into smaller files makes them easier to handle in version control system.
-The overall size depends on the amount of replication in the dataframe.
+The total size depends on the amount of replication in the dataframe.
 More on that in the next section.
 
 ## When to Split the Dataframe

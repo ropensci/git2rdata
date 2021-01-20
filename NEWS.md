@@ -1,3 +1,7 @@
+# git2rdata 0.3.1
+
+* Use `icuSetCollate()` to define a standardised sorting.
+
 # git2rdata 0.3.0
 
 ## New features
@@ -14,7 +18,7 @@
 
 # git2rdata 0.2.2
 
-* Use the [checklist](https://inbo.github.io/checklist) package for CI.
+* Use the [checklist](https://packages.inbo.be/checklist/) package for CI.
 
 # git2rdata 0.2.1
 
@@ -32,8 +36,8 @@
 
 * Calculation of data hash has changed (#53). 
   You must use `upgrade_data()` to read data stored by an older version.
-* `is_git2rdata()` and `upgrade_data()` do not test equality in data hashes 
-  anymore (but `read_vc()` still does).
+* `is_git2rdata()` and `upgrade_data()` no longer not test equality in data
+  hashes (but `read_vc()` still does).
 * `write_vc()` and `read_vc()` fail when `file` is a location outside of `root`
   (#50).
 * Reordering factor levels requires `strict = TRUE`.

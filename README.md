@@ -138,10 +138,10 @@ Please use the output of `citation("git2rdata")`
 
 ## Folder Structure
 
-- `R`: The source scripts of the [R](https://cran.r-project.org/) functions with documentation in [Roxygen](https://github.com/klutometis/roxygen) format
+- `R`: The source scripts of the [R](https://cran.r-project.org/) functions with documentation in [Roxygen](https://CRAN.R-project.org/package=roxygen2) format
 - `man`: The help files in [Rd](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Rd-format) format
 - `inst/efficiency`: pre-calculated data to speed up `vignette("efficiency", package = "git2rdata")`
-- `testthat`: R scripts with unit tests using the [testthat](http://testthat.r-lib.org/) framework
+- `testthat`: R scripts with unit tests using the [testthat](https://CRAN.R-project.org/package=testthat) framework
 - `vignettes`: source code for the vignettes describing the package
 - `man-roxygen`: templates for documentation in Roxygen format
 - `pkgdown`: source files for the `git2rdata` [website](https://ropensci.github.io/git2rdata/)

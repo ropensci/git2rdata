@@ -50,13 +50,11 @@ datahash <- function(file) {
 #' @noRd
 #' @return a named vector with the old locale
 set_c_locale <- function() {
-  old_ctype <- Sys.getlocale(category = "LC_CTYPE")
-  old_collate <- Sys.getlocale(category = "LC_COLLATE")
-  old_time <- Sys.getlocale(category = "LC_TIME")
-  Sys.setlocale(category = "LC_CTYPE", locale = "C")
-  Sys.setlocale(category = "LC_COLLATE", locale = "C")
-  Sys.setlocale(category = "LC_TIME", locale = "C")
-  return(c(ctype = old_ctype, collate = old_collate, time = old_time))
+  icuSetCollate(
+    locale = "en_GB", case_first = "lower", normalization = "on",
+    case_level = "on"
+  )
+  return(c())
 }
 
 #' Reset the old locale
@@ -64,8 +62,6 @@ set_c_locale <- function() {
 #' @return invisible `NULL`
 #' @noRd
 set_local_locale <- function(locale) {
-  Sys.setlocale(category = "LC_CTYPE", locale = locale["ctype"])
-  Sys.setlocale(category = "LC_COLLATE", locale = locale["collate"])
-  Sys.setlocale(category = "LC_TIME", locale = locale["time"])
+  icuSetCollate(locale = "default")
   return(invisible(NULL))
 }
