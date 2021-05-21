@@ -1,11 +1,12 @@
 on:
   push:
     branches:
+      - main
       - master
   schedule:
-    - cron: '6 0 * * 1'
+    - cron: '6 0 15 * *'
 
-name: "check package on master"
+name: "check package on main"
 
 jobs:
   check-package:
