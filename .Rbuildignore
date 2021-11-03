@@ -7,6 +7,7 @@
 ^\.Rproj\.user$
 ^\.zenodo\.json$
 ^checklist.yml$
+^CITATION\.cff$
 ^codecov.yml$
 ^codecov\.yml$
 ^codemeta\.json$
