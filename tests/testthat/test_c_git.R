@@ -1,4 +1,4 @@
-context("write_vc() and read_vc() on a git-repository")
+test_that("write_vc() and read_vc() on a git-repository", {
 root <- tempfile(pattern = "git2rdata-git")
 dir.create(root)
 root <- git2r::init(root)
@@ -270,3 +270,4 @@ expect_identical(
     "staged.tsv", "staged.yml", "untracked.tsv", "untracked.yml")
 )
 git2r::reset(git2r::last_commit(root), reset_type = "hard", path = ".")
+})

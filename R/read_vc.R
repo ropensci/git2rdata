@@ -42,14 +42,13 @@ read_vc.character <- function(file, root = ".") {
       stop(e$message, call. = FALSE)
     }
   )
-  assert_that(
-    all(file.exists(file)),
-    msg = "raw file and/or meta file missing"
-  )
 
   # read the metadata
   meta_data <- read_yaml(file["meta_file"])
   optimize <- meta_data[["..generic"]][["optimize"]]
+  file["raw_file"] <- ifelse(
+    optimize, file["raw_file"], gsub("\\.tsv$", ".csv", file["raw_file"])
+  )
   col_type <- list(
     c(
       character = "character", factor = "character", integer = "integer",
@@ -107,7 +106,8 @@ read_vc.character <- function(file, root = ".") {
     raw_data <- do.call(rbind, raw_data)[, col_names]
   } else {
     raw_data <- read.table(
-      file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
+      file = file["raw_file"], header = TRUE, sep = ifelse(optimize, "\t", ","),
+      quote = "\"",
       dec = ".", numerals = "warn.loss", na.strings = na_string,
       colClasses = setNames(col_type[col_classes], col_names),
       comment.char = "",

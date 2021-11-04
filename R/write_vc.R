@@ -106,6 +106,11 @@ write_vc.character <- function(
       }
     }
   }
+  file["raw_file"] <- ifelse(
+    attr(raw_data, "meta")[["..generic"]][["optimize"]],
+    file["raw_file"],
+    gsub("\\.tsv$", ".csv", file["raw_file"])
+  )
   assert_that(
     unlink(file["raw_file"], recursive = TRUE) == 0,
     msg = "Failed to remove existing files."
@@ -113,7 +118,10 @@ write_vc.character <- function(
   if (length(split_by) == 0) {
     write.table(
       x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
-      sep = "\t", eol = "\n", na = na, dec = ".", row.names = FALSE,
+      sep = ifelse(
+        attr(raw_data, "meta")[["..generic"]][["optimize"]], "\t", ","
+      ),
+      eol = "\n", na = na, dec = ".", row.names = FALSE,
       col.names = TRUE, fileEncoding = "UTF-8"
     )
   } else {

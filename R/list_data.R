@@ -28,13 +28,19 @@ list_data.character <- function(root = ".", path = ".", recursive = TRUE) {
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   path <- normalizePath(file.path(root, path), winslash = "/", mustWork = TRUE)
 
-  data_files <- list.files(path, pattern = "\\.tsv$", recursive = recursive,
+  tsv_files <- list.files(path, pattern = "\\.tsv$", recursive = recursive,
+                           full.names = TRUE)
+  csv_files <- list.files(path, pattern = "\\.csv$", recursive = recursive,
                            full.names = TRUE)
   meta_files <- list.files(path, pattern = "\\.yml$", recursive = recursive,
                            full.names = TRUE)
-  data_files <- gsub("\\.tsv$", "", data_files)
+  tsv_files <- gsub("\\.tsv$", "", tsv_files)
+  csv_files <- gsub("\\.csv$", "", csv_files)
   meta_files <- gsub("\\.yml$", "", meta_files)
-  meta_files <- meta_files[meta_files %in% data_files]
+  meta_files <- meta_files[meta_files %in% c(tsv_files, csv_files)]
+  if (length(meta_files) == 0) {
+    return(character(0))
+  }
   meta_files_base <- remove_root(file = meta_files, root = root)
   check <- vapply(X = meta_files_base, FUN = is_git2rmeta,
                   FUN.VALUE = NA, root = root, message = "none")
@@ -43,8 +49,17 @@ list_data.character <- function(root = ".", path = ".", recursive = TRUE) {
             paste(meta_files_base[!check], collapse = "\n"), call. = FALSE)
   }
   meta_files <- meta_files[check]
-  data_files <- data_files[data_files %in% meta_files]
-  remove_root(file = data_files, root = root)
+  optimize <- vapply(
+    sprintf("%s.yml", meta_files), FUN.VALUE = logical(1),
+    FUN = function(x) {
+      read_yaml(x)[["..generic"]][["optimize"]]
+    }
+  )
+  tsv_files <- sprintf("%s.tsv", tsv_files[tsv_files %in% meta_files[optimize]])
+  csv_files <- sprintf(
+    "%s.csv", csv_files[csv_files %in% meta_files[!optimize]]
+  )
+  remove_root(file = sort(c(tsv_files, csv_files)), root = root)
 }
 
 #' @export

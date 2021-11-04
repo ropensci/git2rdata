@@ -72,9 +72,19 @@ upgrade_data.character <- function(
     msg = paste(target, "has corrupt metadata, no hash found.")
   )
   if (has_name(meta_data[["..generic"]], "git2rdata")) {
-    if (package_version(meta_data[["..generic"]][["git2rdata"]]) >=
-        package_version("0.1.0.9001")
-        ) {
+    current <- package_version(meta_data[["..generic"]][["git2rdata"]])
+    if (current >= package_version("0.4.0")) {
+      if (verbose) {
+        message(target, " already up to date")
+      }
+      return(target)
+    }
+    if (current >= package_version("0.1.0.9001")) {
+      assert_that(
+        has_name(meta_data[["..generic"]], "optimize"),
+        msg = paste(target, "has corrupt metadata, optimize flag not found.")
+      )
+      stopifnot(meta_data[["..generic"]][["optimize"]])
       if (verbose) {
         message(target, " already up to date")
       }

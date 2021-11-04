@@ -36,15 +36,16 @@ meta <- function(x, ...) {
 #' @export
 #' @rdname meta
 #' @importFrom assertthat assert_that is.string noNA
-meta.character <- function(x, na = "NA", ...) {
+meta.character <- function(x, na = "NA", optimize = TRUE, ...) {
   assert_that(is.string(na), noNA(na), no_whitespace(na))
+  assert_that(is.flag(optimize), noNA(optimize))
   x <- enc2utf8(x)
   if (na %in% x) {
     stop("one of the strings matches the NA string ('", na, "')
 Please use a different NA string or consider using a factor.", call. = FALSE)
   }
   x <- gsub("\\\"", "\\\"\\\"", x)
-  to_escape <- grepl("(\"|\t|\n)", x)
+  to_escape <- grepl(ifelse(optimize, "(\"|\t|\n)", "(\"|,|\n)"), x)
   x[to_escape] <- paste0("\"", x[to_escape], "\"")
   x[is.na(x)] <- na
   m <- list(class = "character", na_string = na)

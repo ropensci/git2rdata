@@ -69,8 +69,17 @@ See `?upgrade_data()`."
            warning = warning(msg, call. = FALSE))
     return(FALSE)
   }
-  if (package_version(meta_data[["..generic"]][["git2rdata"]]) <
-      package_version("0.1.0.9001")) {
+  if (!has_name(meta_data[["..generic"]], "optimize")) {
+    msg <- "Corrupt metadata, optimize flag not found."
+    switch(message, error = stop(msg, call. = FALSE),
+           warning = warning(msg, call. = FALSE))
+    return(FALSE)
+  }
+  used_version <- package_version(meta_data[["..generic"]][["git2rdata"]])
+  if (used_version < package_version("0.1.0.9001") || (
+    used_version < package_version("0.4.0") &
+    !meta_data[["..generic"]][["optimize"]]
+  )) {
     msg <- "Data stored using an older version of `git2rdata`.
 See `?upgrade_data()`."
     switch(message, error = stop(msg, call. = FALSE),

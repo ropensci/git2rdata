@@ -94,7 +94,14 @@ recent_commit.git_repository <- function(file, root, data = FALSE) {
     path <- ""
   }
   if (data) {
+    is_git2rdata(file = file, root = root, message = "error")
     file <- clean_data_path(root = workdir(root), file, normalize = FALSE)
+    meta_data <- read_yaml(file["meta_file"])
+    file["raw_file"] <- ifelse(
+      meta_data[["..generic"]][["optimize"]],
+      file["raw_file"],
+      gsub("\\.tsv$", ".csv", file["raw_file"])
+    )
   }
   name <- basename(file)
   blobs <- odb_blobs(root)
