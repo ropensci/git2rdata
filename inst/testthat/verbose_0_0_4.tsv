@@ -1,0 +1,48 @@
+a	letters
+"	a"	x
+"
+a"	x
+,a	f
+;a	z
+'b	z
+'b'	w
+'NA'	t
+"""b"	p
+"""b"""	t
+"""NA"""	k
+@	d
+&	y
+#	j
+|	r
+$	p
+€	a
+a	y
+à	l
+"a	"	o
+"a	b"	c
+"a	b	c"	g
+"a
+"	w
+"a
+b"	k
+"a
+b
+c"	g
+a b	x
+a b c	f
+a,	b
+a,b	e
+a,b,c	z
+a;	j
+a;b	w
+a;b;c	v
+a'	r
+a'b	t
+a'b'c	g
+"a"""	d
+"a""b"	h
+"a""b""c"	l
+ç	i
+é	m
+µ	v
+NA	w
