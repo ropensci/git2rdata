@@ -1,3 +1,10 @@
+# git2rdata 0.4.0
+
+## Internal changes
+
+* Upgrade to Roxygen2 7.1.2
+* Add `inst/CITATION`, `CITATION.cff`, `.zenodo.json`
+
 # git2rdata 0.3.1
 
 * Use `icuSetCollate()` to define a standardised sorting.
