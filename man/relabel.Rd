@@ -93,6 +93,7 @@ Other storage:
 \code{\link{read_vc}()},
 \code{\link{rename_variable}()},
 \code{\link{rm_data}()},
+\code{\link{verify_vc}()},
 \code{\link{write_vc}()}
 }
 \concept{storage}

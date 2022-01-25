@@ -74,3 +74,4 @@ Collate:
     'rename_variable.R'
     'upgrade_data.R'
     'utils.R'
+    'verify_vc.R'
