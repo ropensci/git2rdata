@@ -56,18 +56,9 @@ test_that("upgrade_data() works on single files", {
   expect_false(file_test("-f", file.path(path, "verbose_0_3_1.tsv")))
   expect_is(read_vc("verbose_0_3_1", path), "data.frame")
 
-  expect_message(
-    z <- upgrade_data(file = "optimized_0_0_4", root = path), "updated"
+  expect_error(
+    upgrade_data(file = "optimized_0_0_4", root = path), "ancient"
   )
-  expect_true(file_test("-f", file.path(path, "optimized_0_0_4.tsv")))
-  expect_is(read_vc("optimized_0_0_4", path), "data.frame")
-
-  expect_message(
-    z <- upgrade_data(file = "verbose_0_0_4", root = path), "updated"
-  )
-  expect_true(file_test("-f", file.path(path, "verbose_0_0_4.csv")))
-  expect_false(file_test("-f", file.path(path, "verbose_0_0_4.tsv")))
-  expect_is(read_vc("verbose_0_0_4", path), "data.frame")
 })
 
 file.remove(
@@ -78,7 +69,9 @@ dir.create(root)
 origin <- system.file("testthat", package = "git2rdata")
 file.copy(origin, root, recursive = TRUE)
 path <- file.path(root, "testthat")
-
+file.remove(
+  list.files(path, pattern = "0_0_4", full.names = TRUE)
+)
 test_that("upgrade_data() works on paths", {
   expect_message(z <- upgrade_data(root = root, path = "."))
   expect_is(z, "character")
@@ -87,18 +80,19 @@ test_that("upgrade_data() works on paths", {
   expect_is(read_vc("verbose_0_4_0", path), "data.frame")
   expect_is(read_vc("optimized_0_3_1", path), "data.frame")
   expect_is(read_vc("verbose_0_3_1", path), "data.frame")
-  expect_is(read_vc("optimized_0_0_4", path), "data.frame")
-  expect_is(read_vc("verbose_0_0_4", path), "data.frame")
 })
-
 file.remove(
   list.files(root, recursive = TRUE, full.names = TRUE)
 )
+
 root <- tempfile("git2rdata-upgrade")
 dir.create(root)
 origin <- system.file("testthat", package = "git2rdata")
 file.copy(origin, root, recursive = TRUE)
 path <- file.path(root, "testthat")
+file.remove(
+  list.files(path, pattern = "0_0_4", full.names = TRUE)
+)
 repo <- git2r::init(root)
 git2r::add(repo, list.files(root, recursive = TRUE))
 git2r::commit(repo, message = "initial commit")
@@ -111,22 +105,30 @@ test_that("upgrade_data() works on a git repository", {
   expect_is(read_vc("verbose_0_4_0", path), "data.frame")
   expect_is(read_vc("optimized_0_3_1", path), "data.frame")
   expect_is(read_vc("verbose_0_3_1", path), "data.frame")
-  expect_is(read_vc("optimized_0_0_4", path), "data.frame")
-  expect_is(read_vc("verbose_0_0_4", path), "data.frame")
   expect_identical(
     vapply(status(repo), length, integer(1)),
-    c(staged = 0L, unstaged = 5L, untracked = 2L)
+    c(staged = 0L, unstaged = 2L, untracked = 1L)
   )
   expect_silent(
     upgrade_data(root = repo, path = ".", verbose = FALSE, stage = TRUE)
   )
   expect_identical(
     vapply(status(repo), length, integer(1)),
-    c(staged = 7L, unstaged = 0L, untracked = 0L)
+    c(staged = 3L, unstaged = 0L, untracked = 0L)
   )
 })
+file.remove(
+  list.files(
+    git2r::workdir(repo), recursive = TRUE, full.names = TRUE, all.files = TRUE
+  )
+)
 
 test_that("validation", {
+  root <- tempfile("git2rdata-upgrade")
+  dir.create(root)
+  origin <- system.file("testthat", package = "git2rdata")
+  file.copy(origin, root, recursive = TRUE)
+  path <- file.path(root, "testthat")
   expect_error(
     upgrade_data(root = 1), "a 'root' of class numeric is not supported"
   )
@@ -138,11 +140,5 @@ test_that("validation", {
     upgrade_data(file = "verbose_0_0_4", root = path),
     "is not a git2rdata object"
   )
+  file.remove(list.files(path, full.names = TRUE))
 })
-
-
-file.remove(
-  list.files(
-    git2r::workdir(repo), recursive = TRUE, full.names = TRUE, all.files = TRUE
-  )
-)
