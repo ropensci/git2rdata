@@ -1,5 +1,5 @@
 body {
-  background-color: #efefef;
+  background-color: #f5f5f5;
   color: #5e5e5e;
   background-image: url('reference/figures/background-pattern.png');
   font-family: FlandersArtSans-Light, Verdana, Arial, sans-serif;
@@ -13,14 +13,13 @@ a {
   color: #c04384;
 }
 a:hover {
-  color: #c2c444;
+  color: #337ab7;
 }
-
 
 .navbar,
 .label-default,
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
-  background-color: #c04384;
+  background-color: #356196;
 }
 
 .navbar-default .navbar-link,
@@ -60,4 +59,34 @@ code.sourceCode.diff span.st {
 code.sourceCode.diff span.va {
   background-color: #E4E517;
   font-weight: bold;
+}
+
+/*selection color*/
+::selection {
+  background: #c04384;
+  color: #fff;
+}
+::-moz-selection {
+  background: #c04384;
+  color: #fff;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover{
+  color: #337ab7;
+  background: #fff;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+  color: #337ab7;
+  background: #fff;
+}
+
+.navbar-default .navbar-nav>li>a:hover{
+  color: #337ab7;
+  background: #fff;
+}
+
+.dropdown-menu>li>a:hover{
+  color: #fff;
+  background: #337ab7;
 }
