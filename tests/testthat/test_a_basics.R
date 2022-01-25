@@ -13,11 +13,11 @@ test_that("write_vc() and read_vc() on a file system", {
   dir.create(root)
   expect_false(any(file.exists(git2rdata:::clean_data_path(root, "test"))))
   expect_error(
-    git2rdata:::clean_data_path(root, "../wrong_location"),
+    git2rdata:::clean_data_path(root, file.path("..", "wrong_location")),
     "file should not contain '..'"
   )
   expect_error(
-    git2rdata:::clean_data_path(root, "./../wrong_location"),
+    git2rdata:::clean_data_path(root, file.path(".", "..", "wrong_location")),
     "file should not contain '..'"
   )
   expect_is(
@@ -49,7 +49,9 @@ test_that("write_vc() and read_vc() on a file system", {
     output
   )
   expect_error(
-    write_vc(data.frame(junk = 5), file = "test", root = root, sorting = "junk"),
+    write_vc(
+      data.frame(junk = 5), file = "test", root = root, sorting = "junk"
+    ),
     "The data was not overwritten because of the issues below."
   )
   expect_error(
@@ -71,20 +73,23 @@ test_that("write_vc() and read_vc() on a file system", {
     "All sorting variables must be available"
   )
 
-  expect_false(any(file.exists(git2rdata:::clean_data_path(root, "a/verbose"))))
+  expect_false(
+    any(
+      file.exists(git2rdata:::clean_data_path(root, file.path("a", "verbose")))
+    )
+  )
   expect_is(
-    output <-
-      write_vc(
-        x = test_data, file = "a/verbose", root = root, sorting = "test_Date",
-        optimize = FALSE
-      ),
+    output <- write_vc(
+      x = test_data, file = file.path("a", "verbose"), root = root,
+      sorting = "test_Date", optimize = FALSE
+    ),
     "character"
   )
   expect_true(
     all(file.exists(file.path(root, "a", c("verbose.csv", "verbose.yml"))))
   )
   expect_equal(
-    stored <- read_vc(file = "a/verbose", root = root),
+    stored <- read_vc(file = file.path("a", "verbose"), root = root),
     sorted_test_data,
     check.attributes = FALSE
   )
@@ -97,7 +102,7 @@ test_that("write_vc() and read_vc() on a file system", {
     )
   }
   expect_error(
-    write_vc(x = test_data, file = "a/verbose", root = root),
+    write_vc(x = test_data, file = file.path("a", "verbose"), root = root),
     "New data is optimized, whereas old data was verbose"
   )
 
@@ -136,8 +141,9 @@ test_that("write_vc() and read_vc() on a file system", {
     "No sorting applied"
   )
   expect_warning(
-    output <-
-      write_vc(test_data, file = "sorting", root = root, sorting = "test_factor"),
+    output <- write_vc(
+      test_data, file = "sorting", root = root, sorting = "test_factor"
+    ),
     "Sorting on 'test_factor' results in ties"
   )
   expect_is(output, "character")
@@ -149,7 +155,9 @@ test_that("write_vc() and read_vc() on a file system", {
   )
   expect_error(
     suppressWarnings(
-      write_vc(test_data, file = "sorting", root = root, sorting = "test_factor")
+      write_vc(
+        test_data, file = "sorting", root = root, sorting = "test_factor"
+      )
     ),
     "The sorting variables changed"
   )
@@ -173,7 +181,9 @@ test_that("write_vc() and read_vc() on a file system", {
   )
   expect_error(
     suppressWarnings(
-      write_vc(test_data, file = "sorting", root = root, sorting = "test_logical")
+      write_vc(
+        test_data, file = "sorting", root = root, sorting = "test_logical"
+      )
     ),
     "The sorting variables changed"
   )

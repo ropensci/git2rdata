@@ -1,7 +1,11 @@
 test_that("rm_data & prune_meta", {
   expect_error(rm_data(root = 1), "a 'root' of class numeric is not supported")
-  expect_error(prune_meta(root = 1), "a 'root' of class numeric is not supported")
-  expect_error(list_data(root = 1), "a 'root' of class numeric is not supported")
+  expect_error(
+    prune_meta(root = 1), "a 'root' of class numeric is not supported"
+  )
+  expect_error(
+    list_data(root = 1), "a 'root' of class numeric is not supported"
+  )
 
   root <- tempfile(pattern = "git2rdata-prune")
   root <- normalizePath(root, winslash = "/", mustWork = FALSE)
@@ -11,19 +15,23 @@ test_that("rm_data & prune_meta", {
   expect_null(prune_meta(root, path = "junk"))
   write_vc(test_data, file = "test", root = root, sorting = "test_Date")
   write_vc(
-    test_data, file = "a/verbose", root = root, sorting = "test_Date",
-    optimize = FALSE
+    test_data, file = file.path("a", "verbose"), root = root,
+    sorting = "test_Date", optimize = FALSE
   )
 
   current <- list.files(root, recursive = TRUE)
-  expect_identical(rm_data(root = root, path = "a"), "a/verbose.csv")
+  expect_identical(
+    rm_data(root = root, path = "a"), file.path("a", "verbose.csv")
+  )
   expect_identical(
     list.files(root, recursive = TRUE),
     current[-grep("^.*/.*\\.csv", current)]
   )
 
   current <- list.files(root, recursive = TRUE)
-  expect_identical(prune_meta(root = root, path = "."), "a/verbose.yml")
+  expect_identical(
+    prune_meta(root = root, path = "."), file.path("a", "verbose.yml")
+  )
   expect_identical(
     list.files(root, recursive = TRUE),
     current[-grep("^.*/.*", current)]
@@ -35,8 +43,13 @@ test_that("rm_data & prune_meta", {
   expect_identical(list.files(root, recursive = TRUE), current)
 
   write_vc(test_data, file = "test1", root = root, sorting = "test_Date")
-  junk <- write_vc(test_data, file = "test2", root = root, sorting = "test_Date")
-  write_vc(test_data, file = "a/test2", root = root, sorting = "test_Date")
+  junk <- write_vc(
+    test_data, file = "test2", root = root, sorting = "test_Date"
+  )
+  write_vc(
+    test_data, file = file.path("a", "test2"), root = root,
+    sorting = "test_Date"
+  )
   meta_data <- yaml::read_yaml(file.path(root, junk[2]))
   meta_data[["..generic"]] <- NULL
   yaml::write_yaml(meta_data, file = file.path(root, junk[2]))
