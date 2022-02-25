@@ -1,0 +1,48 @@
+a,letters
+	a,x
+"
+a",m
+",a",t
+;a,w
+'b,f
+'b',l
+'NA',y
+"""b",a
+"""b""",z
+"""NA""",y
+@,z
+&,f
+#,c
+|,p
+$,s
+€,f
+a,j
+à,r
+a	,b
+a	b,l
+a	b	c,v
+"a
+",i
+"a
+b",n
+"a
+b
+c",f
+a b,i
+a b c,o
+"a,",c
+"a,b",g
+"a,b,c",y
+a;,p
+a;b,x
+a;b;c,l
+a',u
+a'b,e
+a'b'c,t
+"a""",c
+"a""b",r
+"a""b""c",v
+ç,w
+é,q
+µ,a
+NA,m

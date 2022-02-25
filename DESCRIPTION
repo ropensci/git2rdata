@@ -1,30 +1,17 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.3.1
-Authors@R: 
-    c(person(given = "Thierry",
-             family = "Onkelinx",
-             role = c("aut", "cre"),
-             email = "thierry.onkelinx@inbo.be",
-             comment = c(ORCID = "0000-0001-8804-4216")),
-      person(given = "Floris",
-             family = "Vanderhaeghe",
-             role = "ctb",
-             email = "floris.vanderhaeghe@inbo.be",
-             comment = c(ORCID = "0000-0002-6378-6229")),
-      person(given = "Peter",
-             family = "Desmet",
-             role = "ctb",
-             email = "peter.desmet@inbo.be",
-             comment = c(ORCID = "0000-0002-8442-8025")),
-      person(given = "Els",
-             family = "Lommelen",
-             role = "ctb",
-             email = "els.lommelen@inbo.be",
-             comment = c(ORCID = "0000-0002-3481-5684")),
-      person(given = "Research Institute for Nature and Forest",
-             role = c("cph", "fnd"),
-             email = "info@inbo.be"))
+Version: 0.4.0
+Authors@R: c(
+    person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8804-4216")),
+    person("Floris", "Vanderhaeghe", , "floris.vanderhaeghe@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0002-6378-6229")),
+    person("Peter", "Desmet", , "peter.desmet@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0002-8442-8025")),
+    person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
+           comment = c(ORCID = "0000-0002-3481-5684")),
+    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+  )
 Description: The git2rdata package is an R package for writing and reading
     dataframes as plain text files.  A metadata file stores important
     information.  1) Storing metadata allows to maintain the classes of
@@ -44,10 +31,10 @@ Description: The git2rdata package is an R package for writing and reading
     traceable workflow.  vignette("workflow", package = "git2rdata") gives
     a toy example.  4) vignette("efficiency", package = "git2rdata")
     provides some insight into the efficiency of file storage, git
-    repository size and speed for writing and reading.  Please cite using
-    <doi:10.5281/zenodo.1485309>.
+    repository size and speed for writing and reading.
 License: GPL-3
-URL: https://ropensci.github.io/git2rdata/
+URL: https://ropensci.github.io/git2rdata/,
+    https://github.com/ropensci/git2rdata/
 BugReports: https://github.com/ropensci/git2rdata/issues
 Depends: 
     R (>= 3.5.0)
@@ -67,9 +54,8 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 Language: en-GB
-LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Collate:
     'clean_data_path.R'
     'datahash.R'
@@ -87,3 +73,4 @@ Collate:
     'rename_variable.R'
     'upgrade_data.R'
     'utils.R'
+    'verify_vc.R'

@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron: '6 0 15 * *'
+
+name: "check package on main"
+
+jobs:
+  check-package:
+    runs-on: ubuntu-latest
+    name: "check package"
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
+    steps:
+      - uses: inbo/actions/check_pkg@master
+        with:
+          token: ${{ secrets.PAT }}

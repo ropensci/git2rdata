@@ -42,9 +42,9 @@ rm_data.character <- function(
   if (length(to_do) == 0) {
     return(to_do)
   }
-  file.remove(sprintf("%s/%s.tsv", root, to_do))
+  file.remove(file.path(root, to_do))
 
-  return(invisible(paste0(to_do, ".tsv")))
+  return(invisible(to_do))
 }
 
 #' @export
@@ -69,7 +69,6 @@ rm_data.git_repository <- function(
   if (length(to_do) == 0) {
     return(to_do)
   }
-  to_do <- paste0(to_do, ".tsv")
 
   keep <- unlist(switch(type,
     unmodified = status(
@@ -148,6 +147,10 @@ prune_meta.character <- function(
                      full.names = TRUE)
   keep <- gsub("\\.tsv$", ".yml", keep)
   to_do <- to_do[!to_do %in% keep]
+  keep <- list.files(path = path, pattern = "\\.csv$", recursive = recursive,
+                     full.names = TRUE)
+  keep <- gsub("\\.csv$", ".yml", keep)
+  to_do <- to_do[!to_do %in% keep]
   to_do_base <- remove_root(file = to_do, root = root)
   check <- vapply(X = gsub(".yml$", "", to_do_base), FUN = is_git2rmeta,
                   FUN.VALUE = NA, root = root, message = "none")
@@ -183,18 +186,13 @@ prune_meta.git_repository <- function(
   assert_that(is.flag(stage))
 
   to_do <- list.files(
-    path = path,
-    pattern = "\\.yml$",
-    recursive = recursive,
-    full.names = TRUE
+    path = path, pattern = "\\.yml$", recursive = recursive, full.names = TRUE
   )
   keep <- list.files(
-    path = path,
-    pattern = "\\.tsv$",
-    recursive = recursive,
+    path = path, pattern = "\\.[ct]sv$", recursive = recursive,
     full.names = TRUE
   )
-  keep <- gsub("\\.tsv$", ".yml", keep)
+  keep <- gsub("\\.[ct]sv$", ".yml", keep)
   to_do <- to_do[!to_do %in% keep]
   if (length(to_do) == 0) {
     return(invisible(NULL))
@@ -204,7 +202,9 @@ prune_meta.git_repository <- function(
     changed <- unlist(status(
       root, staged = FALSE, unstaged = TRUE, untracked = FALSE, ignored = FALSE
     ))
-    changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
+    changed <- gsub(
+      "\\.[ct]sv$", ".yml", file.path(root_wd, changed, fsep = "/")
+    )
     if (any(to_do %in% changed)) {
       stop(
         call. = FALSE,
@@ -215,7 +215,9 @@ prune_meta.git_repository <- function(
     changed <- unlist(status(
       root, staged = TRUE, unstaged = FALSE, untracked = FALSE, ignored = FALSE
     ))
-    changed <- gsub("\\.tsv$", ".yml", file.path(root_wd, changed, fsep = "/"))
+    changed <- gsub(
+      "\\.[ct]sv$", ".yml", file.path(root_wd, changed, fsep = "/")
+    )
     if (any(to_do %in% changed)) {
       warning("data removed and staged, metadata removed but unstaged",
               call. = FALSE)

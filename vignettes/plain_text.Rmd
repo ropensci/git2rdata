@@ -132,14 +132,22 @@ print_file("first_test.yml", path)
 
 ## Storing Verbose
 
-Adding `optimize = FALSE` to `write_vc()` will keep the raw data in a human readable format. The metadata file is slightly different. The most obvious is the `optimize: no` tag and the different hash. Another difference is the metadata for POSIXct and Date classes. They will no longer have an origin tag but a format tag.
+Adding `optimize = FALSE` to `write_vc()` will keep the raw data in a human readable format.
+The metadata file is slightly different.
+The most obvious is the `optimize: no` tag and the different hash.
+Another difference is the metadata for POSIXct and Date classes.
+They will no longer have an origin tag but a format tag.
+
+Another important difference is that we store the data file as comma separated values instead of tab separated values.
+We noticed that the csv file format is more easily recognised by a larger audience as a data file.
+
 
 ```{r write_verbose}
 write_vc(x = x, file = "verbose", root = path, optimize = FALSE, strict = FALSE)
 ```
 
 ```{r manual_verbose_data}
-print_file("verbose.tsv", path, 10)
+print_file("verbose.csv", path, 10)
 print_file("verbose.yml", path)
 ```
 
