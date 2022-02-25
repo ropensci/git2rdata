@@ -1,5 +1,15 @@
 # git2rdata 0.4.0
 
+## New features
+
+* `write_vc()` stores non optimised files as comma separated values rather than
+  tab separated values.
+  The general public seems to better recognised `.csv` files than `.tsv` files
+  as being data files.
+* Add a new function `verify_vc()` which reads a `git2rdata` object and verifies
+  the presence of a set of variables.
+  It return the data upon success.
+
 ## Internal changes
 
 * Upgrade to Roxygen2 7.1.2
