@@ -30,7 +30,7 @@ abstract: The git2rdata package is an R package for writing and reading datafram
   git repository size and speed for writing and reading.
 license: GPL-3.0
 type: software
-doi: 10.5281/zenodo.1485309
+repository-code: https://github.com/ropensci/git2rdata/
 identifiers:
 - type: url
   value: https://ropensci.github.io/git2rdata/

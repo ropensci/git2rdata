@@ -12,7 +12,7 @@ The git2rdata package is an R package for writing and reading dataframes as plai
 Useful links:
 \itemize{
   \item \url{https://ropensci.github.io/git2rdata/}
-  \item \url{https://doi.org/10.5281/zenodo.1485309}
+  \item \url{https://github.com/ropensci/git2rdata/}
   \item Report bugs at \url{https://github.com/ropensci/git2rdata/issues}
 }
 
