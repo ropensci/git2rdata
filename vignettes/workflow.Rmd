@@ -62,7 +62,9 @@ git2r::add(init_repo, ".gitignore", force = TRUE)
 git2r::commit(init_repo, message = "Initial commit")
 # push initial commit to remote
 branch_name <- git2r::branches(init_repo)[[1]]$name
-git2r::push(init_repo, "origin", paste0("refs/heads/", branch_name))
+git2r::push(
+  init_repo, "origin", file.path("refs", "heads", branch_name, fsep = "/")
+)
 rm(init_repo)
 ```
 
