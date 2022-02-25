@@ -94,6 +94,7 @@ file.remove(
   list.files(path, pattern = "0_0_4", full.names = TRUE)
 )
 repo <- git2r::init(root)
+git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 git2r::add(repo, list.files(root, recursive = TRUE))
 git2r::commit(repo, message = "initial commit")
 
