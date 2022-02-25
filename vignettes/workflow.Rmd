@@ -61,7 +61,8 @@ writeLines("*extra*", file.path(path, ".gitignore"))
 git2r::add(init_repo, ".gitignore", force = TRUE)
 git2r::commit(init_repo, message = "Initial commit")
 # push initial commit to remote
-git2r::push(init_repo, "origin", "refs/heads/master") # nolint
+branch_name <- git2r::branches(init_repo)[[1]]$name
+git2r::push(init_repo, "origin", paste0("refs/heads/", branch_name))
 rm(init_repo)
 ```
 
