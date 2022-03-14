@@ -42,5 +42,6 @@
       "orcid": "https://orcid.org/0000-0001-8804-4216"
     }
   ],
-  "language": "eng"
+  "language": "eng",
+  "keywords": ["R package", "reproducible research", "version control"]
 }

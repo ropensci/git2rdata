@@ -34,3 +34,7 @@ repository-code: https://github.com/ropensci/git2rdata/
 identifiers:
 - type: url
   value: https://ropensci.github.io/git2rdata/
+keywords:
+- R package
+- reproducible research
+- version control
