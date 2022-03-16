@@ -222,8 +222,6 @@ test_that("write_vc() and read_vc() on a file system", {
       expected.label = paste0("sorted_test_data$", i)
     )
   }
-
-  file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 })
 
 test_that(
@@ -299,7 +297,6 @@ test_that("user specified na strings work", {
     grep("junk", readLines(file.path(root, fn[1]), encoding = "UTF-8")),
     2:4
   )
-  file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 })
 
 test_that("write_vc() allows changes in factor levels", {
@@ -327,7 +324,6 @@ test_that("write_vc() allows changes in factor levels", {
     write_vc(x, "factor_levels", root),
     "New factor labels for 'test_factor'"
   )
-  file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 })
 
 test_that("meta attributes are printed as yaml", {

@@ -77,11 +77,4 @@ test_that("rm_data & prune_meta", {
   )
   expect_identical(current[current != "test1.yml"],
                    list.files(root, recursive = TRUE))
-
-  file.remove(
-    list.files(root, recursive = TRUE, full.names = TRUE)
-  )
-  file.remove(
-    list.files(root, recursive = TRUE, include.dirs = TRUE, full.names = TRUE)
-  )
 })

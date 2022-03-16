@@ -61,9 +61,6 @@ test_that("upgrade_data() works on single files", {
   )
 })
 
-file.remove(
-  list.files(root, recursive = TRUE, full.names = TRUE)
-)
 root <- tempfile("git2rdata-upgrade")
 dir.create(root)
 origin <- system.file("testthat", package = "git2rdata")
@@ -90,9 +87,7 @@ dir.create(root)
 origin <- system.file("testthat", package = "git2rdata")
 file.copy(origin, root, recursive = TRUE)
 path <- file.path(root, "testthat")
-file.remove(
-  list.files(path, pattern = "0_0_4", full.names = TRUE)
-)
+file.remove(list.files(path, pattern = "0_0_4", full.names = TRUE))
 repo <- git2r::init(root)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 git2r::add(repo, list.files(root, recursive = TRUE))
@@ -118,11 +113,6 @@ test_that("upgrade_data() works on a git repository", {
     c(staged = 3L, unstaged = 0L, untracked = 0L)
   )
 })
-file.remove(
-  list.files(
-    git2r::workdir(repo), recursive = TRUE, full.names = TRUE, all.files = TRUE
-  )
-)
 
 test_that("validation", {
   root <- tempfile("git2rdata-upgrade")
@@ -141,5 +131,4 @@ test_that("validation", {
     upgrade_data(file = "verbose_0_0_4", root = path),
     "is not a git2rdata object"
   )
-  file.remove(list.files(path, full.names = TRUE))
 })

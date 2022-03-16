@@ -79,6 +79,4 @@ test_that("handle special characters", {
   yaml::write_yaml(yaml_file, file.path(root, "factor2.yml"))
   expect_warning(read_vc("factor2", root = root),
                "Mismatching data hash. Data altered outside of git2rdata.")
-
-  file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 })

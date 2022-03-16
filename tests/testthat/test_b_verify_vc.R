@@ -18,11 +18,4 @@ test_that("verify_vc", {
     verify_vc("test.txt", root = root, variables = c("test_integer", "junk")),
     "variables missing.*junk"
   )
-
-  file.remove(
-    list.files(root, recursive = TRUE, full.names = TRUE)
-  )
-  file.remove(
-    list.files(root, recursive = TRUE, include.dirs = TRUE, full.names = TRUE)
-  )
 })

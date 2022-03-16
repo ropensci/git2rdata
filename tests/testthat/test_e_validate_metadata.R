@@ -61,5 +61,3 @@ test_that("write_vc() checks existing metadata", {
     "Existing metadata file is invalid"
   )
 })
-
-file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
