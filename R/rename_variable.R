@@ -42,12 +42,6 @@
 #' # check the changes
 #' read_vc("rename", repo)
 #' status(repo)
-#'
-#' # clean up
-#' junk <- file.remove(
-#'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-#'                  include.dirs = TRUE, all.files = TRUE)),
-#'   repo_path)
 #' @family storage
 rename_variable <- function(file, change, root = ".", ...) {
   UseMethod("rename_variable", root)

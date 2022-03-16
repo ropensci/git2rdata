@@ -25,9 +25,6 @@
 #' upgrade_data(file = "iris", root = root)
 #' # use path = "." to upgrade all git2rdata objects under root
 #' upgrade_data(path = ".", root = root)
-#'
-#' # clean up
-#' junk <- file.remove(list.files(root, full.names = TRUE), root)
 upgrade_data <- function(file, root = ".", verbose, ..., path) {
   UseMethod("upgrade_data", root)
 }
