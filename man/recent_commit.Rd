@@ -82,12 +82,6 @@ list.files(repo_path)
 # still points to the third commit as this is the latest commit in which the
 # data was present
 recent_commit("iris", repo, data = TRUE)
-
-#' clean up
-junk <- file.remove(
-  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-                 include.dirs = TRUE, all.files = TRUE)),
-  repo_path)
 }
 \seealso{
 Other version_control: 

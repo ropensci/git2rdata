@@ -77,12 +77,6 @@ rename_variable(file = "rename", change = change, root = repo)
 # check the changes
 read_vc("rename", repo)
 status(repo)
-
-# clean up
-junk <- file.remove(
-  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-                 include.dirs = TRUE, all.files = TRUE)),
-  repo_path)
 }
 \seealso{
 Other storage: 
@@ -91,6 +85,7 @@ Other storage:
 \code{\link{read_vc}()},
 \code{\link{relabel}()},
 \code{\link{rm_data}()},
+\code{\link{verify_vc}()},
 \code{\link{write_vc}()}
 }
 \concept{storage}

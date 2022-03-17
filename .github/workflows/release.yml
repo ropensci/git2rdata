@@ -1,0 +1,30 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+name: Create Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get tag message
+        run: |
+          TAG_BODY=$(git tag --contains ${{ github.sha }} -n100 | awk '(NR>1)')
+          echo "::set-output name=TAG_BODY::$TAG_BODY"
+        id: tag-body
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: ${{ steps.tag-body.outputs.TAG_BODY }}
+          draft: false
+          prerelease: false

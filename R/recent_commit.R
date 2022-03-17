@@ -68,12 +68,6 @@
 #' # still points to the third commit as this is the latest commit in which the
 #' # data was present
 #' recent_commit("iris", repo, data = TRUE)
-#'
-#' #' clean up
-#' junk <- file.remove(
-#'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-#'                  include.dirs = TRUE, all.files = TRUE)),
-#'   repo_path)
 recent_commit <- function(file, root, data = FALSE) {
   UseMethod("recent_commit", root)
 }
@@ -89,14 +83,13 @@ recent_commit.default <- function(file, root, data = FALSE) {
 recent_commit.git_repository <- function(file, root, data = FALSE) {
   assert_that(is.string(file), is.flag(data), noNA(data))
 
-  path <- unique(dirname(file))
-  if (path == ".") {
-    path <- ""
-  }
+  path <- ifelse(dirname(file) == ".", "", dirname(file))
   if (data) {
-    file <- clean_data_path(root = workdir(root), file, normalize = FALSE)
+    bn <- gsub("\\..*$", "", basename(file))
+    name <- paste(bn, c("tsv", "csv"), sep = ".")
+  } else {
+    name <- basename(file)
   }
-  name <- basename(file)
   blobs <- odb_blobs(root)
   blobs <- blobs[blobs$path == path & blobs$name %in% name, ]
   blobs <- blobs[blobs$when <= as.data.frame(last_commit(root))$when, ]

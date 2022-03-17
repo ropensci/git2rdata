@@ -61,9 +61,6 @@ write_vc(iris[5:10, ], file = "subdir/iris", root = root,
 upgrade_data(file = "iris", root = root)
 # use path = "." to upgrade all git2rdata objects under root
 upgrade_data(path = ".", root = root)
-
-# clean up
-junk <- file.remove(list.files(root, full.names = TRUE), root)
 }
 \seealso{
 Other internal: 

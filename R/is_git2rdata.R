@@ -9,8 +9,9 @@
 #' @export
 #' @family internal
 #' @template example_isgit2r
-is_git2rdata <- function(file, root = ".",
-                         message = c("none", "warning", "error")) {
+is_git2rdata <- function(
+    file, root = ".", message = c("none", "warning", "error")
+) {
   UseMethod("is_git2rdata", root)
 }
 
@@ -23,8 +24,9 @@ is_git2rdata.default <- function(file, root, message) {
 #' @importFrom assertthat assert_that is.string
 #' @importFrom yaml read_yaml as.yaml
 #' @importFrom utils packageVersion
-is_git2rdata.character <- function(file, root = ".",
-                                   message = c("none", "warning", "error")) {
+is_git2rdata.character <- function(
+    file, root = ".", message = c("none", "warning", "error")
+) {
   assert_that(is.string(file), is.string(root))
   message <- match.arg(message)
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
@@ -34,6 +36,13 @@ is_git2rdata.character <- function(file, root = ".",
   }
   file <- clean_data_path(root = root, file = file)
 
+  # read the metadata
+  meta_data <- read_yaml(file["meta_file"])
+  file["raw_file"] <- ifelse(
+    meta_data[["..generic"]][["optimize"]],
+    file["raw_file"],
+    gsub("\\.tsv$", ".csv", file["raw_file"])
+  )
   if (!file.exists(file["raw_file"])) {
     msg <- "Data file missing."
     switch(message, error = stop(msg, call. = FALSE),
@@ -41,8 +50,6 @@ is_git2rdata.character <- function(file, root = ".",
     return(FALSE)
   }
 
-  # read the metadata
-  meta_data <- read_yaml(file["meta_file"])
   if (has_name(meta_data[["..generic"]], "split_by")) {
     header <- readLines(
       file.path(file["raw_file"], "index.tsv"), n = 1, encoding = "UTF-8"
@@ -79,7 +86,10 @@ is_git2rdata.character <- function(file, root = ".",
     }
   } else {
     correct <- names(meta_data)
-    correct <- paste(correct[correct != "..generic"], collapse = "\t")
+    correct <- paste(
+      correct[correct != "..generic"],
+      collapse = ifelse(meta_data[["..generic"]][["optimize"]], "\t", ",")
+    )
     header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
     if (correct != header) {
       msg <- paste("Corrupt data, incorrect header. Expecting:", correct)

@@ -103,14 +103,6 @@ prune_meta(repo, path = ".")
 # check the removal
 list_data(repo)
 status(repo)
-
-# clean up
-junk <- file.remove(
-  list.files(root, full.names = TRUE, recursive = TRUE), root)
-junk <- file.remove(
-  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-                 include.dirs = TRUE, all.files = TRUE)),
-  repo_path)
 }
 \seealso{
 Other storage: 
@@ -119,6 +111,7 @@ Other storage:
 \code{\link{relabel}()},
 \code{\link{rename_variable}()},
 \code{\link{rm_data}()},
+\code{\link{verify_vc}()},
 \code{\link{write_vc}()}
 }
 \concept{storage}

@@ -61,12 +61,6 @@
 #' read_vc("relabel", repo)
 #' # relabel() changed the metadata, not the raw data
 #' status(repo)
-#'
-#' # clean up
-#' junk <- file.remove(
-#'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-#'                  include.dirs = TRUE, all.files = TRUE)),
-#'   repo_path)
 #' @family storage
 relabel <- function(file, root = ".", change) {
   UseMethod("relabel", change)
@@ -90,18 +84,12 @@ relabel.list <- function(file, root = ".", change) {
   assert_that(is.string(root), is.string(file))
   assert_that(!is.null(names(change)), msg = "'change' has no names")
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
-  is_git2rmeta(file = file, root = root, message = "error")
+  is_git2rdata(file = file, root = root, message = "error")
   file <- clean_data_path(root = root, file = file)
-  assert_that(
-    all(file.exists(file)),
-    msg = "raw file and/or meta file missing"
-  )
   meta_data <- read_yaml(file["meta_file"])
   optimize <- meta_data[["..generic"]][["optimize"]]
-  if (!optimize) {
-    stop("relabelling factors on verbose data leads to large diffs.
-Use write_vc() instead.", call. = FALSE)
-  }
+  stopifnot("relabelling factors on verbose data leads to large diffs.
+Use write_vc() instead." = optimize)
   assert_that(
     all(names(change) %in% names(meta_data)),
     msg = "every name in 'change' must match an exisiting variable"

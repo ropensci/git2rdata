@@ -1,4 +1,4 @@
-context("write_vc() and read_vc() on a git-repository")
+test_that("write_vc() and read_vc() on a git-repository", {
 root <- tempfile(pattern = "git2rdata-git")
 dir.create(root)
 root <- git2r::init(root)
@@ -83,8 +83,8 @@ for (i in colnames(stored)) {
 }
 
 forced <- write_vc(
-  test_data, file = "forced/force", root = root, sorting = "test_Date",
-  stage = TRUE, force = TRUE
+  test_data, file = file.path("forced", "force"), root = root,
+  sorting = "test_Date", stage = TRUE, force = TRUE
 )
 expect_equal(
   status(root, ignored = TRUE),
@@ -97,7 +97,7 @@ expect_equal(
   check.attributes = FALSE
 )
 expect_equal(
-  stored <- read_vc(file = "forced/force", root = root),
+  stored <- read_vc(file = file.path("forced", "force"), root = root),
   sorted_test_data,
   check.attributes = FALSE
 )
@@ -173,11 +173,11 @@ staged <- write_vc(
 current <- list.files(git2r::workdir(root), recursive = TRUE)
 expect_identical(
   rm_data(root = root, path = "."),
-  "forced/force.tsv"
+  file.path("forced", "force.tsv")
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  "forced/force.tsv"
+  file.path("forced", "force.tsv")
 )
 expect_error(
   prune_meta(root = root, path = ".", stage = TRUE),
@@ -185,16 +185,16 @@ expect_error(
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  "forced/force.tsv"
+  file.path("forced", "force.tsv")
 )
 expect_null(rm_data(root, path = "."))
 expect_identical(
   prune_meta(root = root, path = ".", stage = FALSE),
-  "forced/force.yml"
+  file.path("forced", "force.yml")
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  c("forced/force.tsv", "forced/force.yml")
+  file.path("forced", c("force.tsv", "force.yml"))
 )
 expect_null(prune_meta(root, path = "."))
 git2r::reset(git2r::last_commit(root), reset_type = "hard", path = ".")
@@ -205,20 +205,22 @@ staged <- write_vc(
 )
 expect_identical(
   rm_data(root = root, path = ".", type = "m"),
-  c("forced/force.tsv", "staged.tsv")
+  c(file.path("forced", "force.tsv"), "staged.tsv")
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  c("forced/force.tsv", "staged.tsv")
+  c(file.path("forced", "force.tsv"), "staged.tsv")
 )
 expect_warning(
   removed <- prune_meta(root = root, path = ".", stage = FALSE),
   "data removed and staged, metadata removed but unstaged"
 )
-expect_identical(removed, c("forced/force.yml", "staged.yml"))
+expect_identical(removed, c(file.path("forced", "force.yml"), "staged.yml"))
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  c("forced/force.tsv", "forced/force.yml", "staged.tsv", "staged.yml")
+  c(
+    file.path("forced", c("force.tsv", "force.yml")), "staged.tsv", "staged.yml"
+  )
 )
 git2r::reset(git2r::last_commit(root), reset_type = "hard", path = ".")
 
@@ -228,20 +230,22 @@ staged <- write_vc(
 )
 expect_identical(
   rm_data(root = root, path = ".", type = "i", stage = TRUE),
-  c("forced/force.tsv", "ignore.tsv", "staged.tsv")
+  c(file.path("forced", "force.tsv"), "ignore.tsv", "staged.tsv")
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  c("forced/force.tsv", "ignore.tsv", "staged.tsv")
+  c(file.path("forced", "force.tsv"), "ignore.tsv", "staged.tsv")
 )
 expect_identical(
   prune_meta(root = root, path = ".", stage = TRUE),
-  c("forced/force.yml", "ignore.yml", "staged.yml")
+  c(file.path("forced", "force.yml"), "ignore.yml", "staged.yml")
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  c("forced/force.tsv", "forced/force.yml", "ignore.tsv", "ignore.yml",
-    "staged.tsv", "staged.yml")
+  c(
+    file.path("forced", c("force.tsv", "force.yml")), "ignore.tsv",
+    "ignore.yml", "staged.tsv", "staged.yml"
+  )
 )
 git2r::reset(git2r::last_commit(root), reset_type = "hard", path = ".")
 
@@ -254,19 +258,31 @@ staged <- write_vc(
 )
 expect_identical(
   rm_data(root = root, path = ".", type = "all", stage = TRUE),
-  c("forced/force.tsv", "ignore.tsv", "staged.tsv", "untracked.tsv")
+  c(
+    file.path("forced", "force.tsv"), "ignore.tsv", "staged.tsv",
+    "untracked.tsv"
+  )
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  c("forced/force.tsv", "ignore.tsv", "staged.tsv", "untracked.tsv")
+  c(
+    file.path("forced", "force.tsv"), "ignore.tsv", "staged.tsv",
+    "untracked.tsv"
+  )
 )
 expect_identical(
   prune_meta(root = root, path = ".", stage = TRUE),
-  c("forced/force.yml", "ignore.yml", "staged.yml", "untracked.yml")
+  c(
+    file.path("forced", "force.yml"), "ignore.yml", "staged.yml",
+    "untracked.yml"
+  )
 )
 expect_identical(
   current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],
-  c("forced/force.tsv", "forced/force.yml", "ignore.tsv", "ignore.yml",
-    "staged.tsv", "staged.yml", "untracked.tsv", "untracked.yml")
+  c(
+    file.path("forced", c("force.tsv", "force.yml")), "ignore.tsv",
+    "ignore.yml", "staged.tsv", "staged.yml", "untracked.tsv", "untracked.yml"
+  )
 )
 git2r::reset(git2r::last_commit(root), reset_type = "hard", path = ".")
+})

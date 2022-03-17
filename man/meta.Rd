@@ -13,7 +13,7 @@
 \usage{
 meta(x, ...)
 
-\method{meta}{character}(x, na = "NA", ...)
+\method{meta}{character}(x, na = "NA", optimize = TRUE, ...)
 
 \method{meta}{factor}(x, optimize = TRUE, na = "NA", index, strict = TRUE, ...)
 

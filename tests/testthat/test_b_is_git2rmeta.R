@@ -167,8 +167,3 @@ test_that("is_git2rmeta handle git repositories", {
   expect_true(is_git2rmeta(file = file, root = root))
   expect_true(is_git2rdata(file = file, root = root))
 })
-
-file.remove(list.files(git2r::workdir(root), recursive = TRUE,
-                       full.names = TRUE))
-file.remove(list.files(git2r::workdir(root), recursive = TRUE,
-                       include.dirs = TRUE, full.names = TRUE))

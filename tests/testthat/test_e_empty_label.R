@@ -99,5 +99,3 @@ test_that("relabel handles empty labels", {
   relabel(file = file, root = root, change = change)
   expect_is(mydfr <- read_vc(file = file, root = root), "data.frame")
 })
-
-file.remove(list.files(root, recursive = TRUE, full.names = TRUE))

@@ -20,8 +20,8 @@ write_vc(
 commit_1 <- commit(root, "initial commit")
 
 write_vc(
-  test_data[3:4, ], file = "junk/test1", root = root, stage = TRUE,
-  sorting = "test_Date"
+  test_data[3:4, ], file = file.path("junk", "test1"), root = root,
+  stage = TRUE, sorting = "test_Date"
 )
 commit_2 <- commit(root, "second file")
 
@@ -55,7 +55,7 @@ expect_identical(
   )
 )
 expect_identical(
-  recent_commit(file = "junk/test1", root, data = TRUE),
+  recent_commit(file = file.path("junk", "test1"), root, data = TRUE),
   data.frame(
     commit = commit_2$sha,
     author = commit_2$author$name,

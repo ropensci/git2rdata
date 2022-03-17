@@ -79,12 +79,6 @@ relabel("relabel", repo, change)
 read_vc("relabel", repo)
 # relabel() changed the metadata, not the raw data
 status(repo)
-
-# clean up
-junk <- file.remove(
-  rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-                 include.dirs = TRUE, all.files = TRUE)),
-  repo_path)
 }
 \seealso{
 Other storage: 
@@ -93,6 +87,7 @@ Other storage:
 \code{\link{read_vc}()},
 \code{\link{rename_variable}()},
 \code{\link{rm_data}()},
+\code{\link{verify_vc}()},
 \code{\link{write_vc}()}
 }
 \concept{storage}

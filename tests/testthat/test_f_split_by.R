@@ -101,6 +101,4 @@ test_that("write_vc() handles the split_by argument", {
     suppressWarnings(is_git2rdata("sorted", root, "warning")),
     "Corrupt data, incorrect header in index.tsv"
   )
-
-  file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 })

@@ -1,4 +1,3 @@
-context("check writing non ASCII characters")
 root <- tempfile("git2rdata-empty-label")
 dir.create(root)
 characters <- data.frame(a = c("€$£ @&#§µ^ ()[]{}|²³<>/\\*+- ,;:.?!~",
@@ -40,5 +39,3 @@ test_that("special character are written properly as verbose factor", {
   )
   expect_equivalent(read_vc(file = file, root = root), characters)
 })
-
-file.remove(list.files(root, recursive = TRUE, full.names = TRUE))

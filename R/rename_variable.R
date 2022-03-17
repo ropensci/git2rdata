@@ -42,12 +42,6 @@
 #' # check the changes
 #' read_vc("rename", repo)
 #' status(repo)
-#'
-#' # clean up
-#' junk <- file.remove(
-#'   rev(list.files(repo_path, full.names = TRUE, recursive = TRUE,
-#'                  include.dirs = TRUE, all.files = TRUE)),
-#'   repo_path)
 #' @family storage
 rename_variable <- function(file, change, root = ".", ...) {
   UseMethod("rename_variable", root)
@@ -69,6 +63,11 @@ rename_variable.character <- function(file, change, root = ".", ...) {
   is_git2rdata(file = file, root = root, message = "error")
   file <- clean_data_path(root = root, file = file)
   yaml <- read_yaml(file[["meta_file"]])
+  file["raw_file"] <- ifelse(
+    yaml[["..generic"]][["optimize"]],
+    file["raw_file"],
+    gsub("\\.tsv$", ".csv", file["raw_file"])
+  )
   assert_that(
     all(change %in% names(yaml)),
     msg = "Not every old name in `change` present in the `git2rdata` object."

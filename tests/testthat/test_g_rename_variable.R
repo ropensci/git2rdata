@@ -75,8 +75,6 @@ test_that("rename_variable() handles single files", {
   expect_identical(colnames(changed_df)[updated], names(change))
   expect_equivalent(sorted_test_data[, change], changed_df[, names(change)])
   git2r::reset(cm, "hard")
-
-  file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 })
 
 test_that("rename_variable() handles split_by files", {
@@ -190,8 +188,6 @@ test_that("rename_variable() handles split_by files", {
     changed_df[, names(change)]
   )
   git2r::reset(cm, "hard")
-
-  file.remove(list.files(root, recursive = TRUE, full.names = TRUE))
 })
 
 test_that("rename_variable() handles wrong type of root", {

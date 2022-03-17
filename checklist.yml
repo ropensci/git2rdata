@@ -3,3 +3,10 @@ package: yes
 allowed:
   warnings: []
   notes: []
+citation_roles:
+- aut
+- cre
+keywords:
+- R package
+- reproducible research
+- version control
