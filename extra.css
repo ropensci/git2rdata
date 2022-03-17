@@ -1,0 +1,92 @@
+body {
+  background-color: #f5f5f5;
+  color: #5e5e5e;
+  background-image: url('reference/figures/background-pattern.png');
+  font-family: FlandersArtSans-Light, Verdana, Arial, sans-serif;
+}
+
+.row{
+  background-color: #ffffff;
+}
+
+a {
+  color: #c04384;
+}
+a:hover {
+  color: #337ab7;
+}
+
+.navbar,
+.label-default,
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+  background-color: #356196;
+}
+
+.navbar-default .navbar-link,
+.navbar-default .navbar-nav>li>a {
+  color: #ffffff;
+}
+
+.nav-pills li.active>a, .nav-pills li>a:hover {
+  background-color: #c2c444;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus {
+  color: #ffffff;
+  background-color: #356196;
+}
+
+.nav-pills a {
+  color: #5e5e5e;
+}
+
+@font-face{
+  font-family: inbo;
+  src:
+    url('figures/flanders.woff2') format('woff2'),
+    url('reference/figures/flanders.woff') format('woff');
+;
+  font-weight:normal;
+  font-style:normal;
+}
+
+code.sourceCode.diff span.st {
+  background-color: #C04384;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+code.sourceCode.diff span.va {
+  background-color: #E4E517;
+  font-weight: bold;
+}
+
+/*selection color*/
+::selection {
+  background: #c04384;
+  color: #fff;
+}
+::-moz-selection {
+  background: #c04384;
+  color: #fff;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover{
+  color: #337ab7;
+  background: #fff;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+  color: #337ab7;
+  background: #fff;
+}
+
+.navbar-default .navbar-nav>li>a:hover{
+  color: #337ab7;
+  background: #fff;
+}
+
+.dropdown-menu>li>a:hover{
+  color: #fff;
+  background: #337ab7;
+}

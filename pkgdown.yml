@@ -1,0 +1,11 @@
+pandoc: 2.17.1.1
+pkgdown: 2.0.2
+pkgdown_sha: ~
+articles:
+  efficiency: efficiency.html
+  plain_text: plain_text.html
+  split_by: split_by.html
+  version_control: version_control.html
+  workflow: workflow.html
+last_built: 2022-03-18T14:14Z
+
