@@ -1,33 +1,32 @@
+url: https://docs.ropensci.org/git2rdata
 navbar:
-  title: ~
-  type: default
-  left:
-  - text: NEWS
-    href: news/index.html
-  - text: Tutorials
-    href: articles/index.html
-    menu:
-    - text: Getting started storing dataframes as plain text
-      href: articles/plain_text.html
-    - text: Storing dataframes under version control
-      href: articles/version_control.html
-    - text: Potential workflow
-      href: articles/workflow.html
-    - text: Efficiency
-      href: articles/efficiency.html
-    - text: Large dataframes
-      href: articles/split_by.html
-  - text: Functions
-    href: reference/index.html
-  - text: Contributing
-    href: CONTRIBUTING.html
-  right:
-  - icon: "fa fa-github"
-    href: https://github.com/ropensci/git2rdata
-  - icon: "fa fa-twitter"
-    href: https://twitter.com/INBOVlaanderen
-  - icon: "fa fa-facebook"
-    href: https://www.facebook.com/pg/INBOVlaanderen
+  structure:
+    left:  [intro, reference, articles, news, tutorials, contributing]
+    right: [search, github, twitter, facebook, lightswitch]
+  components:
+    tutorials:
+      text: Tutorials
+      href: articles/index.html
+      menu:
+      - text: Getting started storing dataframes as plain text
+        href: articles/plain_text.html
+      - text: Storing dataframes under version control
+        href: articles/version_control.html
+      - text: Potential workflow
+        href: articles/workflow.html
+      - text: Efficiency
+        href: articles/efficiency.html
+      - text: Large dataframes
+        href: articles/split_by.html
+    contributing:     
+      text: Contributing
+      href: CONTRIBUTING.html
+    twitter: 
+      icon: "fa fa-twitter"
+      href: https://twitter.com/INBOVlaanderen
+    facebook: 
+      icon: "fa fa-facebook"
+      href: https://www.facebook.com/pg/INBOVlaanderen
 
 reference:
 - title: Storage
