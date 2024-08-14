@@ -3,10 +3,10 @@ on:
     branches:
       - main
       - master
-  schedule:
-    - cron: '6 0 15 * *'
+permissions:
+  contents: write
 
-name: "check package on main"
+name: "check package on main with checklist"
 
 jobs:
   check-package:
@@ -14,8 +14,6 @@ jobs:
     name: "check package"
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: inbo/actions/check_pkg@master
-        with:
-          token: ${{ secrets.PAT }}
+      - uses: inbo/actions/check_pkg@main

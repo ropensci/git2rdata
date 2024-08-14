@@ -19,12 +19,14 @@ a:hover {
 .navbar,
 .label-default,
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
-  background-color: #356196;
+  background-color: #356196 !important;
 }
 
-.navbar-default .navbar-link,
-.navbar-default .navbar-nav>li>a {
-  color: #ffffff;
+.navbar,
+.navbar-brand,
+.nav-link,
+.nav-text.text-muted {
+  color: #ffffff !important;
 }
 
 .nav-pills li.active>a, .nav-pills li>a:hover {

@@ -5,7 +5,7 @@ on:
       - master
       - ghpages
 
-name: "check package"
+name: "check package with checklist"
 
 jobs:
   check-package:
@@ -13,8 +13,8 @@ jobs:
     name: "check package"
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      ORCID_TOKEN: ${{ secrets.ORCID_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: read
     steps:
-      - uses: inbo/actions/check_pkg@master
-        with:
-          token: ${{ secrets.PAT }}
+      - uses: inbo/actions/check_pkg@main

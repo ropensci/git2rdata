@@ -1,17 +1,17 @@
 comment: true
 
 coverage:
-  precision: 2
+  precision: 1
   round: down
   range: "70...100"
   status:
+    patch:
+      default:
+        target: auto
+        threshold: 10%
+        informational: true
     project:
       default:
         target: auto
         threshold: 1%
-        informational: true
-    patch:
-      default:
-        target: auto
-        threshold: 1%
-        informational: true
+        informational: false
