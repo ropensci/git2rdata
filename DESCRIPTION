@@ -1,16 +1,16 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-8804-4216")),
+           comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Floris", "Vanderhaeghe", , "floris.vanderhaeghe@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-6378-6229")),
+           comment = c(ORCID = "0000-0002-6378-6229", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Peter", "Desmet", , "peter.desmet@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-8442-8025")),
+           comment = c(ORCID = "0000-0002-8442-8025", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-3481-5684")),
-    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+           comment = c(ORCID = "0000-0002-3481-5684", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: The git2rdata package is an R package for writing and reading
     dataframes as plain text files.  A metadata file stores important
@@ -52,6 +52,8 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
+Config/checklist/communities: inbo
+Config/checklist/keywords: git; version control; plain text data
 Encoding: UTF-8
 Language: en-GB
 Roxygen: list(markdown = TRUE)

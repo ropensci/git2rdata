@@ -1,3 +1,7 @@
+# git2rdata 0.4.1
+
+* Update the checklist and pkgdown infrastructure.
+
 # git2rdata 0.4.0
 
 ## New features
