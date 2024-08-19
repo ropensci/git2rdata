@@ -62,7 +62,9 @@ This implies that two observations switching place does not alter the informatio
 Nor does switching two variables.
 
 Version control systems like [git](https://git-scm.com/), [subversion](https://subversion.apache.org/) or [mercurial](https://www.mercurial-scm.org/) focus on accurately keeping track of _any_ change in the files. 
-Two observations switching place in a plain text file _is_ a change, although the information content^[_sensu_ `git2rdata`] doesn't change.
+Two observations switching place in a plain text file _is_ a change, although the information content^[
+_sensu_ <!-- spell-check: ignore -->
+`git2rdata`] doesn't change.
 `git2rdata` helps the user to prepare the plain text files in such a way that any change in the version history is an actual change in the information content.
 
 ## Sorting Observations

@@ -206,7 +206,7 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' plus an additional `..generic` element. `..generic` is a reserved name for
 #' the metadata and not allowed as column name in a `data.frame`.
 #'
-#' \code{\link{write_vc}} uses this function to prepare a dataframe for storage.
+#' `write_vc()` uses this function to prepare a dataframe for storage.
 #' Existing metadata is passed through the optional `old` argument. This
 #' argument intended for internal use.
 #' @rdname meta

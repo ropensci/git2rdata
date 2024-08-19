@@ -3,7 +3,7 @@
 #' file extensions
 #' @inheritParams write_vc
 #' @param normalize Normalize the path? Defaults to TRUE
-#' @return A named vector with "raw_file" and "meta_file", refering to the
+#' @return A named vector with "raw_file" and "meta_file", referring to the
 #' `".tsv"` and `".yml"` files.
 #' @noRd
 #' @family internal

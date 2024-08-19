@@ -142,7 +142,7 @@ This vignette compares storage and retrieval of data by `git2rdata` with other s
 We consider `write.table()` and `read.table()` for data stored in a plain text format.
 `saveRDS()` and `readRDS()` use a compressed binary format.
 
-To get some meaningful results, we will use the `nassCDS` dataset from the [DAAG](https://www.rdocumentation.org/packages/DAAG/versions/1.22/topics/nassCDS) package.
+To get some meaningful results, we will use the `nassCDS` dataset from the [DAAG](https://www.rdocumentation.org/packages/DAAG/versions/1.22/topics/nassCDS) package. <!-- spell-check: ignore -->
 We'll avoid the dependency on the package by directly downloading the data.
 
 ```{r download_data, eval = system.file("efficiency", "airbag.rds", package = "git2rdata") == ""}

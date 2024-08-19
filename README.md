@@ -56,9 +56,11 @@ See `vignette("workflow", package = "git2rdata")`.
 Use this to check whether an existing analysis is obsolete due to new data. 
 This allows to not rerun up to date analyses, saving resources.
 
-## Talk About `git2rdata` at useR!2019 in Toulouse, France
+## Talk About `git2rdata` at
+useR!2019<!-- spell-check: ignore -->
+in Toulouse, France
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/sbRPmakBFqo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/sbRPmakBFqo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><!-- spell-check: ignore -->
 
 ## Installation
 
