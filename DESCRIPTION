@@ -48,7 +48,6 @@ Suggests:
     knitr,
     microbenchmark,
     rmarkdown,
-    spelling,
     testthat
 VignetteBuilder: 
     knitr
