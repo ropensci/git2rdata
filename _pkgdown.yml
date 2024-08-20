@@ -1,8 +1,13 @@
-url: https://docs.ropensci.org/git2rdata
+url: https://ropensci.github.io/git2rdata
+template:
+  bootstrap: 5
+  light-switch: false
 navbar:
+  title: ~
+  type: default
   structure:
-    left:  [intro, reference, articles, news, tutorials, contributing]
-    right: [search, github, twitter, facebook, lightswitch]
+    left:  [intro, reference, news, tutorials, contributing]
+    right: [search, github]
   components:
     tutorials:
       text: Tutorials
@@ -18,13 +23,13 @@ navbar:
         href: articles/efficiency.html
       - text: Large dataframes
         href: articles/split_by.html
-    contributing:     
+    contributing:
       text: Contributing
       href: CONTRIBUTING.html
-    twitter: 
+    twitter:
       icon: "fa fa-twitter"
       href: https://twitter.com/INBOVlaanderen
-    facebook: 
+    facebook:
       icon: "fa fa-facebook"
       href: https://www.facebook.com/pg/INBOVlaanderen
 
@@ -42,6 +47,6 @@ reference:
 authors:
   Thierry Onkelinx:
     href: "https://www.muscardinus.be"
-  Research Institute for Nature and Forest:
+  Research Institute for Nature and Forest (INBO):
     href: "https://www.vlaanderen.be/inbo/en-gb"
-    html: "<img src='https://ropensci.github.io/git2rdata/reference/figures/logo-en.png' height=24>"
+    html: "<img src='https://ropensci.github.io/git2rdata/reference/figures/logo-en.png' height=24 alt='logo of the Research Institute for Nature and Forest (INBO)'>"
