@@ -15,7 +15,7 @@ contact:
   family-names: Onkelinx
   affiliation: Research Institute for Nature and Forest (INBO)
   orcid: 0000-0001-8804-4216
-doi: ~
+doi: 10.5281/zenodo.1485309
 license: GPL-3.0
 repository-code: https://github.com/ropensci/git2rdata/
 type: software
@@ -36,6 +36,8 @@ abstract: "The git2rdata package is an R package for writing and reading datafra
   package = \"git2rdata\") provides some insight into the efficiency of file storage,
   git repository size and speed for writing and reading."
 identifiers:
+- type: doi
+  value: 10.5281/zenodo.1485309
 - type: url
   value: https://ropensci.github.io/git2rdata/
 version: 0.4.1
