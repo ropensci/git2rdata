@@ -67,6 +67,7 @@ Collate:
     'is_git2rmeta.R'
     'list_data.R'
     'meta.R'
+    'print.R'
     'prune.R'
     'read_vc.R'
     'recent_commit.R'

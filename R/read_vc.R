@@ -12,6 +12,8 @@
 #'
 #' @inheritParams write_vc
 #' @return The `data.frame` with the file names and hashes as attributes.
+#' It has the additional class `"git2rdata"` to support extra methods to
+#' display the descriptions.
 #' @rdname read_vc
 #' @export
 #' @family storage
@@ -145,6 +147,8 @@ read_vc.character <- function(file, root = ".") {
       attr(raw_data[[desc]], "description") <- details[[desc]]$description
     }
   }
+
+  class(raw_data) <- c("git2rdata", class(raw_data))
 
   return(raw_data)
 }
