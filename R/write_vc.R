@@ -24,6 +24,11 @@
 #' `strict = TRUE` returns an error and leaves the data and metadata as is.
 #' Defaults to `TRUE`.
 #' @param ... parameters used in some methods
+#' @param description An optional named character vector containing a
+#' description for the variables in `x`.
+#' The names of the vector must match the column names of `x`.
+#' When provided, the description is stored in the metadata.
+#' You don't have to provide a description for all columns.
 #' @inheritParams meta
 #' @inheritParams utils::write.table
 #' @return a named vector with the file paths relative to `root`. The names
@@ -35,14 +40,15 @@
 #' column name in a `data.frame`.
 write_vc <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
-  split_by
+  split_by, description = character(0)
 ) {
   UseMethod("write_vc", root)
 }
 
 #' @export
 write_vc.default <- function(
-  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...
+  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
+  description = character(0)
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
@@ -58,7 +64,7 @@ write_vc.default <- function(
 #' @importFrom git2r hash
 write_vc.character <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE,
-  na = "NA", ..., split_by = character(0)
+  na = "NA", ..., split_by = character(0), description = character(0)
 ) {
   assert_that(
     inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
@@ -72,7 +78,8 @@ write_vc.character <- function(
 
   if (!file.exists(file["meta_file"])) {
     raw_data <- meta(
-      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by
+      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by,
+      description = description
     )
   } else {
     tryCatch(
@@ -85,8 +92,10 @@ write_vc.character <- function(
     )
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
-    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting,
-                     old = old, strict = strict, split_by = split_by)
+    raw_data <- meta(
+      x, optimize = optimize, na = na, sorting = sorting, old = old,
+      strict = strict, split_by = split_by, description = description
+    )
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       problems <- c(

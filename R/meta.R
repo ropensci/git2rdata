@@ -36,7 +36,9 @@ meta <- function(x, ...) {
 #' @export
 #' @rdname meta
 #' @importFrom assertthat assert_that is.string noNA
-meta.character <- function(x, na = "NA", optimize = TRUE, ...) {
+meta.character <- function(
+  x, na = "NA", optimize = TRUE, description = character(0), ...
+) {
   assert_that(is.string(na), noNA(na), no_whitespace(na))
   assert_that(is.flag(optimize), noNA(optimize))
   x <- enc2utf8(x)
@@ -48,23 +50,40 @@ Please use a different NA string or consider using a factor.", call. = FALSE)
   to_escape <- grepl(ifelse(optimize, "(\"|\t|\n)", "(\"|,|\n)"), x)
   x[to_escape] <- paste0("\"", x[to_escape], "\"")
   x[is.na(x)] <- na
-  m <- list(class = "character", na_string = na)
+  list(class = "character", na_string = na) |>
+    meta_desc(description = description) -> m
+  class(m) <- "meta_detail"
+  attr(x, "meta") <- m
+  return(x)
+}
+
+#' @importFrom assertthat assert_that is.string
+meta_desc <- function(meta, description) {
+  assert_that(is.character(description), is.list(meta))
+  if (length(description) == 0) {
+    return(meta)
+  }
+  assert_that(is.string(description))
+  if (is.na(description)) {
+    return(meta)
+  } else {
+    return(c(meta, description = unname(description)))
+  }
+}
+
+#' @export
+meta.integer <- function(x, description = character(0), ...) {
+  list(class = "integer") |>
+    meta_desc(description = description) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
 }
 
 #' @export
-meta.integer <- function(x, ...) {
-  m <- list(class = "integer")
-  class(m) <- "meta_detail"
-  attr(x, "meta") <- m
-  return(x)
-}
-
-#' @export
-meta.numeric <- function(x, ...) {
-  m <- list(class = "numeric")
+meta.numeric <- function(x, description = character(0), ...) {
+  list(class = "numeric") |>
+    meta_desc(description = description) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -86,7 +105,8 @@ meta.numeric <- function(x, ...) {
 #' `meta()` ignores, with a warning, any change in the order of factor levels.
 #' Add `strict = FALSE` to enforce the new order of factor levels.
 meta.factor <- function(
-  x, optimize = TRUE, na = "NA", index, strict = TRUE, ...
+  x, optimize = TRUE, na = "NA", index, strict = TRUE,
+  description = character(0), ...
 ) {
   assert_that(is.flag(optimize), noNA(optimize), is.flag(strict), noNA(strict))
   levels(x) <- enc2utf8(levels(x))
@@ -131,9 +151,11 @@ Please use a different NA string or use optimize = TRUE")
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
 
-  m <- list(class = "factor", na_string = na, optimize = optimize,
-            labels = names(index), index = unname(index),
-            ordered = is.ordered(x))
+  list(
+    class = "factor", na_string = na, optimize = optimize,
+    labels = names(index), index = unname(index), ordered = is.ordered(x)
+  ) |>
+    meta_desc(description = description) -> m
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
   return(z)
@@ -142,20 +164,23 @@ Please use a different NA string or use optimize = TRUE")
 #' @export
 #' @rdname meta
 #' @importFrom assertthat assert_that is.flag noNA
-meta.logical <- function(x, optimize = TRUE, ...) {
+meta.logical <- function(x, optimize = TRUE, description = character(0), ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     x <- as.integer(x)
   }
-  m <- list(class = "logical", optimize = optimize)
+  list(class = "logical", optimize = optimize) |>
+    meta_desc(description = description) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
 }
 
 #' @export
-meta.complex <- function(x, ...) {
-  m <- list(class = "complex")
+meta.complex <- function(x, description = character(0), ...) {
+  assert_that(is.character(description), length(description) <= 1)
+  list(class = "complex") |>
+    meta_desc(description = description) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -164,16 +189,22 @@ meta.complex <- function(x, ...) {
 #' @export
 #' @rdname meta
 #' @importFrom assertthat assert_that is.flag noNA
-meta.POSIXct <- function(x, optimize = TRUE, ...) {
+meta.POSIXct <- function(x, optimize = TRUE, description = character(0), ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     z <- unclass(x)
-    m <- list(class = "POSIXct", optimize = TRUE,
-              origin = "1970-01-01 00:00:00", timezone = "UTC")
+    list(
+      class = "POSIXct", optimize = TRUE, origin = "1970-01-01 00:00:00",
+      timezone = "UTC"
+    ) |>
+      meta_desc(description = description) -> m
   } else {
     z <- format(x, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
-    m <- list(class = "POSIXct", optimize = FALSE,
-              format = "%Y-%m-%dT%H:%M:%SZ", timezone = "UTC")
+    list(
+      class = "POSIXct", optimize = FALSE, format = "%Y-%m-%dT%H:%M:%SZ",
+      timezone = "UTC"
+    ) |>
+      meta_desc(description = description) -> m
   }
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -183,14 +214,16 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
 #' @export
 #' @rdname meta
 #' @importFrom assertthat assert_that is.flag noNA
-meta.Date <- function(x, optimize = TRUE, ...) {
+meta.Date <- function(x, optimize = TRUE, description = character(0), ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     z <- as.integer(x)
-    m <- list(class = "Date", optimize = TRUE, origin = "1970-01-01")
+    list(class = "Date", optimize = TRUE, origin = "1970-01-01") |>
+      meta_desc(description = description) -> m
   } else {
     z <- format(x, format = "%Y-%m-%d")
-    m <- list(class = "Date", optimize = FALSE, format = "%Y-%m-%d")
+    list(class = "Date", optimize = FALSE, format = "%Y-%m-%d") |>
+      meta_desc(description = description) -> m
   }
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -213,7 +246,7 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' @inheritParams write_vc
 meta.data.frame <- function(# nolint
   x, optimize = TRUE, na = "NA", sorting, strict = TRUE,
-  split_by = character(0), ...
+  split_by = character(0), description = character(0), ...
 ) {
   assert_that(
     !has_name(x, "..generic"),
@@ -229,6 +262,11 @@ meta.data.frame <- function(# nolint
   assert_that(
     any(!colnames(x) %in% split_by),
     msg = "No remaining variables after splitting"
+  )
+  assert_that(is.character(description))
+  stopifnot(
+    "All names in `description` must match an existing variable in `x`" =
+      all(names(description) %in% colnames(x))
   )
 
   dots <- list(...)
@@ -267,21 +305,32 @@ Add extra sorting variables to ensure small diffs.", sorted)
     generic <- c(generic, split_by = list(split_by))
   }
   # calculate meta for each column
-  if (has_name(dots, "old")) {
+  if (!has_name(dots, "old")) {
+    z <- lapply(
+      colnames(x),
+      function(id, optimize, na, description) {
+        meta(
+          x[[id]], optimize = optimize, na = na, description = description[id]
+        )
+      },
+      optimize = optimize, na = na, description = description
+    )
+    names(z) <- colnames(x)
+  } else {
     common <- names(old)[names(old) %in% colnames(x)]
     if (length(common)) {
       z_common <- lapply(
         common,
-        function(id, optimize, na, strict) {
+        function(id, optimize, na, strict, description) {
           meta(
             x[[id]], optimize = optimize, na = na,
             index = setNames(old[[id]][["index"]], old[[id]][["labels"]]),
-            strict = strict
+            strict = strict, description = description[id]
           )
         },
         optimize = old[["..generic"]][["optimize"]],
         na = old[["..generic"]][["NA string"]],
-        strict = strict
+        strict = strict, description = description
       )
       names(z_common) <- common
     } else {
@@ -289,13 +338,21 @@ Add extra sorting variables to ensure small diffs.", sorted)
     }
     new <- colnames(x)[!colnames(x) %in% names(old)]
     if (length(new)) {
-      z_new <- lapply(x[new], meta, optimize = optimize, na = na)
+      z_new <- lapply(
+        new,
+        function(id, optimize, na, description) {
+          meta(
+            x[[id]], optimize = optimize, na = na,
+            description = description[id]
+          )
+        },
+        optimize = optimize, na = na, description = description
+      )
+      names(z_new) <- new
     } else {
       z_new <- list()
     }
     z <- c(z_common, z_new)
-  } else {
-    z <- lapply(x, meta, optimize = optimize, na = na)
   }
 
   # compose generic metadata list
