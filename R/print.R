@@ -19,3 +19,19 @@ display_description <- function(x, colname) {
   }
   sprintf("\n%s: %s", colname, attr(x[[colname]], "description"))
 }
+
+#' Summary method for `git2rdata` objects.
+#'
+#' Prints the summary of the data and the description of the columns when
+#' available.
+#' @param object a `git2rdata` object
+#' @param ... additional arguments passed to `summary`
+#' @export
+summary.git2rdata <- function(object, ...) {
+  class(object) <- tail(class(object), -1)
+  summary(object, ...) |>
+    print()
+  vapply(colnames(object), display_description, character(1), x = object) |>
+    cat()
+  return(invisible(NULL))
+}
