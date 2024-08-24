@@ -127,14 +127,29 @@ read_vc.character <- function(file, root = ".") {
     details = details, optimize = optimize
   )
 
-  names(file) <-
-    c(
+  names(file) <- c(
       meta_data[["..generic"]][["data_hash"]],
       meta_data[["..generic"]][["hash"]]
     )
   attr(raw_data, "source") <- file
+
+  has_description <- vapply(
+    details, FUN.VALUE = logical(1),
+    FUN = function(x) {
+      "description" %in% names(x)
+    }
+  )
+  has_description <- names(has_description)[has_description]
+  if (length(has_description) > 0) {
+    for (desc in has_description) {
+      attr(raw_data[[desc]], "description") <- details[[desc]]$description
+    }
+  }
+
   return(raw_data)
 }
+
+
 
 reinstate <- function(raw_data, col_names, col_classes, details, optimize) {
   # reinstate factors
