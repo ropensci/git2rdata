@@ -24,11 +24,6 @@
 #' `strict = TRUE` returns an error and leaves the data and metadata as is.
 #' Defaults to `TRUE`.
 #' @param ... parameters used in some methods
-#' @param description An optional named character vector containing a
-#' description for the variables in `x`.
-#' The names of the vector must match the column names of `x`.
-#' When provided, the description is stored in the metadata.
-#' You don't have to provide a description for all columns.
 #' @inheritParams meta
 #' @inheritParams utils::write.table
 #' @return a named vector with the file paths relative to `root`. The names
@@ -40,15 +35,14 @@
 #' column name in a `data.frame`.
 write_vc <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
-  split_by, description = character(0)
+  split_by
 ) {
   UseMethod("write_vc", root)
 }
 
 #' @export
 write_vc.default <- function(
-  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
-  description = character(0)
+  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
@@ -64,7 +58,7 @@ write_vc.default <- function(
 #' @importFrom git2r hash
 write_vc.character <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE,
-  na = "NA", ..., split_by = character(0), description = character(0)
+  na = "NA", ..., split_by = character(0)
 ) {
   assert_that(
     inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
@@ -78,8 +72,7 @@ write_vc.character <- function(
 
   if (!file.exists(file["meta_file"])) {
     raw_data <- meta(
-      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by,
-      description = description
+      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by
     )
   } else {
     tryCatch(
@@ -94,7 +87,7 @@ write_vc.character <- function(
     class(old) <- "meta_list"
     raw_data <- meta(
       x, optimize = optimize, na = na, sorting = sorting, old = old,
-      strict = strict, split_by = split_by, description = description
+      strict = strict, split_by = split_by
     )
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
@@ -170,8 +163,7 @@ write_vc.character <- function(
     packageVersion("git2rdata")
   )
   meta_data[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
-  write_yaml(meta_data, file["meta_file"],
-             fileEncoding = "UTF-8")
+  write_yaml(meta_data, file["meta_file"], fileEncoding = "UTF-8")
 
   hashes <- remove_root(file = file, root = root)
   names(hashes) <-

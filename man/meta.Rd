@@ -13,23 +13,15 @@
 \usage{
 meta(x, ...)
 
-\method{meta}{character}(x, na = "NA", optimize = TRUE, description = character(0), ...)
+\method{meta}{character}(x, na = "NA", optimize = TRUE, ...)
 
-\method{meta}{factor}(
-  x,
-  optimize = TRUE,
-  na = "NA",
-  index,
-  strict = TRUE,
-  description = character(0),
-  ...
-)
+\method{meta}{factor}(x, optimize = TRUE, na = "NA", index, strict = TRUE, ...)
 
-\method{meta}{logical}(x, optimize = TRUE, description = character(0), ...)
+\method{meta}{logical}(x, optimize = TRUE, ...)
 
-\method{meta}{POSIXct}(x, optimize = TRUE, description = character(0), ...)
+\method{meta}{POSIXct}(x, optimize = TRUE, ...)
 
-\method{meta}{Date}(x, optimize = TRUE, description = character(0), ...)
+\method{meta}{Date}(x, optimize = TRUE, ...)
 
 \method{meta}{data.frame}(
   x,
@@ -38,7 +30,6 @@ meta(x, ...)
   sorting,
   strict = TRUE,
   split_by = character(0),
-  description = character(0),
   ...
 )
 }
@@ -52,12 +43,6 @@ meta(x, ...)
 \item{optimize}{If \code{TRUE}, recode the data to get smaller text files.
 If \code{FALSE}, \code{meta()} converts the data to character.
 Defaults to \code{TRUE}.}
-
-\item{description}{An optional named character vector containing a
-description for the variables in \code{x}.
-The names of the vector must match the column names of \code{x}.
-When provided, the description is stored in the metadata.
-You don't have to provide a description for all columns.}
 
 \item{index}{An optional named vector with existing factor indices.
 The names must match the existing factor levels.
@@ -128,6 +113,8 @@ meta(as.Date("2019-02-01"), optimize = FALSE)
 Other internal: 
 \code{\link{is_git2rdata}()},
 \code{\link{is_git2rmeta}()},
+\code{\link{print.git2rdata}()},
+\code{\link{summary.git2rdata}()},
 \code{\link{upgrade_data}()}
 }
 \concept{internal}

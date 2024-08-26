@@ -15,8 +15,7 @@ write_vc(
   optimize = TRUE,
   na = "NA",
   ...,
-  split_by,
-  description = character(0)
+  split_by
 )
 
 \method{write_vc}{character}(
@@ -28,8 +27,7 @@ write_vc(
   optimize = TRUE,
   na = "NA",
   ...,
-  split_by = character(0),
-  description = character(0)
+  split_by = character(0)
 )
 
 \method{write_vc}{git_repository}(
@@ -80,12 +78,6 @@ Defaults to \code{TRUE}.}
 \item{split_by}{An optional vector of variables name to split the text files.
 This creates a separate file for every combination.
 We prepend these variables to the vector of \code{sorting} variables.}
-
-\item{description}{An optional named character vector containing a
-description for the variables in \code{x}.
-The names of the vector must match the column names of \code{x}.
-When provided, the description is stored in the metadata.
-You don't have to provide a description for all columns.}
 
 \item{stage}{Logical value indicating whether to stage the changes after
 writing the data. Defaults to \code{FALSE}.}
@@ -174,6 +166,7 @@ Other storage:
 \code{\link{relabel}()},
 \code{\link{rename_variable}()},
 \code{\link{rm_data}()},
+\code{\link{update_description}()},
 \code{\link{verify_vc}()}
 }
 \concept{storage}

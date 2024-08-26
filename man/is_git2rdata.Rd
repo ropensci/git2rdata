@@ -55,6 +55,8 @@ is_git2rdata("iris", root)
 Other internal: 
 \code{\link{is_git2rmeta}()},
 \code{\link{meta}()},
+\code{\link{print.git2rdata}()},
+\code{\link{summary.git2rdata}()},
 \code{\link{upgrade_data}()}
 }
 \concept{internal}

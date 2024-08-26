@@ -15,3 +15,12 @@
 Prints the summary of the data and the description of the columns when
 available.
 }
+\seealso{
+Other internal: 
+\code{\link{is_git2rdata}()},
+\code{\link{is_git2rmeta}()},
+\code{\link{meta}()},
+\code{\link{print.git2rdata}()},
+\code{\link{upgrade_data}()}
+}
+\concept{internal}

@@ -142,10 +142,20 @@ read_vc.character <- function(file, root = ".") {
     }
   )
   has_description <- names(has_description)[has_description]
-  if (length(has_description) > 0) {
-    for (desc in has_description) {
-      attr(raw_data[[desc]], "description") <- details[[desc]]$description
-    }
+  for (desc in has_description) {
+    attr(raw_data[[desc]], "description") <- details[[desc]]$description
+  }
+
+  if (has_name(meta_data[["..generic"]], "name")) {
+    attr(raw_data, "table name") <- meta_data[["..generic"]][["name"]]
+  }
+
+  if (has_name(meta_data[["..generic"]], "title")) {
+    attr(raw_data, "title") <- meta_data[["..generic"]][["title"]]
+  }
+
+  if (has_name(meta_data[["..generic"]], "description")) {
+    attr(raw_data, "description") <- meta_data[["..generic"]][["description"]]
   }
 
   class(raw_data) <- c("git2rdata", class(raw_data))
