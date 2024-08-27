@@ -158,12 +158,13 @@ read_vc.character <- function(file, root = ".") {
     attr(raw_data, "description") <- meta_data[["..generic"]][["description"]]
   }
 
+  attr(raw_data, "optimize") <- meta_data[["..generic"]][["optimize"]]
+  attr(raw_data, "sorting") <- meta_data[["..generic"]][["sorting"]]
+
   class(raw_data) <- c("git2rdata", class(raw_data))
 
   return(raw_data)
 }
-
-
 
 reinstate <- function(raw_data, col_names, col_classes, details, optimize) {
   # reinstate factors
