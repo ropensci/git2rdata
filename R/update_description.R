@@ -19,6 +19,30 @@
 update_description <- function(
   file, root = ".", field_description, name, title, description
 ) {
+  UseMethod("update_description", root)
+}
+
+#' @export
+update_description.default <- function(
+  file, root = ".", field_description, name, title, description
+) {
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
+}
+
+#' @export
+update_description.git_repository <- function(
+    file, root = ".", field_description, name, title, description
+) {
+  update_description(
+    file = file, root = workdir(root), name = name, title = title,
+    description = description, field_description = field_description
+  )
+}
+
+#' @export
+update_description.character <- function(
+  file, root = ".", field_description, name, title, description
+) {
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
   is_git2rmeta(

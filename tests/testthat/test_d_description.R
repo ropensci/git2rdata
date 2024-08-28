@@ -1,4 +1,11 @@
 test_that("description", {
+  expect_error(
+    update_description(
+      file = "test", root = data.frame()
+    ),
+    "a 'root' of class data.frame is not supported"
+  )
+
   root <- tempfile(pattern = "git2rdata-description")
   dir.create(root)
 
@@ -34,6 +41,12 @@ test_that("description", {
   expect_output(display_metadata(output, minimal = TRUE), "display_metadata")
   expect_output(display_metadata(output, minimal = FALSE), "Table name: NA")
   expect_output(display_metadata(output), "Table name: NA")
+
+  root <- git2r::init(root)
+  git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
+  writeLines("ignore.*\nforce.*", file.path(git2r::workdir(root), ".gitignore"))
+  git2r::add(root, ".gitignore")
+  commit(root, "initial commit")
 
   expect_null(
     update_description(
