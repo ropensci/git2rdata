@@ -1,4 +1,7 @@
 #' Display metadata for a `git2rdata` object
+#' @param x a `git2rdata` object
+#' @param minimal logical, if `TRUE` only a message is displayed
+#' @family storage
 #' @export
 #' @importFrom assertthat has_attr
 display_metadata <- function(x, minimal = FALSE) {

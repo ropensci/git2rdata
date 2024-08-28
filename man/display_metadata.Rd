@@ -6,6 +6,24 @@
 \usage{
 display_metadata(x, minimal = FALSE)
 }
+\arguments{
+\item{x}{a \code{git2rdata} object}
+
+\item{minimal}{logical, if \code{TRUE} only a message is displayed}
+}
 \description{
 Display metadata for a \code{git2rdata} object
 }
+\seealso{
+Other storage: 
+\code{\link{list_data}()},
+\code{\link{prune_meta}()},
+\code{\link{read_vc}()},
+\code{\link{relabel}()},
+\code{\link{rename_variable}()},
+\code{\link{rm_data}()},
+\code{\link{update_description}()},
+\code{\link{verify_vc}()},
+\code{\link{write_vc}()}
+}
+\concept{storage}

@@ -18,7 +18,7 @@ test_that("description", {
     )
   )
 
-  expect_is( {
+  expect_is({
       output <- read_vc("test", root = root)
     }, "git2rdata"
   )
@@ -42,7 +42,7 @@ test_that("description", {
       field_description = c(test_character = NA, test_factor = "")
     )
   )
-  expect_is( {
+  expect_is({
       output <- read_vc("test", root = root)
     }, "git2rdata"
   )

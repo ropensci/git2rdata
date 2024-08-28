@@ -24,6 +24,7 @@ data.frame.
 }
 \seealso{
 Other storage: 
+\code{\link{display_metadata}()},
 \code{\link{list_data}()},
 \code{\link{prune_meta}()},
 \code{\link{read_vc}()},
