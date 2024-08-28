@@ -36,8 +36,10 @@ update_description <- function(
       "names in `field_description` don't match variable names" =
         all(names(field_description) %in% names(old))
     )
-    for (name in names(field_description)) {
-      old[[name]][["description"]] <- update_or_drop(field_description[[name]])
+    for (field_name in names(field_description)) {
+      old[[field_name]][["description"]] <- update_or_drop(
+        field_description[[field_name]]
+      )
     }
   }
 
