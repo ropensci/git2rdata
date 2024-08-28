@@ -17,6 +17,8 @@ navbar:
         href: articles/plain_text.html
       - text: Storing dataframes under version control
         href: articles/version_control.html
+      - text: Metadata
+        href: articles/metadata.html
       - text: Potential workflow
         href: articles/workflow.html
       - text: Efficiency
