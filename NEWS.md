@@ -1,5 +1,7 @@
 # git2rdata 0.4.1
 
+* Add `update_description()` to update the description of a `git2rdata` object.
+  See `vignette("metadata")` for more details.
 * Update the checklist and pkgdown infrastructure.
 
 # git2rdata 0.4.0
