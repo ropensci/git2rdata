@@ -16,31 +16,31 @@
 #' @family storage
 #' @export
 #' @importFrom assertthat assert_that has_name
-update_description <- function(
+update_metadata <- function(
   file, root = ".", field_description, name, title, description
 ) {
-  UseMethod("update_description", root)
+  UseMethod("update_metadata", root)
 }
 
 #' @export
-update_description.default <- function(
+update_metadata.default <- function(
   file, root = ".", field_description, name, title, description
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
-update_description.git_repository <- function(
+update_metadata.git_repository <- function(
     file, root = ".", field_description, name, title, description
 ) {
-  update_description(
+  update_metadata(
     file = file, root = workdir(root), name = name, title = title,
     description = description, field_description = field_description
   )
 }
 
 #' @export
-update_description.character <- function(
+update_metadata.character <- function(
   file, root = ".", field_description, name, title, description
 ) {
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)

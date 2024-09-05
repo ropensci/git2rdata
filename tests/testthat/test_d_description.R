@@ -1,6 +1,6 @@
 test_that("description", {
   expect_error(
-    update_description(
+    update_metadata(
       file = "test", root = data.frame()
     ),
     "a 'root' of class data.frame is not supported"
@@ -17,7 +17,7 @@ test_that("description", {
   )
 
   expect_null(
-    update_description(
+    update_metadata(
       file = "test", root = root, field_description = c(
         test_character = "Some information", test_factor = "Some information",
         test_integer = "Some information"
@@ -49,7 +49,7 @@ test_that("description", {
   commit(root, "initial commit")
 
   expect_null(
-    update_description(
+    update_metadata(
       file = "test", root = root, name = "my_table", title = "My Table",
       description = "This is description for the unit tests",
       field_description = c(test_character = NA, test_factor = "")

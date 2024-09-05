@@ -86,7 +86,7 @@ Other storage:
 \code{\link{read_vc}()},
 \code{\link{relabel}()},
 \code{\link{rm_data}()},
-\code{\link{update_description}()},
+\code{\link{update_metadata}()},
 \code{\link{verify_vc}()},
 \code{\link{write_vc}()}
 }

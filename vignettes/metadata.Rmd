@@ -76,14 +76,14 @@ display_metadata(my_iris)
 
 ## Updating the optional metadata
 
-To add metadata to a `git2rdata` object, use the `update_description()` function.
+To add metadata to a `git2rdata` object, use the `update_metadata()` function.
 This function allows you to add or update the metadata of a `git2rdata` object.
 Setting an argument to `NA` or an empty string will remove the corresponding field from the metadata.
 The function only updates the metadata file, not the data file.
 To see the changes, read the object again before using `display_metadata()`.
 
 ```{r update-metadata}
-update_description(
+update_metadata(
   file = "iris", root = root, name = "iris", title = "Iris dataset",
   description =
 "The Iris dataset is a multivariate dataset introduced by the British

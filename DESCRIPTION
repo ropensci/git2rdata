@@ -75,7 +75,7 @@ Collate:
     'reexport.R'
     'relabel.R'
     'rename_variable.R'
-    'update_description.R'
+    'update_metadata.R'
     'upgrade_data.R'
     'utils.R'
     'verify_vc.R'
