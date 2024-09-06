@@ -81,6 +81,7 @@ This function allows you to add or update the optional metadata of a `git2rdata`
 Setting an argument to `NA` or an empty string will remove the corresponding property from the metadata.
 The function only updates the metadata file, not the data file.
 To see the changes, read the object again before using `display_metadata()`.
+Note that all the metadata is available in the `data.frame` as attributes.
 
 ```{r update-metadata}
 update_metadata(
@@ -97,6 +98,8 @@ measurements in taxonomic problems.",
     Species = "The species of the iris"
   )
 )
-display_metadata(read_vc("iris", root = root))
+my_iris <- read_vc("iris", root = root)
+display_metadata(my_iris)
+str(my_iris)
 ```
 
