@@ -48,7 +48,7 @@ Please use a different NA string or consider using a factor.", call. = FALSE)
   to_escape <- grepl(ifelse(optimize, "(\"|\t|\n)", "(\"|,|\n)"), x)
   x[to_escape] <- paste0("\"", x[to_escape], "\"")
   x[is.na(x)] <- na
-  m <- list(class = "character", na_string = na)
+  list(class = "character", na_string = na) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -56,7 +56,7 @@ Please use a different NA string or consider using a factor.", call. = FALSE)
 
 #' @export
 meta.integer <- function(x, ...) {
-  m <- list(class = "integer")
+  list(class = "integer") -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -64,7 +64,7 @@ meta.integer <- function(x, ...) {
 
 #' @export
 meta.numeric <- function(x, ...) {
-  m <- list(class = "numeric")
+  list(class = "numeric") -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -131,9 +131,10 @@ Please use a different NA string or use optimize = TRUE")
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
 
-  m <- list(class = "factor", na_string = na, optimize = optimize,
-            labels = names(index), index = unname(index),
-            ordered = is.ordered(x))
+  list(
+    class = "factor", na_string = na, optimize = optimize,
+    labels = names(index), index = unname(index), ordered = is.ordered(x)
+  ) -> m
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
   return(z)
@@ -147,7 +148,7 @@ meta.logical <- function(x, optimize = TRUE, ...) {
   if (optimize) {
     x <- as.integer(x)
   }
-  m <- list(class = "logical", optimize = optimize)
+  list(class = "logical", optimize = optimize) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -155,7 +156,7 @@ meta.logical <- function(x, optimize = TRUE, ...) {
 
 #' @export
 meta.complex <- function(x, ...) {
-  m <- list(class = "complex")
+  list(class = "complex") -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -168,12 +169,16 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     z <- unclass(x)
-    m <- list(class = "POSIXct", optimize = TRUE,
-              origin = "1970-01-01 00:00:00", timezone = "UTC")
+    list(
+      class = "POSIXct", optimize = TRUE, origin = "1970-01-01 00:00:00",
+      timezone = "UTC"
+    ) -> m
   } else {
     z <- format(x, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
-    m <- list(class = "POSIXct", optimize = FALSE,
-              format = "%Y-%m-%dT%H:%M:%SZ", timezone = "UTC")
+    list(
+      class = "POSIXct", optimize = FALSE, format = "%Y-%m-%dT%H:%M:%SZ",
+      timezone = "UTC"
+    ) -> m
   }
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -187,10 +192,10 @@ meta.Date <- function(x, optimize = TRUE, ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     z <- as.integer(x)
-    m <- list(class = "Date", optimize = TRUE, origin = "1970-01-01")
+    list(class = "Date", optimize = TRUE, origin = "1970-01-01") -> m
   } else {
     z <- format(x, format = "%Y-%m-%d")
-    m <- list(class = "Date", optimize = FALSE, format = "%Y-%m-%d")
+    list(class = "Date", optimize = FALSE, format = "%Y-%m-%d") -> m
   }
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -206,7 +211,7 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' plus an additional `..generic` element. `..generic` is a reserved name for
 #' the metadata and not allowed as column name in a `data.frame`.
 #'
-#' \code{\link{write_vc}} uses this function to prepare a dataframe for storage.
+#' `write_vc()` uses this function to prepare a dataframe for storage.
 #' Existing metadata is passed through the optional `old` argument. This
 #' argument intended for internal use.
 #' @rdname meta
@@ -267,7 +272,16 @@ Add extra sorting variables to ensure small diffs.", sorted)
     generic <- c(generic, split_by = list(split_by))
   }
   # calculate meta for each column
-  if (has_name(dots, "old")) {
+  if (!has_name(dots, "old")) {
+    z <- lapply(
+      colnames(x),
+      function(id, optimize, na) {
+        meta(x[[id]], optimize = optimize, na = na)
+      },
+      optimize = optimize, na = na
+    )
+    names(z) <- colnames(x)
+  } else {
     common <- names(old)[names(old) %in% colnames(x)]
     if (length(common)) {
       z_common <- lapply(
@@ -280,8 +294,7 @@ Add extra sorting variables to ensure small diffs.", sorted)
           )
         },
         optimize = old[["..generic"]][["optimize"]],
-        na = old[["..generic"]][["NA string"]],
-        strict = strict
+        na = old[["..generic"]][["NA string"]], strict = strict
       )
       names(z_common) <- common
     } else {
@@ -289,13 +302,18 @@ Add extra sorting variables to ensure small diffs.", sorted)
     }
     new <- colnames(x)[!colnames(x) %in% names(old)]
     if (length(new)) {
-      z_new <- lapply(x[new], meta, optimize = optimize, na = na)
+      z_new <- lapply(
+        new,
+        function(id, optimize, na) {
+          meta(x[[id]], optimize = optimize, na = na)
+        },
+        optimize = optimize, na = na
+      )
+      names(z_new) <- new
     } else {
       z_new <- list()
     }
     z <- c(z_common, z_new)
-  } else {
-    z <- lapply(x, meta, optimize = optimize, na = na)
   }
 
   # compose generic metadata list

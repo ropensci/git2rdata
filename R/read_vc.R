@@ -12,6 +12,8 @@
 #'
 #' @inheritParams write_vc
 #' @return The `data.frame` with the file names and hashes as attributes.
+#' It has the additional class `"git2rdata"` to support extra methods to
+#' display the descriptions.
 #' @rdname read_vc
 #' @export
 #' @family storage
@@ -127,12 +129,40 @@ read_vc.character <- function(file, root = ".") {
     details = details, optimize = optimize
   )
 
-  names(file) <-
-    c(
+  names(file) <- c(
       meta_data[["..generic"]][["data_hash"]],
       meta_data[["..generic"]][["hash"]]
     )
   attr(raw_data, "source") <- file
+
+  has_description <- vapply(
+    details, FUN.VALUE = logical(1),
+    FUN = function(x) {
+      "description" %in% names(x)
+    }
+  )
+  has_description <- names(has_description)[has_description]
+  for (desc in has_description) {
+    attr(raw_data[[desc]], "description") <- details[[desc]]$description
+  }
+
+  if (has_name(meta_data[["..generic"]], "name")) {
+    attr(raw_data, "table name") <- meta_data[["..generic"]][["name"]]
+  }
+
+  if (has_name(meta_data[["..generic"]], "title")) {
+    attr(raw_data, "title") <- meta_data[["..generic"]][["title"]]
+  }
+
+  if (has_name(meta_data[["..generic"]], "description")) {
+    attr(raw_data, "description") <- meta_data[["..generic"]][["description"]]
+  }
+
+  attr(raw_data, "optimize") <- meta_data[["..generic"]][["optimize"]]
+  attr(raw_data, "sorting") <- meta_data[["..generic"]][["sorting"]]
+
+  class(raw_data) <- c("git2rdata", class(raw_data))
+
   return(raw_data)
 }
 

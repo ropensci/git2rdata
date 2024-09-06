@@ -36,7 +36,10 @@ These functions determine factor levels based on the observed levels in the plai
 Hence factor levels without observations will disappear. 
 The order of the factor levels is also determined by the available levels in the plain text file, which can be different from the original order.
 
-The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order. Hence this function pair preserves the information content of the dataframe. The `vc` suffix stands for **v**ersion **c**ontrol as these functions use their full capacity in combination with a version control system.
+The `write_vc()` and `read_vc()` functions from `git2rdata` keep track of the class of each variable and, in case of a factor, also of the factor levels and their order.
+Hence this function pair preserves the information content of the dataframe. The `vc` suffix stands for
+**v**ersion **c**ontrol<!-- spell-check: ignore -->
+as these functions use their full capacity in combination with a version control system.
 
 ## Efficiency Relative to Storage and Time
 
@@ -61,7 +64,9 @@ Store and return timestamps as UTC.
 - Store a `Date` as an integer to the data. 
 Store the class and the origin in the metadata.
 
-Storing the factors, POSIXct and Date as their index, makes them less user readable. The user can turn off this optimization when user readability is more important than file size.
+Storing the factors,
+POSIXct <!-- spell-check: ignore -->
+and Date as their index, makes them less user readable. The user can turn off this optimization when user readability is more important than file size.
 
 ### Optimized for Version Control
 
@@ -135,11 +140,13 @@ print_file("first_test.yml", path)
 Adding `optimize = FALSE` to `write_vc()` will keep the raw data in a human readable format.
 The metadata file is slightly different.
 The most obvious is the `optimize: no` tag and the different hash.
-Another difference is the metadata for POSIXct and Date classes.
+Another difference is the metadata for
+POSIXct <!-- spell-check: ignore -->
+and Date classes.
 They will no longer have an origin tag but a format tag.
 
 Another important difference is that we store the data file as comma separated values instead of tab separated values.
-We noticed that the csv file format is more easily recognised by a larger audience as a data file.
+We noticed that the `csv` file format is more easily recognised by a larger audience as a data file.
 
 
 ```{r write_verbose}

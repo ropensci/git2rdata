@@ -1,13 +1,16 @@
 # checklist
-^_pkgdown.yml$
 ^.*\.Rproj$
 ^.zenodo\.json$
+^CITATION\.cff$
+^LICENSE.md$
+^Meta$
+^README\.Rmd$
+^\.Rproj\.user$
 ^\.github$
 ^\.httr-oauth$
-^\.Rproj\.user$
 ^\.zenodo\.json$
+^_pkgdown.yml$
 ^checklist.yml$
-^CITATION\.cff$
 ^codecov.yml$
 ^codecov\.yml$
 ^codemeta\.json$
@@ -15,8 +18,6 @@
 ^data-raw$
 ^doc$
 ^docs$
-^LICENSE.md$
 ^man-roxygen$
-^Meta$
+^organisation.yml$
 ^pkgdown$
-^README\.Rmd$

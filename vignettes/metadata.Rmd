@@ -1,0 +1,105 @@
+---
+title: "Adding metadata"
+author: "Thierry Onkelinx"
+output:
+  rmarkdown::html_vignette:
+        fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Adding metadata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+`git2rdata` supports extra metadata since version 0.4.1.
+Metadata is stored in a separate file with the same name as the data file, but with the extension `.yml`.
+The metadata file is a YAML file with a specific structure.
+The metadata file contains a generic section and a section for each field in the data file.
+The generic section contains information about the data file as a whole.
+The fields sections contain information about the fields in the data file.
+The metadata file is stored in the same directory as the data file.
+
+The generic section contains the following mandatory properties, automatically created by `git2rdata`:
+
+- `git2rdata`: the version of `git2rdata` used to create the metadata.
+- `datahash`: the hash of the data file.
+- `hash`: the hash of the metadata file.
+- `optimize`: a logical indicating whether the data file is optimized for `git2rdata`.
+- `sorting`: a character vector with the names of the fields in the data file.
+- `split_by`: a character vector with the names of the fields used to split the data file.
+- `NA string`: the string used to represent missing values in the data file.
+
+The generic section can contain the following optional properties:
+
+- `table name`: the name of the dataset.
+- `title`: the title of the dataset.
+- `description`: a description of the dataset.
+
+The fields sections contain the following mandatory properties, automatically created by `git2rdata`:
+
+- `type`: the type of the field.
+- `class`: the class of the field.
+- `levels`: the levels of the field (for factors).
+- `index`: the index of the field (for factors).
+- `NA string`: the string used to represent missing values in the field.
+
+The fields sections can contain the following optional properties:
+
+- `description`: a description of the field.
+
+## Adding metadata
+
+`write_vc()` only stores the mandatory properties in the metadata file.
+
+```{r store-metadata}
+library(git2rdata)
+root <- tempfile("git2rdata-metadata")
+dir.create(root)
+write_vc(iris, file = "iris", root = root, sorting = "Sepal.Length")
+```
+
+## Reading metadata
+
+`read_vc()` reads the metadata file and adds it as attributes to the `data.frame`.
+`print()` and `summary()` alert the user to the `display_metadata()` function.
+This function displays the metadata of a `git2rdata` object.
+Missing optional metadata results in an `NA` value in the output of `display_metadata()`.
+
+```{r read-metadata}
+my_iris <- read_vc("iris", root = root)
+str(my_iris)
+print(head(my_iris))
+summary(my_iris)
+display_metadata(my_iris)
+```
+
+## Updating the optional metadata
+
+To add metadata to a `git2rdata` object, use the `update_metadata()` function.
+This function allows you to add or update the optional metadata of a `git2rdata` object.
+Setting an argument to `NA` or an empty string will remove the corresponding property from the metadata.
+The function only updates the metadata file, not the data file.
+To see the changes, read the object again before using `display_metadata()`.
+Note that all the metadata is available in the `data.frame` as attributes.
+
+```{r update-metadata}
+update_metadata(
+  file = "iris", root = root, name = "iris", title = "Iris dataset",
+  description =
+"The Iris dataset is a multivariate dataset introduced by the British
+statistician and biologist Ronald Fisher in his 1936 paper The use of multiple
+measurements in taxonomic problems.",
+  field_description = c(
+    Sepal.Length = "The length of the sepal in cm",
+    Sepal.Width = "The width of the sepal in cm",
+    Petal.Length = "The length of the petal in cm",
+    Petal.Width = "The width of the petal in cm",
+    Species = "The species of the iris"
+  )
+)
+my_iris <- read_vc("iris", root = root)
+display_metadata(my_iris)
+str(my_iris)
+```
+

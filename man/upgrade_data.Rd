@@ -66,6 +66,8 @@ upgrade_data(path = ".", root = root)
 Other internal: 
 \code{\link{is_git2rdata}()},
 \code{\link{is_git2rmeta}()},
-\code{\link{meta}()}
+\code{\link{meta}()},
+\code{\link{print.git2rdata}()},
+\code{\link{summary.git2rdata}()}
 }
 \concept{internal}

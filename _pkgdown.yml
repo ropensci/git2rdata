@@ -1,33 +1,39 @@
+url: https://ropensci.github.io/git2rdata
+template:
+  bootstrap: 5
+  light-switch: false
 navbar:
   title: ~
   type: default
-  left:
-  - text: NEWS
-    href: news/index.html
-  - text: Tutorials
-    href: articles/index.html
-    menu:
-    - text: Getting started storing dataframes as plain text
-      href: articles/plain_text.html
-    - text: Storing dataframes under version control
-      href: articles/version_control.html
-    - text: Potential workflow
-      href: articles/workflow.html
-    - text: Efficiency
-      href: articles/efficiency.html
-    - text: Large dataframes
-      href: articles/split_by.html
-  - text: Functions
-    href: reference/index.html
-  - text: Contributing
-    href: CONTRIBUTING.html
-  right:
-  - icon: "fa fa-github"
-    href: https://github.com/ropensci/git2rdata
-  - icon: "fa fa-twitter"
-    href: https://twitter.com/INBOVlaanderen
-  - icon: "fa fa-facebook"
-    href: https://www.facebook.com/pg/INBOVlaanderen
+  structure:
+    left:  [intro, reference, news, tutorials, contributing]
+    right: [search, github]
+  components:
+    tutorials:
+      text: Tutorials
+      href: articles/index.html
+      menu:
+      - text: Getting started storing dataframes as plain text
+        href: articles/plain_text.html
+      - text: Storing dataframes under version control
+        href: articles/version_control.html
+      - text: Metadata
+        href: articles/metadata.html
+      - text: Potential workflow
+        href: articles/workflow.html
+      - text: Efficiency
+        href: articles/efficiency.html
+      - text: Large dataframes
+        href: articles/split_by.html
+    contributing:
+      text: Contributing
+      href: CONTRIBUTING.html
+    twitter:
+      icon: "fa fa-twitter"
+      href: https://twitter.com/INBOVlaanderen
+    facebook:
+      icon: "fa fa-facebook"
+      href: https://www.facebook.com/pg/INBOVlaanderen
 
 reference:
 - title: Storage
@@ -43,6 +49,6 @@ reference:
 authors:
   Thierry Onkelinx:
     href: "https://www.muscardinus.be"
-  Research Institute for Nature and Forest:
+  Research Institute for Nature and Forest (INBO):
     href: "https://www.vlaanderen.be/inbo/en-gb"
-    html: "<img src='https://ropensci.github.io/git2rdata/reference/figures/logo-en.png' height=24>"
+    html: "<img src='https://ropensci.github.io/git2rdata/reference/figures/logo-en.png' height=24 alt='logo of the Research Institute for Nature and Forest (INBO)'>"

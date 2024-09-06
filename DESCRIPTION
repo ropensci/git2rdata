@@ -1,16 +1,16 @@
 Package: git2rdata
 Title: Store and Retrieve Data.frames in a Git Repository
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person("Thierry", "Onkelinx", , "thierry.onkelinx@inbo.be", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-8804-4216")),
+           comment = c(ORCID = "0000-0001-8804-4216", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Floris", "Vanderhaeghe", , "floris.vanderhaeghe@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-6378-6229")),
+           comment = c(ORCID = "0000-0002-6378-6229", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Peter", "Desmet", , "peter.desmet@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-8442-8025")),
+           comment = c(ORCID = "0000-0002-8442-8025", affiliation = "Research Institute for Nature and Forest (INBO)")),
     person("Els", "Lommelen", , "els.lommelen@inbo.be", role = "ctb",
-           comment = c(ORCID = "0000-0002-3481-5684")),
-    person("Research Institute for Nature and Forest", , , "info@inbo.be", role = c("cph", "fnd"))
+           comment = c(ORCID = "0000-0002-3481-5684", affiliation = "Research Institute for Nature and Forest (INBO)")),
+    person("Research Institute for Nature and Forest (INBO)", , , "info@inbo.be", role = c("cph", "fnd"))
   )
 Description: The git2rdata package is an R package for writing and reading
     dataframes as plain text files.  A metadata file stores important
@@ -34,7 +34,8 @@ Description: The git2rdata package is an R package for writing and reading
     repository size and speed for writing and reading.
 License: GPL-3
 URL: https://ropensci.github.io/git2rdata/,
-    https://github.com/ropensci/git2rdata/
+    https://github.com/ropensci/git2rdata/,
+    https://doi.org/10.5281/zenodo.1485309
 BugReports: https://github.com/ropensci/git2rdata/issues
 Depends: 
     R (>= 3.5.0)
@@ -48,29 +49,33 @@ Suggests:
     knitr,
     microbenchmark,
     rmarkdown,
-    spelling,
     testthat
 VignetteBuilder: 
     knitr
+Config/checklist/communities: inbo
+Config/checklist/keywords: git; version control; plain text data
 Encoding: UTF-8
-Language: eng
+Language: en-GB
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.2
 Collate:
     'clean_data_path.R'
     'datahash.R'
+    'display_metadata.R'
     'git2rdata_package.R'
     'write_vc.R'
     'is_git2rdata.R'
     'is_git2rmeta.R'
     'list_data.R'
     'meta.R'
+    'print.R'
     'prune.R'
     'read_vc.R'
     'recent_commit.R'
     'reexport.R'
     'relabel.R'
     'rename_variable.R'
+    'update_metadata.R'
     'upgrade_data.R'
     'utils.R'
     'verify_vc.R'

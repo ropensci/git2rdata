@@ -1,26 +1,20 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "http://schema.org"
-  ],
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "@type": "SoftwareSourceCode",
   "identifier": "git2rdata",
-  "description": "Make versioning of data.frame easy and efficient using git\n    repositories.",
+  "description": "The git2rdata package is an R package for writing and reading dataframes as plain text files. A metadata file stores important information. 1) Storing metadata allows to maintain the classes of variables. By default, git2rdata optimizes the data for file storage. The optimization is most effective on data containing factors. The optimization makes the data less human readable. The user can turn this off when they prefer a human readable format over smaller files. Details on the implementation are available in vignette(\"plain_text\", package = \"git2rdata\"). 2) Storing metadata also allows smaller row based diffs between two consecutive commits. This is a useful feature when storing data as plain text files under version control. Details on this part of the implementation are available in vignette(\"version_control\", package = \"git2rdata\"). Although we envisioned git2rdata with a git workflow in mind, you can use it in combination with other version control systems like subversion or mercurial. 3) git2rdata is a useful tool in a reproducible and traceable workflow. vignette(\"workflow\", package = \"git2rdata\") gives a toy example. 4) vignette(\"efficiency\", package = \"git2rdata\") provides some insight into the efficiency of file storage, git repository size and speed for writing and reading.",
   "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
-  "codeRepository": "https://github.com/ropensci/git2rdata",
-  "relatedLink": [
-    "https://doi.org/10.5281/zenodo.1485309",
-    "https://CRAN.R-project.org/package=git2rdata"
-  ],
+  "relatedLink": ["https://ropensci.github.io/git2rdata/", "https://doi.org/10.5281/zenodo.1485309", "https://CRAN.R-project.org/package=git2rdata"],
+  "codeRepository": "https://github.com/ropensci/git2rdata/",
   "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.2 (2020-06-22)",
+  "runtimePlatform": "R version 4.4.1 (2024-06-14)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -62,14 +56,14 @@
   "copyrightHolder": [
     {
       "@type": "Organization",
-      "name": "Research Institute for Nature and Forest",
+      "name": "Research Institute for Nature and Forest (INBO)",
       "email": "info@inbo.be"
     }
   ],
   "funder": [
     {
       "@type": "Organization",
-      "name": "Research Institute for Nature and Forest",
+      "name": "Research Institute for Nature and Forest (INBO)",
       "email": "info@inbo.be"
     }
   ],
@@ -133,18 +127,6 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "spelling",
-      "name": "spelling",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=spelling"
-    },
-    {
-      "@type": "SoftwareApplication",
       "identifier": "testthat",
       "name": "testthat",
       "provider": {
@@ -156,14 +138,14 @@
       "sameAs": "https://CRAN.R-project.org/package=testthat"
     }
   ],
-  "softwareRequirements": [
-    {
+  "softwareRequirements": {
+    "1": {
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
       "version": ">= 3.5.0"
     },
-    {
+    "2": {
       "@type": "SoftwareApplication",
       "identifier": "assertthat",
       "name": "assertthat",
@@ -175,7 +157,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=assertthat"
     },
-    {
+    "3": {
       "@type": "SoftwareApplication",
       "identifier": "git2r",
       "name": "git2r",
@@ -188,12 +170,12 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=git2r"
     },
-    {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "methods",
       "name": "methods"
     },
-    {
+    "5": {
       "@type": "SoftwareApplication",
       "identifier": "yaml",
       "name": "yaml",
@@ -204,23 +186,36 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=yaml"
+    },
+    "SystemRequirements": null
+  },
+  "fileSize": "757.058KB",
+  "citation": [
+    {
+      "@type": "SoftwareSourceCode",
+      "datePublished": "2024",
+      "author": {
+        "author": {
+          "@type": "Person",
+          "givenName": "Thierry",
+          "familyName": "Onkelinx"
+        }
+      },
+      "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository. Version 0.4.1",
+      "identifier": "10.5281/zenodo.1485309",
+      "url": "https://ropensci.github.io/git2rdata/",
+      "@id": "https://doi.org/10.5281/zenodo.1485309",
+      "sameAs": "https://doi.org/10.5281/zenodo.1485309"
     }
   ],
-  "fileSize": "762.31KB",
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
-  "readme": "https://github.com/ropensci/git2rdata/blob/master/README.md",
-  "contIntegration": "https://codecov.io/gh/ropensci/git2rdata",
-  "developmentStatus": ["https://www.repostatus.org/#active", "https://www.tidyverse.org/lifecycle/#maturing"],
+  "readme": "https://github.com/ropensci/git2rdata/blob/main/README.md",
+  "contIntegration": "https://app.codecov.io/gh/ropensci/git2rdata",
+  "developmentStatus": ["https://www.repostatus.org/#active", "https://lifecycle.r-lib.org/articles/stages.html#stable"],
   "review": {
     "@type": "Review",
     "url": "https://github.com/ropensci/software-review/issues/263",
     "provider": "https://ropensci.org"
   },
-  "keywords": [
-    "r",
-    "rstats",
-    "r-package",
-    "version-control",
-    "reproducible-research"
-  ]
+  "keywords": ["r", "rstats", "r-package", "version-control", "reproducible-research"]
 }

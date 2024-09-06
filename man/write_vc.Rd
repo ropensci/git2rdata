@@ -160,12 +160,14 @@ status(repo)
 }
 \seealso{
 Other storage: 
+\code{\link{display_metadata}()},
 \code{\link{list_data}()},
 \code{\link{prune_meta}()},
 \code{\link{read_vc}()},
 \code{\link{relabel}()},
 \code{\link{rename_variable}()},
 \code{\link{rm_data}()},
+\code{\link{update_metadata}()},
 \code{\link{verify_vc}()}
 }
 \concept{storage}

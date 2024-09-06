@@ -13,7 +13,7 @@ or similar - or if just relates to an issue make sure to mention
 it like "#4" -->
 
 ## Example
-<!--- if introducing a new feature or changing behavior of existing
+<!--- if introducing a new feature or changing behaviour of existing
 methods/functions, include an example if possible to do in brief form -->
 
 <!--- Did you remember to include tests? Unless you're just changing

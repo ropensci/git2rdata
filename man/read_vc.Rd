@@ -17,6 +17,8 @@ Defaults to the current working directory (\code{"."}).}
 }
 \value{
 The \code{data.frame} with the file names and hashes as attributes.
+It has the additional class \code{"git2rdata"} to support extra methods to
+display the descriptions.
 }
 \description{
 \code{read_vc()} handles git2rdata objects stored by \code{write_vc()}. It reads and
@@ -89,11 +91,13 @@ status(repo)
 }
 \seealso{
 Other storage: 
+\code{\link{display_metadata}()},
 \code{\link{list_data}()},
 \code{\link{prune_meta}()},
 \code{\link{relabel}()},
 \code{\link{rename_variable}()},
 \code{\link{rm_data}()},
+\code{\link{update_metadata}()},
 \code{\link{verify_vc}()},
 \code{\link{write_vc}()}
 }

@@ -79,7 +79,7 @@ In case of a data.frame, \code{meta()} applies itself to each of the columns. Th
 plus an additional \code{..generic} element. \code{..generic} is a reserved name for
 the metadata and not allowed as column name in a \code{data.frame}.
 
-\code{\link{write_vc}} uses this function to prepare a dataframe for storage.
+\code{write_vc()} uses this function to prepare a dataframe for storage.
 Existing metadata is passed through the optional \code{old} argument. This
 argument intended for internal use.
 }
@@ -113,6 +113,8 @@ meta(as.Date("2019-02-01"), optimize = FALSE)
 Other internal: 
 \code{\link{is_git2rdata}()},
 \code{\link{is_git2rmeta}()},
+\code{\link{print.git2rdata}()},
+\code{\link{summary.git2rdata}()},
 \code{\link{upgrade_data}()}
 }
 \concept{internal}

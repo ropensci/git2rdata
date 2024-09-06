@@ -1,47 +1,56 @@
 {
   "title": "git2rdata: Store and Retrieve Data.frames in a Git Repository",
-  "version": "0.4.0",
-  "description": "The git2rdata package is an R package for writing and reading dataframes as plain text files. A metadata file stores important information. 1) Storing metadata allows to maintain the classes of variables. By default, git2rdata optimizes the data for file storage. The optimization is most effective on data containing factors. The optimization makes the data less human readable. The user can turn this off when they prefer a human readable format over smaller files. Details on the implementation are available in vignette(\"plain_text\", package = \"git2rdata\"). 2) Storing metadata also allows smaller row based diffs between two consecutive commits. This is a useful feature when storing data as plain text files under version control. Details on this part of the implementation are available in vignette(\"version_control\", package = \"git2rdata\"). Although we envisioned git2rdata with a git workflow in mind, you can use it in combination with other version control systems like subversion or mercurial. 3) git2rdata is a useful tool in a reproducible and traceable workflow. vignette(\"workflow\", package = \"git2rdata\") gives a toy example. 4) vignette(\"efficiency\", package = \"git2rdata\") provides some insight into the efficiency of file storage, git repository size and speed for writing and reading.",
+  "version": "0.4.1",
+  "license": "GPL-3.0",
+  "upload_type": "software",
+  "description": "<p>The git2rdata package is an R package for writing and reading dataframes as plain text files. A metadata file stores important information. 1) Storing metadata allows to maintain the classes of variables. By default, git2rdata optimizes the data for file storage. The optimization is most effective on data containing factors. The optimization makes the data less human readable. The user can turn this off when they prefer a human readable format over smaller files. Details on the implementation are available in vignette(“plain_text”, package = “git2rdata”). 2) Storing metadata also allows smaller row based diffs between two consecutive commits. This is a useful feature when storing data as plain text files under version control. Details on this part of the implementation are available in vignette(“version_control”, package = “git2rdata”). Although we envisioned git2rdata with a git workflow in mind, you can use it in combination with other version control systems like subversion or mercurial. 3) git2rdata is a useful tool in a reproducible and traceable workflow. vignette(“workflow”, package = “git2rdata”) gives a toy example. 4) vignette(“efficiency”, package = “git2rdata”) provides some insight into the efficiency of file storage, git repository size and speed for writing and reading.<\/p>",
+  "keywords": [
+    "git",
+    "version control",
+    "plain text data"
+  ],
+  "access_right": "open",
+  "language": "eng",
+  "contributors": [
+    {
+      "name": "Onkelinx, Thierry",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216",
+      "type": "contactperson"
+    },
+    {
+      "name": "Vanderhaeghe, Floris",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0002-6378-6229",
+      "type": "projectmember"
+    },
+    {
+      "name": "Desmet, Peter",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0002-8442-8025",
+      "type": "projectmember"
+    },
+    {
+      "name": "Lommelen, Els",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0002-3481-5684",
+      "type": "projectmember"
+    },
+    {
+      "name": "Research Institute for Nature and Forest (INBO)",
+      "type": "rightsholder"
+    }
+  ],
   "creators": [
     {
       "name": "Onkelinx, Thierry",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-8804-4216"
     }
   ],
-  "upload_type": "software",
-  "access_right": "open",
-  "license": "GPL-3.0",
   "communities": [
     {
       "identifier": "inbo"
     }
-  ],
-  "contributors": [
-    {
-      "name": "Vanderhaeghe, Floris",
-      "type": "ProjectMember",
-      "orcid": "https://orcid.org/0000-0002-6378-6229"
-    },
-    {
-      "name": "Desmet, Peter",
-      "type": "ProjectMember",
-      "orcid": "https://orcid.org/0000-0002-8442-8025"
-    },
-    {
-      "name": "Lommelen, Els",
-      "type": "ProjectMember",
-      "orcid": "https://orcid.org/0000-0002-3481-5684"
-    },
-    {
-      "name": "Research Institute for Nature and Forest",
-      "type": "RightsHolder"
-    },
-    {
-      "name": "Onkelinx, Thierry",
-      "type": "ContactPerson",
-      "orcid": "https://orcid.org/0000-0001-8804-4216"
-    }
-  ],
-  "language": "eng",
-  "keywords": ["R package", "reproducible research", "version control"]
+  ]
 }

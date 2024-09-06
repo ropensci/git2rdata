@@ -13,19 +13,20 @@ Useful links:
 \itemize{
   \item \url{https://ropensci.github.io/git2rdata/}
   \item \url{https://github.com/ropensci/git2rdata/}
+  \item \doi{10.5281/zenodo.1485309}
   \item Report bugs at \url{https://github.com/ropensci/git2rdata/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Thierry Onkelinx \email{thierry.onkelinx@inbo.be} (\href{https://orcid.org/0000-0001-8804-4216}{ORCID})
+\strong{Maintainer}: Thierry Onkelinx \email{thierry.onkelinx@inbo.be} (\href{https://orcid.org/0000-0001-8804-4216}{ORCID}) (Research Institute for Nature and Forest (INBO))
 
 Other contributors:
 \itemize{
-  \item Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID}) [contributor]
-  \item Peter Desmet \email{peter.desmet@inbo.be} (\href{https://orcid.org/0000-0002-8442-8025}{ORCID}) [contributor]
-  \item Els Lommelen \email{els.lommelen@inbo.be} (\href{https://orcid.org/0000-0002-3481-5684}{ORCID}) [contributor]
-  \item Research Institute for Nature and Forest \email{info@inbo.be} [copyright holder, funder]
+  \item Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID}) (Research Institute for Nature and Forest (INBO)) [contributor]
+  \item Peter Desmet \email{peter.desmet@inbo.be} (\href{https://orcid.org/0000-0002-8442-8025}{ORCID}) (Research Institute for Nature and Forest (INBO)) [contributor]
+  \item Els Lommelen \email{els.lommelen@inbo.be} (\href{https://orcid.org/0000-0002-3481-5684}{ORCID}) (Research Institute for Nature and Forest (INBO)) [contributor]
+  \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} [copyright holder, funder]
 }
 
 }

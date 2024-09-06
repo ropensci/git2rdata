@@ -85,8 +85,10 @@ write_vc.character <- function(
     )
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
-    raw_data <- meta(x, optimize = optimize, na = na, sorting = sorting,
-                     old = old, strict = strict, split_by = split_by)
+    raw_data <- meta(
+      x, optimize = optimize, na = na, sorting = sorting, old = old,
+      strict = strict, split_by = split_by
+    )
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       problems <- c(
@@ -161,8 +163,7 @@ write_vc.character <- function(
     packageVersion("git2rdata")
   )
   meta_data[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
-  write_yaml(meta_data, file["meta_file"],
-             fileEncoding = "UTF-8")
+  write_yaml(meta_data, file["meta_file"], fileEncoding = "UTF-8")
 
   hashes <- remove_root(file = file, root = root)
   names(hashes) <-
