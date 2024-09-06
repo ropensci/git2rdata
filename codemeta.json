@@ -189,7 +189,7 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "739KB",
+  "fileSize": "757.058KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
@@ -202,7 +202,10 @@
         }
       },
       "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository. Version 0.4.1",
-      "url": "https://ropensci.github.io/git2rdata/"
+      "identifier": "10.5281/zenodo.1485309",
+      "url": "https://ropensci.github.io/git2rdata/",
+      "@id": "https://doi.org/10.5281/zenodo.1485309",
+      "sameAs": "https://doi.org/10.5281/zenodo.1485309"
     }
   ],
   "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
