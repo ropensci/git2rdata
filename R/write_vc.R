@@ -188,12 +188,12 @@ setOldClass("git_repository")
 #' @inheritParams git2r::add
 #' @export
 #' @importFrom git2r workdir add
-#' @importFrom assertthat assert_that is.flag
+#' @importFrom assertthat assert_that is.flag noNA
 write_vc.git_repository <- function(
   x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
   stage = FALSE, force = FALSE
 ) {
-  assert_that(is.flag(stage), is.flag(force))
+  assert_that(is.flag(stage), is.flag(force), noNA(stage), noNA(force))
   hashes <- write_vc(
     x = x, file = file, root = workdir(root), sorting = sorting,
     strict = strict, optimize = optimize, na = na, ...

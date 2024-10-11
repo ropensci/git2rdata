@@ -16,13 +16,14 @@ test_that("description", {
     "character"
   )
 
-  expect_null(
+  expect_type(
     update_metadata(
       file = "test", root = root, field_description = c(
         test_character = "Some information", test_factor = "Some information",
         test_integer = "Some information"
       )
-    )
+    ),
+    "character"
   )
 
   expect_is({
@@ -48,12 +49,13 @@ test_that("description", {
   git2r::add(root, ".gitignore")
   commit(root, "initial commit")
 
-  expect_null(
+  expect_type(
     update_metadata(
       file = "test", root = root, name = "my_table", title = "My Table",
       description = "This is description for the unit tests",
       field_description = c(test_character = NA, test_factor = "")
-    )
+    ),
+    "character"
   )
   expect_is({
       output <- read_vc("test", root = root)
