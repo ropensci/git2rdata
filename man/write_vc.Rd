@@ -27,6 +27,7 @@ write_vc(
   optimize = TRUE,
   na = "NA",
   ...,
+  append = FALSE,
   split_by = character(0)
 )
 
@@ -78,6 +79,10 @@ Defaults to \code{TRUE}.}
 \item{split_by}{An optional vector of variables name to split the text files.
 This creates a separate file for every combination.
 We prepend these variables to the vector of \code{sorting} variables.}
+
+\item{append}{logical. Only relevant if \code{file} is a character
+    string.  If \code{TRUE}, the output is appended to the
+    file.  If \code{FALSE}, any existing file of the name is destroyed.}
 
 \item{stage}{Logical value indicating whether to stage the changes after
 writing the data. Defaults to \code{FALSE}.}

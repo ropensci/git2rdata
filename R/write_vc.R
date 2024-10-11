@@ -58,12 +58,16 @@ write_vc.default <- function(
 #' @importFrom git2r hash
 write_vc.character <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE,
-  na = "NA", ..., split_by = character(0)
+  na = "NA", ..., append = FALSE, split_by = character(0)
 ) {
   assert_that(
-    inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
-    noNA(na), no_whitespace(na), is.flag(strict), is.flag(optimize)
+    inherits(x, "data.frame"), is.string(file), is.string(root), is.string(na),
+    noNA(na), no_whitespace(na), is.flag(strict), is.flag(optimize),
+    is.flag(append), noNA(append), noNA(strict), noNA(optimize)
   )
+  if (append) {
+    x <- append_df(x = x, file = file, root = root)
+  }
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
   if (!file.exists(dirname(file["raw_file"]))) {
@@ -330,4 +334,14 @@ remove_root <- function(file, root) {
   has_root <- substr(file, 1, n_root) == paste0(root, "/")
   file[has_root] <- substr(file[has_root], n_root + 1, nchar(file[has_root]))
   return(file)
+}
+
+#' @importFrom assertthat assert_that
+append_df <- function(x, file, root) {
+  assert_that(inherits(x, "data.frame"))
+  if (!is_git2rdata(file = file, root = root, message = "none")) {
+    return(x)
+  }
+  read_vc(file = file, root = root) |>
+    rbind(x)
 }
