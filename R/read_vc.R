@@ -83,29 +83,38 @@ read_vc.character <- function(file, root = ".") {
       comment.char = "",
       stringsAsFactors = FALSE, fileEncoding = "UTF-8"
     )
-    raw_data <- vapply(
-      seq_len(nrow(index)),
-      function(i) {
-        rf <- file.path(file["raw_file"], paste0(index[i, "..hash"], ".tsv"))
-        raw_data <- read.table(
-          file = rf, header = TRUE, sep = "\t", quote = "\"",
-          dec = ".", numerals = "warn.loss", na.strings = na_string,
-          colClasses = setNames(
-            col_type[col_classes[!which_split_by]],
-            col_names[!which_split_by]
-          ),
-          comment.char = "",
-          stringsAsFactors = FALSE, fileEncoding = "UTF-8"
-        )
-        raw_data <- cbind(
-          index[rep(i, nrow(raw_data)), split_by, drop = FALSE],
-          raw_data
-        )
-        return(list(raw_data))
-      },
-      vector(mode = "list", length = 1)
-    )
-    raw_data <- do.call(rbind, raw_data)[, col_names]
+    if (nrow(index) == 0) {
+      list(
+        character = character(0), factor = character(0), integer = integer(0),
+        numeric = numeric(0)
+      )[col_classes] |>
+        setNames(col_names) |>
+        as.data.frame() -> raw_data
+    } else {
+      raw_data <- vapply(
+        seq_len(nrow(index)),
+        function(i) {
+          rf <- file.path(file["raw_file"], paste0(index[i, "..hash"], ".tsv"))
+          raw_data <- read.table(
+            file = rf, header = TRUE, sep = "\t", quote = "\"",
+            dec = ".", numerals = "warn.loss", na.strings = na_string,
+            colClasses = setNames(
+              col_type[col_classes[!which_split_by]],
+              col_names[!which_split_by]
+            ),
+            comment.char = "",
+            stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+          )
+          raw_data <- cbind(
+            index[rep(i, nrow(raw_data)), split_by, drop = FALSE],
+            raw_data
+          )
+          return(list(raw_data))
+        },
+        vector(mode = "list", length = 1)
+      )
+      raw_data <- do.call(rbind, raw_data)[, col_names]
+    }
   } else {
     raw_data <- read.table(
       file = file["raw_file"], header = TRUE, sep = ifelse(optimize, "\t", ","),
