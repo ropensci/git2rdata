@@ -1,3 +1,7 @@
+# git2rdata 0.5.0
+
+* `read_vc()` handles empty datasets stored with `split_by`. 
+
 # git2rdata 0.4.1
 
 * Add `update_metadata()` to update the description of a `git2rdata` object.
