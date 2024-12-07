@@ -28,7 +28,8 @@ write_vc(
   na = "NA",
   ...,
   append = FALSE,
-  split_by = character(0)
+  split_by = character(0),
+  digits
 )
 
 \method{write_vc}{git_repository}(
@@ -84,6 +85,14 @@ We prepend these variables to the vector of \code{sorting} variables.}
     string.  If \code{TRUE}, the output is appended to the
     file.  If \code{FALSE}, any existing file of the name is destroyed.}
 
+\item{digits}{The number of significant digits of the smallest absolute
+value.
+The function applies the rounding automatically.
+Only relevant for numeric variables.
+Either a single positive integer or a named vector where the names link to
+the variables in the \code{data.frame}.
+Defaults to \code{6} with a warning.}
+
 \item{stage}{Logical value indicating whether to stage the changes after
 writing the data. Defaults to \code{FALSE}.}
 
@@ -112,7 +121,10 @@ root <- tempfile("git2rdata-")
 dir.create(root)
 
 # write a dataframe to the directory
-write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
+write_vc(
+  iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length",
+  digits = 6
+)
 # check that a data file (.tsv) and a metadata file (.yml) exist.
 list.files(root, recursive = TRUE)
 # read the git2rdata object from the directory

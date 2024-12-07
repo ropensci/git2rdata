@@ -18,7 +18,7 @@ original <- data.frame(
   stringsAsFactors = FALSE
 )
 test_that("updates to logical", {
-  write_vc(original, "logical", root, sorting = "test_logical")
+  write_vc(original, "logical", root, sorting = "test_logical", digits = 6)
   updated <- matrix(TRUE, ncol = ncol(original), dimnames = dimnames(original))
   updated <- as.data.frame(updated)
   expect_is(
@@ -30,7 +30,7 @@ test_that("updates to logical", {
   expect_equal(read_vc(fn[1], root), updated, check.attributes = FALSE)
 })
 test_that("updates to integer", {
-  write_vc(original, "integer", root, sorting = "test_logical")
+  write_vc(original, "integer", root, sorting = "test_logical", digits = 6)
   updated <- matrix(1L, ncol = ncol(original), dimnames = dimnames(original))
   updated <- as.data.frame(updated)
   expect_is(
@@ -42,7 +42,7 @@ test_that("updates to integer", {
   expect_equal(read_vc(fn[1], root), updated, check.attributes = FALSE)
 })
 test_that("updates to numeric", {
-  write_vc(original, "numeric", root, sorting = "test_logical")
+  write_vc(original, "numeric", root, sorting = "test_logical", digits = 6)
   updated <- matrix(pi, ncol = ncol(original), dimnames = dimnames(original))
   updated <- as.data.frame(updated)
   expect_is(
@@ -51,10 +51,12 @@ test_that("updates to numeric", {
     ),
     "character"
   )
-  expect_equal(read_vc(fn[1], root), updated, check.attributes = FALSE)
+  expect_equal(
+    read_vc(fn[1], root), signif(updated, 6), check.attributes = FALSE
+  )
 })
 test_that("updates to character", {
-  write_vc(original, "character", root, sorting = "test_logical")
+  write_vc(original, "character", root, sorting = "test_logical", digits = 6)
   updated <- matrix("xyz", ncol = ncol(original), dimnames = dimnames(original))
   updated <- as.data.frame(updated, stringsAsFactor = FALSE)
   expect_is(
@@ -66,7 +68,7 @@ test_that("updates to character", {
   expect_equal(read_vc(fn[1], root), updated, check.attributes = FALSE)
 })
 test_that("updates to factor", {
-  write_vc(original, "factor", root, sorting = "test_logical")
+  write_vc(original, "factor", root, sorting = "test_logical", digits = 6)
   updated <- matrix("xyz", ncol = ncol(original), dimnames = dimnames(original))
   updated <- apply(updated, 2, list)
   updated <- as.data.frame(lapply(updated, factor, levels = c("xyz", "abc")))
@@ -87,7 +89,7 @@ test_that("updates to factor", {
   )
 })
 test_that("updates to Date", {
-  write_vc(original, "Date", root, sorting = "test_logical")
+  write_vc(original, "Date", root, sorting = "test_logical", digits = 6)
   updated <- matrix(Sys.Date(), ncol = ncol(original),
                     dimnames = dimnames(original))
   updated <- as.data.frame(updated)
@@ -100,10 +102,13 @@ test_that("updates to Date", {
   expect_equal(read_vc(fn[1], root), updated, check.attributes = FALSE)
 })
 test_that("updates to POSIXct", {
-  write_vc(original, "POSIXct", root, sorting = "test_logical")
-  updated <- matrix(Sys.time(), ncol = ncol(original),
-                    dimnames = dimnames(original))
-  updated <- as.data.frame(updated)
+  write_vc(original, "POSIXct", root, sorting = "test_logical", digits = 6)
+  Sys.time() |>
+    as.POSIXct(tz = "UTC") |>
+    list() |>
+    rep(ncol(original)) |>
+    setNames(colnames(original)) |>
+    as.data.frame() -> updated
   expect_is(
     suppressWarnings(
       fn <- write_vc(updated, "POSIXct", root, strict = FALSE)
@@ -113,7 +118,7 @@ test_that("updates to POSIXct", {
   expect_equal(read_vc(fn[1], root), updated, check.attributes = FALSE)
 })
 test_that("updates to complex", {
-  write_vc(original, "complex", root, sorting = "test_logical")
+  write_vc(original, "complex", root, sorting = "test_logical", digits = 6)
   updated <- matrix(complex(imaginary = 1), ncol = ncol(original),
                     dimnames = dimnames(original))
   updated <- as.data.frame(updated)

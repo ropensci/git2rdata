@@ -11,7 +11,8 @@ test_that("description", {
 
   expect_is(
     write_vc(
-      x = test_data, file = "test.txt", root = root, sorting = "test_Date"
+      x = test_data, file = "test.txt", root = root, sorting = "test_Date",
+      digits = 6
     ),
     "character"
   )

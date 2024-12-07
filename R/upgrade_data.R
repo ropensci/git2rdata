@@ -18,9 +18,14 @@
 #' dir.create(root)
 #'
 #' # write dataframes to the root
-#' write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
-#' write_vc(iris[5:10, ], file = "subdir/iris", root = root,
-#'          sorting = "Sepal.Length")
+#' write_vc(
+#'   iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length",
+#'   digits = 6
+#' )
+#' write_vc(
+#'   iris[5:10, ], file = "subdir/iris", root = root, sorting = "Sepal.Length",
+#'   digits = 6
+#' )
 #' # upgrade a single git2rdata object
 #' upgrade_data(file = "iris", root = root)
 #' # use path = "." to upgrade all git2rdata objects under root

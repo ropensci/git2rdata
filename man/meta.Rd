@@ -11,7 +11,7 @@
 \alias{meta.data.frame}
 \title{Optimize an Object for Storage as Plain Text and Add Metadata}
 \usage{
-meta(x, ...)
+meta(x, ..., digits)
 
 \method{meta}{character}(x, na = "NA", optimize = TRUE, ...)
 
@@ -30,13 +30,22 @@ meta(x, ...)
   sorting,
   strict = TRUE,
   split_by = character(0),
-  ...
+  ...,
+  digits
 )
 }
 \arguments{
 \item{x}{the vector.}
 
 \item{...}{further arguments to the methods.}
+
+\item{digits}{The number of significant digits of the smallest absolute
+value.
+The function applies the rounding automatically.
+Only relevant for numeric variables.
+Either a single positive integer or a named vector where the names link to
+the variables in the \code{data.frame}.
+Defaults to \code{6} with a warning.}
 
 \item{na}{the string to use for missing values in the data.}
 
@@ -93,7 +102,7 @@ Add \code{strict = FALSE} to enforce the new order of factor levels.
 \examples{
 meta(c(NA, "'NA'", '"NA"', "abc\tdef", "abc\ndef"))
 meta(1:3)
-meta(seq(1, 3, length = 4))
+meta(seq(1, 3, length = 4), digits = 6)
 meta(factor(c("b", NA, "NA"), levels = c("NA", "b", "c")))
 meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")), optimize = FALSE)
 meta(factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE))

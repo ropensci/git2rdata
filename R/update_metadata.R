@@ -52,7 +52,7 @@ update_metadata.git_repository <- function(
 
 #' @export
 update_metadata.character <- function(
-  file, root = ".", field_description, name, title, description
+  file, root = ".", field_description, name, title, description, ...
 ) {
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)

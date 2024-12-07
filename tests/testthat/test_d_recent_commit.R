@@ -15,13 +15,13 @@ git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
 
 write_vc(
   test_data[1:2, ], file = "test1", root = root, stage = TRUE,
-  sorting = "test_Date"
+  sorting = "test_Date", digits = 6
 )
 commit_1 <- commit(root, "initial commit")
 
 write_vc(
   test_data[3:4, ], file = file.path("junk", "test1"), root = root,
-  stage = TRUE, sorting = "test_Date"
+  stage = TRUE, sorting = "test_Date", digits = 6
 )
 commit_2 <- commit(root, "second file")
 
@@ -34,7 +34,7 @@ commit_3 <- commit(root, "update first file")
 
 write_vc(
   test_data[7:8, ], file = "test3", root = root, stage = TRUE,
-  sorting = "test_Date"
+  sorting = "test_Date", digits = 6
 )
 Sys.sleep(subsecond)
 commit_4 <- commit(root, "add third file")
