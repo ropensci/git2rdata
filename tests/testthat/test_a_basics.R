@@ -306,3 +306,64 @@ test_that("meta attributes are printed as yaml", {
     "class: factor.*\nordered: no"
   )
 })
+
+test_that("digits works as expected", {
+  x <- data.frame(
+    a = c(exp(1), pi), b = c(1.23456789, 1.23456789),
+    stringsAsFactors = FALSE
+  )
+  root <- tempfile("digits")
+  dir.create(root)
+  expect_warning(
+    fn <- write_vc(x, "default", root, sorting = "a"),
+    "`digits` was not set."
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    signif(x, 6)
+  )
+
+  expect_is(
+    fn <- write_vc(x, "digits", root, digits = 4, sorting = "a"),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    signif(x, 4)
+  )
+  write_vc(x, "digits", root, digits = 6)
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    signif(x, 6)
+  )
+
+  expect_is(
+    fn <- write_vc(x, "delta", root, digits = c(a = 4, b = 5), sorting = "a"),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    data.frame(a = signif(x$a, 4), b = signif(x$b, 5))
+  )
+  expect_is(
+    fn <- write_vc(x, "delta", root, digits = c(a = 5, b = 4)),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    data.frame(a = signif(x$a, 5), b = signif(x$b, 4))
+  )
+
+  expect_error(
+    write_vc(x, "faults", root, digits = c(4, 5), sorting = "a"),
+    "`digits` must be either named"
+  )
+  expect_error(
+    write_vc(x, "faults", root, digits = c(a = 4, b = NA), sorting = "a"),
+    "`digits` must be a strict positive integer"
+  )
+  expect_error(
+    write_vc(x, "faults", root, digits = c(a = 4, c = 5), sorting = "a"),
+    "`digits` must contain all numeric variables"
+  )
+})

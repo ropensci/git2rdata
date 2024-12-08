@@ -65,7 +65,7 @@ meta.integer <- function(x, ...) {
 #' @export
 #' @importFrom assertthat assert_that is.count
 meta.numeric <- function(x, ..., digits) {
-  assert_that(is.count(digits))
+  stopifnot("`digits` must be a strict positive integer" = is.count(digits))
   x <- signif(x, digits = digits)
   list(class = "numeric", digits = as.integer(digits)) -> m
   class(m) <- "meta_detail"
