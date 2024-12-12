@@ -71,4 +71,29 @@ test_that("description", {
   expect_output(print(output), "display_metadata")
   expect_output(summary(output), "display_metadata")
   expect_output(display_metadata(output), "Table name: my_table")
+
+  expect_is(current_status <- status(root), "git_status")
+  expect_equal(
+    unname(unlist(current_status$untracked)), c("test.tsv", "test.yml")
+  )
+  expect_equal(unname(current_status$staged), list())
+
+  expect_type(
+    update_metadata(
+      file = "test", root = root, name = "staged_table", title = "Staged table",
+      description = "This is description for the unit tests", stage = TRUE,
+      field_description = c(test_character = NA, test_factor = "")
+    ),
+    "character"
+  )
+  expect_is({
+    output <- read_vc("test", root = root)
+  }, "git2rdata"
+  )
+  expect_output(display_metadata(output), "Table name: staged_table")
+
+  expect_is(current_status <- status(root), "git_status")
+  expect_equal(unname(unlist(current_status$untracked)), "test.tsv")
+  expect_equal(unname(unlist(current_status$staged)), "test.yml")
+
 })
