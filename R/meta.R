@@ -252,7 +252,7 @@ meta.data.frame <- function(# nolint
       old_numeric <- vapply(
         old, FUN.VALUE = logical(1),
         FUN = function(x) {
-          has_name(x, "class") && x$class == "numeric"
+          has_name(x, "class") && x$class == "numeric" && has_name(x, "digits")
         }
       )
       digits <- vapply(
