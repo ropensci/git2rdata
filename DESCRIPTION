@@ -46,6 +46,7 @@ Imports:
     yaml
 Suggests:
     ggplot2,
+    jsonlite,
     knitr,
     microbenchmark,
     rmarkdown,
@@ -60,6 +61,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Collate:
     'clean_data_path.R'
+    'data_package.R'
     'datahash.R'
     'display_metadata.R'
     'git2rdata_package.R'
