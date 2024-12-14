@@ -49,8 +49,8 @@ data_resource <- function(file, path = ".") {
   clean_data_path(root = path, file = file)[2] |>
     read_yaml() -> metadata
   list(
-    name = file, path = file, "encoding" = "utf-8",
-    format = "csv", media_type = "text/csv",
+    name = coalesce(metadata[["..generic"]][["name"]], file), path = file,
+    "encoding" = "utf-8", format = "csv", media_type = "text/csv",
     hash = paste0("sha1:", metadata[["..generic"]][["data_hash"]]),
     schema = list(
       fields = vapply(
@@ -62,12 +62,15 @@ data_resource <- function(file, path = ".") {
         c(value = metadata[["..generic"]][["NA string"]], label = "missing")
       )
     )
-  ) |>
+  ) -> dr
+  extra <- c("title", "description")
+  metadata[["..generic"]][extra[extra %in% names(metadata[["..generic"]])]] |>
+    c(dr) |>
     list()
 }
 
 field_schema <- function(x, metadata) {
-  list(switch(
+  switch(
     metadata[[x]]$class,
     "character" = list(name = x, type = "string"),
     "Date" = list(name = x, type = "date"),
@@ -81,7 +84,24 @@ field_schema <- function(x, metadata) {
     ),
     "integer" = list(name = x, type = "integer"),
     "numeric" = list(name = x, type = "number"),
-    "POSIXct" = list(name = x, type = "datetime"),
+    "POSIXct" = list(
+      name = x, type = "datetime", format = "%Y-%m-%dT%H:%M:%SZ"
+    ),
     stop("field_schema() can't handle ", metadata[[x]]$class)
-  ))
+  ) -> fs
+  if ("description" %in% names(metadata[[x]])) {
+    fs$description <- metadata[[x]][["description"]]
+  }
+  return(list(fs))
+}
+
+coalesce <- function(...) {
+  dots <- list(...)
+  if (length(dots) == 0) {
+    return(NULL)
+  }
+  if (!is.null(dots[[1]])) {
+    return(dots[[1]])
+  }
+  coalesce(dots[-1])
 }
