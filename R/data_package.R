@@ -103,5 +103,5 @@ coalesce <- function(...) {
   if (!is.null(dots[[1]])) {
     return(dots[[1]])
   }
-  coalesce(dots[-1])
+  do.call(coalesce, dots[-1])
 }
