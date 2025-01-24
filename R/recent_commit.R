@@ -28,15 +28,19 @@
 #'
 #' # write and commit a first dataframe
 #' # store the output of write_vc() minimize screen output
-#' junk <- write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length",
-#'                  stage = TRUE)
+#' junk <- write_vc(
+#'   iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE,
+#'   digits = 6
+#' )
 #' commit(repo, "important analysis", session = TRUE)
 #' list.files(repo_path)
 #' Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 #'
 #' # write and commit a second dataframe
-#' junk <- write_vc(iris[7:12, ], "iris2", repo, sorting = "Sepal.Length",
-#'                  stage = TRUE)
+#' junk <- write_vc(
+#'   iris[7:12, ], "iris2", repo, sorting = "Sepal.Length", stage = TRUE,
+#'   digits = 6
+#' )
 #' commit(repo, "important analysis", session = TRUE)
 #' list.files(repo_path)
 #' Sys.sleep(1.1) # required because git doesn't handle subsecond timings

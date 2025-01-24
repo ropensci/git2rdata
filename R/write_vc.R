@@ -51,6 +51,13 @@ write_vc.default <- function(
 #' @param split_by An optional vector of variables name to split the text files.
 #' This creates a separate file for every combination.
 #' We prepend these variables to the vector of `sorting` variables.
+#' @param digits The number of significant digits of the smallest absolute
+#' value.
+#' The function applies the rounding automatically.
+#' Only relevant for numeric variables.
+#' Either a single positive integer or a named vector where the names link to
+#' the variables in the `data.frame`.
+#' Defaults to `6` with a warning.
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag
 #' @importFrom yaml read_yaml write_yaml
@@ -58,12 +65,16 @@ write_vc.default <- function(
 #' @importFrom git2r hash
 write_vc.character <- function(
   x, file, root = ".", sorting, strict = TRUE, optimize = TRUE,
-  na = "NA", ..., split_by = character(0)
+  na = "NA", ..., append = FALSE, split_by = character(0), digits
 ) {
   assert_that(
-    inherits(x, "data.frame"), is.string(file), is.string(root),  is.string(na),
-    noNA(na), no_whitespace(na), is.flag(strict), is.flag(optimize)
+    inherits(x, "data.frame"), is.string(file), is.string(root), is.string(na),
+    noNA(na), no_whitespace(na), is.flag(strict), is.flag(optimize),
+    is.flag(append), noNA(append), noNA(strict), noNA(optimize)
   )
+  if (append) {
+    x <- append_df(x = x, file = file, root = root)
+  }
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
   if (!file.exists(dirname(file["raw_file"]))) {
@@ -72,7 +83,8 @@ write_vc.character <- function(
 
   if (!file.exists(file["meta_file"])) {
     raw_data <- meta(
-      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by
+      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by,
+      digits = digits
     )
   } else {
     tryCatch(
@@ -87,7 +99,7 @@ write_vc.character <- function(
     class(old) <- "meta_list"
     raw_data <- meta(
       x, optimize = optimize, na = na, sorting = sorting, old = old,
-      strict = strict, split_by = split_by
+      strict = strict, split_by = split_by, digits = digits
     )
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
@@ -184,12 +196,12 @@ setOldClass("git_repository")
 #' @inheritParams git2r::add
 #' @export
 #' @importFrom git2r workdir add
-#' @importFrom assertthat assert_that is.flag
+#' @importFrom assertthat assert_that is.flag noNA
 write_vc.git_repository <- function(
   x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
   stage = FALSE, force = FALSE
 ) {
-  assert_that(is.flag(stage), is.flag(force))
+  assert_that(is.flag(stage), is.flag(force), noNA(stage), noNA(force))
   hashes <- write_vc(
     x = x, file = file, root = workdir(root), sorting = sorting,
     strict = strict, optimize = optimize, na = na, ...
@@ -330,4 +342,14 @@ remove_root <- function(file, root) {
   has_root <- substr(file, 1, n_root) == paste0(root, "/")
   file[has_root] <- substr(file[has_root], n_root + 1, nchar(file[has_root]))
   return(file)
+}
+
+#' @importFrom assertthat assert_that
+append_df <- function(x, file, root) {
+  assert_that(inherits(x, "data.frame"))
+  if (!is_git2rdata(file = file, root = root, message = "none")) {
+    return(x)
+  }
+  read_vc(file = file, root = root) |>
+    rbind(x)
 }

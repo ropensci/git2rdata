@@ -29,7 +29,8 @@ test_that("rename_variable() handles single files", {
   git2r::reset(cm, "hard")
 
   files <- write_vc(
-    test_data, file = "sorted", root = repo, sorting = "test_Date", stage = TRUE
+    test_data, file = "sorted", root = repo, sorting = "test_Date",
+    stage = TRUE, digits = 6
   )
   cm <- commit(repo, "sorted")
   # staged & sorted on changed variable
@@ -73,7 +74,7 @@ test_that("rename_variable() handles single files", {
   expect_identical(length(updated), length(change))
   expect_identical(colnames(test_data)[updated], unname(change))
   expect_identical(colnames(changed_df)[updated], names(change))
-  expect_equivalent(sorted_test_data[, change], changed_df[, names(change)])
+  expect_equivalent(sorted_test_data_6[, change], changed_df[, names(change)])
   git2r::reset(cm, "hard")
 })
 
@@ -111,7 +112,7 @@ test_that("rename_variable() handles split_by files", {
 
   files <- write_vc(
     test_data, file = "sorted", root = repo, sorting = "test_Date",
-    split_by = "test_factor", stage = TRUE
+    split_by = "test_factor", stage = TRUE, digits = 6
   )
   cm <- commit(repo, "sorted")
   # staged & sorted on changed variable
@@ -184,7 +185,9 @@ test_that("rename_variable() handles split_by files", {
   expect_identical(colnames(test_data)[updated], unname(change))
   expect_identical(colnames(changed_df)[updated], names(change))
   expect_equivalent(
-    test_data[order(test_data$test_factor, test_data$test_Date), change],
+    signif(
+      test_data[order(test_data$test_factor, test_data$test_Date), change], 6
+    ),
     changed_df[, names(change)]
   )
   git2r::reset(cm, "hard")

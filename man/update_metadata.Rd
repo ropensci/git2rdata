@@ -4,7 +4,15 @@
 \alias{update_metadata}
 \title{Update the description of a \code{git2rdata} object}
 \usage{
-update_metadata(file, root = ".", field_description, name, title, description)
+update_metadata(
+  file,
+  root = ".",
+  field_description,
+  name,
+  title,
+  description,
+  ...
+)
 }
 \arguments{
 \item{file}{the name of the git2rdata object. Git2rdata objects cannot
@@ -24,6 +32,8 @@ The names of the vector must match the variable names.}
 \item{title}{a character string with the new title of the object.}
 
 \item{description}{a character string with the new description of the object.}
+
+\item{...}{parameters used in some methods}
 }
 \description{
 Allows to update the description of the fields, the table name, the title,
@@ -34,6 +44,7 @@ field from the metadata.
 }
 \seealso{
 Other storage: 
+\code{\link{data_package}()},
 \code{\link{display_metadata}()},
 \code{\link{list_data}()},
 \code{\link{prune_meta}()},

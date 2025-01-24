@@ -15,13 +15,13 @@ test_that("write_vc() handles the split_by argument", {
   )
   expect_equal(
     z[order(z$test_numeric), ],
-    test_data[order(test_data$test_numeric), ],
+    sorted_test_data_6[order(sorted_test_data_6$test_numeric), ],
     check.attributes = FALSE
   )
 
   expect_is({
     sorted_file <- write_vc(
-      test_data, file = "sorted", root = root,
+      test_data, file = "sorted", root = root, digits = 6,
       sorting = "test_Date", split_by = "test_factor"
     )
   },
@@ -35,13 +35,16 @@ test_that("write_vc() handles the split_by argument", {
   )
   expect_equal(
     z,
-    test_data[order(test_data$test_factor, test_data$test_Date), ],
+    sorted_test_data_6[
+      order(sorted_test_data_6$test_factor, sorted_test_data_6$test_Date),
+    ],
     check.attributes = FALSE
   )
 
   expect_error(
     write_vc(
-      test_data, file = "sorted", root = root, split_by = character(0)
+      test_data, file = "sorted", root = root, split_by = character(0),
+      digits = 6
     ),
     "The split_by variables changed."
   )

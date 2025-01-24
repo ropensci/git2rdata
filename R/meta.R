@@ -14,7 +14,7 @@
 #' @examples
 #' meta(c(NA, "'NA'", '"NA"', "abc\tdef", "abc\ndef"))
 #' meta(1:3)
-#' meta(seq(1, 3, length = 4))
+#' meta(seq(1, 3, length = 4), digits = 6)
 #' meta(factor(c("b", NA, "NA"), levels = c("NA", "b", "c")))
 #' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c")), optimize = FALSE)
 #' meta(factor(c("b", NA, "a"), levels = c("a", "b", "c"), ordered = TRUE))
@@ -29,7 +29,7 @@
 #' meta(as.POSIXct("2019-02-01 10:59:59", tz = "CET"), optimize = FALSE)
 #' meta(as.Date("2019-02-01"))
 #' meta(as.Date("2019-02-01"), optimize = FALSE)
-meta <- function(x, ...) {
+meta <- function(x, ..., digits) {
   UseMethod("meta", x)
 }
 
@@ -63,8 +63,11 @@ meta.integer <- function(x, ...) {
 }
 
 #' @export
-meta.numeric <- function(x, ...) {
-  list(class = "numeric") -> m
+#' @importFrom assertthat assert_that is.count
+meta.numeric <- function(x, ..., digits) {
+  stopifnot("`digits` must be a strict positive integer" = is.count(digits))
+  x <- signif(x, digits = digits)
+  list(class = "numeric", digits = as.integer(digits)) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -218,7 +221,7 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' @inheritParams write_vc
 meta.data.frame <- function(# nolint
   x, optimize = TRUE, na = "NA", sorting, strict = TRUE,
-  split_by = character(0), ...
+  split_by = character(0), ..., digits
 ) {
   assert_that(
     !has_name(x, "..generic"),
@@ -237,13 +240,46 @@ meta.data.frame <- function(# nolint
   )
 
   dots <- list(...)
+  float <- vapply(x, is.numeric, logical(1)) &
+    !vapply(x, is.integer, logical(1))
   if (has_name(dots, "old")) {
     old <- dots$old
     assert_that(inherits(old, "meta_list"))
     if (missing(sorting)) {
       sorting <- old[["..generic"]][["sorting"]]
     }
+    if (any(float) && missing(digits)) {
+      old_numeric <- vapply(
+        old, FUN.VALUE = logical(1),
+        FUN = function(x) {
+          has_name(x, "class") && x$class == "numeric" && has_name(x, "digits")
+        }
+      )
+      digits <- vapply(
+        old[old_numeric], FUN.VALUE = numeric(1),
+        FUN = function(x) {
+          x[["digits"]]
+        }
+      )
+      relevant <- names(float)[float][!names(float)[float] %in% names(digits)]
+      rep(6L, length(relevant)) -> digits[relevant]
+    }
   }
+  if (any(float) && missing(digits)) {
+    digits <- 6L
+    warning("`digits` was not set. Setting is automatically to 6. See ?meta")
+  }
+  if (any(float) && is.null(names(digits))) {
+    stopifnot(
+      "`digits` must be either named or have length 1" = length(digits) == 1
+    )
+    digits <- rep(digits, sum(float))
+    names(digits) <- names(float)[float]
+  }
+  stopifnot(
+    "`digits` must contain all numeric variables of `x`" =
+      all(!float) || all(names(float)[float] %in% names(digits))
+  )
 
   # apply sorting
   if (missing(sorting) || is.null(sorting) || !length(sorting)) {
@@ -271,12 +307,13 @@ Add extra sorting variables to ensure small diffs.", sorted)
   if (length(split_by) > 0) {
     generic <- c(generic, split_by = list(split_by))
   }
+
   # calculate meta for each column
   if (!has_name(dots, "old")) {
     z <- lapply(
       colnames(x),
       function(id, optimize, na) {
-        meta(x[[id]], optimize = optimize, na = na)
+        meta(x[[id]], optimize = optimize, na = na, digits = digits[[id]])
       },
       optimize = optimize, na = na
     )
@@ -290,7 +327,7 @@ Add extra sorting variables to ensure small diffs.", sorted)
           meta(
             x[[id]], optimize = optimize, na = na,
             index = setNames(old[[id]][["index"]], old[[id]][["labels"]]),
-            strict = strict
+            strict = strict, digits = digits[[id]]
           )
         },
         optimize = old[["..generic"]][["optimize"]],
@@ -305,7 +342,7 @@ Add extra sorting variables to ensure small diffs.", sorted)
       z_new <- lapply(
         new,
         function(id, optimize, na) {
-          meta(x[[id]], optimize = optimize, na = na)
+          meta(x[[id]], optimize = optimize, na = na, digits = digits[[id]])
         },
         optimize = optimize, na = na
       )

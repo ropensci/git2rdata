@@ -29,7 +29,9 @@ test_that("is_git2rmeta checks metadata", {
   )
 
   file <- basename(tempfile(tmpdir = root))
-  junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
+  junk <- write_vc(
+    test_data, file = file, root = root, sorting = "test_Date", digits = 6
+  )
   correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
 
   file.remove(file.path(root, junk[2]))
@@ -127,7 +129,9 @@ test_that("is_git2rmeta checks metadata", {
 
 test_that("is_git2rdata checks data", {
   file <- basename(tempfile(tmpdir = root))
-  junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
+  junk <- write_vc(
+    test_data, file = file, root = root, sorting = "test_Date", digits = 6
+  )
   correct_yaml <- yaml::read_yaml(file.path(root, junk[2]))
   yaml::write_yaml(correct_yaml, file.path(root, junk[2]))
   correct_data <- readLines(file.path(root, junk[1]), encoding = "UTF-8")
@@ -163,7 +167,9 @@ git2r::config(root, user.name = "Alice", user.email = "alice@example.org")
 
 test_that("is_git2rmeta handle git repositories", {
   file <- basename(tempfile(tmpdir = git2r::workdir(root)))
-  junk <- write_vc(test_data, file = file, root = root, sorting = "test_Date")
+  junk <- write_vc(
+    test_data, file = file, root = root, sorting = "test_Date", digits = 6
+  )
   expect_true(is_git2rmeta(file = file, root = root))
   expect_true(is_git2rdata(file = file, root = root))
 })
