@@ -1,0 +1,14 @@
+pandoc: 3.6.2
+pkgdown: 2.1.1
+pkgdown_sha: ~
+articles:
+  efficiency: efficiency.html
+  metadata: metadata.html
+  plain_text: plain_text.html
+  split_by: split_by.html
+  version_control: version_control.html
+  workflow: workflow.html
+last_built: 2025-01-24T08:50Z
+urls:
+  reference: https://ropensci.github.io/git2rdata/reference
+  article: https://ropensci.github.io/git2rdata/articles
