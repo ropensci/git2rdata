@@ -106,6 +106,7 @@ status(repo)
 }
 \seealso{
 Other storage: 
+\code{\link{data_package}()},
 \code{\link{display_metadata}()},
 \code{\link{list_data}()},
 \code{\link{read_vc}()},

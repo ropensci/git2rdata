@@ -21,10 +21,9 @@ test_that("write_vc() and read_vc() on a file system", {
     "file should not contain '..'"
   )
   expect_is(
-    suppressWarnings(
-      output <- write_vc(
-        x = test_data, file = "test.txt", root = root, sorting = "test_Date"
-      )
+    output <- write_vc(
+      x = test_data, file = "test.txt", root = root, sorting = "test_Date",
+      digits = 6
     ),
     "character"
   )
@@ -32,31 +31,28 @@ test_that("write_vc() and read_vc() on a file system", {
   expect_identical(unname(output), c("test.tsv", "test.yml"))
   expect_true(all(file.exists(git2rdata:::clean_data_path(root, "test"))))
   expect_equal(
-    stored <- read_vc(file = "test.xls", root = root),
-    sorted_test_data,
+    stored <- read_vc(file = "test.xls", root = root), sorted_test_data_6,
     check.attributes = FALSE
   )
   for (i in colnames(stored)) {
     expect_equal(
-      stored[[i]],
-      sorted_test_data[[i]],
-      label = paste0("stored$", i),
+      stored[[i]], sorted_test_data_6[[i]], label = paste0("stored$", i),
       expected.label = paste0("sorted_test_data$", i)
     )
   }
   expect_identical(
-    suppressWarnings(write_vc(x = test_data, file = "test.xls", root = root)),
-    output
+    write_vc(x = test_data, file = "test.xls", root = root), output
   )
   expect_error(
     write_vc(
-      data.frame(junk = 5), file = "test", root = root, sorting = "junk"
+      data.frame(junk = 5), file = "test", root = root, sorting = "junk",
+      digits = 6
     ),
     "The data was not overwritten because of the issues below."
   )
   expect_error(
-    suppressWarnings(
-      write_vc(x = test_data, file = "test", root = root, optimize = FALSE)
+    write_vc(
+      x = test_data, file = "test", root = root, optimize = FALSE, digits = 6
     ),
     "New data is verbose, whereas old data was optimized"
   )
@@ -81,7 +77,7 @@ test_that("write_vc() and read_vc() on a file system", {
   expect_is(
     output <- write_vc(
       x = test_data, file = file.path("a", "verbose"), root = root,
-      sorting = "test_Date", optimize = FALSE
+      sorting = "test_Date", optimize = FALSE, digits = 6
     ),
     "character"
   )
@@ -90,14 +86,11 @@ test_that("write_vc() and read_vc() on a file system", {
   )
   expect_equal(
     stored <- read_vc(file = file.path("a", "verbose"), root = root),
-    sorted_test_data,
-    check.attributes = FALSE
+    sorted_test_data_6, check.attributes = FALSE
   )
   for (i in colnames(stored)) {
     expect_equal(
-      stored[[i]],
-      sorted_test_data[[i]],
-      label = paste0("stored$", i),
+      stored[[i]], sorted_test_data_6[[i]], label = paste0("stored$", i),
       expected.label = paste0("sorted_test_data$", i)
     )
   }
@@ -108,31 +101,30 @@ test_that("write_vc() and read_vc() on a file system", {
 
   expect_is(
     output <- write_vc(
-      test_na, file = "na", root = root,
+      test_na, file = "na", root = root, digits = 6,
       sorting = c("test_Date", "test_integer", "test_numeric")
     ),
     "character"
   )
   expect_equal(
     stored <- read_vc(file = "na", root = root),
-    sorted_test_na,
-    check.attributes = FALSE
+    sorted_test_na, check.attributes = FALSE
   )
   for (i in colnames(stored)) {
     expect_equal(
-      stored[[i]],
-      sorted_test_na[[i]],
-      label = paste0("stored$", i),
+      stored[[i]], sorted_test_na[[i]], label = paste0("stored$", i),
       expected.label = paste0("sorted_test_na$", i)
     )
   }
 
   expect_error(
-    write_vc(test_data, file = "error", root = root, sorting = 1),
+    write_vc(test_data, file = "error", root = root, sorting = 1, digits = 6),
     "sorting is not a character vector"
   )
   expect_error(
-    write_vc(test_data, file = "error", root = root, sorting = "junk"),
+    write_vc(
+      test_data, file = "error", root = root, sorting = "junk", digits = 6
+    ),
     "All sorting variables must be available"
   )
   expect_false(any(file.exists(git2rdata:::clean_data_path(root, "sorting"))))
@@ -164,19 +156,17 @@ test_that("write_vc() and read_vc() on a file system", {
   test_changed <- test_data
   test_changed$junk <- test_changed$test_character
   expect_error(
-    suppressWarnings(write_vc(test_changed, file = "sorting", root = root)),
+    write_vc(test_changed, file = "sorting", root = root),
     "New data has a different number of variables"
   )
   test_changed$test_character <- NULL
   expect_error(
-    suppressWarnings(write_vc(test_changed, file = "sorting", root = root)),
-    "New variables: junk"
+    write_vc(test_changed, file = "sorting", root = root), "New variables: junk"
   )
   test_changed <- test_data
   test_changed$test_character <- factor(test_changed$test_character)
   expect_error(
-    suppressWarnings(write_vc(test_changed, file = "sorting", root = root
-    )),
+    write_vc(test_changed, file = "sorting", root = root),
     "Change in class: 'test_character' from character to factor"
   )
   expect_error(
@@ -194,8 +184,7 @@ test_that("write_vc() and read_vc() on a file system", {
     ordered = FALSE
   )
   expect_error(
-    suppressWarnings(write_vc(test_changed, file = "sorting", root = root
-    )),
+    write_vc(test_changed, file = "sorting", root = root),
     "'test_ordered' changes from ordinal to nominal"
   )
 
@@ -203,22 +192,21 @@ test_that("write_vc() and read_vc() on a file system", {
   test_no$test_ordered <- NULL
   expect_is(
     output <- write_vc(
-      x = test_no, file = "no_ordered", root = root, sorting = "test_Date"
+      x = test_no, file = "no_ordered", root = root, sorting = "test_Date",
+      digits = 6
     ),
     "character"
   )
   sorted_test_no <- sorted_test_data
   sorted_test_no$test_ordered <- NULL
+  sorted_test_no$test_numeric <- signif(sorted_test_no$test_numeric, 6)
   expect_equal(
-    stored <- read_vc(file = "no_ordered", root = root),
-    sorted_test_no,
+    stored <- read_vc(file = "no_ordered", root = root), sorted_test_no,
     check.attributes = FALSE
   )
   for (i in colnames(stored)) {
     expect_equal(
-      stored[[i]],
-      sorted_test_no[[i]],
-      label = paste0("stored$", i),
+      stored[[i]], sorted_test_no[[i]], label = paste0("stored$", i),
       expected.label = paste0("sorted_test_data$", i)
     )
   }
@@ -227,82 +215,65 @@ test_that("write_vc() and read_vc() on a file system", {
 test_that(
   "meta() works on complex", {
     z <- complex(real = runif(10), imaginary = runif(10))
-    expect_equal(
-      mz <- meta(z),
-      z,
-      check.attributes = FALSE
-    )
+    expect_equal(mz <- meta(z), z, check.attributes = FALSE)
     expect_true(assertthat::has_attr(mz, "meta"))
-    expect_equal(attr(mz, "meta"), list(class = "complex"),
-                 check.attributes = FALSE)
+    expect_equal(
+      attr(mz, "meta"), list(class = "complex"), check.attributes = FALSE
+    )
   }
 )
 
-
 test_that("user specified na strings work", {
   x <- data.frame(
-    a = c(NA, "NA", "b"),
-    b = factor(c("NA", NA, "d")),
-    z = c(1:2, NA),
-    y = c(pi, NA, Inf),
-    stringsAsFactors = FALSE
+    a = c(NA, "NA", "b"), b = factor(c("NA", NA, "d")), z = c(1:2, NA),
+    y = c(pi, NA, Inf), stringsAsFactors = FALSE
   )
   root <- tempfile("na_string")
   dir.create(root)
   expect_error(
-    suppressWarnings(
-      write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE)
+    write_vc(
+      x, "test_na_string_verbose", root, "a", optimize = FALSE, digits = 6
     ),
     "one of the strings matches the NA string"
   )
   expect_is(
-    fn <- suppressWarnings(
-      write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
-               na = "junk")
+    fn <- write_vc(
+      x, "test_na_string_verbose", root, "a", optimize = FALSE, na = "junk",
+      digits = 6
     ),
     "character"
   )
   old_locale <- git2rdata:::set_c_locale()
-  expect_equal(
-    read_vc(fn[1], root),
-    x[order(x$a), ],
-    check.attributes = FALSE
-  )
+  target <- x[order(x$a), ]
+  target$y <- signif(target$y, 6)
+  expect_equal(read_vc(fn[1], root), target, check.attributes = FALSE)
   git2rdata:::set_local_locale(old_locale)
   expect_identical(
-    grep("junk", readLines(file.path(root, fn[1]), encoding = "UTF-8")),
-    2:4
+    grep("junk", readLines(file.path(root, fn[1]), encoding = "UTF-8")), 2:4
   )
   expect_error(
-    suppressWarnings(
-      write_vc(x, "test_na_string_verbose", root, "a", optimize = FALSE,
-               na = "different")
+    write_vc(
+      x, "test_na_string_verbose", root, "a", optimize = FALSE, na = "different"
     ),
     "New data uses 'different' as NA string, whereas old data used 'junk'"
   )
   expect_is(
-    fn <- suppressWarnings(
-      write_vc(x, "test_na_string_optimize", root, "a", na = "junk")
+    fn <- write_vc(
+      x, "test_na_string_optimize", root, "a", na = "junk", digits = 6
     ),
     "character"
   )
   old_locale <- git2rdata:::set_c_locale()
-  expect_equal(
-    read_vc(fn[1], root),
-    x[order(x$a), ],
-    check.attributes = FALSE
-  )
+  expect_equal(read_vc(fn[1], root), target, check.attributes = FALSE)
   git2rdata:::set_local_locale(old_locale)
   expect_identical(
-    grep("junk", readLines(file.path(root, fn[1]), encoding = "UTF-8")),
-    2:4
+    grep("junk", readLines(file.path(root, fn[1]), encoding = "UTF-8")), 2:4
   )
 })
 
 test_that("write_vc() allows changes in factor levels", {
   x <- data.frame(
-    test_factor = factor(c("a", "b")),
-    stringsAsFactors = FALSE
+    test_factor = factor(c("a", "b")), stringsAsFactors = FALSE
   )
   root <- tempfile("factor_levels")
   dir.create(root)
@@ -321,14 +292,78 @@ test_that("write_vc() allows changes in factor levels", {
   )
   x$test_factor <- factor(x$test_factor, levels = c("a", "b", "c"))
   expect_error(
-    write_vc(x, "factor_levels", root),
-    "New factor labels for 'test_factor'"
+    write_vc(x, "factor_levels", root), "New factor labels for 'test_factor'"
   )
 })
 
 test_that("meta attributes are printed as yaml", {
-  expect_output(print(suppressWarnings(attr(meta(test_data), "meta"))),
-                "hash: d8b9851bcc840c6203c39f70c514803e7acb96d0")
-  expect_output(print(attr(meta(test_data$test_factor), "meta")),
-                "class: factor.*\nordered: no")
+  expect_output(
+    print(suppressWarnings(attr(meta(test_data, digits = 6), "meta"))),
+    "hash: [0-9a-f]{40}"
+  )
+  expect_output(
+    print(attr(meta(test_data$test_factor), "meta")),
+    "class: factor.*\nordered: no"
+  )
+})
+
+test_that("digits works as expected", {
+  x <- data.frame(
+    a = c(exp(1), pi), b = c(1.23456789, 1.23456789),
+    stringsAsFactors = FALSE
+  )
+  root <- tempfile("digits")
+  dir.create(root)
+  expect_warning(
+    fn <- write_vc(x, "default", root, sorting = "a"),
+    "`digits` was not set."
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    signif(x, 6)
+  )
+
+  expect_is(
+    fn <- write_vc(x, "digits", root, digits = 4, sorting = "a"),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    signif(x, 4)
+  )
+  write_vc(x, "digits", root, digits = 6)
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    signif(x, 6)
+  )
+
+  expect_is(
+    fn <- write_vc(x, "delta", root, digits = c(a = 4, b = 5), sorting = "a"),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    data.frame(a = signif(x$a, 4), b = signif(x$b, 5))
+  )
+  expect_is(
+    fn <- write_vc(x, "delta", root, digits = c(a = 5, b = 4)),
+    "character"
+  )
+  expect_equal(
+    read_vc(fn[1], root), check.attributes = FALSE,
+    data.frame(a = signif(x$a, 5), b = signif(x$b, 4))
+  )
+
+  expect_error(
+    write_vc(x, "faults", root, digits = c(4, 5), sorting = "a"),
+    "`digits` must be either named"
+  )
+  expect_error(
+    write_vc(x, "faults", root, digits = c(a = 4, b = NA), sorting = "a"),
+    "`digits` must be a strict positive integer"
+  )
+  expect_error(
+    write_vc(x, "faults", root, digits = c(a = 4, c = 5), sorting = "a"),
+    "`digits` must contain all numeric variables"
+  )
 })

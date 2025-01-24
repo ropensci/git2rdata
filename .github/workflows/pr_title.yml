@@ -1,0 +1,20 @@
+name: 'PR Title Checker'
+on:
+  pull_request:
+    types: [edited, opened, synchronize, reopened]
+    branches:
+    - main
+    - master
+
+jobs:
+  title-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: naveenk1223/action-pr-title@master
+        with:
+          regex: 'Version [0-9]+\.[0-9]+(\.[0-9]+)?$' # Regex the title should match.
+          allowed_prefixes: ':bookmark:' # title should start with the given prefix
+          prefix_case_sensitive: true # title prefix are case insensitive
+          min_length: 11 # Min length of the title
+          max_length: -1 # Max length of the title
+          name: Check PR title

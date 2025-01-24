@@ -13,35 +13,46 @@
 #' @param name a character string with the new table name of the object.
 #' @param title a character string with the new title of the object.
 #' @param description a character string with the new description of the object.
+#' @param ... parameters used in some methods
 #' @family storage
 #' @export
 #' @importFrom assertthat assert_that has_name
 update_metadata <- function(
-  file, root = ".", field_description, name, title, description
+  file, root = ".", field_description, name, title, description, ...
 ) {
   UseMethod("update_metadata", root)
 }
 
 #' @export
 update_metadata.default <- function(
-  file, root = ".", field_description, name, title, description
+  file, root = ".", field_description, name, title, description, ...
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @export
+#' @importFrom assertthat assert_that is.string noNA
+#' @importFrom git2r add
+#' @inheritParams git2r::add
 update_metadata.git_repository <- function(
-    file, root = ".", field_description, name, title, description
+  file, root = ".", field_description, name, title, description, ...,
+  stage = FALSE, force = FALSE
 ) {
-  update_metadata(
+  assert_that(is.flag(stage), is.flag(force), noNA(stage), noNA(force))
+  file <- update_metadata(
     file = file, root = workdir(root), name = name, title = title,
     description = description, field_description = field_description
   )
+  if (!stage) {
+    return(invisible(file))
+  }
+  add(root, path = file, force = force)
+  return(invisible(file))
 }
 
 #' @export
 update_metadata.character <- function(
-  file, root = ".", field_description, name, title, description
+  file, root = ".", field_description, name, title, description, ...
 ) {
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
@@ -83,7 +94,7 @@ update_metadata.character <- function(
     as.character() -> old[["..generic"]][["git2rdata"]]
   metadata_hash(old) -> old[["..generic"]][["hash"]]
   write_yaml(old, file["meta_file"])
-  return(invisible(NULL))
+  return(invisible(file["meta_file"]))
 }
 
 #' @importFrom assertthat assert_that is.string

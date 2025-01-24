@@ -38,7 +38,10 @@ root <- tempfile("git2rdata-")
 dir.create(root)
 
 # write a dataframe to the directory
-write_vc(iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length")
+write_vc(
+  iris[1:6, ], file = "iris", root = root, sorting = "Sepal.Length",
+  digits = 6
+)
 # check that a data file (.tsv) and a metadata file (.yml) exist.
 list.files(root, recursive = TRUE)
 # read the git2rdata object from the directory
@@ -91,6 +94,7 @@ status(repo)
 }
 \seealso{
 Other storage: 
+\code{\link{data_package}()},
 \code{\link{display_metadata}()},
 \code{\link{list_data}()},
 \code{\link{prune_meta}()},

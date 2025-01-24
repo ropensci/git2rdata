@@ -16,6 +16,7 @@ Display metadata for a \code{git2rdata} object
 }
 \seealso{
 Other storage: 
+\code{\link{data_package}()},
 \code{\link{list_data}()},
 \code{\link{prune_meta}()},
 \code{\link{read_vc}()},
