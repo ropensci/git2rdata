@@ -38,7 +38,7 @@ URL: https://ropensci.github.io/git2rdata/,
     https://doi.org/10.5281/zenodo.1485309
 BugReports: https://github.com/ropensci/git2rdata/issues
 Depends: 
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports:
     assertthat,
     git2r (>= 0.23.0),
