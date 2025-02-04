@@ -25,4 +25,12 @@ test_that("datapackage", {
   expect_identical(
     data_package(path = root), file.path(root, "datapackage.json")
   )
+
+  human_meta <- read_vc("human_readable_meta", root = root)
+  write_vc(human_meta, file = "rewrite", root = root)
+  rewrite <- read_vc("rewrite", root = root)
+  expect_identical(attributes(human_meta), attributes(rewrite))
+  for (i in colnames(human_meta)) {
+    expect_identical(attributes(human_meta[[i]]), attributes(rewrite[[i]]))
+  }
 })
