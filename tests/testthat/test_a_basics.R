@@ -367,3 +367,44 @@ test_that("digits works as expected", {
     "`digits` must contain all numeric variables"
   )
 })
+
+test_that("meta() handles factors without levels", {
+  x <- data.frame(y = factor(integer(0)))
+  x1 <- data.frame(y = factor(1))
+  root <- tempfile("empty_factor")
+  dir.create(root)
+
+  expect_type(
+    y <- write_vc(x = x, file = "optimised", root = root, sorting = "y"),
+    "character"
+  )
+  expect_length(y, 2)
+  expect_type(
+    y <- write_vc(x = x, file = "optimised", root = root, sorting = "y"),
+    "character"
+  )
+  expect_length(y, 2)
+  expect_type(
+    y <- write_vc(x = x1, file = "optimised", root = root, sorting = "y"),
+    "character"
+  )
+  expect_length(y, 2)
+
+  expect_type(
+    y <- write_vc(
+      x = x, file = "human", root = root, sorting = "y", optimize = FALSE
+    ),
+    "character"
+  )
+  expect_length(y, 2)
+  expect_type(
+    y <- write_vc(x = x, file = "optimised", root = root, sorting = "y"),
+    "character"
+  )
+  expect_length(y, 2)
+  expect_type(
+    y <- write_vc(x = x1, file = "optimised", root = root, sorting = "y"),
+    "character"
+  )
+  expect_length(y, 2)
+})
