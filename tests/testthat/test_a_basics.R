@@ -319,9 +319,12 @@ test_that("digits works as expected", {
     "`digits` was not set."
   )
   expect_equal(
-    read_vc(fn[1], root), check.attributes = FALSE,
+    z <- read_vc(fn[1], root), check.attributes = FALSE,
     signif(x, 6)
   )
+  for (i in colnames(z)) {
+    expect_identical(attributes(z[[i]]), list(digits = 6L))
+  }
 
   expect_is(
     fn <- write_vc(x, "digits", root, digits = 4, sorting = "a"),
