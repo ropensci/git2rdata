@@ -203,28 +203,41 @@ reinstate <- function(raw_data, col_names, col_classes, details, optimize) {
         origin = details[[id]][["origin"]],
         tz = details[[id]][["timezone"]]
       )
+      attr(raw_data[[id]], "origin") <- details[[id]][["origin"]]
     } else {
       raw_data[[id]] <- as.POSIXct(
         raw_data[[id]],
         format = details[[id]][["format"]],
         tz = details[[id]][["timezone"]]
       )
+      attr(raw_data[[id]], "format") <- details[[id]][["format"]]
     }
+  }
+
+  # reinstate numeric
+  for (id in col_names[col_classes == "numeric"]) {
+    attr(raw_data[[id]], "digits") <- details[[id]][["digits"]]
+  }
+
+  # reinstage Date
+  for (id in col_names[col_classes == "Date"]) {
+    if (optimize) {
+      raw_data[[id]] <- as.Date(
+        raw_data[[id]], origin = details[[id]][["origin"]]
+      )
+    }
+    attr(raw_data[[id]], "origin") <- details[[id]][["origin"]]
   }
 
   if (!optimize) {
     return(raw_data)
   }
+
   # reinstate logical
   for (id in col_names[col_classes == "logical"]) {
     raw_data[[id]] <- as.logical(raw_data[[id]])
   }
 
-  # reinstage Date
-  for (id in col_names[col_classes == "Date"]) {
-    raw_data[[id]] <- as.Date(raw_data[[id]],
-                              origin = details[[id]][["origin"]])
-  }
   return(raw_data)
 }
 

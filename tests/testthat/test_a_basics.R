@@ -88,9 +88,13 @@ test_that("write_vc() and read_vc() on a file system", {
     stored <- read_vc(file = file.path("a", "verbose"), root = root),
     sorted_test_data_6, check.attributes = FALSE
   )
+  human_readable <- sorted_test_data_6
+  attr(human_readable$test_POSIXct, "origin") <- NULL
+  attr(human_readable$test_POSIXct, "format") <- "%Y-%m-%dT%H:%M:%SZ"
+  attr(human_readable$test_Date, "origin") <- NULL
   for (i in colnames(stored)) {
     expect_equal(
-      stored[[i]], sorted_test_data_6[[i]], label = paste0("stored$", i),
+      stored[[i]], human_readable[[i]], label = paste0("stored$", i),
       expected.label = paste0("sorted_test_data$", i)
     )
   }
@@ -200,6 +204,9 @@ test_that("write_vc() and read_vc() on a file system", {
   sorted_test_no <- sorted_test_data
   sorted_test_no$test_ordered <- NULL
   sorted_test_no$test_numeric <- signif(sorted_test_no$test_numeric, 6)
+  attr(sorted_test_no$test_numeric, "digits") <- 6L
+  attr(sorted_test_no$test_POSIXct, "origin") <- "1970-01-01 00:00:00"
+  attr(sorted_test_no$test_Date, "origin") <- "1970-01-01"
   expect_equal(
     stored <- read_vc(file = "no_ordered", root = root), sorted_test_no,
     check.attributes = FALSE

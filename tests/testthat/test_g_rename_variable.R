@@ -25,7 +25,7 @@ test_that("rename_variable() handles single files", {
   expect_identical(length(updated), length(change))
   expect_identical(colnames(test_data)[updated], unname(change))
   expect_identical(colnames(changed_df)[updated], names(change))
-  expect_identical(test_data[, change], changed_df[, names(change)])
+  expect_equivalent(test_data[, change], changed_df[, names(change)])
   git2r::reset(cm, "hard")
 
   files <- write_vc(

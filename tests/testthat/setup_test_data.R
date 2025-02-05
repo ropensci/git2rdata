@@ -33,21 +33,30 @@ git2rdata:::set_local_locale(old_locale)
 sorted_test_data$test_character <- enc2utf8(sorted_test_data$test_character)
 rownames(sorted_test_data) <- NULL
 
+attr(sorted_test_data$test_POSIXct, "origin") <- "1970-01-01 00:00:00"
+attr(sorted_test_data$test_Date, "origin") <- "1970-01-01"
+
 sorted_test_data_6 <- sorted_test_data
 sorted_test_data_6$test_numeric <- signif(sorted_test_data_6$test_numeric, 6)
+attr(sorted_test_data_6$test_numeric, "digits") <- 6L
+
 
 sorted_test_data_4 <- sorted_test_data
 sorted_test_data_4$test_numeric <- signif(sorted_test_data_4$test_numeric, 4)
+attr(sorted_test_data_4$test_numeric, "digits") <- 4L
 
 
 test_subset <- head(test_data, ceiling(test_n / 2))
 
 sorted_test_subset <- test_subset[order(test_subset$test_Date), ]
+attr(sorted_test_subset$test_POSIXct, "origin") <- "1970-01-01 00:00:00"
+attr(sorted_test_subset$test_Date, "origin") <- "1970-01-01"
 rownames(sorted_test_subset) <- NULL
 sorted_test_subset_6 <- sorted_test_subset
 sorted_test_subset_6$test_numeric <- signif(
   sorted_test_subset_6$test_numeric, 6
 )
+attr(sorted_test_subset_6$test_numeric, "digits") <- 6L
 
 test_na <- test_data
 for (i in seq_along(test_na)) {
@@ -58,5 +67,8 @@ sorted_test_na <- test_na[
   order(test_na$test_Date, test_na$test_integer, test_na$test_numeric),
 ]
 sorted_test_na$test_numeric <- signif(sorted_test_na$test_numeric, 6)
+attr(sorted_test_na$test_numeric, "digits") <- 6L
+attr(sorted_test_na$test_POSIXct, "origin") <- "1970-01-01 00:00:00"
+attr(sorted_test_na$test_Date, "origin") <- "1970-01-01"
 git2rdata:::set_local_locale(old_locale)
 rownames(sorted_test_na) <- NULL
