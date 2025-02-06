@@ -389,15 +389,21 @@ test_that("meta() handles factors without levels", {
     "character"
   )
   expect_length(y, 2)
-  expect_type(
-    y <- write_vc(x = x, file = "optimised", root = root, sorting = "y"),
-    "character"
+  expect_warning(
+    y <- write_vc(
+      x = x, file = "optimised", root = root, sorting = "y", strict = FALSE
+    ),
+    "Changes in the metadata"
   )
+  expect_type(y, "character")
   expect_length(y, 2)
-  expect_type(
-    y <- write_vc(x = x1, file = "optimised", root = root, sorting = "y"),
-    "character"
+  expect_warning(
+    y <- write_vc(
+      x = x1, file = "optimised", root = root, sorting = "y", strict = FALSE
+    ),
+    "Changes in the metadata"
   )
+  expect_type(y, "character")
   expect_length(y, 2)
 
   expect_type(
@@ -407,14 +413,86 @@ test_that("meta() handles factors without levels", {
     "character"
   )
   expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x, file = "human", root = root, sorting = "y", strict = FALSE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
+  expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x1, file = "human", root = root, sorting = "y", strict = FALSE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
+  expect_length(y, 2)
+
   expect_type(
-    y <- write_vc(x = x, file = "optimised", root = root, sorting = "y"),
+    y <- write_vc(x = x1, file = "optimised2", root = root, sorting = "y"),
     "character"
   )
   expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x, file = "optimised2", root = root, sorting = "y", strict = FALSE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
+  expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x, file = "optimised2", root = root, sorting = "y", strict = FALSE,
+      append = TRUE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
+  expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x1, file = "optimised2", root = root, sorting = "y", strict = FALSE,
+      append = TRUE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
+  expect_length(y, 2)
+
   expect_type(
-    y <- write_vc(x = x1, file = "optimised", root = root, sorting = "y"),
+    y <- write_vc(
+      x = x1, file = "human2", root = root, sorting = "y", optimize = FALSE
+    ),
     "character"
   )
+  expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x, file = "human2", root = root, sorting = "y", strict = FALSE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
+  expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x, file = "human2", root = root, sorting = "y", strict = FALSE,
+      append = TRUE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
+  expect_length(y, 2)
+  expect_warning(
+    y <- write_vc(
+      x = x1, file = "human2", root = root, sorting = "y", strict = FALSE,
+      append = TRUE
+    ),
+    "Changes in the metadata"
+  )
+  expect_type(y, "character")
   expect_length(y, 2)
 })

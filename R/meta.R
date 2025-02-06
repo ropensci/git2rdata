@@ -93,13 +93,12 @@ meta.factor <- function(
 ) {
   assert_that(is.flag(optimize), noNA(optimize), is.flag(strict), noNA(strict))
   levels(x) <- enc2utf8(levels(x))
-  if (missing(index) || is.null(index)) {
+  if (missing(index) || is.null(index) || length(index) == 0) {
     index <- seq_along(levels(x))
     names(index) <- levels(x)
   } else {
     assert_that(is.integer(index))
     assert_that(anyDuplicated(index) == 0, msg = "duplicate indices")
-
     if (
       strict &&
       all(names(index) %in% levels(x)) &&
