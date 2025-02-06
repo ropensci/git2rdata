@@ -12,16 +12,16 @@ test_data <- data.frame(
     factor(c("a", "b"), levels = c("a", "b", "c"), ordered = TRUE),
     size = test_n, replace = TRUE
   ),
-  test_integer = sample(.Machine$integer.max, size = test_n, replace = TRUE),
+  test_integer = sample(.Machine$integer.max, size = test_n, replace = FALSE),
   test_numeric = rnorm(test_n, mean = 0, sd = 1),
   test_logical = sample(c(TRUE, FALSE), size = test_n, replace = TRUE),
   test_POSIXct = as.POSIXct(
-    sample(.Machine$integer.max, size = test_n, replace = TRUE),
+    sample(.Machine$integer.max, size = test_n, replace = FALSE),
     origin = "1970-01-01",
     tz = "UTC"
   ),
   test_Date = as.Date(
-    c(sample(1e5, size = test_n - 1, replace = TRUE), 16000),
+    c(sample(1e5, size = test_n - 1, replace = FALSE), 16000),
     origin = "1970-01-01"
   ),
   stringsAsFactors = FALSE
