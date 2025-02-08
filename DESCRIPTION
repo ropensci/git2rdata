@@ -75,6 +75,7 @@ Collate:
     'read_vc.R'
     'recent_commit.R'
     'reexport.R'
+    'reinstate.R'
     'relabel.R'
     'rename_variable.R'
     'update_metadata.R'
