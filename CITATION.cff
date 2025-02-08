@@ -40,4 +40,4 @@ identifiers:
   value: 10.5281/zenodo.1485309
 - type: url
   value: https://ropensci.github.io/git2rdata/
-version: 0.5.0
+version: 0.5.1

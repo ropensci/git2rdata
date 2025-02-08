@@ -1,3 +1,9 @@
+# git2rdata 0.5.1
+
+* `write_vc()` stores metadata stored in the data frame.
+* `read_vc()` returns more metadata. 
+* `read_vc()` can handle empty factors.
+
 # git2rdata 0.5.0
 
 * `read_vc()` handles empty datasets stored with `split_by`. 
