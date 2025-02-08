@@ -78,7 +78,7 @@ write_vc.character <- function(
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
   dirname(file["raw_file"]) |>
-    dir.create(, showWarnings = FALSE, recursive = TRUE)
+    dir.create(showWarnings = FALSE, recursive = TRUE)
 
   if (!file.exists(file["meta_file"])) {
     raw_data <- meta(

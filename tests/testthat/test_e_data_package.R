@@ -27,9 +27,16 @@ test_that("datapackage", {
   )
 
   human_meta <- read_vc("human_readable_meta", root = root)
-  write_vc(human_meta, file = "rewrite", root = root)
+  write_vc(human_meta, file = "rewrite", root = root, optimize = FALSE)
   rewrite <- read_vc("rewrite", root = root)
-  expect_identical(attributes(human_meta), attributes(rewrite))
+  att_human <- attributes(human_meta)
+  att_rewrite <- attributes(rewrite)
+  att_human <- att_human[order(names(att_human))]
+  att_rewrite <- att_rewrite[order(names(att_rewrite))]
+  att_human[["source"]] <- NULL
+  att_rewrite[["source"]] <- NULL
+  expect_identical(names(att_human), names(att_rewrite))
+  expect_identical(att_human, att_rewrite)
   for (i in colnames(human_meta)) {
     expect_identical(attributes(human_meta[[i]]), attributes(rewrite[[i]]))
   }
