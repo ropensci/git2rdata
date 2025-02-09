@@ -100,30 +100,20 @@ meta.factor <- function(
   if (missing(index) || is.null(index) || length(index) == 0) {
     index <- seq_along(levels(x))
     names(index) <- levels(x)
-  } else {
-    assert_that(is.integer(index))
-    assert_that(anyDuplicated(index) == 0, msg = "duplicate indices")
-    if (
-      strict &&
-      all(names(index) %in% levels(x)) &&
-      all(levels(x) %in% names(index)) &&
-      any(levels(x) != names(index))
-    ) {
-      warning("Same levels with a different order detected.
-This change is ignored. Use `strict = FALSE` to reorder the factor.")
-      x <- factor(x, levels = names(index))
-    }
-    new_levels <- which(!levels(x) %in% names(index))
-    candidate_index <- seq_len(length(new_levels) + length(index))
-    candidate_index <- candidate_index[!candidate_index %in% index]
-    extra_index <- candidate_index[seq_along(new_levels)]
-    names(extra_index) <- levels(x)[new_levels]
-    new_index <- c(index, extra_index)
-    index <- new_index[levels(x)]
-    empty <- levels(x) == ""
-    index[empty] <- new_index[names(new_index) == ""]
-    names(index)[empty] <- ""
   }
+  assert_that(is.integer(index))
+  assert_that(anyDuplicated(index) == 0, msg = "duplicate indices")
+  x <- check_level_order(x = x, index = index, strict = strict)
+  new_levels <- which(!levels(x) %in% names(index))
+  candidate_index <- seq_len(length(new_levels) + length(index))
+  candidate_index <- candidate_index[!candidate_index %in% index]
+  extra_index <- candidate_index[seq_along(new_levels)]
+  names(extra_index) <- levels(x)[new_levels]
+  new_index <- c(index, extra_index)
+  index <- new_index[levels(x)]
+  empty <- levels(x) == ""
+  index[empty] <- new_index[names(new_index) == ""]
+  names(index)[empty] <- ""
 
   if (optimize) {
     z <- index[x]
@@ -146,6 +136,21 @@ Please use a different NA string or use optimize = TRUE")
   attr(z, "meta") <- m
   return(z)
 }
+
+check_level_order <- function(x, index, strict) {
+  if (
+    strict &&
+    all(names(index) %in% levels(x)) &&
+    all(levels(x) %in% names(index)) &&
+    any(levels(x) != names(index))
+  ) {
+    warning("Same levels with a different order detected.
+This change is ignored. Use `strict = FALSE` to reorder the factor.")
+    x <- factor(x, levels = names(index))
+  }
+  return(x)
+}
+
 
 #' @export
 #' @rdname meta
