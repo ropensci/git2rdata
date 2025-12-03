@@ -10,7 +10,9 @@
 #' @family internal
 #' @template example_isgit2r
 is_git2rdata <- function(
-    file, root = ".", message = c("none", "warning", "error")
+  file,
+  root = ".",
+  message = c("none", "warning", "error")
 ) {
   UseMethod("is_git2rdata", root)
 }
@@ -25,7 +27,9 @@ is_git2rdata.default <- function(file, root, message) {
 #' @importFrom yaml read_yaml as.yaml
 #' @importFrom utils packageVersion
 is_git2rdata.character <- function(
-    file, root = ".", message = c("none", "warning", "error")
+  file,
+  root = ".",
+  message = c("none", "warning", "error")
 ) {
   assert_that(is.string(file), is.string(root))
   message <- match.arg(message)
@@ -45,14 +49,19 @@ is_git2rdata.character <- function(
   )
   if (!file.exists(file["raw_file"])) {
     msg <- "Data file missing."
-    switch(message, error = stop(msg, call. = FALSE),
-           warning = warning(msg, call. = FALSE))
+    switch(
+      message,
+      error = stop(msg, call. = FALSE),
+      warning = warning(msg, call. = FALSE)
+    )
     return(FALSE)
   }
 
   if (has_name(meta_data[["..generic"]], "split_by")) {
     header <- readLines(
-      file.path(file["raw_file"], "index.tsv"), n = 1, encoding = "UTF-8"
+      file.path(file["raw_file"], "index.tsv"),
+      n = 1,
+      encoding = "UTF-8"
     )
     correct <- paste(
       c(meta_data[["..generic"]][["split_by"]], "..hash"),
@@ -60,10 +69,14 @@ is_git2rdata.character <- function(
     )
     if (correct != header) {
       msg <- paste(
-        "Corrupt data, incorrect header in index.tsv. Expecting:", correct
+        "Corrupt data, incorrect header in index.tsv. Expecting:",
+        correct
       )
-      switch(message, error = stop(msg, call. = FALSE),
-             warning = warning(msg, call. = FALSE))
+      switch(
+        message,
+        error = stop(msg, call. = FALSE),
+        warning = warning(msg, call. = FALSE)
+      )
       return(FALSE)
     }
     correct <- names(meta_data)
@@ -73,15 +86,20 @@ is_git2rdata.character <- function(
       list.files(file["raw_file"], pattern = "[[:xdigit:]]{20}\\.tsv"),
       function(z) {
         readLines(
-          file.path(file["raw_file"], z), n = 1, encoding = "UTF-8"
+          file.path(file["raw_file"], z),
+          n = 1,
+          encoding = "UTF-8"
         )
       },
       character(1)
     )
     if (any(header != correct)) {
       msg <- paste("Corrupt data, incorrect header. Expecting:", correct)
-      switch(message, error = stop(msg, call. = FALSE),
-             warning = warning(msg, call. = FALSE))
+      switch(
+        message,
+        error = stop(msg, call. = FALSE),
+        warning = warning(msg, call. = FALSE)
+      )
       return(FALSE)
     }
   } else {
@@ -93,8 +111,11 @@ is_git2rdata.character <- function(
     header <- readLines(file["raw_file"], n = 1, encoding = "UTF-8")
     if (correct != header) {
       msg <- paste("Corrupt data, incorrect header. Expecting:", correct)
-      switch(message, error = stop(msg, call. = FALSE),
-             warning = warning(msg, call. = FALSE))
+      switch(
+        message,
+        error = stop(msg, call. = FALSE),
+        warning = warning(msg, call. = FALSE)
+      )
       return(FALSE)
     }
   }
@@ -105,6 +126,9 @@ is_git2rdata.character <- function(
 #' @importFrom git2r workdir
 #' @include write_vc.R
 is_git2rdata.git_repository <- function(
-  file, root, message = c("none", "warning", "error")) {
+  file,
+  root,
+  message = c("none", "warning", "error")
+) {
   is_git2rdata(file = file, root = workdir(root), message = message)
 }

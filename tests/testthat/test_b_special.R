@@ -3,15 +3,48 @@ test_that("handle special characters", {
   dir.create(root)
   ds <- data.frame(
     a = c(
-      "a", "a b",
-      "a\tb", "a\tb\tc", "\ta", "a\t",
-      "a,b", "a,b,c", ",a", "a,",
-      "a;b", "a;b;c", ";a", "a;",
-      "a\nb", "a\nb\nc", "\na", "a\n",
-      "a\"b", "a\"b\"c", "\"b", "a\"", "\"b\"",
-      "a'b", "a'b'c", "'b", "a'", "'b'",
-      "a b c", "\"NA\"", "'NA'", NA,
-      "\U00E9", "&", "\U00E0", "\U00B5", "\U00E7", "€", "|", "#", "@", "$"
+      "a",
+      "a b",
+      "a\tb",
+      "a\tb\tc",
+      "\ta",
+      "a\t",
+      "a,b",
+      "a,b,c",
+      ",a",
+      "a,",
+      "a;b",
+      "a;b;c",
+      ";a",
+      "a;",
+      "a\nb",
+      "a\nb\nc",
+      "\na",
+      "a\n",
+      "a\"b",
+      "a\"b\"c",
+      "\"b",
+      "a\"",
+      "\"b\"",
+      "a'b",
+      "a'b'c",
+      "'b",
+      "a'",
+      "'b'",
+      "a b c",
+      "\"NA\"",
+      "'NA'",
+      NA,
+      "\U00E9",
+      "&",
+      "\U00E0",
+      "\U00B5",
+      "\U00E7",
+      "€",
+      "|",
+      "#",
+      "@",
+      "$"
     ),
     stringsAsFactors = FALSE
   )
@@ -27,7 +60,9 @@ test_that("handle special characters", {
   dso <- ds[order(ds$a), , drop = FALSE] # nolint
   git2rdata:::set_local_locale(old_locale)
   expect_equal(
-    junk <- read_vc("character", root), dso, check.attributes = FALSE
+    junk <- read_vc("character", root),
+    dso,
+    check.attributes = FALSE
   )
   expect_identical(
     names(output),
@@ -38,7 +73,9 @@ test_that("handle special characters", {
     "character"
   )
   expect_equal(
-    junk <- read_vc("character2", root), dso, check.attributes = FALSE
+    junk <- read_vc("character2", root),
+    dso,
+    check.attributes = FALSE
   )
   z <- rbind(ds, "NA")
   z$a <- factor(z$a)
@@ -73,10 +110,11 @@ test_that("handle special characters", {
     names(attr(junk, "source"))
   )
 
-
   yaml_file <- yaml::read_yaml(file.path(root, "factor2.yml"))
   yaml_file[["..generic"]][["data_hash"]] <- "zzz"
   yaml::write_yaml(yaml_file, file.path(root, "factor2.yml"))
-  expect_warning(read_vc("factor2", root = root),
-               "Mismatching data hash. Data altered outside of git2rdata.")
+  expect_warning(
+    read_vc("factor2", root = root),
+    "Mismatching data hash. Data altered outside of git2rdata."
+  )
 })

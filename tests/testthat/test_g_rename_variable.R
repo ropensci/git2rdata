@@ -29,15 +29,22 @@ test_that("rename_variable() handles single files", {
   git2r::reset(cm, "hard")
 
   files <- write_vc(
-    test_data, file = "sorted", root = repo, sorting = "test_Date",
-    stage = TRUE, digits = 6
+    test_data,
+    file = "sorted",
+    root = repo,
+    sorting = "test_Date",
+    stage = TRUE,
+    digits = 6
   )
   cm <- commit(repo, "sorted")
   # staged & sorted on changed variable
   change <- c("new_var" = "test_Date")
   expect_silent({
     rf <- rename_variable(
-      file = files[1], change = change, root = repo, stage = TRUE
+      file = files[1],
+      change = change,
+      root = repo,
+      stage = TRUE
     )
   })
   expect_identical(unname(files), unname(rf))
@@ -59,7 +66,10 @@ test_that("rename_variable() handles single files", {
   change <- c("new_var" = "test_numeric")
   expect_silent({
     rf <- rename_variable(
-      file = files[1], change = change, root = repo, stage = TRUE
+      file = files[1],
+      change = change,
+      root = repo,
+      stage = TRUE
     )
   })
   expect_identical(unname(files), unname(rf))
@@ -85,7 +95,10 @@ test_that("rename_variable() handles split_by files", {
   git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
   files <- suppressWarnings(
     write_vc(
-      test_data, file = "unsorted", split_by = "test_factor", root = repo,
+      test_data,
+      file = "unsorted",
+      split_by = "test_factor",
+      root = repo,
       stage = TRUE
     )
   )
@@ -111,15 +124,23 @@ test_that("rename_variable() handles split_by files", {
   git2r::reset(cm, "hard")
 
   files <- write_vc(
-    test_data, file = "sorted", root = repo, sorting = "test_Date",
-    split_by = "test_factor", stage = TRUE, digits = 6
+    test_data,
+    file = "sorted",
+    root = repo,
+    sorting = "test_Date",
+    split_by = "test_factor",
+    stage = TRUE,
+    digits = 6
   )
   cm <- commit(repo, "sorted")
   # staged & sorted on changed variable
   change <- c("new_var" = "test_Date")
   expect_silent({
     rf <- rename_variable(
-      file = files[1], change = change, root = repo, stage = TRUE
+      file = files[1],
+      change = change,
+      root = repo,
+      stage = TRUE
     )
   })
   expect_identical(unname(files), unname(rf))
@@ -144,7 +165,10 @@ test_that("rename_variable() handles split_by files", {
   change <- c("new_var" = "test_factor")
   expect_silent({
     rf <- rename_variable(
-      file = files[1], change = change, root = repo, stage = TRUE
+      file = files[1],
+      change = change,
+      root = repo,
+      stage = TRUE
     )
   })
   expect_identical(unname(files), unname(rf))
@@ -169,7 +193,10 @@ test_that("rename_variable() handles split_by files", {
   change <- c("new_var" = "test_numeric")
   expect_silent({
     rf <- rename_variable(
-      file = files[1], change = change, root = repo, stage = TRUE
+      file = files[1],
+      change = change,
+      root = repo,
+      stage = TRUE
     )
   })
   expect_identical(unname(files), unname(rf))
@@ -186,7 +213,8 @@ test_that("rename_variable() handles split_by files", {
   expect_identical(colnames(changed_df)[updated], names(change))
   expect_equivalent(
     signif(
-      test_data[order(test_data$test_factor, test_data$test_Date), change], 6
+      test_data[order(test_data$test_factor, test_data$test_Date), change],
+      6
     ),
     changed_df[, names(change)]
   )

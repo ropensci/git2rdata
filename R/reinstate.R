@@ -1,12 +1,16 @@
 reinstate_factor <- function(x, optimize, details) {
   if (optimize) {
     return(factor(
-      x, levels = details[["index"]], labels = details[["labels"]],
+      x,
+      levels = details[["index"]],
+      labels = details[["labels"]],
       ordered = details[["ordered"]]
     ))
   }
   return(factor(
-    x, levels = details[["labels"]], labels = details[["labels"]],
+    x,
+    levels = details[["labels"]],
+    labels = details[["labels"]],
     ordered = details[["ordered"]]
   ))
 }
@@ -14,13 +18,17 @@ reinstate_factor <- function(x, optimize, details) {
 reinstate_positxct <- function(x, optimize, details) {
   if (optimize) {
     z <- as.POSIXct(
-      x, origin = details[["origin"]], tz = details[["timezone"]]
+      x,
+      origin = details[["origin"]],
+      tz = details[["timezone"]]
     )
     attr(z, "origin") <- details[["origin"]]
     return(z)
   }
   z <- as.POSIXct(
-    x, format = details[["format"]], tz = details[["timezone"]]
+    x,
+    format = details[["format"]],
+    tz = details[["timezone"]]
   )
   attr(z, "format") <- details[["format"]]
   return(z)
@@ -51,19 +59,29 @@ reinstate <- function(raw_data, optimize, col_names, col_classes, details) {
     raw_data[[id]] <- switch(
       col_classes[i],
       factor = reinstate_factor(
-        x = raw_data[[id]], optimize = optimize, details = details[[id]]
+        x = raw_data[[id]],
+        optimize = optimize,
+        details = details[[id]]
       ),
       POSIXct = reinstate_positxct(
-        x = raw_data[[id]], optimize = optimize, details = details[[id]]
+        x = raw_data[[id]],
+        optimize = optimize,
+        details = details[[id]]
       ),
       numeric = reinstate_numeric(
-        x = raw_data[[id]], optimize = optimize, details = details[[id]]
+        x = raw_data[[id]],
+        optimize = optimize,
+        details = details[[id]]
       ),
       Date = reinstate_date(
-        x = raw_data[[id]], optimize = optimize, details = details[[id]]
+        x = raw_data[[id]],
+        optimize = optimize,
+        details = details[[id]]
       ),
       logical = reinstage_logical(
-        x = raw_data[[id]], optimize = optimize, details = details[[id]]
+        x = raw_data[[id]],
+        optimize = optimize,
+        details = details[[id]]
       ),
       raw_data[[id]]
     )

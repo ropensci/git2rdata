@@ -21,14 +21,20 @@
 #' @family storage
 #' @template example_prune
 rm_data <- function(
-  root = ".", path = NULL, recursive = TRUE, ...
+  root = ".",
+  path = NULL,
+  recursive = TRUE,
+  ...
 ) {
   UseMethod("rm_data", root)
 }
 
 #' @export
 rm_data.default <- function(
-  root, path = NULL, recursive = TRUE, ...
+  root,
+  path = NULL,
+  recursive = TRUE,
+  ...
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
@@ -36,7 +42,10 @@ rm_data.default <- function(
 #' @export
 #' @importFrom assertthat assert_that is.flag
 rm_data.character <- function(
-  root = ".", path = NULL, recursive = TRUE, ...
+  root = ".",
+  path = NULL,
+  recursive = TRUE,
+  ...
 ) {
   to_do <- list_data(root = root, path = path, recursive = recursive)
   if (length(to_do) == 0) {
@@ -61,7 +70,11 @@ rm_data.character <- function(
 #' visible data files, including `untracked` files.
 #' @rdname rm_data
 rm_data.git_repository <- function(
-  root, path = NULL, recursive = TRUE, ..., stage = FALSE,
+  root,
+  path = NULL,
+  recursive = TRUE,
+  ...,
+  stage = FALSE,
   type = c("unmodified", "modified", "ignored", "all")
 ) {
   type <- match.arg(type)
@@ -70,15 +83,28 @@ rm_data.git_repository <- function(
     return(to_do)
   }
 
-  keep <- unlist(switch(type,
+  keep <- unlist(switch(
+    type,
     unmodified = status(
-      root, staged = TRUE, unstaged = TRUE, untracked = TRUE, ignored = TRUE
+      root,
+      staged = TRUE,
+      unstaged = TRUE,
+      untracked = TRUE,
+      ignored = TRUE
     ),
     modified = status(
-      root, staged = FALSE, unstaged = FALSE, untracked = TRUE, ignored = TRUE
+      root,
+      staged = FALSE,
+      unstaged = FALSE,
+      untracked = TRUE,
+      ignored = TRUE
     ),
     ignored = status(
-      root, staged = FALSE, unstaged = FALSE, untracked = TRUE, ignored = FALSE
+      root,
+      staged = FALSE,
+      unstaged = FALSE,
+      untracked = TRUE,
+      ignored = FALSE
     ),
     all = list()
   ))
@@ -114,14 +140,20 @@ rm_data.git_repository <- function(
 #' @family storage
 #' @template example_prune
 prune_meta <- function(
-  root = ".", path = NULL, recursive = TRUE, ...
+  root = ".",
+  path = NULL,
+  recursive = TRUE,
+  ...
 ) {
   UseMethod("prune_meta", root)
 }
 
 #' @export
 prune_meta.default <- function(
-  root, path = NULL, recursive = TRUE, ...
+  root,
+  path = NULL,
+  recursive = TRUE,
+  ...
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
@@ -129,7 +161,10 @@ prune_meta.default <- function(
 #' @export
 #' @importFrom assertthat assert_that is.flag noNA
 prune_meta.character <- function(
-  root = ".", path = NULL, recursive = TRUE, ...
+  root = ".",
+  path = NULL,
+  recursive = TRUE,
+  ...
 ) {
   assert_that(is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
@@ -141,22 +176,42 @@ prune_meta.character <- function(
   }
   assert_that(is.flag(recursive), noNA(recursive))
 
-  to_do <- list.files(path = path, pattern = "\\.yml$", recursive = recursive,
-                      full.names = TRUE)
-  keep <- list.files(path = path, pattern = "\\.tsv$", recursive = recursive,
-                     full.names = TRUE)
+  to_do <- list.files(
+    path = path,
+    pattern = "\\.yml$",
+    recursive = recursive,
+    full.names = TRUE
+  )
+  keep <- list.files(
+    path = path,
+    pattern = "\\.tsv$",
+    recursive = recursive,
+    full.names = TRUE
+  )
   keep <- gsub("\\.tsv$", ".yml", keep)
   to_do <- to_do[!to_do %in% keep]
-  keep <- list.files(path = path, pattern = "\\.csv$", recursive = recursive,
-                     full.names = TRUE)
+  keep <- list.files(
+    path = path,
+    pattern = "\\.csv$",
+    recursive = recursive,
+    full.names = TRUE
+  )
   keep <- gsub("\\.csv$", ".yml", keep)
   to_do <- to_do[!to_do %in% keep]
   to_do_base <- remove_root(file = to_do, root = root)
-  check <- vapply(X = gsub(".yml$", "", to_do_base), FUN = is_git2rmeta,
-                  FUN.VALUE = NA, root = root, message = "none")
+  check <- vapply(
+    X = gsub(".yml$", "", to_do_base),
+    FUN = is_git2rmeta,
+    FUN.VALUE = NA,
+    root = root,
+    message = "none"
+  )
   if (any(!check)) {
-    warning("Invalid metadata files found. See ?is_git2rmeta():\n",
-            paste(to_do_base[!check], collapse = "\n"), call. = FALSE)
+    warning(
+      "Invalid metadata files found. See ?is_git2rmeta():\n",
+      paste(to_do_base[!check], collapse = "\n"),
+      call. = FALSE
+    )
   }
   to_do <- to_do[check]
 
@@ -173,7 +228,11 @@ prune_meta.character <- function(
 #' @param stage stage the changes after removing the files. Defaults to `FALSE`.
 #' @rdname prune_meta
 prune_meta.git_repository <- function(
-  root, path = NULL, recursive = TRUE, ..., stage = FALSE
+  root,
+  path = NULL,
+  recursive = TRUE,
+  ...,
+  stage = FALSE
 ) {
   root_wd <- normalizePath(workdir(root), winslash = "/")
   assert_that(is.string(path))
@@ -186,10 +245,15 @@ prune_meta.git_repository <- function(
   assert_that(is.flag(stage))
 
   to_do <- list.files(
-    path = path, pattern = "\\.yml$", recursive = recursive, full.names = TRUE
+    path = path,
+    pattern = "\\.yml$",
+    recursive = recursive,
+    full.names = TRUE
   )
   keep <- list.files(
-    path = path, pattern = "\\.[ct]sv$", recursive = recursive,
+    path = path,
+    pattern = "\\.[ct]sv$",
+    recursive = recursive,
     full.names = TRUE
   )
   keep <- gsub("\\.[ct]sv$", ".yml", keep)
@@ -200,27 +264,41 @@ prune_meta.git_repository <- function(
 
   if (stage) {
     changed <- unlist(status(
-      root, staged = FALSE, unstaged = TRUE, untracked = FALSE, ignored = FALSE
+      root,
+      staged = FALSE,
+      unstaged = TRUE,
+      untracked = FALSE,
+      ignored = FALSE
     ))
     changed <- gsub(
-      "\\.[ct]sv$", ".yml", file.path(root_wd, changed, fsep = "/")
+      "\\.[ct]sv$",
+      ".yml",
+      file.path(root_wd, changed, fsep = "/")
     )
     if (any(to_do %in% changed)) {
       stop(
         call. = FALSE,
-"cannot remove and stage metadata in combination with removed but unstaged data"
+        "cannot remove and stage metadata in combination with removed but unstaged data"
       )
     }
   } else {
     changed <- unlist(status(
-      root, staged = TRUE, unstaged = FALSE, untracked = FALSE, ignored = FALSE
+      root,
+      staged = TRUE,
+      unstaged = FALSE,
+      untracked = FALSE,
+      ignored = FALSE
     ))
     changed <- gsub(
-      "\\.[ct]sv$", ".yml", file.path(root_wd, changed, fsep = "/")
+      "\\.[ct]sv$",
+      ".yml",
+      file.path(root_wd, changed, fsep = "/")
     )
     if (any(to_do %in% changed)) {
-      warning("data removed and staged, metadata removed but unstaged",
-              call. = FALSE)
+      warning(
+        "data removed and staged, metadata removed but unstaged",
+        call. = FALSE
+      )
     }
   }
   file.remove(to_do)

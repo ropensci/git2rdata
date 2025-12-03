@@ -6,14 +6,17 @@ path <- file.path(root, "testthat")
 
 test_that("read_vc() checks version", {
   expect_error(
-    read_vc("optimized_0_0_4", path), "Data stored using an older version"
+    read_vc("optimized_0_0_4", path),
+    "Data stored using an older version"
   )
   expect_error(
-    read_vc("verbose_0_0_4", path), "Data stored using an older version"
+    read_vc("verbose_0_0_4", path),
+    "Data stored using an older version"
   )
   expect_is(read_vc("optimized_0_3_1", path), "data.frame")
   expect_error(
-    read_vc("verbose_0_3_1", path), "Data stored using an older version"
+    read_vc("verbose_0_3_1", path),
+    "Data stored using an older version"
   )
 })
 
@@ -50,14 +53,16 @@ test_that("upgrade_data() works on single files", {
   expect_is(read_vc("optimized_0_3_1", path), "data.frame")
 
   expect_message(
-    z <- upgrade_data(file = "verbose_0_3_1", root = path), "updated"
+    z <- upgrade_data(file = "verbose_0_3_1", root = path),
+    "updated"
   )
   expect_true(file_test("-f", file.path(path, "verbose_0_3_1.csv")))
   expect_false(file_test("-f", file.path(path, "verbose_0_3_1.tsv")))
   expect_is(read_vc("verbose_0_3_1", path), "data.frame")
 
   expect_error(
-    upgrade_data(file = "optimized_0_0_4", root = path), "ancient"
+    upgrade_data(file = "optimized_0_0_4", root = path),
+    "ancient"
   )
 })
 
@@ -121,11 +126,13 @@ test_that("validation", {
   file.copy(origin, root, recursive = TRUE)
   path <- file.path(root, "testthat")
   expect_error(
-    upgrade_data(root = 1), "a 'root' of class numeric is not supported"
+    upgrade_data(root = 1),
+    "a 'root' of class numeric is not supported"
   )
   yml <- read_yaml(file.path(path, "verbose_0_0_4.yml"))
   write_yaml(
-    yml[names(yml) != "..generic"], file.path(path, "verbose_0_0_4.yml")
+    yml[names(yml) != "..generic"],
+    file.path(path, "verbose_0_0_4.yml")
   )
   expect_message(
     upgrade_data(file = "verbose_0_0_4", root = path),

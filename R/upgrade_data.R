@@ -44,16 +44,29 @@ upgrade_data.default <- function(file, root, verbose, path, ...) {
 #' @importFrom utils packageVersion
 #' @export
 upgrade_data.character <- function(
-  file, root = ".", verbose = TRUE, ..., path) {
+  file,
+  root = ".",
+  verbose = TRUE,
+  ...,
+  path
+) {
   assert_that(is.string(root))
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   if (missing(file)) {
     assert_that(is.string(path))
-    full_path <- normalizePath(file.path(root, path), winslash = "/",
-                               mustWork = TRUE)
+    full_path <- normalizePath(
+      file.path(root, path),
+      winslash = "/",
+      mustWork = TRUE
+    )
     ymls <- list.files(path = full_path, pattern = "\\.yml$", recursive = TRUE)
-    files <- vapply(file.path(path, ymls), upgrade_data, root = root,
-                    verbose = verbose, FUN.VALUE = "")
+    files <- vapply(
+      file.path(path, ymls),
+      upgrade_data,
+      root = root,
+      verbose = verbose,
+      FUN.VALUE = ""
+    )
     return(files)
   }
   assert_that(missing(path), msg = "specify either 'file' or 'path'")
@@ -97,16 +110,27 @@ Install version 0.3.1 with remotes::install_github('ropensci/git2rdata@v0.3.1')"
     col_names <- names(details)
     col_classes <- vapply(details, "[[", character(1), "class")
     col_type <- c(
-      character = "character", factor = "character", integer = "integer",
-      numeric = "numeric", logical = "logical", Date = "Date",
-      POSIXct = "character", complex = "complex"
+      character = "character",
+      factor = "character",
+      integer = "integer",
+      numeric = "numeric",
+      logical = "logical",
+      Date = "Date",
+      POSIXct = "character",
+      complex = "complex"
     )
     old <- read.table(
-      file = file["raw_file"], header = TRUE, sep = "\t", quote = "\"",
-      dec = ".", numerals = "warn.loss", na.strings = na_string,
+      file = file["raw_file"],
+      header = TRUE,
+      sep = "\t",
+      quote = "\"",
+      dec = ".",
+      numerals = "warn.loss",
+      na.strings = na_string,
       colClasses = setNames(col_type[col_classes], col_names),
       comment.char = "",
-      stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+      stringsAsFactors = FALSE,
+      fileEncoding = "UTF-8"
     )
     file.remove(file["raw_file"])
     file["raw_file"] <- gsub("\\.tsv$", ".csv", file["raw_file"])
@@ -118,9 +142,17 @@ Install version 0.3.1 with remotes::install_github('ropensci/git2rdata@v0.3.1')"
       old[[i]] <- x
     }
     write.table(
-      x = old, file = file["raw_file"],
-      append = FALSE, quote = FALSE, sep = ",", eol = "\n", na = na_string,
-      dec = ".", row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
+      x = old,
+      file = file["raw_file"],
+      append = FALSE,
+      quote = FALSE,
+      sep = ",",
+      eol = "\n",
+      na = na_string,
+      dec = ".",
+      row.names = FALSE,
+      col.names = TRUE,
+      fileEncoding = "UTF-8"
     )
     meta_data[["..generic"]][["git2rdata"]] <- NULL
     meta_data[["..generic"]][["data_hash"]] <- NULL
@@ -146,11 +178,22 @@ Install version 0.3.1 with remotes::install_github('ropensci/git2rdata@v0.3.1')"
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom git2r workdir add
 upgrade_data.git_repository <- function(
-  file, root = ".", verbose = TRUE, ..., path, stage = FALSE, force = FALSE
+  file,
+  root = ".",
+  verbose = TRUE,
+  ...,
+  path,
+  stage = FALSE,
+  force = FALSE
 ) {
   assert_that(is.flag(stage), noNA(stage), is.flag(force), noNA(force))
-  file <- upgrade_data(file = file, root = workdir(root), verbose = verbose,
-                       path = path, ...)
+  file <- upgrade_data(
+    file = file,
+    root = workdir(root),
+    verbose = verbose,
+    path = path,
+    ...
+  )
   if (!stage) {
     return(file)
   }

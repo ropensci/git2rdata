@@ -14,8 +14,9 @@ verify_vc <- function(file, root, variables) {
   ok <- variables %in% colnames(x)
   assert_that(
     all(ok),
-    msg =   sprintf(
-      "variables missing from `%s`: %s", file,
+    msg = sprintf(
+      "variables missing from `%s`: %s",
+      file,
       paste(variables[!ok], collapse = ", ")
     )
   )

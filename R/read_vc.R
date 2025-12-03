@@ -38,8 +38,11 @@ read_vc.character <- function(file, root = ".") {
 
   file <- clean_data_path(root = root, file = file)
   tryCatch(
-    is_git2rdata(file = remove_root(file = file["meta_file"], root = root),
-                 root = root, message = "error"),
+    is_git2rdata(
+      file = remove_root(file = file["meta_file"], root = root),
+      root = root,
+      message = "error"
+    ),
     error = function(e) {
       stop(e$message, call. = FALSE)
     }
@@ -49,18 +52,30 @@ read_vc.character <- function(file, root = ".") {
   meta_data <- read_yaml(file["meta_file"])
   optimize <- meta_data[["..generic"]][["optimize"]]
   file["raw_file"] <- ifelse(
-    optimize, file["raw_file"], gsub("\\.tsv$", ".csv", file["raw_file"])
+    optimize,
+    file["raw_file"],
+    gsub("\\.tsv$", ".csv", file["raw_file"])
   )
   col_type <- list(
     c(
-      character = "character", factor = "character", integer = "integer",
-      numeric = "numeric", logical = "logical", Date = "Date",
-      POSIXct = "character", complex = "complex"
+      character = "character",
+      factor = "character",
+      integer = "integer",
+      numeric = "numeric",
+      logical = "logical",
+      Date = "Date",
+      POSIXct = "character",
+      complex = "complex"
     ),
     c(
-      character = "character", factor = "integer", integer = "integer",
-      numeric = "numeric", logical = "integer", Date = "integer",
-      POSIXct = "numeric", complex = "complex"
+      character = "character",
+      factor = "integer",
+      integer = "integer",
+      numeric = "numeric",
+      logical = "integer",
+      Date = "integer",
+      POSIXct = "numeric",
+      complex = "complex"
     )
   )[[optimize + 1]]
   na_string <- meta_data[["..generic"]][["NA string"]]
@@ -74,18 +89,25 @@ read_vc.character <- function(file, root = ".") {
     which_split_by <- col_names %in% split_by
     index <- read.table(
       file = file.path(file["raw_file"], "index.tsv"),
-      header = TRUE, sep = "\t", quote = "\"",
-      dec = ".", numerals = "warn.loss", na.strings = na_string,
+      header = TRUE,
+      sep = "\t",
+      quote = "\"",
+      dec = ".",
+      numerals = "warn.loss",
+      na.strings = na_string,
       colClasses = setNames(
         col_type[col_classes[which_split_by]],
         col_names[which_split_by]
       ),
       comment.char = "",
-      stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+      stringsAsFactors = FALSE,
+      fileEncoding = "UTF-8"
     )
     if (nrow(index) == 0) {
       list(
-        character = character(0), factor = character(0), integer = integer(0),
+        character = character(0),
+        factor = character(0),
+        integer = integer(0),
         numeric = numeric(0)
       )[col_classes] |>
         setNames(col_names) |>
@@ -96,14 +118,20 @@ read_vc.character <- function(file, root = ".") {
         function(i) {
           rf <- file.path(file["raw_file"], paste0(index[i, "..hash"], ".tsv"))
           raw_data <- read.table(
-            file = rf, header = TRUE, sep = "\t", quote = "\"",
-            dec = ".", numerals = "warn.loss", na.strings = na_string,
+            file = rf,
+            header = TRUE,
+            sep = "\t",
+            quote = "\"",
+            dec = ".",
+            numerals = "warn.loss",
+            na.strings = na_string,
             colClasses = setNames(
               col_type[col_classes[!which_split_by]],
               col_names[!which_split_by]
             ),
             comment.char = "",
-            stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+            stringsAsFactors = FALSE,
+            fileEncoding = "UTF-8"
           )
           raw_data <- cbind(
             index[rep(i, nrow(raw_data)), split_by, drop = FALSE],
@@ -117,35 +145,46 @@ read_vc.character <- function(file, root = ".") {
     }
   } else {
     raw_data <- read.table(
-      file = file["raw_file"], header = TRUE, sep = ifelse(optimize, "\t", ","),
+      file = file["raw_file"],
+      header = TRUE,
+      sep = ifelse(optimize, "\t", ","),
       quote = "\"",
-      dec = ".", numerals = "warn.loss", na.strings = na_string,
+      dec = ".",
+      numerals = "warn.loss",
+      na.strings = na_string,
       colClasses = setNames(col_type[col_classes], col_names),
       comment.char = "",
-      stringsAsFactors = FALSE, fileEncoding = "UTF-8"
+      stringsAsFactors = FALSE,
+      fileEncoding = "UTF-8"
     )
   }
   dh <- datahash(file["raw_file"])
 
   if (meta_data[["..generic"]][["data_hash"]] != dh) {
     meta_data[["..generic"]][["data_hash"]] <- dh
-    warning("Mismatching data hash. Data altered outside of git2rdata.",
-            call. = FALSE)
+    warning(
+      "Mismatching data hash. Data altered outside of git2rdata.",
+      call. = FALSE
+    )
   }
 
   raw_data <- reinstate(
-    raw_data = raw_data, col_names = col_names, col_classes = col_classes,
-    details = details, optimize = optimize
+    raw_data = raw_data,
+    col_names = col_names,
+    col_classes = col_classes,
+    details = details,
+    optimize = optimize
   )
 
   names(file) <- c(
-      meta_data[["..generic"]][["data_hash"]],
-      meta_data[["..generic"]][["hash"]]
-    )
+    meta_data[["..generic"]][["data_hash"]],
+    meta_data[["..generic"]][["hash"]]
+  )
   attr(raw_data, "source") <- file
 
   has_description <- vapply(
-    details, FUN.VALUE = logical(1),
+    details,
+    FUN.VALUE = logical(1),
     FUN = function(x) {
       "description" %in% names(x)
     }

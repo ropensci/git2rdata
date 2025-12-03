@@ -18,14 +18,26 @@
 #' @export
 #' @importFrom assertthat assert_that has_name
 update_metadata <- function(
-  file, root = ".", field_description, name, title, description, ...
+  file,
+  root = ".",
+  field_description,
+  name,
+  title,
+  description,
+  ...
 ) {
   UseMethod("update_metadata", root)
 }
 
 #' @export
 update_metadata.default <- function(
-  file, root = ".", field_description, name, title, description, ...
+  file,
+  root = ".",
+  field_description,
+  name,
+  title,
+  description,
+  ...
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
@@ -35,13 +47,24 @@ update_metadata.default <- function(
 #' @importFrom git2r add
 #' @inheritParams git2r::add
 update_metadata.git_repository <- function(
-  file, root = ".", field_description, name, title, description, ...,
-  stage = FALSE, force = FALSE
+  file,
+  root = ".",
+  field_description,
+  name,
+  title,
+  description,
+  ...,
+  stage = FALSE,
+  force = FALSE
 ) {
   assert_that(is.flag(stage), is.flag(force), noNA(stage), noNA(force))
   file <- update_metadata(
-    file = file, root = workdir(root), name = name, title = title,
-    description = description, field_description = field_description
+    file = file,
+    root = workdir(root),
+    name = name,
+    title = title,
+    description = description,
+    field_description = field_description
   )
   if (!stage) {
     return(invisible(file))
@@ -52,24 +75,33 @@ update_metadata.git_repository <- function(
 
 #' @export
 update_metadata.character <- function(
-  file, root = ".", field_description, name, title, description, ...
+  file,
+  root = ".",
+  field_description,
+  name,
+  title,
+  description,
+  ...
 ) {
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
   is_git2rmeta(
-    file = remove_root(file = file["meta_file"], root = root), root = root,
+    file = remove_root(file = file["meta_file"], root = root),
+    root = root,
     message = "error"
   )
   old <- read_yaml(file["meta_file"])
   class(old) <- "meta_list"
   if (!missing(field_description)) {
     assert_that(
-      is.character(field_description), length(field_description) > 0,
+      is.character(field_description),
+      length(field_description) > 0,
       !has_name(field_description, "..generic")
     )
     stopifnot(
-      "names in `field_description` don't match variable names" =
-        all(names(field_description) %in% names(old))
+      "names in `field_description` don't match variable names" = all(
+        names(field_description) %in% names(old)
+      )
     )
     for (field_name in names(field_description)) {
       old[[field_name]][["description"]] <- update_or_drop(

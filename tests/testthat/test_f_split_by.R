@@ -4,12 +4,16 @@ test_that("write_vc() handles the split_by argument", {
 
   expect_warning(
     write_vc(
-      test_data, file = "unsorted", root = root, split_by = "test_factor"
+      test_data,
+      file = "unsorted",
+      root = root,
+      split_by = "test_factor"
     ),
     "No sorting applied."
   )
-  expect_is({
-    z <- read_vc("unsorted", root)
+  expect_is(
+    {
+      z <- read_vc("unsorted", root)
     },
     "data.frame"
   )
@@ -19,17 +23,23 @@ test_that("write_vc() handles the split_by argument", {
     check.attributes = FALSE
   )
 
-  expect_is({
-    sorted_file <- write_vc(
-      test_data, file = "sorted", root = root, digits = 6,
-      sorting = "test_Date", split_by = "test_factor"
-    )
-  },
+  expect_is(
+    {
+      sorted_file <- write_vc(
+        test_data,
+        file = "sorted",
+        root = root,
+        digits = 6,
+        sorting = "test_Date",
+        split_by = "test_factor"
+      )
+    },
     "character"
   )
 
-  expect_is({
-    z <- read_vc(sorted_file[1], root)
+  expect_is(
+    {
+      z <- read_vc(sorted_file[1], root)
     },
     "data.frame"
   )
@@ -43,34 +53,47 @@ test_that("write_vc() handles the split_by argument", {
 
   expect_error(
     write_vc(
-      test_data, file = "sorted", root = root, split_by = character(0),
+      test_data,
+      file = "sorted",
+      root = root,
+      split_by = character(0),
       digits = 6
     ),
     "The split_by variables changed."
   )
   expect_warning(
     write_vc(
-      test_data, file = "sorted", root = root, split_by = character(0),
+      test_data,
+      file = "sorted",
+      root = root,
+      split_by = character(0),
       strict = FALSE
     ),
     "The split_by variables changed."
   )
   expect_error(
     write_vc(
-      test_data, file = "sorted", root = root, split_by = "test_factor"
+      test_data,
+      file = "sorted",
+      root = root,
+      split_by = "test_factor"
     ),
     "The split_by variables changed."
   )
   expect_warning(
     write_vc(
-      test_data, file = "sorted", root = root, split_by = "test_factor",
+      test_data,
+      file = "sorted",
+      root = root,
+      split_by = "test_factor",
       strict = FALSE
     ),
     "The split_by variables changed."
   )
 
   data_file <- list.files(
-    file.path(root, sorted_file[1]), pattern = "[[:xdigit:]]{20}",
+    file.path(root, sorted_file[1]),
+    pattern = "[[:xdigit:]]{20}",
     full.names = TRUE
   )
   data_file <- sample(data_file, 1)

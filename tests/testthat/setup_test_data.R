@@ -6,11 +6,13 @@ test_data <- data.frame(
   ),
   test_factor = sample(
     factor(c("a", "b"), levels = c("a", "b", "c")),
-    size = test_n, replace = TRUE
+    size = test_n,
+    replace = TRUE
   ),
   test_ordered = sample(
     factor(c("a", "b"), levels = c("a", "b", "c"), ordered = TRUE),
-    size = test_n, replace = TRUE
+    size = test_n,
+    replace = TRUE
   ),
   test_integer = sample(.Machine$integer.max, size = test_n, replace = FALSE),
   test_numeric = rnorm(test_n, mean = 0, sd = 1),
@@ -54,7 +56,8 @@ attr(sorted_test_subset$test_Date, "origin") <- "1970-01-01"
 rownames(sorted_test_subset) <- NULL
 sorted_test_subset_6 <- sorted_test_subset
 sorted_test_subset_6$test_numeric <- signif(
-  sorted_test_subset_6$test_numeric, 6
+  sorted_test_subset_6$test_numeric,
+  6
 )
 attr(sorted_test_subset_6$test_numeric, "digits") <- 6L
 
