@@ -98,16 +98,13 @@ Setting `stage = TRUE`, will automatically stage the files written by `write_vc(
 ```{r store_data_1}
 library(git2rdata)
 repo <- repository(path)
-fn <- write_vc(beaver1, "beaver", repo, sorting = "time", stage = TRUE)
+fn <- write_vc(
+  beaver1, "beaver", repo, sorting = "time", stage = TRUE, digits = 2
+)
 ```
 
 We can use `status()` to check that `write_vc()` wrote and staged the required files.
 Then we `commit()` the changes.
-
-```{r avoid_subsecond_commit, echo = FALSE}
-Sys.sleep(1.2)
-```
-
 
 ```{r commit_data_1}
 status(repo)
@@ -120,7 +117,9 @@ cat(cm1$message)
 The second commit adds `beaver2`.
 
 ```{r store_data_2}
-fn <- write_vc(beaver2, "extra_beaver", repo, sorting = "time", stage = TRUE)
+fn <- write_vc(
+  beaver2, "extra_beaver", repo, sorting = "time", stage = TRUE, digits = 2
+)
 status(repo)
 ```
 
@@ -128,14 +127,11 @@ Notice that `extra_beaver` is not listed in the `status()`, although `write_vc()
 The reason is that we set a `.gitignore` which contains `"*extra*`, so git ignores any git2rdata object with a name containing "extra". 
 We force git to stage it by setting `force = TRUE`.
 
-```{r avoid_subsecond_commit2, echo = FALSE}
-Sys.sleep(1.2)
-```
-
 ```{r}
 status(repo, ignored = TRUE)
-fn <- write_vc(beaver2, "extra_beaver", repo, sorting = "time", stage = TRUE,
-               force = TRUE)
+fn <- write_vc(
+  beaver2, "extra_beaver", repo, sorting = "time", stage = TRUE, force = TRUE
+)
 status(repo)
 cm2 <- commit(repo, message = "Second commit")
 ```
@@ -149,16 +145,14 @@ And `strict = FALSE` to update the metadata.
 The "extra_beaver" git2rdata object is no longer needed so we remove it. 
 We use `all = TRUE` to stage the removal of "extra_beaver" while committing the changes.
 
-```{r avoid_subsecond_commit3, echo = FALSE}
-Sys.sleep(1.2)
-```
-
 ```{r store_data_3}
 beaver1$beaver <- 1
 beaver2$beaver <- 2
 beaver <- rbind(beaver1, beaver2)
-fn <- write_vc(beaver, "beaver", repo, sorting = c("beaver", "time"),
-               strict = FALSE, stage = TRUE)
+fn <- write_vc(
+  beaver, "beaver", repo, sorting = c("beaver", "time"), strict = FALSE,
+  stage = TRUE
+)
 file.remove(list.files(path, "extra", full.names = TRUE))
 status(repo)
 cm3 <- commit(repo, message = "Third commit", all = TRUE)
@@ -270,7 +264,7 @@ analysis <- function(ds_name, repo) {
   list(
     dataset = ds_name,
     repository = git2r::remote_url(repo),
-    commit = recent_commit(ds_name, repo, data = TRUE),
+    commit = recent_commit(ds_name, repo),
     model = lm(temp ~ activ, data = ds)
   )
 }

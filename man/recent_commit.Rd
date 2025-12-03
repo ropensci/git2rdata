@@ -72,16 +72,6 @@ recent_commit("iris.yml", repo)
 recent_commit("iris2.yml", repo)
 # the git2rdata object "iris" was last updated in the third commit
 recent_commit("iris", repo, data = TRUE)
-
-# remove a dataframe and commit it to see what happens with deleted files
-file.remove(file.path(repo_path, "iris.tsv"))
-prune_meta(repo, ".")
-commit(repo, message = "remove iris", all = TRUE, session = TRUE)
-list.files(repo_path)
-
-# still points to the third commit as this is the latest commit in which the
-# data was present
-recent_commit("iris", repo, data = TRUE)
 }
 \seealso{
 Other version_control: 
