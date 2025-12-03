@@ -48,7 +48,6 @@ junk <- write_vc(
 )
 commit(repo, "important analysis", session = TRUE)
 list.files(repo_path)
-Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 
 # write and commit a second dataframe
 junk <- write_vc(
@@ -57,14 +56,11 @@ junk <- write_vc(
 )
 commit(repo, "important analysis", session = TRUE)
 list.files(repo_path)
-Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 
 # write and commit a new version of the first dataframe
 junk <- write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
 list.files(repo_path)
 commit(repo, "important analysis", session = TRUE)
-
-
 
 # find out in which commit a file was last changed
 
