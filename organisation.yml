@@ -1,0 +1,24 @@
+checklist version: 0.5.1
+git: https://github.com/ropensci
+info@inbo.be:
+  name:
+    nl-BE: Instituut voor Natuur- en Bosonderzoek (INBO)
+    fr-FR: Institut de Recherche sur la Nature et les Forêts (INBO)
+    en-GB: Research Institute for Nature and Forest (INBO)
+    de-DE: Institut für Natur- und Waldforschung (INBO)
+  email: info@inbo.be
+  website: https://www.vlaanderen.be/inbo/en-gb
+  logo: https://inbo.github.io/checklist/reference/figures/logo-en.png
+  ror: https://ror.org/00j54wy13
+  orcid: yes
+  zenodo: inbo
+  rightsholder: single
+  funder: single
+  license:
+    package:
+      GPL-3: https://raw.githubusercontent.com/inbo/checklist/refs/heads/main/inst/generic_template/gplv3.md
+      MIT: https://raw.githubusercontent.com/inbo/checklist/refs/heads/main/inst/generic_template/mit.md
+    project:
+      CC BY 4.0: https://raw.githubusercontent.com/inbo/checklist/refs/heads/main/inst/generic_template/cc_by_4_0.md
+    data:
+      CC0: https://raw.githubusercontent.com/inbo/checklist/131fe5829907079795533bfea767bf7df50c3cfd/inst/generic_template/cc0.md
