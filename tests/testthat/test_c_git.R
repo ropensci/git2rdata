@@ -219,7 +219,10 @@ test_that("write_vc() and read_vc() on a git-repository", {
   )
   expect_error(
     prune_meta(root = root, path = ".", stage = TRUE),
-    "cannot remove and stage metadata in combination with removed but unstaged data"
+    paste(
+      "cannot remove and stage metadata in combination with removed but",
+      "unstaged data"
+    )
   )
   expect_identical(
     current[!current %in% list.files(git2r::workdir(root), recursive = TRUE)],

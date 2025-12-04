@@ -85,9 +85,10 @@ See `?upgrade_data()`.",
 
   used_version <- package_version(meta_data[["..generic"]][["git2rdata"]])
   check <- error_warning(
+    # fmt: skip
     used_version >= package_version("0.4.0") ||
       (used_version >= package_version("0.2.0") &&
-        meta_data[["..generic"]][["optimize"]]),
+         meta_data[["..generic"]][["optimize"]]),
     msg = "Data stored using an older version of `git2rdata`.
 See `?upgrade_data()`.",
     message = message,

@@ -278,7 +278,8 @@ prune_meta.git_repository <- function(
     if (any(to_do %in% changed)) {
       stop(
         call. = FALSE,
-        "cannot remove and stage metadata in combination with removed but unstaged data"
+        "cannot remove and stage metadata in combination with removed but ",
+        "unstaged data"
       )
     }
   } else {

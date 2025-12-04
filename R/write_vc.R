@@ -150,7 +150,10 @@ write_vc.character <- function(
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       problems <- c(
-        "See vignette('version_control', package = 'git2rdata') for more information.",
+        paste(
+          "See vignette('version_control', package = 'git2rdata') for more",
+          "information."
+        ),
         "",
         problems
       )

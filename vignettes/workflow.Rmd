@@ -240,8 +240,10 @@ import_body_temp <- function(path) {
   beaver1$beaver <- 1
   beaver2$beaver <- 2
   body_temp <- rbind(beaver1, beaver2)
-  write_vc(x = body_temp, file = file.path(data_path, "body_temperature"),
-                 root = repo, sorting = c("beaver", "time"), stage = TRUE)
+  write_vc(
+    x = body_temp, file = file.path(data_path, "body_temperature"),
+    root = repo, sorting = c("beaver", "time"), stage = TRUE
+  )
 
   # step 4: remove any dangling metadata files
   prune_meta(root = repo, path = data_path, stage = TRUE)
