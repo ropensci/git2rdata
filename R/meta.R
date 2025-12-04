@@ -259,7 +259,6 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' @rdname meta
 #' @inheritParams write_vc
 meta.data.frame <- function(
-  # nolint
   x,
   optimize = TRUE,
   na = "NA",
@@ -281,8 +280,13 @@ meta.data.frame <- function(
   list(optimize = optimize, "NA string" = na) |>
     c(attributes(x)[names(attributes(x)) %in% elements]) -> generic
   names(generic)[names(generic) == "table name"] <- "name"
-  if (missing(sorting) && has_name(generic, "sorting")) {
-    sorting <- generic$sorting
+  dots <- list(...)
+  if (missing(sorting)) {
+    if (has_name(generic, "sorting")) {
+      sorting <- generic$sorting
+    } else if (has_name(dots, "old")) {
+      sorting <- dots[["old"]][["..generic"]][["sorting"]]
+    }
   }
 
   assert_that(is.character(split_by))
@@ -295,60 +299,12 @@ meta.data.frame <- function(
     msg = "No remaining variables after splitting"
   )
 
-  dots <- list(...)
-  float <- vapply(x, is.numeric, logical(1)) &
-    !vapply(x, is.integer, logical(1))
-  if (has_name(dots, "old")) {
-    old <- dots$old
-    assert_that(inherits(old, "meta_list"))
-    if (missing(sorting)) {
-      sorting <- old[["..generic"]][["sorting"]]
-    }
-    if (any(float) && missing(digits)) {
-      old_numeric <- vapply(
-        old,
-        FUN.VALUE = logical(1),
-        FUN = function(x) {
-          has_name(x, "class") && x$class == "numeric" && has_name(x, "digits")
-        }
-      )
-      digits <- vapply(
-        old[old_numeric],
-        FUN.VALUE = numeric(1),
-        FUN = function(x) {
-          x[["digits"]]
-        }
-      )
-      relevant <- names(float)[float][!names(float)[float] %in% names(digits)]
-      rep(6L, length(relevant)) -> digits[relevant]
-    }
-  }
-  if (any(float) && missing(digits)) {
-    if (
-      all(vapply(x[float], FUN = has_attr, FUN.VALUE = logical(1), "digits"))
-    ) {
-      digits <- vapply(x[float], FUN = attr, FUN.VALUE = integer(1), "digits")
-    } else {
-      digits <- 6L
-      warning("`digits` was not set. Setting is automatically to 6. See ?meta")
-    }
-  }
-  if (any(float) && is.null(names(digits))) {
-    stopifnot(
-      "`digits` must be either named or have length 1" = length(digits) == 1
-    )
-    digits <- rep(digits, sum(float))
-    names(digits) <- names(float)[float]
-  }
-  stopifnot(
-    "`digits` must contain all numeric variables of `x`" = all(!float) ||
-      all(names(float)[float] %in% names(digits))
-  )
-
+  digits <- set_digits(x = x, digits = digits, old = dots$old)
   # apply sorting
   if (missing(sorting) || is.null(sorting) || !length(sorting)) {
     warning(
       call. = FALSE,
+      immediate. = TRUE,
       "No sorting applied.
 Sorting is strongly recommended in combination with version control."
     )
@@ -372,6 +328,7 @@ Sorting is strongly recommended in combination with version control."
     )
     names(z) <- colnames(x)
   } else {
+    old <- dots$old
     common <- names(old)[names(old) %in% colnames(x)]
     if (length(common)) {
       z_common <- lapply(
@@ -521,4 +478,65 @@ Add extra sorting variables to ensure small diffs.",
     attributes(sorted[[i]]) <- attributes(x[[i]])
   }
   return(sorted)
+}
+
+
+set_digits <- function(x, digits, old = NULL) {
+  float <- vapply(x, is.numeric, logical(1)) &
+    !vapply(x, is.integer, logical(1))
+  if (!any(float)) {
+    if (missing(digits)) {
+      digits <- integer(0)
+    }
+    return(digits)
+  }
+  if (!is.null(old)) {
+    assert_that(inherits(old, "meta_list"))
+    if (missing(digits)) {
+      old_numeric <- vapply(
+        old,
+        FUN.VALUE = logical(1),
+        FUN = function(x) {
+          has_name(x, "class") && x$class == "numeric" && has_name(x, "digits")
+        }
+      )
+      digits <- vapply(
+        old[old_numeric],
+        FUN.VALUE = numeric(1),
+        FUN = function(x) {
+          x[["digits"]]
+        }
+      )
+      relevant <- names(float)[float][!names(float)[float] %in% names(digits)]
+      rep(6L, length(relevant)) -> digits[relevant]
+      return(digits)
+    }
+  }
+  if (missing(digits)) {
+    if (
+      all(vapply(x[float], FUN = has_attr, FUN.VALUE = logical(1), "digits"))
+    ) {
+      digits <- vapply(x[float], FUN = attr, FUN.VALUE = integer(1), "digits")
+    } else {
+      digits <- 6L
+      warning(
+        "`digits` was not set. Setting is automatically to 6. See ?meta",
+        call. = FALSE,
+        immediate. = TRUE
+      )
+    }
+  }
+  if (is.null(names(digits))) {
+    stopifnot(
+      "`digits` must be either named or have length 1" = length(digits) == 1
+    )
+    digits <- rep(digits, sum(float))
+    names(digits) <- names(float)[float]
+  }
+  # fmt: skip
+  stopifnot(
+    "`digits` must contain all numeric variables of `x`" =
+      all(names(float)[float] %in% names(digits))
+  )
+  return(digits)
 }
