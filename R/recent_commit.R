@@ -70,6 +70,7 @@ recent_commit.default <- function(file, root, data = FALSE) {
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag noNA
 #' @importFrom git2r blame commits
+#' @importFrom utils file_test head
 recent_commit.git_repository <- function(file, root, data = FALSE) {
   assert_that(is.string(file), is.flag(data), noNA(data))
 
