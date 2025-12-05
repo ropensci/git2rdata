@@ -139,12 +139,13 @@ write_vc(
   iris[1:6, -2], "iris", root, sorting = "Sepal.Length", strict = FALSE
 )
 list.files(root, recursive = TRUE)
-# storing the orignal version again requires another update of the metadata
+# storing the original version again requires another update of the metadata
 write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Width", strict = FALSE)
 list.files(root, recursive = TRUE)
 # optimize = FALSE stores the data more verbose. This requires larger files.
 write_vc(
-  iris[1:6, ], "iris2", root, sorting = "Sepal.Width", optimize = FALSE
+  iris[1:6, ], "iris2", root, sorting = "Sepal.Width", optimize = FALSE,
+  digits = 6
 )
 list.files(root, recursive = TRUE)
 
@@ -159,7 +160,10 @@ repo <- git2r::init(repo_path)
 git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 
 # store a dataframe in git repo.
-write_vc(iris[1:6, ], file = "iris", root = repo, sorting = "Sepal.Length")
+write_vc(
+  iris[1:6, ], file = "iris", root = repo, sorting = "Sepal.Length",
+  digits = 6
+)
 # This git2rdata object is not staged by default.
 status(repo)
 # read a dataframe from a git repo
@@ -171,7 +175,8 @@ status(repo)
 
 # store a verbose version in a different gir2data object
 write_vc(
-  iris[1:6, ], "iris2", repo, sorting = "Sepal.Width", optimize = FALSE
+  iris[1:6, ], "iris2", repo, sorting = "Sepal.Width", optimize = FALSE,
+  digits = 6
 )
 status(repo)
 }

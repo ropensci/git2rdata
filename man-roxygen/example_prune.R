@@ -7,7 +7,9 @@
 #'
 #' # store a dataframe as git2rdata object. Capture the result to minimise
 #' # screen output
-#' junk <- write_vc(iris[1:6, ], "iris", root, sorting = "Sepal.Length")
+#' junk <- write_vc(
+#'   iris[1:6, ], "iris", root, sorting = "Sepal.Length", digits = 6
+#' )
 #' # write a standard tab separate file (non git2rdata object)
 #' write.table(iris, file = file.path(root, "standard.tsv"), sep = "\t")
 #' # write a YAML file
@@ -44,7 +46,10 @@
 #' git2r::config(repo, user.name = "Alice", user.email = "alice@example.org")
 #'
 #' # store a dataframe
-#' write_vc(iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE)
+#' write_vc(
+#'   iris[1:6, ], "iris", repo, sorting = "Sepal.Length", stage = TRUE,
+#'   digits = 6
+#' )
 #' # check that the dataframe is stored
 #' status(repo)
 #' list_data(repo)
