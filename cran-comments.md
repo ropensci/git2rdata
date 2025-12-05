@@ -1,13 +1,13 @@
 ## Test environments
 
 * local
-    * ubuntu 22.04.4 LTS, R 4.4.1
+    * ubuntu 24.04 LTS, release
 * github actions
     * macOS-latest, release
     * windows-latest, release
-    * ubuntu 22.04, devel
-    * ubuntu 22.04, oldrel
-    * checklist 0.4.1 on ubuntu 22.04.4 LTS, R 4.4.1
+    * ubuntu 24.04, devel
+    * ubuntu 24.04, oldrel
+    * checklist 0.5.1 on ubuntu 24.04 LTS, release
         * https://inbo.r-universe.dev/checklist
 
 ## R CMD check results
