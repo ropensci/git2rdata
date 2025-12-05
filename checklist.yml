@@ -20,5 +20,6 @@ spelling:
   default: en-GB
   ignore:
   - .github/ISSUE_TEMPLATE/feature_request.md
+  - docs
   - LICENSE.md
   - cran-comments.md
