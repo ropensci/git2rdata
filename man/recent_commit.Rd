@@ -48,7 +48,6 @@ junk <- write_vc(
 )
 commit(repo, "important analysis", session = TRUE)
 list.files(repo_path)
-Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 
 # write and commit a second dataframe
 junk <- write_vc(
@@ -57,14 +56,11 @@ junk <- write_vc(
 )
 commit(repo, "important analysis", session = TRUE)
 list.files(repo_path)
-Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 
 # write and commit a new version of the first dataframe
 junk <- write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
 list.files(repo_path)
 commit(repo, "important analysis", session = TRUE)
-
-
 
 # find out in which commit a file was last changed
 
@@ -75,16 +71,6 @@ recent_commit("iris.yml", repo)
 # "iris2.yml" was last updated in the second commit
 recent_commit("iris2.yml", repo)
 # the git2rdata object "iris" was last updated in the third commit
-recent_commit("iris", repo, data = TRUE)
-
-# remove a dataframe and commit it to see what happens with deleted files
-file.remove(file.path(repo_path, "iris.tsv"))
-prune_meta(repo, ".")
-commit(repo, message = "remove iris", all = TRUE, session = TRUE)
-list.files(repo_path)
-
-# still points to the third commit as this is the latest commit in which the
-# data was present
 recent_commit("iris", repo, data = TRUE)
 }
 \seealso{

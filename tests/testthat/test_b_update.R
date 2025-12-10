@@ -52,7 +52,9 @@ test_that("updates to numeric", {
     "character"
   )
   expect_equal(
-    read_vc(fn[1], root), signif(updated, 6), check.attributes = FALSE
+    read_vc(fn[1], root),
+    signif(updated, 6),
+    check.attributes = FALSE
   )
 })
 test_that("updates to character", {
@@ -90,8 +92,11 @@ test_that("updates to factor", {
 })
 test_that("updates to Date", {
   write_vc(original, "Date", root, sorting = "test_logical", digits = 6)
-  updated <- matrix(Sys.Date(), ncol = ncol(original),
-                    dimnames = dimnames(original))
+  updated <- matrix(
+    Sys.Date(),
+    ncol = ncol(original),
+    dimnames = dimnames(original)
+  )
   updated <- as.data.frame(updated)
   expect_is(
     suppressWarnings(
@@ -119,8 +124,11 @@ test_that("updates to POSIXct", {
 })
 test_that("updates to complex", {
   write_vc(original, "complex", root, sorting = "test_logical", digits = 6)
-  updated <- matrix(complex(imaginary = 1), ncol = ncol(original),
-                    dimnames = dimnames(original))
+  updated <- matrix(
+    complex(imaginary = 1),
+    ncol = ncol(original),
+    dimnames = dimnames(original)
+  )
   updated <- as.data.frame(updated)
   expect_is(
     suppressWarnings(

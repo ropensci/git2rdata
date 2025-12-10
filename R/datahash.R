@@ -15,30 +15,56 @@ datahash <- function(file) {
     hashes <- character(chunk_size + 1)
     i <- 0
     rawdata <- scan(
-      file = file, what = character(), nmax = -1, sep = "\n", quote = "",
-      skip = i * chunk_size, nlines = chunk_size, na.strings = "",
-      flush = FALSE, fill = FALSE, strip.white = FALSE, quiet = TRUE,
-      blank.lines.skip = FALSE, comment.char = "", allowEscapes = FALSE,
-      encoding = "UTF-8", skipNul = FALSE
+      file = file,
+      what = character(),
+      nmax = -1,
+      sep = "\n",
+      quote = "",
+      skip = i * chunk_size,
+      nlines = chunk_size,
+      na.strings = "",
+      flush = FALSE,
+      fill = FALSE,
+      strip.white = FALSE,
+      quiet = TRUE,
+      blank.lines.skip = FALSE,
+      comment.char = "",
+      allowEscapes = FALSE,
+      encoding = "UTF-8",
+      skipNul = FALSE
     )
     while (length(rawdata)) {
       hashes[1 + i %% chunk_size] <- hash(paste(hash(rawdata), collapse = "\n"))
       i <- i + 1
-      if (i  %% chunk_size == 0) {
+      if (i %% chunk_size == 0) {
         hashes[chunk_size + 1] <- hash(paste(hashes, collapse = "")) # nocov
       }
       rawdata <- scan(
-        file = file, what = character(), nmax = -1, sep = "\n", quote = "",
-        skip = i * chunk_size, nlines = chunk_size, na.strings = "",
-        flush = FALSE, fill = FALSE, strip.white = FALSE, quiet = TRUE,
-        blank.lines.skip = FALSE, comment.char = "", allowEscapes = FALSE,
-        encoding = "UTF-8", skipNul = FALSE
+        file = file,
+        what = character(),
+        nmax = -1,
+        sep = "\n",
+        quote = "",
+        skip = i * chunk_size,
+        nlines = chunk_size,
+        na.strings = "",
+        flush = FALSE,
+        fill = FALSE,
+        strip.white = FALSE,
+        quiet = TRUE,
+        blank.lines.skip = FALSE,
+        comment.char = "",
+        allowEscapes = FALSE,
+        encoding = "UTF-8",
+        skipNul = FALSE
       )
     }
   } else {
     hashes <- sapply(
       list.files(
-        file, pattern = "(index|[[:xdigit:]]{20}\\.tsv$)", full.names = TRUE
+        file,
+        pattern = "(index|[[:xdigit:]]{20}\\.tsv$)",
+        full.names = TRUE
       ),
       datahash
     )
@@ -51,7 +77,9 @@ datahash <- function(file) {
 #' @return a named vector with the old locale
 set_c_locale <- function() {
   icuSetCollate(
-    locale = "en_GB", case_first = "lower", normalization = "on",
+    locale = "en_GB",
+    case_first = "lower",
+    normalization = "on",
     case_level = "on"
   )
   return(c())

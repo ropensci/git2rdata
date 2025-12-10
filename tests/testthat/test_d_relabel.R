@@ -11,9 +11,9 @@ test_that("relabel handles a list of changes", {
   expect_true(all(new_labels[["a"]] %in% meta2[["a"]][["labels"]]))
   expect_true(all(
     names(new_labels[["a"]]) %in%
-    meta1[["a"]][["labels"]][
-      !meta1[["a"]][["labels"]] %in% meta2[["a"]][["labels"]]
-    ]
+      meta1[["a"]][["labels"]][
+        !meta1[["a"]][["labels"]] %in% meta2[["a"]][["labels"]]
+      ]
   ))
   c_1 <- meta1
   c_1[["a"]] <- NULL
@@ -33,10 +33,14 @@ test_that("relabel handles a data.frame of changes", {
   )
   expect_null(relabel("relabel", root, change))
   meta2 <- yaml::read_yaml(file.path(root, "relabel.yml"))
-  expect_true(all(change$new[change$factor == "a"] %in%
-                    meta2[["a"]][["labels"]]))
-  expect_true(all(change$new[change$factor == "b"] %in%
-                    meta2[["b"]][["labels"]]))
+  expect_true(all(
+    change$new[change$factor == "a"] %in%
+      meta2[["a"]][["labels"]]
+  ))
+  expect_true(all(
+    change$new[change$factor == "b"] %in%
+      meta2[["b"]][["labels"]]
+  ))
   change <- data.frame(
     factor = c("a", "b", "b"),
     old = c("c2", "b3", "b1"),
@@ -45,16 +49,22 @@ test_that("relabel handles a data.frame of changes", {
   )
   expect_null(relabel("relabel", root, change))
   meta2 <- yaml::read_yaml(file.path(root, "relabel.yml"))
-  expect_true(all(change$new[change$factor == "a"] %in%
-                    meta2[["a"]][["labels"]]))
-  expect_true(all(change$new[change$factor == "b"] %in%
-                    meta2[["b"]][["labels"]]))
+  expect_true(all(
+    change$new[change$factor == "a"] %in%
+      meta2[["a"]][["labels"]]
+  ))
+  expect_true(all(
+    change$new[change$factor == "b"] %in%
+      meta2[["b"]][["labels"]]
+  ))
 })
 
 test_that("relabel only works on optimized files", {
   write_vc(ds, "relabel_verbose", root, sorting = "b", optimize = FALSE)
-  expect_error(relabel("relabel_verbose", root, new_labels),
-               "relabelling factors on verbose data leads to large diffs")
+  expect_error(
+    relabel("relabel_verbose", root, new_labels),
+    "relabelling factors on verbose data leads to large diffs"
+  )
 })
 
 test_that("relabel handles git repositories", {
@@ -68,9 +78,9 @@ test_that("relabel handles git repositories", {
   expect_true(all(new_labels[["a"]] %in% meta2[["a"]][["labels"]]))
   expect_true(all(
     names(new_labels[["a"]]) %in%
-    meta1[["a"]][["labels"]][
-      !meta1[["a"]][["labels"]] %in% meta2[["a"]][["labels"]]
-    ]
+      meta1[["a"]][["labels"]][
+        !meta1[["a"]][["labels"]] %in% meta2[["a"]][["labels"]]
+      ]
   ))
   c_1 <- meta1
   c_1[["a"]] <- NULL
@@ -82,6 +92,8 @@ test_that("relabel handles git repositories", {
 })
 
 test_that("relabel returns an error for unknown classes", {
-  expect_error(relabel(change = NULL),
-               "a 'change' of class NULL is not supported")
+  expect_error(
+    relabel(change = NULL),
+    "a 'change' of class NULL is not supported"
+  )
 })

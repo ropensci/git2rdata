@@ -17,4 +17,4 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: inbo/actions/check_pkg@checklist-0.4.1
+      - uses: inbo/actions/check_pkg@main

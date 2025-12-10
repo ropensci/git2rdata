@@ -34,7 +34,6 @@
 #' )
 #' commit(repo, "important analysis", session = TRUE)
 #' list.files(repo_path)
-#' Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 #'
 #' # write and commit a second dataframe
 #' junk <- write_vc(
@@ -43,14 +42,11 @@
 #' )
 #' commit(repo, "important analysis", session = TRUE)
 #' list.files(repo_path)
-#' Sys.sleep(1.1) # required because git doesn't handle subsecond timings
 #'
 #' # write and commit a new version of the first dataframe
 #' junk <- write_vc(iris[7:12, ], "iris", repo, stage = TRUE)
 #' list.files(repo_path)
 #' commit(repo, "important analysis", session = TRUE)
-#'
-#'
 #'
 #' # find out in which commit a file was last changed
 #'
@@ -61,16 +57,6 @@
 #' # "iris2.yml" was last updated in the second commit
 #' recent_commit("iris2.yml", repo)
 #' # the git2rdata object "iris" was last updated in the third commit
-#' recent_commit("iris", repo, data = TRUE)
-#'
-#' # remove a dataframe and commit it to see what happens with deleted files
-#' file.remove(file.path(repo_path, "iris.tsv"))
-#' prune_meta(repo, ".")
-#' commit(repo, message = "remove iris", all = TRUE, session = TRUE)
-#' list.files(repo_path)
-#'
-#' # still points to the third commit as this is the latest commit in which the
-#' # data was present
 #' recent_commit("iris", repo, data = TRUE)
 recent_commit <- function(file, root, data = FALSE) {
   UseMethod("recent_commit", root)
@@ -83,25 +69,39 @@ recent_commit.default <- function(file, root, data = FALSE) {
 
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag noNA
-#' @importFrom git2r odb_blobs last_commit workdir
+#' @importFrom git2r blame commits
+#' @importFrom utils file_test head
 recent_commit.git_repository <- function(file, root, data = FALSE) {
   assert_that(is.string(file), is.flag(data), noNA(data))
 
-  path <- ifelse(dirname(file) == ".", "", dirname(file))
   if (data) {
-    bn <- gsub("\\..*$", "", basename(file))
-    name <- paste(bn, c("tsv", "csv"), sep = ".")
-  } else {
-    name <- basename(file)
+    file <- paste(file, c("tsv", "csv"), sep = ".")
   }
-  blobs <- odb_blobs(root)
-  blobs <- blobs[blobs$path == path & blobs$name %in% name, ]
-  blobs <- blobs[blobs$when <= as.data.frame(last_commit(root))$when, ]
-  blobs <- blobs[blobs$when == max(blobs$when), c("commit", "author", "when")]
-  blobs <- unique(blobs)
-  if (nrow(blobs) > 1) {
-      warning("More than one commit within the same second", call. = FALSE)
-  }
-  rownames(blobs) <- NULL
-  blobs
+  dirname(root$path) |>
+    file.path(file) |>
+    file_test(op = "-f") |>
+    which() |>
+    head(1) -> relevant
+  stopifnot("`file` not found in current checkout" = length(relevant) == 1)
+  blamed <- blame(repo = root, path = file[relevant])
+  vapply(
+    blamed$hunks,
+    FUN = function(x) {
+      c(
+        commit = x$final_commit_id,
+        author = x$final_signature$name,
+        when = as.character(x$final_signature$when)
+      )
+    },
+    FUN.VALUE = character(3)
+  ) |>
+    t() |>
+    unique() |>
+    as.data.frame() -> commits
+  commits$when <- as.POSIXct(commits$when, tz = "GMT")
+  commits(repo = root) |>
+    vapply(FUN = `[[`, FUN.VALUE = character(1), "sha") -> hashes
+  vapply(commits$commit, grep, hashes, FUN.VALUE = integer(1)) |>
+    which.min() -> most_recent
+  commits[commits$commit == names(most_recent), ]
 }

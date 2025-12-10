@@ -1,40 +1,62 @@
-# git2rdata <img src="man/figures/logo.svg" align="right" alt="git2rdata logo" width="120">
+---
+output: github_document
+---
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/git2rdata)](https://cran.r-project.org/package=git2rdata)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![lifecycle](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![ROpenSci review](https://badges.ropensci.org/263_status.svg)](https://github.com/ropensci/software-review/issues/263)
-[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.5.0-6666ff.svg)](https://cran.r-project.org/)
 [![DOI](https://zenodo.org/badge/147685405.svg)](https://zenodo.org/badge/latestdoi/147685405)
-[![codecov](https://codecov.io/gh/ropensci/git2rdata/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ropensci/git2rdata)
+[![ROpenSci review](https://badges.ropensci.org/263_status.svg)](https://github.com/ropensci/software-review/issues/263)
+[![GPL-3](https://img.shields.io/badge/License-GPL-3-brightgreen)](https://raw.githubusercontent.com/inbo/checklist/refs/heads/main/inst/generic_template/gplv3.md)
+[![Release](https://img.shields.io/github/release/ropensci/git2rdata.svg)](https://github.com/ropensci/git2rdata/releases)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ropensci/git2rdata/check-package)
+![GitHub repo size](https://img.shields.io/github/repo-size/ropensci/git2rdata)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ropensci/git2rdata.svg)
 ![GitHub forks](https://img.shields.io/github/forks/ropensci/git2rdata.svg?style=social)
 ![GitHub stars](https://img.shields.io/github/stars/ropensci/git2rdata.svg?style=social)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ropensci/git2rdata.svg)
-![GitHub repo size](https://img.shields.io/github/repo-size/ropensci/git2rdata.svg)
+![r-universe name](https://ropensci.r-universe.dev/badges/:name?color=c04384)
+![r-universe package](https://ropensci.r-universe.dev/badges/git2rdata)
+[![Codecov test coverage](https://codecov.io/gh/ropensci/git2rdata/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ropensci/git2rdata?branch=main)
 <!-- badges: end -->
 
-<p style="display:none">Please visit the git2rdata website at https://ropensci.github.io/git2rdata/. The vignette code on the website link to a rendered version of the vignette. Functions have a link to their help file.</p>
+# git2rdata: Store and Retrieve Data.frames in a Git Repository
 
-## Rationale
+[Onkelinx, Thierry![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png)](https://orcid.org/0000-0001-8804-4216)[^aut][^cre][^INBO]
+[Vanderhaeghe, Floris![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png)](https://orcid.org/0000-0002-6378-6229)[^ctb][^INBO]
+[Desmet, Peter![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png)](https://orcid.org/0000-0002-8442-8025)[^ctb][^INBO]
+[Lommelen, Els![ORCID logo](https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png)](https://orcid.org/0000-0002-3481-5684)[^ctb][^INBO]
+[Research Institute for Nature and Forest (INBO)](mailto:info%40inbo.be)[^cph][^fnd]
 
+[^aut]: author
+[^cre]: contact person
+[^INBO]: Research Institute for Nature and Forest (INBO)
+[^ctb]: contributor
+[^cph]: copyright holder
+[^fnd]: funder
+
+**keywords**:  git; version control; plain text data
+
+
+<!-- description: start -->
 The `git2rdata` package is an R package for writing and reading dataframes as plain text files. 
 A metadata file stores important information.
 
 1. Storing metadata allows to maintain the classes of variables. 
-By default, `git2rdata` optimizes the data for file storage. 
-The optimization is most effective on data containing factors. 
-The optimization makes the data less human readable.
-The user can turn this off when they prefer a human readable format over smaller files.
-Details on the implementation are available in `vignette("plain_text", package = "git2rdata")`.
-1. Storing metadata also allows smaller row based [diffs](https://en.wikipedia.org/wiki/Diff) between two consecutive [commits](https://en.wikipedia.org/wiki/Commit_(version_control)). 
-This is a useful feature when storing data as plain text files under version control. 
-Details on this part of the implementation are available in `vignette("version_control", package = "git2rdata")`. 
-Although we envisioned `git2rdata` with a [git](https://git-scm.com/) workflow in mind, you can use it in combination with other version control systems like [subversion](https://subversion.apache.org/) or [mercurial](https://www.mercurial-scm.org/).
-1. `git2rdata` is a useful tool in a reproducible and traceable workflow. 
-`vignette("workflow", package = "git2rdata")` gives a toy example.
-1. `vignette("efficiency", package = "git2rdata")` provides some insight into the efficiency of file storage, git repository size and speed for writing and reading.
+  By default, `git2rdata` optimizes the data for file storage. 
+  The optimization is most effective on data containing factors. 
+  The optimization makes the data less human readable.
+  The user can turn this off when they prefer a human readable format over smaller files.
+  Details on the implementation are available in `vignette("plain_text", package = "git2rdata")`.
+2. Storing metadata also allows smaller row based [diffs](https://en.wikipedia.org/wiki/Diff) between two consecutive [commits](https://en.wikipedia.org/wiki/Commit_(version_control)). 
+  This is a useful feature when storing data as plain text files under version control. 
+  Details on this part of the implementation are available in `vignette("version_control", package = "git2rdata")`. 
+  Although we envisioned `git2rdata` with a [git](https://git-scm.com/) workflow in mind, you can use it in combination with other version control systems like [subversion](https://subversion.apache.org/) or [mercurial](https://www.mercurial-scm.org/).
+3. `git2rdata` is a useful tool in a reproducible and traceable workflow. 
+  `vignette("workflow", package = "git2rdata")` gives a toy example.
+4. `vignette("efficiency", package = "git2rdata")` provides some insight into the efficiency of file storage, git repository size and speed for writing and reading.
+<!-- description: end -->
 
 ## Why Use Git2rdata?
 

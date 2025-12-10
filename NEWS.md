@@ -1,3 +1,10 @@
+# git2rdata 0.5.1
+
+* `write_vc()` stores metadata stored in the data frame.
+* `read_vc()` returns more metadata. 
+* `read_vc()` can handle empty factors.
+* `recent_commit()` now returns handles multiple commits within the same second.
+
 # git2rdata 0.5.0
 
 * `read_vc()` handles empty datasets stored with `split_by`. 

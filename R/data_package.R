@@ -13,13 +13,18 @@
 #' @importFrom assertthat assert_that is.string noNA
 data_package <- function(path = ".") {
   assert_that(
-    is.string(path), noNA(path), requireNamespace("jsonlite", quietly = TRUE)
+    is.string(path),
+    noNA(path),
+    requireNamespace("jsonlite", quietly = TRUE)
   )
   stopifnot("`path` is not a directory" = file_test("-d", path))
 
   data_files <- list.files(path, pattern = ".csv$", recursive = TRUE)
   relevant <- vapply(
-    data_files, FUN = is_git2rdata, FUN.VALUE = logical(1), root = path
+    data_files,
+    FUN = is_git2rdata,
+    FUN.VALUE = logical(1),
+    root = path
   )
   stopifnot(
     "no non-optimized git2rdata objects found at `path`" = any(relevant)
@@ -28,10 +33,12 @@ data_package <- function(path = ".") {
 
   list(
     resources = vapply(
-        data_files, path = path, FUN = data_resource,
-        FUN.VALUE = vector(mode = "list", length = 1)
-      ) |>
-        unname()
+      data_files,
+      path = path,
+      FUN = data_resource,
+      FUN.VALUE = vector(mode = "list", length = 1)
+    ) |>
+      unname()
   ) |>
     jsonlite::toJSON(pretty = TRUE, auto_unbox = TRUE) |>
     writeLines(file.path(path, "datapackage.json"))
@@ -42,19 +49,27 @@ data_package <- function(path = ".") {
 #' @importFrom yaml read_yaml
 data_resource <- function(file, path = ".") {
   assert_that(
-    is.string(file), is.string(path), noNA(file), noNA(path)
+    is.string(file),
+    is.string(path),
+    noNA(file),
+    noNA(path)
   )
   stopifnot("`path` is not a directory" = file_test("-d", path))
 
   clean_data_path(root = path, file = file)[2] |>
     read_yaml() -> metadata
   list(
-    name = coalesce(metadata[["..generic"]][["name"]], file), path = file,
-    "encoding" = "utf-8", format = "csv", media_type = "text/csv",
+    name = coalesce(metadata[["..generic"]][["name"]], file),
+    path = file,
+    "encoding" = "utf-8",
+    format = "csv",
+    media_type = "text/csv",
     hash = paste0("sha1:", metadata[["..generic"]][["data_hash"]]),
     schema = list(
       fields = vapply(
-        names(metadata)[-1], metadata = metadata, FUN = field_schema,
+        names(metadata)[-1],
+        metadata = metadata,
+        FUN = field_schema,
         FUN.VALUE = vector(mode = "list", length = 1)
       ) |>
         unname(),
@@ -75,17 +90,23 @@ field_schema <- function(x, metadata) {
     "character" = list(name = x, type = "string"),
     "Date" = list(name = x, type = "date"),
     "logical" = list(
-      name = x, type = "boolean", trueValues = c("TRUE", "true"),
+      name = x,
+      type = "boolean",
+      trueValues = c("TRUE", "true"),
       falseValues = c("FALSE", "false")
     ),
     "factor" = list(
-      name = x, type = "string", categories = metadata[[x]][["labels"]],
+      name = x,
+      type = "string",
+      categories = metadata[[x]][["labels"]],
       categoriesOrdered = metadata[[x]][["ordered"]]
     ),
     "integer" = list(name = x, type = "integer"),
     "numeric" = list(name = x, type = "number"),
     "POSIXct" = list(
-      name = x, type = "datetime", format = "%Y-%m-%dT%H:%M:%SZ"
+      name = x,
+      type = "datetime",
+      format = "%Y-%m-%dT%H:%M:%SZ"
     ),
     stop("field_schema() can't handle ", metadata[[x]]$class)
   ) -> fs

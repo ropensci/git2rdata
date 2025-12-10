@@ -15,14 +15,20 @@
 #' @export
 #' @family internal
 #' @template example_isgit2r
-is_git2rmeta <- function(file, root = ".",
-                         message = c("none", "warning", "error")) {
+is_git2rmeta <- function(
+  file,
+  root = ".",
+  message = c("none", "warning", "error")
+) {
   UseMethod("is_git2rmeta", root)
 }
 
 #' @export
-is_git2rmeta.default <- function(file, root,
-                                 message = c("none", "warning", "error")) {
+is_git2rmeta.default <- function(
+  file,
+  root,
+  message = c("none", "warning", "error")
+) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
@@ -31,7 +37,9 @@ is_git2rmeta.default <- function(file, root,
 #' @importFrom yaml read_yaml
 #' @importFrom utils packageVersion
 is_git2rmeta.character <- function(
-    file, root = ".", message = c("none", "warning", "error")
+  file,
+  root = ".",
+  message = c("none", "warning", "error")
 ) {
   assert_that(is.string(file), is.string(root))
   message <- match.arg(message)
@@ -56,44 +64,50 @@ is_git2rmeta.character <- function(
   check <- error_warning(
     has_name(meta_data, "..generic"),
     msg = "No '..generic' element.",
-    message = message, previous = check
+    message = message,
+    previous = check
   )
 
   check <- error_warning(
     has_name(meta_data[["..generic"]], "hash"),
     msg = "Corrupt metadata, no hash found.",
-    message = message, previous = check
+    message = message,
+    previous = check
   )
 
   check <- error_warning(
     has_name(meta_data[["..generic"]], "git2rdata"),
     msg = "Data stored using an older version of `git2rdata`.
 See `?upgrade_data()`.",
-    message = message, previous = check
+    message = message,
+    previous = check
   )
 
   used_version <- package_version(meta_data[["..generic"]][["git2rdata"]])
   check <- error_warning(
-    used_version >= package_version("0.4.0") || (
-      used_version >= package_version("0.2.0") &&
-        meta_data[["..generic"]][["optimize"]]
-    ),
+    # fmt: skip
+    used_version >= package_version("0.4.0") ||
+      (used_version >= package_version("0.2.0") &&
+         meta_data[["..generic"]][["optimize"]]),
     msg = "Data stored using an older version of `git2rdata`.
 See `?upgrade_data()`.",
-    message = message, previous = check
+    message = message,
+    previous = check
   )
 
   check <- error_warning(
     has_name(meta_data[["..generic"]], "data_hash"),
     msg = "Corrupt metadata, no data hash found.",
-    message = message, previous = check
+    message = message,
+    previous = check
   )
 
   current_hash <- meta_data[["..generic"]][["hash"]]
   check <- error_warning(
     current_hash == metadata_hash(meta_data),
     msg = "Corrupt metadata, mismatching hash.",
-    message = message, previous = check
+    message = message,
+    previous = check
   )
 
   return(check)
@@ -103,7 +117,10 @@ See `?upgrade_data()`.",
 #' @importFrom git2r workdir
 #' @include write_vc.R
 is_git2rmeta.git_repository <- function(
-  file, root, message = c("none", "warning", "error")) {
+  file,
+  root,
+  message = c("none", "warning", "error")
+) {
   is_git2rmeta(file = file, root = workdir(root), message = message)
 }
 
@@ -117,7 +134,10 @@ metadata_hash <- function(meta_data) {
 }
 
 error_warning <- function(
-  test, msg, message = c("none", "warning", "error"), previous = TRUE
+  test,
+  msg,
+  message = c("none", "warning", "error"),
+  previous = TRUE
 ) {
   message <- match.arg(message)
   if (!previous) {
@@ -125,7 +145,8 @@ error_warning <- function(
   }
   if (!test) {
     switch(
-      message, error = stop(msg, call. = FALSE),
+      message,
+      error = stop(msg, call. = FALSE),
       warning = warning(msg, call. = FALSE)
     )
   }

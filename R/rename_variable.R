@@ -78,7 +78,8 @@ rename_variable.character <- function(file, change, root = ".", ...) {
   )
   names(yaml) <- replace_vector(names(yaml), change)
   yaml[["..generic"]][["sorting"]] <- replace_vector(
-    yaml[["..generic"]][["sorting"]], change
+    yaml[["..generic"]][["sorting"]],
+    change
   )
   if (file_test("-f", file["raw_file"])) {
     replace_header(file["raw_file"], change)
@@ -87,13 +88,18 @@ rename_variable.character <- function(file, change, root = ".", ...) {
       c(
         file.path(file["raw_file"], "index.tsv"),
         list.files(
-          file["raw_file"], pattern = "[[:xdigit:]]{20}.tsv", full.names = TRUE
+          file["raw_file"],
+          pattern = "[[:xdigit:]]{20}.tsv",
+          full.names = TRUE
         )
       ),
-      replace_header, change = change, logical(1)
+      replace_header,
+      change = change,
+      logical(1)
     )
     yaml[["..generic"]][["split_by"]] <- replace_vector(
-      yaml[["..generic"]][["split_by"]], change
+      yaml[["..generic"]][["split_by"]],
+      change
     )
   }
   yaml[["..generic"]][["hash"]] <- metadata_hash(yaml)
@@ -134,8 +140,7 @@ replace_header <- function(x, change) {
 #' @rdname rename_variable
 #' @export
 rename_variable.default <- function(file, change, root, ...) {
-  stop("a 'root' of class ", class(root), " is not supported",
-       call. = FALSE)
+  stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
 
 #' @rdname rename_variable
@@ -145,7 +150,12 @@ rename_variable.default <- function(file, change, root, ...) {
 #' @importFrom assertthat assert_that is.flag noNA
 #' @importFrom git2r add workdir
 rename_variable.git_repository <- function(
-  file, change, root, ..., stage = FALSE, force = FALSE
+  file,
+  change,
+  root,
+  ...,
+  stage = FALSE,
+  force = FALSE
 ) {
   assert_that(is.flag(stage), noNA(stage), is.flag(force), noNA(force))
   hashes <- rename_variable(file = file, root = workdir(root), change = change)

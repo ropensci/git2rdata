@@ -34,7 +34,14 @@
 #' @note `..generic` is a reserved name for the metadata and is a forbidden
 #' column name in a `data.frame`.
 write_vc <- function(
-  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
+  x,
+  file,
+  root = ".",
+  sorting,
+  strict = TRUE,
+  optimize = TRUE,
+  na = "NA",
+  ...,
   split_by
 ) {
   UseMethod("write_vc", root)
@@ -42,7 +49,14 @@ write_vc <- function(
 
 #' @export
 write_vc.default <- function(
-  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...
+  x,
+  file,
+  root,
+  sorting,
+  strict = TRUE,
+  optimize = TRUE,
+  na = "NA",
+  ...
 ) {
   stop("a 'root' of class ", class(root), " is not supported", call. = FALSE)
 }
@@ -64,56 +78,96 @@ write_vc.default <- function(
 #' @importFrom utils write.table
 #' @importFrom git2r hash
 write_vc.character <- function(
-  x, file, root = ".", sorting, strict = TRUE, optimize = TRUE,
-  na = "NA", ..., append = FALSE, split_by = character(0), digits
+  x,
+  file,
+  root = ".",
+  sorting,
+  strict = TRUE,
+  optimize = TRUE,
+  na = "NA",
+  ...,
+  append = FALSE,
+  split_by = character(0),
+  digits
 ) {
   assert_that(
-    inherits(x, "data.frame"), is.string(file), is.string(root), is.string(na),
-    noNA(na), no_whitespace(na), is.flag(strict), is.flag(optimize),
-    is.flag(append), noNA(append), noNA(strict), noNA(optimize)
+    inherits(x, "data.frame"),
+    is.string(file),
+    is.string(root),
+    is.string(na),
+    noNA(na),
+    no_whitespace(na),
+    is.flag(strict),
+    is.flag(optimize),
+    is.flag(append),
+    noNA(append),
+    noNA(strict),
+    noNA(optimize)
   )
   if (append) {
     x <- append_df(x = x, file = file, root = root)
   }
   root <- normalizePath(root, winslash = "/", mustWork = TRUE)
   file <- clean_data_path(root = root, file = file)
-  if (!file.exists(dirname(file["raw_file"]))) {
-    dir.create(dirname(file["raw_file"]), recursive = TRUE)
-  }
+  dirname(file["raw_file"]) |>
+    dir.create(showWarnings = FALSE, recursive = TRUE)
 
   if (!file.exists(file["meta_file"])) {
     raw_data <- meta(
-      x, optimize = optimize, na = na, sorting = sorting, split_by = split_by,
+      x,
+      optimize = optimize,
+      na = na,
+      sorting = sorting,
+      split_by = split_by,
       digits = digits
     )
   } else {
     tryCatch(
-      is_git2rmeta(file = remove_root(file = file["meta_file"], root = root),
-                   root = root, message = "error"),
+      is_git2rmeta(
+        file = remove_root(file = file["meta_file"], root = root),
+        root = root,
+        message = "error"
+      ),
       error = function(e) {
-        stop(paste("Existing metadata file is invalid.", e$message, sep = "\n"),
-             call. = FALSE)
+        stop(
+          paste("Existing metadata file is invalid.", e$message, sep = "\n"),
+          call. = FALSE
+        )
       }
     )
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
     raw_data <- meta(
-      x, optimize = optimize, na = na, sorting = sorting, old = old,
-      strict = strict, split_by = split_by, digits = digits
+      x,
+      optimize = optimize,
+      na = na,
+      sorting = sorting,
+      old = old,
+      strict = strict,
+      split_by = split_by,
+      digits = digits
     )
     problems <- compare_meta(attr(raw_data, "meta"), old)
     if (length(problems)) {
       problems <- c(
-"See vignette('version_control', package = 'git2rdata') for more information.",
-          "", problems)
+        paste(
+          "See vignette('version_control', package = 'git2rdata') for more",
+          "information."
+        ),
+        "",
+        problems
+      )
       if (strict) {
         problems <- c(
-          "The data was not overwritten because of the issues below.", problems)
+          "The data was not overwritten because of the issues below.",
+          problems
+        )
         stop(paste(problems, collapse = "\n"), call. = FALSE)
       }
       problems <- c(
         "Changes in the metadata may lead to unnecessarily large diffs.",
-        problems)
+        problems
+      )
       warning(paste(problems, collapse = "\n"), call. = FALSE)
       if (missing(sorting) && !is.null(old[["..generic"]][["sorting"]])) {
         sorting <- old[["..generic"]][["sorting"]]
@@ -131,21 +185,38 @@ write_vc.character <- function(
   )
   if (length(split_by) == 0) {
     write.table(
-      x = raw_data, file = file["raw_file"], append = FALSE, quote = FALSE,
+      x = raw_data,
+      file = file["raw_file"],
+      append = FALSE,
+      quote = FALSE,
       sep = ifelse(
-        attr(raw_data, "meta")[["..generic"]][["optimize"]], "\t", ","
+        attr(raw_data, "meta")[["..generic"]][["optimize"]],
+        "\t",
+        ","
       ),
-      eol = "\n", na = na, dec = ".", row.names = FALSE,
-      col.names = TRUE, fileEncoding = "UTF-8"
+      eol = "\n",
+      na = na,
+      dec = ".",
+      row.names = FALSE,
+      col.names = TRUE,
+      fileEncoding = "UTF-8"
     )
   } else {
     index <- unique(raw_data[split_by])
     index[["..hash"]] <- hash(apply(index, 1, paste, collapse = "\t"))
     dir.create(file["raw_file"], showWarnings = FALSE, recursive = TRUE)
     write.table(
-      x = index, file = file.path(file["raw_file"], "index.tsv"),
-      append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na, dec = ".",
-      row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
+      x = index,
+      file = file.path(file["raw_file"], "index.tsv"),
+      append = FALSE,
+      quote = FALSE,
+      sep = "\t",
+      eol = "\n",
+      na = na,
+      dec = ".",
+      row.names = FALSE,
+      col.names = TRUE,
+      fileEncoding = "UTF-8"
     )
     detail_names <- colnames(raw_data)[!colnames(raw_data) %in% split_by]
     vapply(
@@ -162,8 +233,15 @@ write_vc.character <- function(
         write.table(
           x = raw_data[apply(matching, 1, all), detail_names, drop = FALSE],
           file = rf,
-          append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = na,
-          dec = ".", row.names = FALSE, col.names = TRUE, fileEncoding = "UTF-8"
+          append = FALSE,
+          quote = FALSE,
+          sep = "\t",
+          eol = "\n",
+          na = na,
+          dec = ".",
+          row.names = FALSE,
+          col.names = TRUE,
+          fileEncoding = "UTF-8"
         )
         return(TRUE)
       },
@@ -198,13 +276,27 @@ setOldClass("git_repository")
 #' @importFrom git2r workdir add
 #' @importFrom assertthat assert_that is.flag noNA
 write_vc.git_repository <- function(
-  x, file, root, sorting, strict = TRUE, optimize = TRUE, na = "NA", ...,
-  stage = FALSE, force = FALSE
+  x,
+  file,
+  root,
+  sorting,
+  strict = TRUE,
+  optimize = TRUE,
+  na = "NA",
+  ...,
+  stage = FALSE,
+  force = FALSE
 ) {
   assert_that(is.flag(stage), is.flag(force), noNA(stage), noNA(force))
   hashes <- write_vc(
-    x = x, file = file, root = workdir(root), sorting = sorting,
-    strict = strict, optimize = optimize, na = na, ...
+    x = x,
+    file = file,
+    root = workdir(root),
+    sorting = sorting,
+    strict = strict,
+    optimize = optimize,
+    na = na,
+    ...
   )
   if (!stage) {
     return(hashes)
@@ -239,7 +331,8 @@ compare_meta <- function(new, old) {
       sprintf(
         "- New data uses '%s' as NA string, whereas old data used '%s'.
      Check the 'NA' argument.",
-        new[["..generic"]][["NA string"]], old[["..generic"]][["NA string"]]
+        new[["..generic"]][["NA string"]],
+        old[["..generic"]][["NA string"]]
       )
     )
   }
@@ -268,14 +361,14 @@ compare_meta <- function(new, old) {
     problems <- c(problems, extra)
   }
 
-
   new <- new[names(new) != "..generic"]
   old <- old[names(old) != "..generic"]
   if (length(new) != length(old)) {
     problems <- c(problems, "- New data has a different number of variables.")
   }
   if (!all(names(new) %in% names(old))) {
-    problems <- c(problems,
+    problems <- c(
+      problems,
       sprintf(
         "- New variables: %s.",
         paste(names(new)[!names(new) %in% names(old)], collapse = ", ")
@@ -283,7 +376,8 @@ compare_meta <- function(new, old) {
     )
   }
   if (!all(names(old) %in% names(new))) {
-    problems <- c(problems,
+    problems <- c(
+      problems,
       sprintf(
         "- Deleted variables: %s.",
         paste(names(old)[!names(old) %in% names(new)], collapse = ", ")
@@ -296,9 +390,14 @@ compare_meta <- function(new, old) {
   new_class <- vapply(new[common_variables], "[[", character(1), "class")
   delta <- which(old_class != new_class)
   if (length(delta)) {
-    problems <- c(problems,
-      sprintf("- Change in class: '%s' from %s to %s.", common_variables[delta],
-              old_class[delta], new_class[delta])
+    problems <- c(
+      problems,
+      sprintf(
+        "- Change in class: '%s' from %s to %s.",
+        common_variables[delta],
+        old_class[delta],
+        new_class[delta]
+      )
     )
   }
 
@@ -319,16 +418,17 @@ compare_factors <- function(problems, common_variables, old_class, old, new) {
       problems <- c(
         problems,
         sprintf(
-          "- '%s' changes from %s to %s.", id,
+          "- '%s' changes from %s to %s.",
+          id,
           ifelse(old[[id]]$ordered, "ordinal", "nominal"),
           ifelse(new[[id]]$ordered, "ordinal", "nominal")
         )
       )
     }
-    if (!isTRUE(all.equal(old[[id]][["labels"]],  new[[id]][["labels"]]))) {
+    if (!isTRUE(all.equal(old[[id]][["labels"]], new[[id]][["labels"]]))) {
       problems <- c(problems, sprintf("- New factor labels for '%s'.", id))
     }
-    if (!isTRUE(all.equal(old[[id]][["index"]],  new[[id]][["index"]]))) {
+    if (!isTRUE(all.equal(old[[id]][["index"]], new[[id]][["index"]]))) {
       problems <- c(problems, sprintf("- New indices for '%s'.", id))
     }
   }

@@ -41,14 +41,21 @@ meta.character <- function(x, na = "NA", optimize = TRUE, ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   x <- enc2utf8(x)
   if (na %in% x) {
-    stop("one of the strings matches the NA string ('", na, "')
-Please use a different NA string or consider using a factor.", call. = FALSE)
+    stop(
+      "one of the strings matches the NA string ('",
+      na,
+      "')
+Please use a different NA string or consider using a factor.",
+      call. = FALSE
+    )
   }
   x <- gsub("\\\"", "\\\"\\\"", x)
   to_escape <- grepl(ifelse(optimize, "(\"|\t|\n)", "(\"|,|\n)"), x)
   x[to_escape] <- paste0("\"", x[to_escape], "\"")
   x[is.na(x)] <- na
-  list(class = "character", na_string = na) -> m
+
+  list(class = "character", na_string = na) |>
+    c(get_description(x)) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -56,7 +63,8 @@ Please use a different NA string or consider using a factor.", call. = FALSE)
 
 #' @export
 meta.integer <- function(x, ...) {
-  list(class = "integer") -> m
+  list(class = "integer") |>
+    c(get_description(x)) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -67,7 +75,8 @@ meta.integer <- function(x, ...) {
 meta.numeric <- function(x, ..., digits) {
   stopifnot("`digits` must be a strict positive integer" = is.count(digits))
   x <- signif(x, digits = digits)
-  list(class = "numeric", digits = as.integer(digits)) -> m
+  list(class = "numeric", digits = as.integer(digits)) |>
+    c(get_description(x)) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -89,38 +98,32 @@ meta.numeric <- function(x, ..., digits) {
 #' `meta()` ignores, with a warning, any change in the order of factor levels.
 #' Add `strict = FALSE` to enforce the new order of factor levels.
 meta.factor <- function(
-  x, optimize = TRUE, na = "NA", index, strict = TRUE, ...
+  x,
+  optimize = TRUE,
+  na = "NA",
+  index,
+  strict = TRUE,
+  ...
 ) {
   assert_that(is.flag(optimize), noNA(optimize), is.flag(strict), noNA(strict))
   levels(x) <- enc2utf8(levels(x))
-  if (missing(index) || is.null(index)) {
+  if (missing(index) || is.null(index) || length(index) == 0) {
     index <- seq_along(levels(x))
     names(index) <- levels(x)
-  } else {
-    assert_that(is.integer(index))
-    assert_that(anyDuplicated(index) == 0, msg = "duplicate indices")
-
-    if (
-      strict &&
-      all(names(index) %in% levels(x)) &&
-      all(levels(x) %in% names(index)) &&
-      any(levels(x) != names(index))
-    ) {
-      warning("Same levels with a different order detected.
-This change is ignored. Use `strict = FALSE` to reorder the factor.")
-      x <- factor(x, levels = names(index))
-    }
-    new_levels <- which(!levels(x) %in% names(index))
-    candidate_index <- seq_len(length(new_levels) + length(index))
-    candidate_index <- candidate_index[!candidate_index %in% index]
-    extra_index <- candidate_index[seq_along(new_levels)]
-    names(extra_index) <- levels(x)[new_levels]
-    new_index <- c(index, extra_index)
-    index <- new_index[levels(x)]
-    empty <- levels(x) == ""
-    index[empty] <- new_index[names(new_index) == ""]
-    names(index)[empty] <- ""
   }
+  assert_that(is.integer(index))
+  assert_that(anyDuplicated(index) == 0, msg = "duplicate indices")
+  x <- check_level_order(x = x, index = index, strict = strict)
+  new_levels <- which(!levels(x) %in% names(index))
+  candidate_index <- seq_len(length(new_levels) + length(index))
+  candidate_index <- candidate_index[!candidate_index %in% index]
+  extra_index <- candidate_index[seq_along(new_levels)]
+  names(extra_index) <- levels(x)[new_levels]
+  new_index <- c(index, extra_index)
+  index <- new_index[levels(x)]
+  empty <- levels(x) == ""
+  index[empty] <- new_index[names(new_index) == ""]
+  names(index)[empty] <- ""
 
   if (optimize) {
     z <- index[x]
@@ -128,20 +131,46 @@ This change is ignored. Use `strict = FALSE` to reorder the factor.")
     assert_that(is.string(na), noNA(na), no_whitespace(na))
     assert_that(
       !na %in% levels(x),
-      msg = paste0("one of the levels matches the NA string ('", na, "').
-Please use a different NA string or use optimize = TRUE")
+      msg = paste0(
+        "one of the levels matches the NA string ('",
+        na,
+        "').
+Please use a different NA string or use optimize = TRUE"
+      )
     )
     z <- meta(as.character(x), optimize = optimize, na = na, ...)
   }
 
   list(
-    class = "factor", na_string = na, optimize = optimize,
-    labels = names(index), index = unname(index), ordered = is.ordered(x)
-  ) -> m
+    class = "factor",
+    na_string = na,
+    optimize = optimize,
+    labels = names(index),
+    index = unname(index),
+    ordered = is.ordered(x)
+  ) |>
+    c(get_description(x)) -> m
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
   return(z)
 }
+
+check_level_order <- function(x, index, strict) {
+  if (
+    strict &&
+      all(names(index) %in% levels(x)) &&
+      all(levels(x) %in% names(index)) &&
+      any(levels(x) != names(index))
+  ) {
+    warning(
+      "Same levels with a different order detected.
+This change is ignored. Use `strict = FALSE` to reorder the factor."
+    )
+    x <- factor(x, levels = names(index))
+  }
+  return(x)
+}
+
 
 #' @export
 #' @rdname meta
@@ -151,7 +180,8 @@ meta.logical <- function(x, optimize = TRUE, ...) {
   if (optimize) {
     x <- as.integer(x)
   }
-  list(class = "logical", optimize = optimize) -> m
+  list(class = "logical", optimize = optimize) |>
+    c(get_description(x)) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -159,7 +189,8 @@ meta.logical <- function(x, optimize = TRUE, ...) {
 
 #' @export
 meta.complex <- function(x, ...) {
-  list(class = "complex") -> m
+  list(class = "complex") |>
+    c(get_description(x)) -> m
   class(m) <- "meta_detail"
   attr(x, "meta") <- m
   return(x)
@@ -173,15 +204,21 @@ meta.POSIXct <- function(x, optimize = TRUE, ...) {
   if (optimize) {
     z <- unclass(x)
     list(
-      class = "POSIXct", optimize = TRUE, origin = "1970-01-01 00:00:00",
+      class = "POSIXct",
+      optimize = TRUE,
+      origin = "1970-01-01 00:00:00",
       timezone = "UTC"
-    ) -> m
+    ) |>
+      c(get_description(x)) -> m
   } else {
     z <- format(x, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
     list(
-      class = "POSIXct", optimize = FALSE, format = "%Y-%m-%dT%H:%M:%SZ",
+      class = "POSIXct",
+      optimize = FALSE,
+      format = "%Y-%m-%dT%H:%M:%SZ",
       timezone = "UTC"
-    ) -> m
+    ) |>
+      c(get_description(x)) -> m
   }
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -195,10 +232,12 @@ meta.Date <- function(x, optimize = TRUE, ...) {
   assert_that(is.flag(optimize), noNA(optimize))
   if (optimize) {
     z <- as.integer(x)
-    list(class = "Date", optimize = TRUE, origin = "1970-01-01") -> m
+    list(class = "Date", optimize = TRUE, origin = "1970-01-01") |>
+      c(get_description(x)) -> m
   } else {
     z <- format(x, format = "%Y-%m-%d")
-    list(class = "Date", optimize = FALSE, format = "%Y-%m-%d") -> m
+    list(class = "Date", optimize = FALSE, format = "%Y-%m-%d") |>
+      c(get_description(x)) -> m
   }
   class(m) <- "meta_detail"
   attr(z, "meta") <- m
@@ -219,90 +258,59 @@ meta.Date <- function(x, optimize = TRUE, ...) {
 #' argument intended for internal use.
 #' @rdname meta
 #' @inheritParams write_vc
-meta.data.frame <- function(# nolint
-  x, optimize = TRUE, na = "NA", sorting, strict = TRUE,
-  split_by = character(0), ..., digits
+meta.data.frame <- function(
+  x,
+  optimize = TRUE,
+  na = "NA",
+  sorting,
+  strict = TRUE,
+  split_by = character(0),
+  ...,
+  digits
 ) {
   assert_that(
     !has_name(x, "..generic"),
-    msg = "'..generic' is a reserved name and not allowed as column name")
+    msg = "'..generic' is a reserved name and not allowed as column name"
+  )
   assert_that(
     !has_name(x, "..hash"),
-    msg = "'..hash' is a reserved name and not allowed as column name")
-  generic <- list(optimize = optimize, "NA string" = na)
+    msg = "'..hash' is a reserved name and not allowed as column name"
+  )
+  elements <- c("table name", "title", "description", "sorting")
+  list(optimize = optimize, "NA string" = na) |>
+    c(attributes(x)[names(attributes(x)) %in% elements]) -> generic
+  names(generic)[names(generic) == "table name"] <- "name"
+  dots <- list(...)
+  if (missing(sorting)) {
+    if (has_name(generic, "sorting")) {
+      sorting <- generic$sorting
+    } else if (has_name(dots, "old")) {
+      sorting <- dots[["old"]][["..generic"]][["sorting"]]
+    }
+  }
+
   assert_that(is.character(split_by))
   assert_that(
     all(split_by %in% colnames(x)),
-    msg = "All split_by variables must be available in the data.frame")
+    msg = "All split_by variables must be available in the data.frame"
+  )
   assert_that(
     any(!colnames(x) %in% split_by),
     msg = "No remaining variables after splitting"
   )
 
-  dots <- list(...)
-  float <- vapply(x, is.numeric, logical(1)) &
-    !vapply(x, is.integer, logical(1))
-  if (has_name(dots, "old")) {
-    old <- dots$old
-    assert_that(inherits(old, "meta_list"))
-    if (missing(sorting)) {
-      sorting <- old[["..generic"]][["sorting"]]
-    }
-    if (any(float) && missing(digits)) {
-      old_numeric <- vapply(
-        old, FUN.VALUE = logical(1),
-        FUN = function(x) {
-          has_name(x, "class") && x$class == "numeric" && has_name(x, "digits")
-        }
-      )
-      digits <- vapply(
-        old[old_numeric], FUN.VALUE = numeric(1),
-        FUN = function(x) {
-          x[["digits"]]
-        }
-      )
-      relevant <- names(float)[float][!names(float)[float] %in% names(digits)]
-      rep(6L, length(relevant)) -> digits[relevant]
-    }
-  }
-  if (any(float) && missing(digits)) {
-    digits <- 6L
-    warning("`digits` was not set. Setting is automatically to 6. See ?meta")
-  }
-  if (any(float) && is.null(names(digits))) {
-    stopifnot(
-      "`digits` must be either named or have length 1" = length(digits) == 1
-    )
-    digits <- rep(digits, sum(float))
-    names(digits) <- names(float)[float]
-  }
-  stopifnot(
-    "`digits` must contain all numeric variables of `x`" =
-      all(!float) || all(names(float)[float] %in% names(digits))
-  )
-
+  digits <- set_digits(x = x, digits = digits, old = dots$old)
   # apply sorting
   if (missing(sorting) || is.null(sorting) || !length(sorting)) {
-    warning(call. = FALSE, "No sorting applied.
-Sorting is strongly recommended in combination with version control.")
+    warning(
+      call. = FALSE,
+      immediate. = TRUE,
+      "No sorting applied.
+Sorting is strongly recommended in combination with version control."
+    )
   } else {
-    assert_that(is.character(sorting))
-    assert_that(
-      all(sorting %in% colnames(x)),
-      msg = "All sorting variables must be available in the data.frame")
-    sorting <- unique(c(split_by, sorting))
-    if (nrow(x) > 1) {
-      old_locale <- set_c_locale()
-      x <- x[do.call(order, unname(x[sorting])), , drop = FALSE] # nolint
-      set_local_locale(old_locale)
-      if (any_duplicated(x[sorting])) {
-        sorted <- paste(sprintf("'%s'", sorting), collapse = ", ")
-        sorted <- sprintf("Sorting on %s results in ties.
-Add extra sorting variables to ensure small diffs.", sorted)
-        warning(sorted, call. = FALSE)
-      }
-    }
-    generic <- c(generic, sorting = list(sorting))
+    x <- sorting_data_frame(x = x, sorting = sorting, split_by = split_by)
+    generic[["sorting"]] <- sorting
   }
   if (length(split_by) > 0) {
     generic <- c(generic, split_by = list(split_by))
@@ -315,23 +323,29 @@ Add extra sorting variables to ensure small diffs.", sorted)
       function(id, optimize, na) {
         meta(x[[id]], optimize = optimize, na = na, digits = digits[[id]])
       },
-      optimize = optimize, na = na
+      optimize = optimize,
+      na = na
     )
     names(z) <- colnames(x)
   } else {
+    old <- dots$old
     common <- names(old)[names(old) %in% colnames(x)]
     if (length(common)) {
       z_common <- lapply(
         common,
         function(id, optimize, na, strict) {
           meta(
-            x[[id]], optimize = optimize, na = na,
+            x[[id]],
+            optimize = optimize,
+            na = na,
             index = setNames(old[[id]][["index"]], old[[id]][["labels"]]),
-            strict = strict, digits = digits[[id]]
+            strict = strict,
+            digits = digits[[id]]
           )
         },
         optimize = old[["..generic"]][["optimize"]],
-        na = old[["..generic"]][["NA string"]], strict = strict
+        na = old[["..generic"]][["NA string"]],
+        strict = strict
       )
       names(z_common) <- common
     } else {
@@ -344,7 +358,8 @@ Add extra sorting variables to ensure small diffs.", sorted)
         function(id, optimize, na) {
           meta(x[[id]], optimize = optimize, na = na, digits = digits[[id]])
         },
-        optimize = optimize, na = na
+        optimize = optimize,
+        na = na
       )
       names(z_new) <- new
     } else {
@@ -365,7 +380,9 @@ Add extra sorting variables to ensure small diffs.", sorted)
   class(m) <- "meta_list"
   m[["..generic"]] <- c(
     list(git2rdata = as.character(packageVersion("git2rdata"))),
-    m[["..generic"]], hash = metadata_hash(m))
+    m[["..generic"]],
+    hash = metadata_hash(m)
+  )
   z <- lapply(z, `attr<-`, "meta", NULL)
 
   # convert z to dataframe and add metadata list
@@ -425,4 +442,101 @@ any_duplicated <- function(x) {
     y <- rowSums(y)
   }
   sum(y == ncol(x)) > 0
+}
+
+get_description <- function(x) {
+  if (!has_attr(x, "description")) {
+    return(NULL)
+  }
+  c(description = attr(x, "description"))
+}
+
+#' @importFrom assertthat assert_that
+sorting_data_frame <- function(x, sorting, split_by = character(0)) {
+  assert_that(is.character(sorting))
+  assert_that(
+    all(sorting %in% colnames(x)),
+    msg = "All sorting variables must be available in the data.frame"
+  )
+  if (nrow(x) <= 1) {
+    return(x)
+  }
+  sorting <- unique(c(split_by, sorting))
+  old_locale <- set_c_locale()
+  sorted <- x[do.call(order, unname(x[sorting])), , drop = FALSE] # nolint
+  set_local_locale(old_locale)
+  if (any_duplicated(x[sorting])) {
+    sorted_warn <- paste(sprintf("'%s'", sorting), collapse = ", ")
+    sorted_warn <- sprintf(
+      "Sorting on %s results in ties.
+Add extra sorting variables to ensure small diffs.",
+      sorted_warn
+    )
+    warning(sorted_warn, call. = FALSE)
+  }
+  for (i in colnames(sorted)) {
+    attributes(sorted[[i]]) <- attributes(x[[i]])
+  }
+  return(sorted)
+}
+
+
+set_digits <- function(x, digits, old = NULL) {
+  float <- vapply(x, is.numeric, logical(1)) &
+    !vapply(x, is.integer, logical(1))
+  if (!any(float)) {
+    if (missing(digits)) {
+      digits <- integer(0)
+    }
+    return(digits)
+  }
+  if (!is.null(old)) {
+    assert_that(inherits(old, "meta_list"))
+    if (missing(digits)) {
+      old_numeric <- vapply(
+        old,
+        FUN.VALUE = logical(1),
+        FUN = function(x) {
+          has_name(x, "class") && x$class == "numeric" && has_name(x, "digits")
+        }
+      )
+      digits <- vapply(
+        old[old_numeric],
+        FUN.VALUE = numeric(1),
+        FUN = function(x) {
+          x[["digits"]]
+        }
+      )
+      relevant <- names(float)[float][!names(float)[float] %in% names(digits)]
+      rep(6L, length(relevant)) -> digits[relevant]
+      return(digits)
+    }
+  }
+  if (missing(digits)) {
+    if (
+      all(vapply(x[float], FUN = has_attr, FUN.VALUE = logical(1), "digits"))
+    ) {
+      digits <- vapply(x[float], FUN = attr, FUN.VALUE = integer(1), "digits")
+    } else {
+      digits <- 6L
+      warning(
+        "`digits` was not set. Setting is automatically to 6. See ?meta",
+        call. = FALSE,
+        immediate. = TRUE
+      )
+    }
+  }
+  if (is.null(names(digits))) {
+    stopifnot(
+      "`digits` must be either named or have length 1" = length(digits) == 1
+    )
+    digits <- rep(digits, sum(float))
+    names(digits) <- names(float)[float]
+  }
+  # fmt: skip
+  stopifnot(
+    "`digits` must contain all numeric variables of `x`" =
+      all(names(float)[float] %in% names(digits))
+  )
+  return(digits)
 }

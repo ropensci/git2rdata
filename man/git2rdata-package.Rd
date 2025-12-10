@@ -26,7 +26,7 @@ Other contributors:
   \item Floris Vanderhaeghe \email{floris.vanderhaeghe@inbo.be} (\href{https://orcid.org/0000-0002-6378-6229}{ORCID}) (Research Institute for Nature and Forest (INBO)) [contributor]
   \item Peter Desmet \email{peter.desmet@inbo.be} (\href{https://orcid.org/0000-0002-8442-8025}{ORCID}) (Research Institute for Nature and Forest (INBO)) [contributor]
   \item Els Lommelen \email{els.lommelen@inbo.be} (\href{https://orcid.org/0000-0002-3481-5684}{ORCID}) (Research Institute for Nature and Forest (INBO)) [contributor]
-  \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} [copyright holder, funder]
+  \item Research Institute for Nature and Forest (INBO) \email{info@inbo.be} (\href{https://ror.org/00j54wy13}{ROR}) [copyright holder, funder]
 }
 
 }

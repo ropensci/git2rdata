@@ -68,8 +68,12 @@ relabel <- function(file, root = ".", change) {
 
 #' @export
 relabel.default <- function(file, root, change) {
-  stop("a 'change' of class ", class(change), " is not supported",
-       call. = FALSE)
+  stop(
+    "a 'change' of class ",
+    class(change),
+    " is not supported",
+    call. = FALSE
+  )
 }
 
 #' @export
@@ -88,8 +92,10 @@ relabel.list <- function(file, root = ".", change) {
   file <- clean_data_path(root = root, file = file)
   meta_data <- read_yaml(file["meta_file"])
   optimize <- meta_data[["..generic"]][["optimize"]]
-  stopifnot("relabelling factors on verbose data leads to large diffs.
-Use write_vc() instead." = optimize)
+  stopifnot(
+    "relabelling factors on verbose data leads to large diffs.
+Use write_vc() instead." = optimize
+  )
   assert_that(
     all(names(change) %in% names(meta_data)),
     msg = "every name in 'change' must match an exisiting variable"
@@ -124,7 +130,8 @@ Use write_vc() instead." = optimize)
 #' @export
 #' @importFrom assertthat assert_that has_name
 #' @importFrom stats setNames
-relabel.data.frame <- function(file, root, change) { #nolint
+relabel.data.frame <- function(file, root, change) {
+  #nolint
   assert_that(
     has_name(change, "factor"),
     has_name(change, "old"),
