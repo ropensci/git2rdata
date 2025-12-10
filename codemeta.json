@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/ropensci/git2rdata/",
   "issueTracker": "https://github.com/ropensci/git2rdata/issues",
   "license": "https://spdx.org/licenses/GPL-3.0",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.4.1 (2024-06-14)",
+  "runtimePlatform": "R version 4.5.2 (2025-10-31)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -91,6 +91,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "jsonlite",
+      "name": "jsonlite",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=jsonlite"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "knitr",
       "name": "knitr",
       "provider": {
@@ -143,7 +155,7 @@
       "@type": "SoftwareApplication",
       "identifier": "R",
       "name": "R",
-      "version": ">= 3.5.0"
+      "version": ">= 4.1.0"
     },
     "2": {
       "@type": "SoftwareApplication",
@@ -189,28 +201,28 @@
     },
     "SystemRequirements": null
   },
-  "fileSize": "757.058KB",
+  "fileSize": "784.491KB",
   "citation": [
     {
       "@type": "SoftwareSourceCode",
-      "datePublished": "2024",
-      "author": {
-        "author": {
+      "datePublished": "2025",
+      "author": [
+        {
           "@type": "Person",
           "givenName": "Thierry",
           "familyName": "Onkelinx"
         }
-      },
-      "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository. Version 0.4.1",
+      ],
+      "name": "git2rdata: Store and Retrieve Data.frames in a Git Repository. Version 0.5.1",
       "identifier": "10.5281/zenodo.1485309",
       "url": "https://ropensci.github.io/git2rdata/",
       "@id": "https://doi.org/10.5281/zenodo.1485309",
       "sameAs": "https://doi.org/10.5281/zenodo.1485309"
     }
   ],
-  "releaseNotes": "https://github.com/ropensci/git2rdata/blob/master/NEWS.md",
+  "releaseNotes": "https://github.com/ropensci/git2rdata/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/git2rdata/blob/main/README.md",
-  "contIntegration": "https://app.codecov.io/gh/ropensci/git2rdata",
+  "contIntegration": "https://app.codecov.io/gh/ropensci/git2rdata?branch=main",
   "developmentStatus": ["https://www.repostatus.org/#active", "https://lifecycle.r-lib.org/articles/stages.html#stable"],
   "review": {
     "@type": "Review",
