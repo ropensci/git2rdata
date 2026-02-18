@@ -13,7 +13,8 @@
 #' @inheritParams write_vc
 #' @param change A named vector with the old names as values and the new names
 #' as names.
-#' @return invisible `NULL`.
+#' @return a named vector with the file paths relative to `root`. The names
+#' contain the hashes of the files.
 #' @export
 #' @examples
 #'
