@@ -107,6 +107,8 @@ rename_variable.character <- function(file, change, root = ".", ...) {
   yaml[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
   write_yaml(yaml, file["meta_file"], fileEncoding = "UTF-8")
 
+  root <- normalizePath(root, winslash = "/", mustWork = TRUE)
+  file <- normalizePath(file, winslash = "/", mustWork = TRUE)
   hashes <- remove_root(file = file, root = root)
   names(hashes) <-
     c(
