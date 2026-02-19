@@ -1,4 +1,4 @@
-checklist version: 0.5.1
+checklist version: 0.5.3
 git: https://github.com/ropensci
 info@inbo.be:
   name:
@@ -9,7 +9,7 @@ info@inbo.be:
   email: info@inbo.be
   website: https://www.vlaanderen.be/inbo/en-gb
   logo: https://inbo.github.io/checklist/reference/figures/logo-en.png
-  ror: https://ror.org/00j54wy13
+  ror: 00j54wy13
   orcid: yes
   zenodo: inbo
   rightsholder: single
