@@ -380,6 +380,28 @@ compare_meta <- function(new, old) {
     ) -> extra
     problems <- c(problems, extra)
   }
+  new_convert <- new[["..generic"]][["convert"]]
+  old_convert <- old[["..generic"]][["convert"]]
+  if (!isTRUE(all.equal(new_convert, old_convert))) {
+    new_convert_str <- if (is.null(new_convert)) {
+      "none"
+    } else {
+      paste(names(new_convert), collapse = ", ")
+    }
+    old_convert_str <- if (is.null(old_convert)) {
+      "none"
+    } else {
+      paste(names(old_convert), collapse = ", ")
+    }
+    sprintf(
+      "- The convert variables changed.
+    - Convert for the new data: %s.
+    - Convert for the old data: %s.",
+      new_convert_str,
+      old_convert_str
+    ) -> extra
+    problems <- c(problems, extra)
+  }
 
   new <- new[names(new) != "..generic"]
   old <- old[names(old) != "..generic"]

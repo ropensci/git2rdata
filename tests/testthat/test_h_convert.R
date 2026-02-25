@@ -415,3 +415,93 @@ test_that("convert works with optimize = FALSE", {
 
   unlink(root, recursive = TRUE)
 })
+
+test_that("convert changes are detected when updating files", {
+  root <- tempfile(pattern = "git2rdata-convert")
+  dir.create(root)
+  test_df <- data.frame(
+    text = c("hello", "world"),
+    number = 1:2,
+    stringsAsFactors = FALSE
+  )
+
+  # Write first time with convert
+  write_vc(
+    test_df,
+    "test",
+    root = root,
+    sorting = "number",
+    convert = list(text = c(write = "base::toupper", read = "base::tolower")),
+    digits = 6
+  )
+
+  # Try to write again with different convert in strict mode - should error
+  expect_error(
+    write_vc(
+      test_df,
+      "test",
+      root = root,
+      sorting = "number",
+      convert = list(),
+      digits = 6,
+      strict = TRUE
+    ),
+    "The data was not overwritten"
+  )
+
+  # Write with strict = FALSE should warn
+  expect_warning(
+    write_vc(
+      test_df,
+      "test",
+      root = root,
+      sorting = "number",
+      convert = list(),
+      digits = 6,
+      strict = FALSE
+    ),
+    "Changes in the metadata"
+  )
+
+  unlink(root, recursive = TRUE)
+})
+
+test_that("backward compatibility: reading files without convert", {
+  root <- tempfile(pattern = "git2rdata-convert")
+  dir.create(root)
+  test_df <- data.frame(
+    text = c("hello", "world"),
+    number = 1:2,
+    stringsAsFactors = FALSE
+  )
+
+  # Write without convert
+  write_vc(
+    test_df,
+    "test",
+    root = root,
+    sorting = "number",
+    digits = 6
+  )
+
+  # Read should work fine, no convert in attributes
+  result <- read_vc("test", root = root)
+  expect_equal(result$text, c("hello", "world"))
+  expect_false("convert" %in% names(attributes(result)))
+
+  # Now update with convert should work with strict = FALSE
+  expect_warning(
+    write_vc(
+      test_df,
+      "test",
+      root = root,
+      sorting = "number",
+      convert = list(text = c(write = "base::toupper", read = "base::tolower")),
+      digits = 6,
+      strict = FALSE
+    ),
+    "convert variables changed"
+  )
+
+  unlink(root, recursive = TRUE)
+})
