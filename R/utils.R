@@ -118,7 +118,10 @@ validate_convert <- function(convert, colnames_x) {
       if (!requireNamespace(pkg_name, quietly = TRUE)) {
         stop(
           sprintf(
-            "Package '%s' required for convert[['%s']][['%s']] is not available",
+            paste(
+              "Package '%s' required for convert[['%s']][['%s']]",
+              "is not available"
+            ),
             pkg_name,
             col_name,
             direction
@@ -127,10 +130,15 @@ validate_convert <- function(convert, colnames_x) {
         )
       }
 
-      if (!exists(func_name, where = asNamespace(pkg_name), mode = "function")) {
+      if (!exists(
+        func_name, where = asNamespace(pkg_name), mode = "function"
+      )) {
         stop(
           sprintf(
-            "Function '%s' not found in package '%s' for convert[['%s']][['%s']]",
+            paste(
+              "Function '%s' not found in package '%s'",
+              "for convert[['%s']][['%s']]"
+            ),
             func_name,
             pkg_name,
             col_name,

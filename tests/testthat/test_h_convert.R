@@ -40,7 +40,9 @@ test_that("convert parameter validation", {
       "test",
       root = root,
       sorting = "b",
-      convert = list(a = c(write = "base::toupper", read = "base::tolower"), ""),
+      convert = list(
+        a = c(write = "base::toupper", read = "base::tolower"), ""
+      ),
       digits = 6
     ),
     "all elements of convert must be named"
@@ -134,7 +136,10 @@ test_that("convert parameter validation", {
       convert = list(a = c(write = "toupper", read = "base::tolower")),
       digits = 6
     ),
-    "convert\\[\\['a'\\]\\]\\[\\['write'\\]\\] must be in 'package::function' format"
+    paste(
+      "convert\\[\\['a'\\]\\]\\[\\['write'\\]\\]",
+      "must be in 'package::function' format"
+    )
   )
 
   # must have exactly one '::'
@@ -162,7 +167,10 @@ test_that("convert parameter validation", {
       convert = list(a = c(write = "::toupper", read = "base::tolower")),
       digits = 6
     ),
-    "convert\\[\\['a'\\]\\]\\[\\['write'\\]\\] has empty package or function name"
+    paste(
+      "convert\\[\\['a'\\]\\]\\[\\['write'\\]\\]",
+      "has empty package or function name"
+    )
   )
 
   # package must be available
