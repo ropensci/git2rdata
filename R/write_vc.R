@@ -169,7 +169,14 @@ write_vc.character <- function(
       split_by = split_by,
       digits = digits
     )
-    problems <- compare_meta(attr(raw_data, "meta"), old)
+    
+    # Add convert to new metadata before comparing
+    new_meta <- attr(raw_data, "meta")
+    if (length(convert) > 0) {
+      new_meta[["..generic"]][["convert"]] <- convert
+    }
+    
+    problems <- compare_meta(new_meta, old)
     if (length(problems)) {
       problems <- c(
         paste(
