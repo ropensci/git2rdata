@@ -84,6 +84,7 @@ write_vc.default <- function(
 #' @importFrom yaml read_yaml write_yaml
 #' @importFrom utils write.table
 #' @importFrom git2r hash
+#' @include is_git2rmeta.R
 write_vc.character <- function(
   x,
   file,
@@ -123,12 +124,11 @@ write_vc.character <- function(
   dirname(file["raw_file"]) |>
     dir.create(showWarnings = FALSE, recursive = TRUE)
 
-  # Apply write conversions before calling meta()
-  if (length(convert) > 0) {
-    x <- apply_convert(x, convert, direction = "write")
-  }
-
   if (!file.exists(file["meta_file"])) {
+    # Apply write conversions before calling meta() for new files
+    if (length(convert) > 0) {
+      x <- apply_convert(x, convert, direction = "write")
+    }
     raw_data <- meta(
       x,
       optimize = optimize,
@@ -153,6 +153,12 @@ write_vc.character <- function(
     )
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
+    
+    # Apply write conversions before calling meta() for existing files too
+    if (length(convert) > 0) {
+      x <- apply_convert(x, convert, direction = "write")
+    }
+    
     raw_data <- meta(
       x,
       optimize = optimize,
@@ -273,6 +279,8 @@ write_vc.character <- function(
   if (length(convert) > 0) {
     meta_data[["..generic"]][["convert"]] <- convert
   }
+  # Recalculate metadata hash after adding convert
+  meta_data[["..generic"]][["hash"]] <- metadata_hash(meta_data)
   write_yaml(meta_data, file["meta_file"], fileEncoding = "UTF-8")
 
   hashes <- remove_root(file = file, root = root)
