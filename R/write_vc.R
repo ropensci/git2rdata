@@ -42,7 +42,8 @@ write_vc <- function(
   optimize = TRUE,
   na = "NA",
   ...,
-  split_by
+  split_by,
+  convert
 ) {
   UseMethod("write_vc", root)
 }
@@ -72,6 +73,12 @@ write_vc.default <- function(
 #' Either a single positive integer or a named vector where the names link to
 #' the variables in the `data.frame`.
 #' Defaults to `6` with a warning.
+#' @param convert An optional named list for column conversions.
+#' Names must be present in the column names of `x`.
+#' Each element must be a character vector of length 2 with names `write` and
+#' `read`, containing function names in the `package::function` format.
+#' The `write` function is applied before storing, and `read` function is
+#' applied when reading back the data.
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag
 #' @importFrom yaml read_yaml write_yaml
@@ -88,7 +95,8 @@ write_vc.character <- function(
   ...,
   append = FALSE,
   split_by = character(0),
-  digits
+  digits,
+  convert = list()
 ) {
   assert_that(
     inherits(x, "data.frame"),
@@ -104,6 +112,9 @@ write_vc.character <- function(
     noNA(strict),
     noNA(optimize)
   )
+  # Validate and check packages for convert
+  convert <- validate_convert(convert, colnames(x))
+
   if (append) {
     x <- append_df(x = x, file = file, root = root)
   }
@@ -111,6 +122,11 @@ write_vc.character <- function(
   file <- clean_data_path(root = root, file = file)
   dirname(file["raw_file"]) |>
     dir.create(showWarnings = FALSE, recursive = TRUE)
+
+  # Apply write conversions before calling meta()
+  if (length(convert) > 0) {
+    x <- apply_convert(x, convert, direction = "write")
+  }
 
   if (!file.exists(file["meta_file"])) {
     raw_data <- meta(
@@ -253,6 +269,10 @@ write_vc.character <- function(
     packageVersion("git2rdata")
   )
   meta_data[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
+  # Store convert information in metadata
+  if (length(convert) > 0) {
+    meta_data[["..generic"]][["convert"]] <- convert
+  }
   write_yaml(meta_data, file["meta_file"], fileEncoding = "UTF-8")
 
   hashes <- remove_root(file = file, root = root)
