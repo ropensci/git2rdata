@@ -1,3 +1,8 @@
+# git2rdata 0.5.2
+
+* Bugfix in `rename_variable()` thanks to @florisvdh for finding and fixing the
+  bug.
+
 # git2rdata 0.5.1
 
 * `write_vc()` stores metadata stored in the data frame.
