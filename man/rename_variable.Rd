@@ -35,7 +35,8 @@ writing the data. Defaults to \code{FALSE}.}
 \item{force}{Add ignored files. Default is FALSE.}
 }
 \value{
-invisible \code{NULL}.
+a named vector with the file paths relative to \code{root}. The names
+contain the hashes of the files.
 }
 \description{
 The raw data file contains a header with the variable names.
