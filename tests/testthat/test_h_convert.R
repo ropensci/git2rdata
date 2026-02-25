@@ -508,7 +508,7 @@ test_that("backward compatibility: reading files without convert", {
       digits = 6,
       strict = FALSE
     ),
-    "convert variables changed"
+    "The convert variables changed"
   )
 
   unlink(root, recursive = TRUE)
