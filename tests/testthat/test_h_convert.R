@@ -243,7 +243,7 @@ test_that("convert works with valid conversions", {
   expect_true("convert" %in% names(attributes(result)))
   expect_equal(
     attr(result, "convert"),
-    list(text = c(write = "base::toupper", read = "base::tolower"))
+    list(text = c("base::toupper", "base::tolower"))
   )
 
   unlink(root, recursive = TRUE)
@@ -293,7 +293,7 @@ test_that("convert stores and reads metadata correctly", {
     "test",
     root = root,
     sorting = "number",
-    convert = list(text = c(write = "base::toupper", read = "base::tolower")),
+    convert = list(text = c(read = "base::tolower", write = "base::toupper")),
     digits = 6
   )
 
@@ -304,7 +304,7 @@ test_that("convert stores and reads metadata correctly", {
   expect_true("convert" %in% names(meta_content[["..generic"]]))
   expect_equal(
     meta_content[["..generic"]][["convert"]],
-    list(text = c(write = "base::toupper", read = "base::tolower"))
+    list(text = c("base::toupper", "base::tolower"))
   )
 
   unlink(root, recursive = TRUE)
@@ -418,7 +418,7 @@ test_that("convert works with optimize = FALSE", {
   expect_equal(result$text, c("hello", "world"))
   expect_equal(
     attr(result, "convert"),
-    list(text = c(write = "base::toupper", read = "base::tolower"))
+    list(text = c("base::toupper", "base::tolower"))
   )
 
   unlink(root, recursive = TRUE)

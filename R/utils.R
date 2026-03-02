@@ -23,7 +23,7 @@ validate_convert <- function(convert, colnames_x) {
   validate_convert_structure(convert, colnames_x)
 
   for (col_name in names(convert)) {
-    validate_convert_element(convert[[col_name]], col_name)
+    convert[[col_name]] <- validate_convert_element(convert[[col_name]], col_name)
   }
 
   return(convert)
@@ -100,6 +100,7 @@ validate_convert_element <- function(conv, col_name) {
 
   validate_convert_function(conv[["write"]], col_name, "write")
   validate_convert_function(conv[["read"]], col_name, "read")
+  conv[c("write", "read")]
 }
 
 #' Validate a convert function specification
@@ -179,7 +180,7 @@ apply_convert <- function(x, convert, direction = "write") {
   }
 
   for (col_name in names(convert)) {
-    func_spec <- convert[[col_name]][[direction]]
+    func_spec <- convert[[col_name]][[c(write = 1, read = 2)[direction]]]
     parts <- strsplit(func_spec, "::", fixed = TRUE)[[1]]
     pkg_name <- parts[1]
     func_name <- parts[2]
