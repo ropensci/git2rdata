@@ -49,8 +49,8 @@ write_vc(
   sorting = "id",
   convert = list(
     name = c(
-      write = "base::toupper",  # Convert to uppercase when writing
-      read = "base::tolower"     # Convert to lowercase when reading
+      write = "base::toupper", # Convert to uppercase when writing
+      read = "base::tolower" # Convert to lowercase when reading
     )
   )
 )
@@ -60,7 +60,7 @@ The stored file contains the names in uppercase:
 
 ```{r check-storage}
 # Check the raw file content
-raw_content <- readLines(file.path(root, "people.csv"))
+raw_content <- readLines(file.path(root, "people.tsv"))
 cat(raw_content, sep = "\n")
 ```
 
