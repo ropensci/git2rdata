@@ -5,9 +5,11 @@
 ^LICENSE.md$
 ^Meta$
 ^README\.Rmd$
+^[.]?air[.]toml$
 ^\.Rproj\.user$
 ^\.github$
 ^\.httr-oauth$
+^\.vscode$
 ^\.zenodo\.json$
 ^_pkgdown.yml$
 ^checklist.yml$

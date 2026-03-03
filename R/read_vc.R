@@ -176,6 +176,12 @@ read_vc.character <- function(file, root = ".") {
     optimize = optimize
   )
 
+  # Apply read conversions if present
+  if (has_name(meta_data[["..generic"]], "convert")) {
+    convert <- meta_data[["..generic"]][["convert"]]
+    raw_data <- apply_convert(raw_data, convert, direction = "read")
+  }
+
   names(file) <- c(
     meta_data[["..generic"]][["data_hash"]],
     meta_data[["..generic"]][["hash"]]
@@ -208,6 +214,11 @@ read_vc.character <- function(file, root = ".") {
 
   attr(raw_data, "optimize") <- meta_data[["..generic"]][["optimize"]]
   attr(raw_data, "sorting") <- meta_data[["..generic"]][["sorting"]]
+
+  # Add convert to attributes if present
+  if (has_name(meta_data[["..generic"]], "convert")) {
+    attr(raw_data, "convert") <- meta_data[["..generic"]][["convert"]]
+  }
 
   class(raw_data) <- c("git2rdata", class(raw_data))
 

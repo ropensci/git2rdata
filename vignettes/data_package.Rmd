@@ -1,0 +1,202 @@
+---
+title: "Creating data packages"
+author: "Thierry Onkelinx"
+output:
+  rmarkdown::html_vignette:
+        fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Creating data packages}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+The `data_package()` function creates a `datapackage.json` file for a directory containing CSV files that were created by `git2rdata`.
+This makes your data compatible with the [Frictionless Data](https://frictionlessdata.io/) specification, allowing other tools and platforms to discover and use your data.
+
+A data package is a simple container format for describing a collection of data files.
+The `datapackage.json` file provides metadata about the package and its resources (data files).
+
+## Basic usage
+
+```{r setup}
+library(git2rdata)
+root <- tempfile("git2rdata-package")
+dir.create(root)
+```
+
+First, create some data files in non-optimized format (CSV):
+
+```{r create-data}
+# Write several datasets in non-optimized (CSV) format
+write_vc(
+  iris,
+  file = "iris",
+  root = root,
+  sorting = c("Species", "Sepal.Length"),
+  optimize = FALSE # Use CSV format instead of optimized TSV
+)
+
+write_vc(
+  mtcars,
+  file = "mtcars",
+  root = root,
+  sorting = "mpg",
+  optimize = FALSE
+)
+
+# Check what files were created
+list.files(root, recursive = TRUE)
+```
+
+Now create the data package:
+
+```{r create-package}
+# Create the datapackage.json file
+package_file <- data_package(root)
+cat("Created:", package_file, "\n")
+```
+
+## Package contents
+
+The `datapackage.json` file contains metadata for each CSV file:
+
+```{r show-package}
+# Read and display the package file
+package_data <- jsonlite::read_json(package_file)
+
+# Show the structure
+str(package_data, max.level = 2)
+```
+
+Each resource in the package includes:
+
+- **name**: The name of the dataset
+- **path**: The relative path to the CSV file
+- **profile**: The profile type (tabular-data-resource)
+- **schema**: The schema describing the data structure
+
+## Schema information
+
+The schema for each resource describes the fields (columns) in the data:
+
+```{r show-schema}
+# Show the schema for the iris dataset
+iris_resource <- package_data$resources[[1]]
+cat("Resource name:", iris_resource$name, "\n")
+cat("Number of fields:", length(iris_resource$schema$fields), "\n\n")
+
+# Show first few fields
+for (i in seq_len(min(3, length(iris_resource$schema$fields)))) {
+  field <- iris_resource$schema$fields[[i]]
+  cat(sprintf(
+    "Field %d: %s (type: %s)\n",
+    i,
+    field$name,
+    field$type
+  ))
+}
+```
+
+## Important notes
+
+### CSV format required
+
+`data_package()` only works with non-optimized git2rdata objects (CSV files).
+This is because the Frictionless Data specification expects CSV format.
+
+```{r csv-required, error=TRUE}
+# This will fail because optimized files use TSV format
+optimized_root <- tempfile("git2rdata-optimized")
+dir.create(optimized_root)
+
+write_vc(
+  iris,
+  file = "iris",
+  root = optimized_root,
+  sorting = "Species",
+  optimize = TRUE # This creates TSV files
+)
+
+# This will fail with an error
+try(data_package(optimized_root))
+
+unlink(optimized_root, recursive = TRUE)
+```
+
+### Metadata integration
+
+The function reads the git2rdata metadata (`.yml` files) to extract field information, including:
+
+- Field names
+- Field types (mapped to Frictionless Data types)
+- Factor levels (for categorical data)
+- Description (if available through `update_metadata()`)
+
+### Recursive search
+
+The function searches recursively in the specified directory, so you can organize your data files in subdirectories:
+
+```{r subdirectories}
+# Create a subdirectory
+subdir <- file.path(root, "subset")
+dir.create(subdir)
+
+# Write data in subdirectory
+write_vc(
+  head(iris, 50),
+  file = file.path("subset", "iris_subset"),
+  root = root,
+  sorting = "Species",
+  optimize = FALSE
+)
+
+# Recreate the package - it will include the subdirectory file
+data_package(root)
+
+# Check the package contents
+package_data <- jsonlite::read_json(package_file)
+cat("Number of resources:", length(package_data$resources), "\n")
+```
+
+## Use cases
+
+### Data sharing
+
+Create a data package to share your datasets with others:
+
+```{r sharing, eval=FALSE}
+# After creating your data files
+write_vc(my_data, "my_data", root = "data", optimize = FALSE)
+
+# Create the package
+data_package("data")
+
+# Share the entire 'data' directory
+# Others can now use Frictionless Data tools to read your data
+```
+
+### Data validation
+
+The Frictionless Data ecosystem provides tools to validate data packages:
+
+```{r validation, eval=FALSE}
+# After creating the package, use frictionless-py or other tools
+# to validate your data package
+system("frictionless validate datapackage.json")
+```
+
+### Data catalogs
+
+Data packages can be published to data catalogs and portals that support the Frictionless Data specification, making your data discoverable.
+
+## See also
+
+- [Frictionless Data documentation](https://frictionlessdata.io/)
+- [Data Package specification](https://specs.frictionlessdata.io/data-package/)
+- The `metadata` vignette for adding descriptions to your data
+
+```{r cleanup, include=FALSE}
+unlink(root, recursive = TRUE)
+```

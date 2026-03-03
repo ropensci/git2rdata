@@ -15,7 +15,8 @@ write_vc(
   optimize = TRUE,
   na = "NA",
   ...,
-  split_by
+  split_by,
+  convert
 )
 
 \method{write_vc}{character}(
@@ -29,7 +30,8 @@ write_vc(
   ...,
   append = FALSE,
   split_by = character(0),
-  digits
+  digits,
+  convert = list()
 )
 
 \method{write_vc}{git_repository}(
@@ -80,6 +82,13 @@ Defaults to \code{TRUE}.}
 \item{split_by}{An optional vector of variables name to split the text files.
 This creates a separate file for every combination.
 We prepend these variables to the vector of \code{sorting} variables.}
+
+\item{convert}{An optional named list for column conversions.
+Names must be present in the column names of \code{x}.
+Each element must be a character vector of length 2 with names \code{write} and
+\code{read}, containing function names in the \verb{package::function} format.
+The \code{write} function is applied before storing, and \code{read} function is
+applied when reading back the data.}
 
 \item{append}{logical. Only relevant if \code{file} is a character
     string.  If \code{TRUE}, the output is appended to the
