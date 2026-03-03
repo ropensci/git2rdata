@@ -13,7 +13,10 @@ vignette: >
 ## Introduction
 
 The `convert` argument in `write_vc()` and `read_vc()` allows you to apply transformations to data columns during the write and read operations.
-This is useful when you want to store data in a different format than you use it in R, or when you need to apply reversible transformations for storage optimization or compatibility.
+This is useful when you want to store data types that `git2rdata` doesn't support.
+The only requirement is that there exist two functions in some R package that do the transformation.
+One function should convert the unsupported data type into a supported data type.
+The second function should revert the supported data type into the original unsupported data type.
 
 ## Basic usage
 
@@ -104,6 +107,23 @@ print(result2)
 
 ## Use cases
 
+### Unsupported data type
+
+`git2rdata` doesn't have support for 64-bit integers.
+You can store them by converting them into a character.
+
+```{r unsupported, eval = FALSE}
+mtcars2 <- mtcars |>
+  dplyr::mutate(cyl = bit64::as.integer64(cyl))
+write_vc(
+  mtcars2,
+  file = "mtcars2",
+  convert = list(
+    cyl = c(write = "bit64::as.character", read = "bit64::as.integer64")
+  )
+)
+```
+
 ### Storage optimization
 
 Convert numeric data to a more compact string representation:
@@ -147,7 +167,8 @@ write_vc(
 
 ## Important notes
 
-- **Package availability**: All packages referenced in the `convert` argument must be available when calling `write_vc()`. The function checks for package availability at write time.
+- **Package availability**: All packages referenced in the `convert` argument must be available when calling `write_vc()` and `read_vc()`.
+  The function checks for package availability at read and write time.
 
 - **Function validation**: The function validates that the specified functions exist in the specified packages.
 
@@ -157,9 +178,11 @@ write_vc(
 
 ## Limitations
 
-- The `convert` argument only accepts functions in the `package::function` format. Anonymous functions or functions from the global environment are not supported.
+- The `convert` argument only accepts functions in the `package::function` format.
+  Anonymous functions or functions from the global environment are not supported.
 
-- Conversions must be reversible. The `read` function should be able to restore the original data from the converted form.
+- Conversions must be reversible.
+  The `read` function should be able to restore the original data from the converted form.
 
 - The conversion is applied before `meta()` processes the data, so optimizations (like factor encoding) work on the converted data.
 
