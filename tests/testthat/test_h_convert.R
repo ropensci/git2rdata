@@ -41,7 +41,8 @@ test_that("convert parameter validation", {
       root = root,
       sorting = "b",
       convert = list(
-        a = c(write = "base::toupper", read = "base::tolower"), ""
+        a = c(write = "base::toupper", read = "base::tolower"),
+        ""
       ),
       digits = 6
     ),

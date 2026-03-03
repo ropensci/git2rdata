@@ -35,7 +35,7 @@ write_vc(
   file = "iris",
   root = root,
   sorting = c("Species", "Sepal.Length"),
-  optimize = FALSE  # Use CSV format instead of optimized TSV
+  optimize = FALSE # Use CSV format instead of optimized TSV
 )
 
 write_vc(
@@ -88,11 +88,13 @@ cat("Resource name:", iris_resource$name, "\n")
 cat("Number of fields:", length(iris_resource$schema$fields), "\n\n")
 
 # Show first few fields
-for (i in 1:min(3, length(iris_resource$schema$fields))) {
+for (i in seq_len(min(3, length(iris_resource$schema$fields)))) {
   field <- iris_resource$schema$fields[[i]]
   cat(sprintf(
     "Field %d: %s (type: %s)\n",
-    i, field$name, field$type
+    i,
+    field$name,
+    field$type
   ))
 }
 ```
@@ -114,7 +116,7 @@ write_vc(
   file = "iris",
   root = optimized_root,
   sorting = "Species",
-  optimize = TRUE  # This creates TSV files
+  optimize = TRUE # This creates TSV files
 )
 
 # This will fail with an error

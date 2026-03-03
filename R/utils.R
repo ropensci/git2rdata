@@ -23,7 +23,10 @@ validate_convert <- function(convert, colnames_x) {
   validate_convert_structure(convert, colnames_x)
 
   for (col_name in names(convert)) {
-    convert[[col_name]] <- validate_convert_element(convert[[col_name]], col_name)
+    convert[[col_name]] <- validate_convert_element(
+      convert[[col_name]],
+      col_name
+    )
   }
 
   return(convert)
@@ -153,9 +156,13 @@ validate_convert_function <- function(func_spec, col_name, direction) {
     )
   }
 
-  if (!exists(
-    func_name, where = asNamespace(pkg_name), mode = "function"
-  )) {
+  if (
+    !exists(
+      func_name,
+      where = asNamespace(pkg_name),
+      mode = "function"
+    )
+  ) {
     stop(
       sprintf(
         paste(

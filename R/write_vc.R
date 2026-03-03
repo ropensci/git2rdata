@@ -153,12 +153,12 @@ write_vc.character <- function(
     )
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
-    
+
     # Apply write conversions before calling meta() for existing files too
     if (length(convert) > 0) {
       x <- apply_convert(x, convert, direction = "write")
     }
-    
+
     raw_data <- meta(
       x,
       optimize = optimize,
@@ -169,13 +169,13 @@ write_vc.character <- function(
       split_by = split_by,
       digits = digits
     )
-    
+
     # Add convert to new metadata before comparing
     new_meta <- attr(raw_data, "meta")
     if (length(convert) > 0) {
       new_meta[["..generic"]][["convert"]] <- convert
     }
-    
+
     problems <- compare_meta(new_meta, old)
     if (length(problems)) {
       problems <- c(
