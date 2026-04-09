@@ -42,7 +42,8 @@ write_vc <- function(
   optimize = TRUE,
   na = "NA",
   ...,
-  split_by
+  split_by,
+  convert
 ) {
   UseMethod("write_vc", root)
 }
@@ -72,11 +73,18 @@ write_vc.default <- function(
 #' Either a single positive integer or a named vector where the names link to
 #' the variables in the `data.frame`.
 #' Defaults to `6` with a warning.
+#' @param convert An optional named list for column conversions.
+#' Names must be present in the column names of `x`.
+#' Each element must be a character vector of length 2 with names `write` and
+#' `read`, containing function names in the `package::function` format.
+#' The `write` function is applied before storing, and `read` function is
+#' applied when reading back the data.
 #' @export
 #' @importFrom assertthat assert_that is.string is.flag
 #' @importFrom yaml read_yaml write_yaml
 #' @importFrom utils write.table
 #' @importFrom git2r hash
+#' @include is_git2rmeta.R
 write_vc.character <- function(
   x,
   file,
@@ -88,7 +96,8 @@ write_vc.character <- function(
   ...,
   append = FALSE,
   split_by = character(0),
-  digits
+  digits,
+  convert = list()
 ) {
   assert_that(
     inherits(x, "data.frame"),
@@ -104,6 +113,9 @@ write_vc.character <- function(
     noNA(strict),
     noNA(optimize)
   )
+  # Validate and check packages for convert
+  convert <- validate_convert(convert, colnames(x))
+
   if (append) {
     x <- append_df(x = x, file = file, root = root)
   }
@@ -113,6 +125,10 @@ write_vc.character <- function(
     dir.create(showWarnings = FALSE, recursive = TRUE)
 
   if (!file.exists(file["meta_file"])) {
+    # Apply write conversions before calling meta() for new files
+    if (length(convert) > 0) {
+      x <- apply_convert(x, convert, direction = "write")
+    }
     raw_data <- meta(
       x,
       optimize = optimize,
@@ -137,6 +153,12 @@ write_vc.character <- function(
     )
     old <- read_yaml(file["meta_file"])
     class(old) <- "meta_list"
+
+    # Apply write conversions before calling meta() for existing files too
+    if (length(convert) > 0) {
+      x <- apply_convert(x, convert, direction = "write")
+    }
+
     raw_data <- meta(
       x,
       optimize = optimize,
@@ -147,7 +169,14 @@ write_vc.character <- function(
       split_by = split_by,
       digits = digits
     )
-    problems <- compare_meta(attr(raw_data, "meta"), old)
+
+    # Add convert to new metadata before comparing
+    new_meta <- attr(raw_data, "meta")
+    if (length(convert) > 0) {
+      new_meta[["..generic"]][["convert"]] <- convert
+    }
+
+    problems <- compare_meta(new_meta, old)
     if (length(problems)) {
       problems <- c(
         paste(
@@ -253,6 +282,12 @@ write_vc.character <- function(
     packageVersion("git2rdata")
   )
   meta_data[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
+  # Store convert information in metadata
+  if (length(convert) > 0) {
+    meta_data[["..generic"]][["convert"]] <- convert
+  }
+  # Recalculate metadata hash after adding convert
+  meta_data[["..generic"]][["hash"]] <- metadata_hash(meta_data)
   write_yaml(meta_data, file["meta_file"], fileEncoding = "UTF-8")
 
   hashes <- remove_root(file = file, root = root)
@@ -357,6 +392,28 @@ compare_meta <- function(new, old) {
     - Split_by for the old data: %s.",
       paste(sprintf("'%s'", new_split_by), collapse = ", "),
       paste(sprintf("'%s'", old_split_by), collapse = ", ")
+    ) -> extra
+    problems <- c(problems, extra)
+  }
+  new_convert <- new[["..generic"]][["convert"]]
+  old_convert <- old[["..generic"]][["convert"]]
+  if (!isTRUE(all.equal(new_convert, old_convert))) {
+    new_convert_str <- if (is.null(new_convert)) {
+      "none"
+    } else {
+      paste(names(new_convert), collapse = ", ")
+    }
+    old_convert_str <- if (is.null(old_convert)) {
+      "none"
+    } else {
+      paste(names(old_convert), collapse = ", ")
+    }
+    sprintf(
+      "- The convert variables changed.
+    - Convert for the new data: %s.
+    - Convert for the old data: %s.",
+      new_convert_str,
+      old_convert_str
     ) -> extra
     problems <- c(problems, extra)
   }

@@ -24,6 +24,8 @@ navbar:
         href: articles/efficiency.html
       - text: Large dataframes
         href: articles/split_by.html
+      - text: Converting datatypes not handled by git2rdata
+        href: articles/convert.html
     news:
       text: Changelog
       href: news/index.html

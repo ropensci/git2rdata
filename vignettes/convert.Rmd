@@ -1,0 +1,191 @@
+---
+title: "Using the convert argument"
+author: "Thierry Onkelinx"
+output:
+  rmarkdown::html_vignette:
+        fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Using the convert argument}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+The `convert` argument in `write_vc()` and `read_vc()` allows you to apply transformations to data columns during the write and read operations.
+This is useful when you want to store data types that `git2rdata` doesn't support.
+The only requirement is that there exist two functions in some R package that do the transformation.
+One function should convert the unsupported data type into a supported data type.
+The second function should revert the supported data type into the original unsupported data type.
+
+## Basic usage
+
+The `convert` argument is a named list where:
+
+- Names correspond to column names in your data frame
+- Each element is a character vector of length 2 with names `write` and `read`
+- Functions are specified in the format `"package::function"`
+
+```{r setup}
+library(git2rdata)
+root <- tempfile("git2rdata-convert")
+dir.create(root)
+```
+
+## Example: case conversion
+
+A simple example is converting text to uppercase for storage while keeping it lowercase in R:
+
+```{r case-conversion}
+# Create sample data
+data <- data.frame(
+  id = 1:3,
+  name = c("alice", "bob", "charlie"),
+  stringsAsFactors = FALSE
+)
+
+# Write with case conversion
+write_vc(
+  data,
+  file = "people",
+  root = root,
+  sorting = "id",
+  convert = list(
+    name = c(
+      write = "base::toupper", # Convert to uppercase when writing
+      read = "base::tolower" # Convert to lowercase when reading
+    )
+  )
+)
+```
+
+The stored file contains the names in uppercase:
+
+```{r check-storage}
+# Check the raw file content
+raw_content <- readLines(file.path(root, "people.tsv"))
+cat(raw_content, sep = "\n")
+```
+
+When reading the data back, the conversion is automatically applied:
+
+```{r read-back}
+# Read the data back
+result <- read_vc("people", root = root)
+print(result)
+
+# The convert specification is stored in the attributes
+attr(result, "convert")
+```
+
+## Multiple columns
+
+You can apply conversions to multiple columns:
+
+```{r multiple-columns}
+data2 <- data.frame(
+  id = 1:2,
+  first_name = c("alice", "bob"),
+  last_name = c("smith", "jones"),
+  stringsAsFactors = FALSE
+)
+
+write_vc(
+  data2,
+  file = "names",
+  root = root,
+  sorting = "id",
+  convert = list(
+    first_name = c(write = "base::toupper", read = "base::tolower"),
+    last_name = c(write = "base::toupper", read = "base::tolower")
+  )
+)
+
+result2 <- read_vc("names", root = root)
+print(result2)
+```
+
+## Use cases
+
+### Unsupported data type
+
+`git2rdata` doesn't have support for 64-bit integers.
+You can store them by converting them into a character.
+
+```{r unsupported, eval = FALSE}
+mtcars2 <- mtcars |>
+  dplyr::mutate(cyl = bit64::as.integer64(cyl))
+write_vc(
+  mtcars2,
+  file = "mtcars2",
+  convert = list(
+    cyl = c(write = "bit64::as.character", read = "bit64::as.integer64")
+  )
+)
+```
+
+### Storage optimization
+
+Convert numeric data to a more compact string representation:
+
+```{r numeric-conversion, eval=FALSE}
+# Example with custom conversion functions
+# (requires defining custom functions in a package)
+write_vc(
+  data,
+  file = "data",
+  root = root,
+  sorting = "id",
+  convert = list(
+    large_number = c(
+      write = "mypackage::to_scientific",
+      read = "mypackage::from_scientific"
+    )
+  )
+)
+```
+
+### Data standardization
+
+Ensure consistent formatting across different data sources:
+
+```{r standardization, eval=FALSE}
+# Convert dates to ISO format
+write_vc(
+  data,
+  file = "events",
+  root = root,
+  sorting = "id",
+  convert = list(
+    event_date = c(
+      write = "mypackage::to_iso_date",
+      read = "mypackage::from_iso_date"
+    )
+  )
+)
+```
+
+## Important notes
+
+- **Package availability**: All packages referenced in the `convert` argument must be available when calling `write_vc()` and `read_vc()`.
+  The function checks for package availability at read and write time.
+
+- **Function validation**: The function validates that the specified functions exist in the specified packages.
+
+- **Metadata storage**: Conversion specifications are stored in the metadata YAML file, ensuring that `read_vc()` knows how to reverse the transformations.
+
+- **Strict mode**: When updating existing files, changes to the `convert` argument are detected by `compare_meta()` and will trigger an error in strict mode or a warning in non-strict mode.
+
+## Limitations
+
+- The `convert` argument only accepts functions in the `package::function` format.
+  Anonymous functions or functions from the global environment are not supported.
+
+- Conversions must be reversible.
+  The `read` function should be able to restore the original data from the converted form.
+
+- The conversion is applied before `meta()` processes the data, so optimizations (like factor encoding) work on the converted data.
+
+```{r cleanup, include=FALSE}
+unlink(root, recursive = TRUE)
+```

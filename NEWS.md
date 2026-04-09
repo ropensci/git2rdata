@@ -1,3 +1,14 @@
+# git2rdata 0.5.2
+
+* `write_vc()` gains an optional `convert` argument for specifying column 
+  conversions. Conversions are applied before storing and reversed when 
+  reading data back. The convert information is stored in the metadata 
+  and added to the data frame attributes.
+* `read_vc()` now applies conversions specified in the metadata and adds 
+  the convert information to the data frame attributes.
+* Bugfix in `rename_variable()` thanks to @florisvdh for finding and fixing the
+  bug.
+
 # git2rdata 0.5.1
 
 * `write_vc()` stores metadata stored in the data frame.

@@ -227,3 +227,24 @@ test_that("rename_variable() handles wrong type of root", {
     "a 'root' of class numeric is not supported"
   )
 })
+
+test_that("rename_variable() shows no root in returned file names", {
+  root <- tempfile(pattern = "git2rdata-rename-")
+  dir.create(root)
+  filename <- "unsorted"
+  files <- suppressWarnings(
+    write_vc(
+      test_data,
+      file = filename,
+      split_by = "test_factor",
+      root = root,
+      strict = FALSE
+    )
+  )
+  result <- rename_variable(
+    file = filename,
+    root = root,
+    change = c("new_var" = "test_Date")
+  )
+  expect_no_match(result, "git2rdata-rename-")
+})

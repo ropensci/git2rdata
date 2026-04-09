@@ -13,7 +13,8 @@
 #' @inheritParams write_vc
 #' @param change A named vector with the old names as values and the new names
 #' as names.
-#' @return invisible `NULL`.
+#' @return a named vector with the file paths relative to `root`. The names
+#' contain the hashes of the files.
 #' @export
 #' @examples
 #'
@@ -106,6 +107,8 @@ rename_variable.character <- function(file, change, root = ".", ...) {
   yaml[["..generic"]][["data_hash"]] <- datahash(file["raw_file"])
   write_yaml(yaml, file["meta_file"], fileEncoding = "UTF-8")
 
+  root <- normalizePath(root, winslash = "/", mustWork = TRUE)
+  file <- normalizePath(file, winslash = "/", mustWork = TRUE)
   hashes <- remove_root(file = file, root = root)
   names(hashes) <-
     c(
